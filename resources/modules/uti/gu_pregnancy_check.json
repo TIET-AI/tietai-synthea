@@ -1,0 +1,143 @@
+{
+  "name": "GU_Pregnancy_Check",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "UTI_Telemed",
+            "operator": "is not nil"
+          },
+          "transition": "Discuss Pregnancy"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "UTI_ED",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Pregnancy Test",
+              "distribution": 0.76
+            },
+            {
+              "transition": "Discuss Pregnancy",
+              "distribution": 0.24
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "UTI_Ambulatory",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Pregnancy Test",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Discuss Pregnancy",
+              "distribution": 0.6
+            }
+          ]
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Pregnancy Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "252160004",
+          "display": "Standard pregnancy test (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 15
+        }
+      },
+      "unit": "minutes",
+      "conditional_transition": [
+        {
+          "transition": "Positive Result",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Negative Result"
+        }
+      ]
+    },
+    "Discuss Pregnancy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "440546007",
+          "display": "Discussion about pregnancy (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Terminal"
+    },
+    "Negative Result": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2106-3",
+          "display": "Choriogonadotropin (pregnancy test) [Presence] in Urine",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Terminal",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "260385009",
+        "display": "Negative (qualifier value)"
+      }
+    },
+    "Positive Result": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2106-3",
+          "display": "Choriogonadotropin (pregnancy test) [Presence] in Urine",
+          "value_set": ""
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "Positive (qualifier value)"
+      },
+      "direct_transition": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

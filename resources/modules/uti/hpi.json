@@ -1,0 +1,175 @@
+{
+  "name": "UTI_HPI",
+  "remarks": [
+    "UTI History of Present Illness"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "History Taking"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "History Taking": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "84100007",
+          "display": "History taking (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 15,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Dysuria"
+    },
+    "Dysuria": {
+      "type": "Symptom",
+      "symptom": "Dysuria",
+      "cause": "",
+      "probability": 1,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 0.5
+        }
+      },
+      "direct_transition": "Increased frequency of urination"
+    },
+    "Increased frequency of urination": {
+      "type": "Symptom",
+      "symptom": "Increased frequency of urination",
+      "cause": "",
+      "probability": 1,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "direct_transition": "Urgent desire to urinate"
+    },
+    "Urgent desire to urinate": {
+      "type": "Symptom",
+      "symptom": "Urgent desire to urinate",
+      "cause": "",
+      "probability": 1,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "direct_transition": "Suprapubic pain"
+    },
+    "Suprapubic pain": {
+      "type": "Symptom",
+      "symptom": "Suprapubic pain",
+      "cause": "",
+      "probability": 1,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "conditional_transition": [
+        {
+          "transition": "Renal angle tenderness",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "45816000",
+                "display": "Pyelonephritis (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Discussion about signs and symptoms"
+        }
+      ]
+    },
+    "Discussion about signs and symptoms": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "223470000",
+          "display": "Discussion about signs and symptoms (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 15,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Terminal"
+    },
+    "Renal angle tenderness": {
+      "type": "Symptom",
+      "symptom": "Renal angle tenderness",
+      "cause": "",
+      "probability": 1,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "direct_transition": "Flank pain"
+    },
+    "Flank pain": {
+      "type": "Symptom",
+      "symptom": "Flank pain",
+      "cause": "",
+      "probability": 1,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "direct_transition": "Fever"
+    },
+    "Fever": {
+      "type": "Symptom",
+      "symptom": "",
+      "cause": "",
+      "probability": 1,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "direct_transition": "Tendency to nausea and vomiting"
+    },
+    "Tendency to nausea and vomiting": {
+      "type": "Symptom",
+      "symptom": "Tendency to nausea and vomiting",
+      "cause": "",
+      "probability": 1,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "direct_transition": "Discussion about signs and symptoms"
+    }
+  },
+  "gmf_version": 2
+}

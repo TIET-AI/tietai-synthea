@@ -1,0 +1,936 @@
+{
+  "name": "Hypertension",
+  "remarks": [
+    "This Hypertension model reflects the treatment of Primary Hypertension (HTN) in Adults. ",
+    "",
+    "Overview",
+    "Hypertension diagnosis definitions, pharmacologic treatment thresholds, and control target recommendations diverge across clinical guidelines. However, the model was informed by the following hypertension guidelines and subsequent updates:",
+    "2018 ESC/ESH Guidelines for the management of arterial hypertension: The Task Force for the management of arterial hypertension of the European Society of Cardiology (ESC) and the European Society of Hypertension (ESH)",
+    "2017 ACC/AHA/AAPA/ABC/ACPM/AGS/APhA/ASH/ASPC/NMA/PCNA guideline for the prevention, detection, evaluation, and management of high blood pressure in adults: a report of the American College of Cardiology/American Heart Association Task Force on Clinical Practice Guidelines. ",
+    "2017 Pharmacologic treatment of hypertension in adults aged 60 years or older to higher versus lower blood pressure targets: a clinical practice guideline from the American College of Physicians and the American Academy of Family Physicians.",
+    "2014 evidence-based guideline for the management of high blood pressure in adults: report from the panel members appointed to the Eighth Joint National Committee (JNC 8). ",
+    "Canadian Hypertension Guidelines",
+    "",
+    "The following model assumptions apply: ",
+    "HTN Definitions: Our model definition of HTN is >= 140/90 for all populations, given general agreement of this threshold for pharmacotherapy across most clinical guidelines. Our model threshold for use of pharmacotherapy is SBP >= 140. We define control as SBP < 140. All individuals do NOT achieve control consistent with epidemiological studies. We acknowledge that HTN may be defined using a lower blood pressure (see ACC/AHA) and that lower pharmacotherapy thresholds and targets may be used for populations with certain comorbid conditions, cardiovascular risk, and/or of a certain age. This model does not reflect all primary HTN care pathways, as individual decision making that accounts for benefits, harms, treatment burden and other factors is a critical part of hypertension management. ",
+    " ",
+    "Pharmacotherapy: Pharmacotherapy represented in the submodule 'medications/hypertension_medication' includes ACE inhibitors/ angiotensin receptor blockers (ARBs), thiazide diuretics, and calcium channel blockers (CCB). The drug representing the pharmacologic category, is the medication most commonly prescribed, rather than the agent used in clinical trials (e.g. hydrochlorothiazide vs chlorthalidone). The use of an ACE-inhibitor is inclusive of the use of an ARB. The model only represents the use of dihydropyridine CCBs. Beta-blockers (BBs) are not represented in the model, as the use of BBs for hypertension management is often guided by other compelling clinical indications such as those noted in the clinical exclusions below. Additionally, evidence suggest that in populations without these comorbid conditions, beta‐blockers may not have the same benefits in preventing death and stroke as CCB, thiazides, and ACE/ARBS. The medication dose represented in the model represents the minimum dose of the usual dose range for HTN treatment. This medication dose is inclusive of a lower dose and/or titration to the maximum dose prior to adding another agent.",
+    "",
+    "Pathway: Once individuals require >= 4 medications for HTN treatment, their treatment is no longer represented in the model; these individuals meet the definition of resistant hypertension often requiring further evaluation and/or use of additional HTN medications. Evidence suggests this is a small percentage of individuals (~5-13%).",
+    "",
+    "Clinical Population Exclusions: The care pathway excludes individuals with ASCVD (e.g coronary heart disease, MI), heart failure, pregnancy, age < 18 years, or CKD > Stage III. Rationale: Recommendations for hypertension treatment differ in pregnancy due to risk of teratogenic effects with certain medications and associated pregnancy complications. In pediatrics, hypertension diagnosis is established based on age, sex, and height percentiles with limited evidence regarding long-term outcomes. For co-morbid cardiovascular conditions, we address hypertension management in current (or future) cardiovascular models since similar medications are used to manage cardiovascular disease and hypertension. For advanced CKD/ESRD, hypertension management pathways often differ with the use of additional medications. ",
+    "",
+    "Additional references to inform population probabilities and pharmacotherapy utilization: ",
+    "- Derington, C.G., King, J.B., Herrick, J.S., Shimbo, D., Kronish, I.M., Saseen, J.J., Muntner, P., Moran, A.E. and Bress, A.P., 2020. Trends in antihypertensive medication monotherapy and combination use among US adults, National Health and Nutrition Examination Survey 2005–2016. Hypertension, 75(4), pp.973-981.",
+    "- Shah, S.J. and Stafford, R.S., 2017. Current trends of hypertension treatment in the United States. American journal of hypertension, 30(10), pp.1008-1014.",
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "Initial impl == direct translation of ruby module"
+      ],
+      "direct_transition": "Assign Hypertension Base Probability"
+    },
+    "Onset_Hypertension": {
+      "type": "SetAttribute",
+      "attribute": "hypertension",
+      "value": true,
+      "direct_transition": "Check for Exclusions"
+    },
+    "Diagnose_Hypertension": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "59621000",
+          "display": "Essential hypertension (disorder)"
+        }
+      ],
+      "assign_to_attribute": "hypertension_dx",
+      "direct_transition": "Set_BP_Not Controlled"
+    },
+    "Hypertension_Followup_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "hypertension_dx",
+      "telemedicine_possibility": "possible",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "390906007",
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Record_BP"
+    },
+    "End_Hypertension_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Delay 2_Month"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "distribution": 0.643,
+              "transition": "Set_BP_Controlled_2"
+            },
+            {
+              "distribution": 0.357,
+              "transition": "Delay 2_Month"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "distribution": 0.53,
+              "transition": "Set_BP_Controlled_2"
+            },
+            {
+              "distribution": 0.47,
+              "transition": "Delay 2_Month"
+            }
+          ]
+        }
+      ]
+    },
+    "Hypertension_Followup_Encounter_2": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "hypertension_dx",
+      "telemedicine_possibility": "possible",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "390906007",
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Record_BP_2"
+    },
+    "Hypertension_Followup_Encounter_3": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "telemedicine_possibility": "possible",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "390906007",
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Record_BP_3",
+      "reason": "hypertension_dx"
+    },
+    "End_Hypertension_Followup_Encounter_2": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Delay_2_Month_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Delay_2_Month_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "distribution": 0.643,
+              "transition": "Set_BP_Controlled_3"
+            },
+            {
+              "distribution": 0.357,
+              "transition": "Delay_2_Month_2"
+            }
+          ]
+        },
+        {
+          "transition": "Delay_2_Month_2"
+        }
+      ]
+    },
+    "End_Hypertension_Followup_Encounter_3": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "LifeStyle_Modifications_Hypertension_CarePlan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "443402002",
+          "display": "Lifestyle education regarding hypertension (procedure)"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "386463000",
+          "display": "Prescribed activity/exercise education (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "413473000",
+          "display": "Counseling about alcohol consumption (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "1151000175103",
+          "display": "Dietary Approaches to Stop Hypertension diet (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "225323000",
+          "display": "Smoking cessation education (procedure)"
+        }
+      ],
+      "goals": [
+        {
+          "addresses": [
+            "hypertension_dx"
+          ],
+          "text": "Maintain blood pressure below 140/90 mm[Hg]"
+        },
+        {
+          "addresses": [
+            "hypertension_dx"
+          ],
+          "text": "Reduce sodium intake to no more than 2,400 mg/day"
+        }
+      ],
+      "reason": "hypertension_dx",
+      "direct_transition": "Prescribe_Medication"
+    },
+    "Wellness_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "reason": "hypertension_screening_reason",
+      "direct_transition": "Diagnose_Hypertension"
+    },
+    "End_Wellness_Encounter": {
+      "type": "EncounterEnd",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Set_BP_Controlled",
+              "distribution": 0.342
+            },
+            {
+              "transition": "Delay_One_Month",
+              "distribution": 0.658
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set_BP_Controlled",
+              "distribution": 0.363
+            },
+            {
+              "transition": "Delay_One_Month",
+              "distribution": 0.637
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
+          }
+        }
+      ]
+    },
+    "Delay_One_Month": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Hypertension_Followup_Encounter"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "distribution": 0.322,
+              "transition": "Drop Outs"
+            },
+            {
+              "distribution": 0.678,
+              "transition": "Hypertension_Followup_Encounter"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "distribution": 0.267,
+              "transition": "Drop Outs"
+            },
+            {
+              "distribution": 0.733,
+              "transition": "Hypertension_Followup_Encounter"
+            }
+          ]
+        }
+      ]
+    },
+    "Record_BP": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85354-9",
+          "display": "Blood pressure panel with all children optional"
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": false
+          },
+          "transition": "Prescribe_Medication_2"
+        },
+        {
+          "transition": "End_Hypertension_Followup_Encounter"
+        }
+      ]
+    },
+    "Record_BP_2": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85354-9",
+          "display": "Blood pressure panel with all children optional"
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": false
+          },
+          "transition": "Prescribe_Medication_3"
+        },
+        {
+          "transition": "End_Hypertension_Followup_Encounter_2"
+        }
+      ]
+    },
+    "Record_BP_3": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85354-9",
+          "display": "Blood pressure panel with all children optional"
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Referral To Hypertension Clinic",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": false
+          }
+        },
+        {
+          "transition": "End_Hypertension_Followup_Encounter_3"
+        }
+      ]
+    },
+    "Referral To Hypertension Clinic": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183856001",
+          "display": "Referral to hypertension clinic (procedure)"
+        }
+      ],
+      "direct_transition": "End_Hypertension_Followup_Encounter_3"
+    },
+    "Set_BP_Not Controlled": {
+      "type": "SetAttribute",
+      "attribute": "blood_pressure_controlled",
+      "direct_transition": "LifeStyle_Modifications_Hypertension_CarePlan",
+      "value": false
+    },
+    "Delay 2_Month": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "months"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blood_pressure_controlled",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Hypertension_Followup_Encounter_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Hypertension_Followup_Encounter_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "transition": "Drop Outs",
+              "distribution": 0.322
+            },
+            {
+              "transition": "Hypertension_Followup_Encounter_2",
+              "distribution": 0.678
+            }
+          ]
+        }
+      ]
+    },
+    "Delay_2_Month_2": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "months"
+      },
+      "direct_transition": "Hypertension_Followup_Encounter_3"
+    },
+    "Set_BP_Controlled": {
+      "type": "SetAttribute",
+      "attribute": "blood_pressure_controlled",
+      "value": true,
+      "direct_transition": "Delay_One_Month"
+    },
+    "Set_BP_Controlled_2": {
+      "type": "SetAttribute",
+      "attribute": "blood_pressure_controlled",
+      "value": true,
+      "direct_transition": "Delay 2_Month"
+    },
+    "Set_BP_Controlled_3": {
+      "type": "SetAttribute",
+      "attribute": "blood_pressure_controlled",
+      "value": true,
+      "direct_transition": "Delay_2_Month_2"
+    },
+    "Prescribe_Medication_3": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Hypertension_Followup_Encounter_2"
+    },
+    "Prescribe_Medication_2": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Hypertension_Followup_Encounter"
+    },
+    "Prescribe_Medication": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Wellness_Encounter"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Drop Outs": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+    "Check for Hypertension": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Eventual Hypertension",
+          "distribution": {
+            "attribute": "p_hypertension",
+            "default": 0.454
+          }
+        },
+        {
+          "transition": "Unlikely Onset",
+          "distribution": 0.546
+        }
+      ]
+    },
+    "Hypertension_Screening_Reason": {
+      "type": "SetAttribute",
+      "attribute": "hypertension_screening_reason",
+      "direct_transition": "Wellness_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "171222001",
+        "display": "Hypertension screening (procedure)"
+      }
+    },
+    "White": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "White Male",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        },
+        {
+          "transition": "White Female"
+        }
+      ]
+    },
+    "Black": {
+      "type": "SetAttribute",
+      "attribute": "p_hypertension",
+      "direct_transition": "Check for Hypertension",
+      "value": 0.571
+    },
+    "All Others": {
+      "type": "SetAttribute",
+      "attribute": "p_hypertension",
+      "direct_transition": "Check for Hypertension",
+      "value": 0.454
+    },
+    "White Male": {
+      "type": "SetAttribute",
+      "attribute": "p_hypertension",
+      "direct_transition": "Check for Hypertension",
+      "value": 0.51
+    },
+    "White Female": {
+      "type": "SetAttribute",
+      "attribute": "p_hypertension",
+      "direct_transition": "Check for Hypertension",
+      "value": 0.397
+    },
+    "Assign Hypertension Base Probability": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "White",
+          "condition": {
+            "condition_type": "Race",
+            "race": "White"
+          }
+        },
+        {
+          "transition": "Black",
+          "condition": {
+            "condition_type": "Race",
+            "race": "Black"
+          }
+        },
+        {
+          "transition": "All Others"
+        }
+      ],
+      "remarks": [
+        "Probabilities draw from:",
+        "Ostchega Y, Fryar CD, Nwankwo T, Nguyen DT. Hypertension prevalence among adults aged 18 and over: United States, 2017–2018. NCHS Data Brief, no 364. Hyattsville, MD: National Center for Health Statistics. 2020.",
+        "",
+        "In survey period 2017–2018, the prevalence of age-adjusted hypertension was 45.4% among adults and was higher among men (51.0%) than women (39.7%).",
+        "",
+        "Hypertension prevalence was higher among non-Hispanic black (57.1%) than non-Hispanic white (43.6%) or Hispanic (43.7%) adults."
+      ]
+    },
+    "Eventual Hypertension": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "White Onset Age",
+          "condition": {
+            "condition_type": "Race",
+            "race": "White"
+          }
+        },
+        {
+          "transition": "Black Onset Age",
+          "condition": {
+            "condition_type": "Race",
+            "race": "Black"
+          }
+        },
+        {
+          "transition": "All Others Onset Age"
+        }
+      ],
+      "remarks": [
+        "Distributions drawn from Table 2 of:",
+        "Huang X, Lee K, Wang MC, Shah NS, Khan SS. Age at Diagnosis of Hypertension by Race and Ethnicity in the US From 2011 to 2020. JAMA Cardiol. 2022;7(9):986–987. doi:10.1001/jamacardio.2022.2345"
+      ]
+    },
+    "Wait for Hypertension Onset": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Decrement_Years"
+    },
+    "Black Onset Age": {
+      "type": "SetAttribute",
+      "attribute": "years_until_hypertension_onset",
+      "direct_transition": "Check Result",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 42,
+          "standardDeviation": 14
+        }
+      }
+    },
+    "White Onset Age": {
+      "type": "SetAttribute",
+      "attribute": "years_until_hypertension_onset",
+      "direct_transition": "Check Result",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 47,
+          "standardDeviation": 15
+        }
+      }
+    },
+    "All Others Onset Age": {
+      "type": "SetAttribute",
+      "attribute": "years_until_hypertension_onset",
+      "direct_transition": "Check Result",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 46,
+          "standardDeviation": 15
+        }
+      }
+    },
+    "Unlikely Onset": {
+      "type": "SetAttribute",
+      "attribute": "years_until_hypertension_onset",
+      "direct_transition": "Wait for Hypertension Onset",
+      "value": 120,
+      "remarks": [
+        "These patients are not removed from the pool, in case another module (for example, diabetes) activates hypertension."
+      ]
+    },
+    "Check for Hypertension Override": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Onset_Hypertension",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "years_until_hypertension_onset",
+                "operator": "<=",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check for Smoking related Hypertension",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Wait for Hypertension Onset"
+        }
+      ],
+      "remarks": [
+        "Use the risk set above, but also check if some other module may have set hypertension == true"
+      ]
+    },
+    "Check for Smoking related Hypertension": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Onset_Hypertension",
+          "distribution": 0.005
+        },
+        {
+          "transition": "Wait for Hypertension Onset",
+          "distribution": 0.995
+        }
+      ],
+      "remarks": [
+        "Various studies have estimated that smokers have between 1.2 and 1.5 higher odds ratio of hypertension than non-smokers. In this model, every year a patient actively smokes, they may experience the onset of hypertension."
+      ]
+    },
+    "Check for Exclusions": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait for Hypertension Onset",
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 18,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": ">",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "pregnant",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "coronary_heart_disease",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "22298006",
+                    "display": "Myocardial Infarction"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "399211009",
+                    "display": "History of myocardial infarction (situation)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "chf",
+                "operator": "is not nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Hypertension_Screening_Reason"
+        }
+      ]
+    },
+    "Decrement_Years": {
+      "type": "Counter",
+      "attribute": "years_until_hypertension_onset",
+      "action": "decrement",
+      "direct_transition": "Check for Hypertension Override"
+    },
+    "Check Result": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Eventual Hypertension",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "years_until_hypertension_onset",
+            "operator": "<=",
+            "value": 18
+          }
+        },
+        {
+          "transition": "Wait for Hypertension Onset"
+        }
+      ],
+      "remarks": [
+        "Looping back to Eventual_Hypertension will redraw from the years_until_hypertension_onset distribution. In effect this will eliminate a spike in 18 year olds (i.e., all the random sampling of 18 and under would all appear at age 18) and smooth the distribution (and average onset age) appropriately."
+      ]
+    }
+  },
+  "gmf_version": 1
+}

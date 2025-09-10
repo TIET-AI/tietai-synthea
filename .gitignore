@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.manifest
+*.spec
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+*.db-journal
+*.csv
+*.tsv
+*.xls
+*.xlsx
+*.tmp
+*.bak
+*.swp
+*.swo
+*.env
+.env
+venv/
+ENV/
+.envrc
+pip-wheel-metadata/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test and coverage
+.coverage
+.tox/
+.nox/
+.pytest_cache/
+htmlcov/
+
+# Output
+output/
+
+# Synthea
+synthea-python/synthea.egg-info/
+
+# Misc
+*.log
+*.out
+*.pid
+*.seed
+*.orig
+*.rej
+*.bak
+*.tmp
+*.old
+*.swp
+*.swo
+
+# Ignore secrets
+secrets.env
