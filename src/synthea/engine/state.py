@@ -15,6 +15,23 @@ if TYPE_CHECKING:
     from synthea.world.person import Person
     from synthea.engine.module import Module
 
+from synthea.world.health_record import Code
+
+
+def _parse_codes(raw: list) -> list:
+    """Convert raw code dicts from JSON to Code instances."""
+    result = []
+    for c in raw:
+        if isinstance(c, Code):
+            result.append(c)
+        elif isinstance(c, dict):
+            result.append(Code(
+                system=c.get('system', ''),
+                code=c.get('code', ''),
+                display=c.get('display', ''),
+            ))
+    return result
+
 
 class StateType(Enum):
     """Enumeration of all possible state types in Synthea modules."""
@@ -66,7 +83,10 @@ class State(ABC):
         """
         self.module = module
         self.name = name
-        self.definition = definition
+        # Pre-convert codes in the definition once at load time
+        self.definition = dict(definition)
+        if 'codes' in self.definition:
+            self.definition['codes'] = _parse_codes(self.definition['codes'])
         self.remarks = definition.get('remarks', [])
         if isinstance(self.remarks, str):
             self.remarks = [self.remarks]
@@ -364,7 +384,7 @@ class MedicationOrderState(State):
         """Prescribe a medication."""
         codes = self.definition.get('codes', [])
         reason = self.definition.get('reason')
-        
+
         if hasattr(person, 'record'):
             encounter = person.attributes.get('current_encounter')
             if encounter:
