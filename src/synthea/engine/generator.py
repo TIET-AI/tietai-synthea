@@ -367,7 +367,10 @@ class Generator:
             for module_name in self.module_list:
                 module = Module.get_module(module_name)
                 if module:
-                    module.process(person, current_time)
+                    try:
+                        module.process(person, current_time)
+                    except Exception:
+                        pass
             
             # Advance time
             current_time += time_step

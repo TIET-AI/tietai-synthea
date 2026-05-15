@@ -59,6 +59,9 @@ class Module:
             return True  # No initial state, module is done
         
         # Process states until we hit a delay or terminal state
+        # Cap iterations to detect multi-state cycles (e.g. A→B→C→A without a Delay)
+        _max_iterations = 500
+        _iterations = 0
         while current_state_name:
             if current_state_name not in self.states:
                 print(f"Warning: State '{current_state_name}' not found in module '{self.name}'")
@@ -81,10 +84,15 @@ class Module:
             next_state = self._get_next_state(state, person, time)
             
             if next_state == current_state_name:
-                # Prevent infinite loops
-                print(f"Warning: State '{current_state_name}' transitions to itself")
+                # Prevent direct self-loop
                 return True
-            
+
+            _iterations += 1
+            if _iterations >= _max_iterations:
+                # Multi-state cycle detected — yield and resume next time step
+                person.attributes[current_state_key] = next_state
+                return False
+
             current_state_name = next_state
             
             # Check if we've reached a terminal state

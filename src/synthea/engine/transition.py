@@ -250,7 +250,8 @@ class LookupTableTransition(Transition):
     
     def __init__(self, definition: Dict[str, Any]):
         super().__init__(definition)
-        self.lookup_info = definition.get('lookup_table_transition')
+        raw = definition.get('lookup_table_transition')
+        self.lookup_info = raw if isinstance(raw, dict) else {}
         self.table_data = None
         self._load_table()
     

@@ -48,6 +48,8 @@ class StateType(Enum):
     DEVICE_END = "DeviceEnd"
     SUPPLY_LIST = "SupplyList"
     IMAGING_STUDY = "ImagingStudy"
+    VACCINE = "Vaccine"
+    PHYSIOLOGY = "Physiology"
 
 
 class State(ABC):
@@ -113,7 +115,11 @@ class State(ABC):
         Returns:
             An instance of the appropriate State subclass
         """
-        state_type = StateType(definition.get('type'))
+        raw_type = definition.get('type')
+        try:
+            state_type = StateType(raw_type)
+        except ValueError:
+            return SimpleState(module, name, definition)
         
         state_classes = {
             StateType.INITIAL: InitialState,
@@ -134,6 +140,8 @@ class State(ABC):
             StateType.OBSERVATION: ObservationState,
             StateType.SYMPTOM: SymptomState,
             StateType.DEATH: DeathState,
+            StateType.VACCINE: SimpleState,
+            StateType.PHYSIOLOGY: SimpleState,
         }
         
         state_class = state_classes.get(state_type, SimpleState)
