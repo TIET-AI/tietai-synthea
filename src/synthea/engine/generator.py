@@ -5,6 +5,7 @@ This module provides the core simulation engine that orchestrates the generation
 of synthetic patients and their health records.
 """
 
+import logging
 import random
 import multiprocessing as mp
 from typing import Dict, Any, Optional, List, Set, Tuple
@@ -14,6 +15,8 @@ import json
 import time as time_module
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from tqdm import tqdm
+
+logger = logging.getLogger(__name__)
 
 from synthea.engine.module import Module
 from synthea.world.person import Person
@@ -370,7 +373,11 @@ class Generator:
                     try:
                         module.process(person, current_time)
                     except Exception:
-                        pass
+                        logger.warning(
+                            "Module '%s' raised an exception at time %s",
+                            module_name, current_time,
+                            exc_info=True,
+                        )
             
             # Advance time
             current_time += time_step

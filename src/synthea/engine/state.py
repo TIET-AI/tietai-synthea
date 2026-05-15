@@ -8,8 +8,11 @@ from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional, List, TYPE_CHECKING
 from datetime import datetime, timedelta
 from enum import Enum
+import logging
 import random
 import copy
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
@@ -139,6 +142,10 @@ class State(ABC):
         try:
             state_type = StateType(raw_type)
         except ValueError:
+            logger.warning(
+                "Unknown state type '%s' in module '%s' state '%s'; treating as Simple",
+                raw_type, module.name, name,
+            )
             return SimpleState(module, name, definition)
         
         state_classes = {
