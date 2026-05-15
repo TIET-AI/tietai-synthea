@@ -8,9 +8,12 @@ in Synthea's Generic Module Framework.
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional, List, TYPE_CHECKING
 from datetime import datetime
+import logging
 import random
 import csv
 import os
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
@@ -250,7 +253,13 @@ class LookupTableTransition(Transition):
     
     def __init__(self, definition: Dict[str, Any]):
         super().__init__(definition)
-        self.lookup_info = definition.get('lookup_table_transition')
+        raw = definition.get('lookup_table_transition')
+        if raw is not None and not isinstance(raw, dict):
+            logger.warning(
+                "lookup_table_transition expected a dict but got %s; transition will be skipped",
+                type(raw).__name__,
+            )
+        self.lookup_info = raw if isinstance(raw, dict) else {}
         self.table_data = None
         self._load_table()
     

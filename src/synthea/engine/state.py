@@ -8,12 +8,32 @@ from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional, List, TYPE_CHECKING
 from datetime import datetime, timedelta
 from enum import Enum
+import logging
 import random
 import copy
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
     from synthea.engine.module import Module
+
+from synthea.world.health_record import Code
+
+
+def _parse_codes(raw: list) -> list:
+    """Convert raw code dicts from JSON to Code instances."""
+    result = []
+    for c in raw:
+        if isinstance(c, Code):
+            result.append(c)
+        elif isinstance(c, dict):
+            result.append(Code(
+                system=c.get('system', ''),
+                code=c.get('code', ''),
+                display=c.get('display', ''),
+            ))
+    return result
 
 
 class StateType(Enum):
@@ -48,6 +68,8 @@ class StateType(Enum):
     DEVICE_END = "DeviceEnd"
     SUPPLY_LIST = "SupplyList"
     IMAGING_STUDY = "ImagingStudy"
+    VACCINE = "Vaccine"
+    PHYSIOLOGY = "Physiology"
 
 
 class State(ABC):
@@ -64,7 +86,10 @@ class State(ABC):
         """
         self.module = module
         self.name = name
-        self.definition = definition
+        # Pre-convert codes in the definition once at load time
+        self.definition = dict(definition)
+        if 'codes' in self.definition:
+            self.definition['codes'] = _parse_codes(self.definition['codes'])
         self.remarks = definition.get('remarks', [])
         if isinstance(self.remarks, str):
             self.remarks = [self.remarks]
@@ -113,7 +138,15 @@ class State(ABC):
         Returns:
             An instance of the appropriate State subclass
         """
-        state_type = StateType(definition.get('type'))
+        raw_type = definition.get('type')
+        try:
+            state_type = StateType(raw_type)
+        except ValueError:
+            logger.warning(
+                "Unknown state type '%s' in module '%s' state '%s'; treating as Simple",
+                raw_type, module.name, name,
+            )
+            return SimpleState(module, name, definition)
         
         state_classes = {
             StateType.INITIAL: InitialState,
@@ -134,6 +167,8 @@ class State(ABC):
             StateType.OBSERVATION: ObservationState,
             StateType.SYMPTOM: SymptomState,
             StateType.DEATH: DeathState,
+            StateType.VACCINE: SimpleState,
+            StateType.PHYSIOLOGY: SimpleState,
         }
         
         state_class = state_classes.get(state_type, SimpleState)
@@ -356,7 +391,7 @@ class MedicationOrderState(State):
         """Prescribe a medication."""
         codes = self.definition.get('codes', [])
         reason = self.definition.get('reason')
-        
+
         if hasattr(person, 'record'):
             encounter = person.attributes.get('current_encounter')
             if encounter:

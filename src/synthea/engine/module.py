@@ -6,6 +6,7 @@ built-in modules and JSON-defined generic modules.
 """
 
 import json
+import logging
 import os
 from typing import Dict, Any, Optional, List, Set, TYPE_CHECKING
 from datetime import datetime
@@ -15,6 +16,10 @@ import inspect
 
 from synthea.engine.state import State
 from synthea.engine.transition import Transition
+
+logger = logging.getLogger(__name__)
+
+_MAX_MODULE_ITERATIONS = 500
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
@@ -59,9 +64,11 @@ class Module:
             return True  # No initial state, module is done
         
         # Process states until we hit a delay or terminal state
+        # Cap iterations to detect multi-state cycles (e.g. A→B→C→A without a Delay)
+        _iterations = 0
         while current_state_name:
             if current_state_name not in self.states:
-                print(f"Warning: State '{current_state_name}' not found in module '{self.name}'")
+                logger.warning("State '%s' not found in module '%s'", current_state_name, self.name)
                 return True
             
             state = self.states[current_state_name]
@@ -81,10 +88,19 @@ class Module:
             next_state = self._get_next_state(state, person, time)
             
             if next_state == current_state_name:
-                # Prevent infinite loops
-                print(f"Warning: State '{current_state_name}' transitions to itself")
+                # Prevent direct self-loop
                 return True
-            
+
+            _iterations += 1
+            if _iterations >= _MAX_MODULE_ITERATIONS:
+                logger.warning(
+                    "Module '%s' hit the %d-iteration cycle cap at state '%s'; "
+                    "yielding to next time step",
+                    self.name, _MAX_MODULE_ITERATIONS, next_state,
+                )
+                person.attributes[current_state_key] = next_state
+                return False
+
             current_state_name = next_state
             
             # Check if we've reached a terminal state
