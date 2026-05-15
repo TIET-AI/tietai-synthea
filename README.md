@@ -36,8 +36,8 @@ pip install uv
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/synthea-python.git
-cd synthea-python
+git clone https://github.com/TIET-AI/tietai-symthea.git
+cd tietai-symthea
 
 # Create virtual environment and install dependencies with UV
 uv venv
@@ -156,7 +156,7 @@ Examples:
 ## Project Structure
 
 ```
-synthea-python/
+tietai-symthea/
 ├── pyproject.toml        # UV-compatible project configuration
 ├── README.md            # This file
 ├── src/synthea/
@@ -580,6 +580,6 @@ This is a Python port of the original [Synthea](https://github.com/syntheticheal
 
 ## Support
 
-- Issues: [GitHub Issues](https://github.com/yourusername/synthea-python/issues)
-- Discussions: [GitHub Discussions](https://github.com/yourusername/synthea-python/discussions)
-- Documentation: [Wiki](https://github.com/yourusername/synthea-python/wiki)
+- Issues: [GitHub Issues](https://github.com/TIET-AI/tietai-symthea/issues)
+- Discussions: [GitHub Discussions](https://github.com/TIET-AI/tietai-symthea/discussions)
+- Documentation: [Wiki](https://github.com/TIET-AI/tietai-symthea/wiki)
