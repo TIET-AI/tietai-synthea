@@ -44,7 +44,8 @@ class TestIntegration:
         # Generate
         generator = Generator(options)
         generator.config = config
-        generator.module_list = []  # Skip modules for speed
+        generator._init_exporter()   # re-init so exporter picks up the new config
+        generator.module_list = []   # Skip modules for speed
         generator.run()
         
         # Check results

@@ -178,7 +178,7 @@ class DelayState(State):
         Returns:
             True if the delay has passed, False otherwise
         """
-        if 'delay' not in person.attributes.get(f'{self.module.name}_delays', {}):
+        if self.name not in person.attributes.get(f'{self.module.name}_delays', {}):
             delay_def = self.definition.get('delay', {})
             delay = self._calculate_delay(delay_def, person)
             

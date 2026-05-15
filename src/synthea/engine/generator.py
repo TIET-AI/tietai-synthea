@@ -373,7 +373,7 @@ class Generator:
             current_time += time_step
             
             # Check if person has died
-            if hasattr(person, 'death_date'):
+            if getattr(person, 'death_date', None) is not None:
                 if current_time >= person.death_date:
                     person.alive = False
                     break

@@ -80,16 +80,17 @@ class TestGenerator:
         assert options.city == 'Austin'
         assert options.threads == 4
     
-    def test_generate_person(self):
+    def test_generate_person(self, mocker):
         """Test generating a single person."""
         options = GeneratorOptions()
         options.seed = 42
         options.state = 'Massachusetts'
         options.city = 'Boston'
-        
+
         generator = Generator(options)
+        mocker.patch.object(generator, '_simulate_life')
         person = generator.generate_person(0)
-        
+
         assert person is not None
         assert person.alive is True
         assert person.attributes.get('state') == 'Massachusetts'
@@ -97,31 +98,34 @@ class TestGenerator:
         assert 'gender' in person.attributes
         assert 'race' in person.attributes
         assert 'birth_date' in person.attributes
-    
-    def test_generate_person_with_gender_filter(self):
+
+    def test_generate_person_with_gender_filter(self, mocker):
         """Test generating a person with gender filter."""
         options = GeneratorOptions()
         options.gender = 'F'
         options.seed = 100
-        
+
         generator = Generator(options)
+        mocker.patch.object(generator, '_simulate_life')
         person = generator.generate_person(0)
-        
+
         assert person is not None
         assert person.attributes['gender'] == 'F'
-    
-    def test_generate_person_reproducibility(self):
+
+    def test_generate_person_reproducibility(self, mocker):
         """Test that same seed produces same results."""
         options1 = GeneratorOptions()
         options1.seed = 777
         generator1 = Generator(options1)
+        mocker.patch.object(generator1, '_simulate_life')
         person1 = generator1.generate_person(0)
-        
+
         options2 = GeneratorOptions()
         options2.seed = 777
         generator2 = Generator(options2)
+        mocker.patch.object(generator2, '_simulate_life')
         person2 = generator2.generate_person(0)
-        
+
         # Should have same attributes
         assert person1.id == person2.id
         assert person1.attributes['gender'] == person2.attributes['gender']
@@ -187,14 +191,15 @@ class TestGenerator:
         assert 'latitude' in person.attributes
         assert 'longitude' in person.attributes
     
-    def test_stats_tracking(self):
+    def test_stats_tracking(self, mocker):
         """Test statistics tracking."""
         options = GeneratorOptions()
         options.population_size = 5
         options.seed = 999
-        
+
         generator = Generator(options)
-        
+        mocker.patch.object(generator, '_simulate_life')
+
         # Generate some people
         for i in range(5):
             person = generator.generate_person(i)
@@ -204,6 +209,6 @@ class TestGenerator:
                     person.alive = False
                     generator.stats['dead'] += 1
                     generator.stats['living'] -= 1
-        
+
         assert generator.stats['total_generated'] == 5
         assert generator.stats['living'] + generator.stats['dead'] == 5
