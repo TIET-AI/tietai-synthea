@@ -272,187 +272,120 @@ class ComplexTransition(Transition):
 
 
 class LookupTableTransition(Transition):
-    """A transition that uses CSV lookup tables for probabilities."""
-    
+    """
+    A transition that uses CSV lookup tables for age/gender-stratified
+    probabilities.
+
+    GMF format:
+        "lookup_table_transition": [
+          {"transition": "State_A", "default_probability": 0.6,
+           "lookup_table_name": "table.csv"},
+          {"transition": "State_B", "default_probability": 0.4,
+           "lookup_table_name": "table.csv"}
+        ]
+
+    When the CSV is available the per-row probability columns are used;
+    otherwise ``default_probability`` values are used as weights and
+    normalised to a valid distribution before sampling.
+    """
+
+    # Shared cache so the same CSV is read once per process.
+    _csv_cache: Dict[str, Optional[List[Dict[str, str]]]] = {}
+
+    _CSV_BASES = [
+        'resources/lookup_tables/',
+        'src/main/resources/lookup_tables/',
+    ]
+
     def __init__(self, definition: Dict[str, Any]):
         super().__init__(definition)
         raw = definition.get('lookup_table_transition')
-        if raw is not None and not isinstance(raw, dict):
+        if not isinstance(raw, list):
             logger.warning(
-                "lookup_table_transition expected a dict but got %s; transition will be skipped",
+                "lookup_table_transition expected a list but got %s; "
+                "transition will fall back to first entry",
                 type(raw).__name__,
             )
-        self.lookup_info = raw if isinstance(raw, dict) else {}
-        self.table_data = None
-        self._load_table()
-    
-    def _load_table(self):
-        """Load the CSV lookup table."""
-        if not self.lookup_info:
-            return
-        
-        csv_path = self.lookup_info.get('lookup_table_name')
-        if not csv_path:
-            return
-        
-        # Try to find the CSV file in resources
-        base_paths = [
-            'resources/lookup_tables/',
-            'src/main/resources/lookup_tables/',
-            './'
-        ]
-        
-        for base_path in base_paths:
-            full_path = os.path.join(base_path, csv_path)
-            if os.path.exists(full_path):
-                self._read_csv(full_path)
-                break
-    
-    def _read_csv(self, filepath: str):
-        """Read and parse the CSV file."""
-        self.table_data = []
-        try:
-            with open(filepath, 'r', encoding='utf-8') as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    self.table_data.append(row)
-        except Exception as e:
-            print(f"Error loading lookup table {filepath}: {e}")
-            self.table_data = []
-    
-    def follow(self, person: 'Person', time: datetime) -> Optional[str]:
-        """
-        Select transition based on lookup table.
-        
-        Matches person attributes against table rows and uses probabilities
-        from matching rows.
-        """
-        if not self.table_data or not self.lookup_info:
-            return None
-        
-        transitions = self.lookup_info.get('transitions', [])
-        if not transitions:
-            return None
-        
-        # Find matching rows based on person attributes
-        matching_rows = self._find_matching_rows(person, time)
-        if not matching_rows:
-            return None
-        
-        # Calculate probabilities from matching rows
-        probabilities = self._calculate_probabilities(matching_rows, transitions)
-        
-        # Select based on probabilities
-        return self._select_by_probability(probabilities)
-    
-    def _find_matching_rows(self, person: 'Person', time: datetime) -> List[Dict[str, str]]:
-        """Find all rows that match the person's attributes."""
-        if not self.table_data:
-            return []
-        
-        matching = []
-        for row in self.table_data:
-            if self._row_matches(row, person, time):
-                matching.append(row)
-        
-        return matching
-    
-    def _row_matches(self, row: Dict[str, str], person: 'Person', 
-                    time: datetime) -> bool:
-        """Check if a row matches the person's attributes."""
-        # Check age if present
-        if 'age' in row or 'age_min' in row or 'age_max' in row:
-            age = person.age_at(time)
-            
-            if 'age' in row:
+            raw = []
+        self.entries: List[Dict[str, Any]] = raw
+
+    def _load_csv(self, name: str) -> Optional[List[Dict[str, str]]]:
+        if name in self._csv_cache:
+            return self._csv_cache[name]
+        for base in self._CSV_BASES:
+            full = os.path.join(base, name)
+            if os.path.exists(full):
                 try:
-                    if age != int(row['age']):
-                        return False
-                except ValueError:
-                    pass
-            
+                    with open(full, 'r', encoding='utf-8') as f:
+                        rows = list(csv.DictReader(f))
+                    self._csv_cache[name] = rows
+                    return rows
+                except Exception as e:
+                    logger.warning("Failed to read lookup table %s: %s", full, e)
+                    break
+        self._csv_cache[name] = None
+        return None
+
+    def follow(self, person: 'Person', time: datetime) -> Optional[str]:
+        if not self.entries:
+            return None
+
+        weights: List[float] = []
+        for entry in self.entries:
+            prob = float(entry.get('default_probability', 0.0))
+            # If a CSV exists, try to find a matching row and override prob.
+            csv_name = entry.get('lookup_table_name')
+            if csv_name:
+                rows = self._load_csv(csv_name)
+                if rows:
+                    matched = self._find_matching_row(rows, person, time)
+                    if matched is not None:
+                        prob = matched
+            weights.append(prob)
+
+        total = sum(weights)
+        if total <= 0:
+            return self.entries[-1].get('transition')
+
+        rand = random.random() * total
+        cumulative = 0.0
+        for entry, w in zip(self.entries, weights):
+            cumulative += w
+            if rand < cumulative:
+                return entry.get('transition')
+        return self.entries[-1].get('transition')
+
+    def _find_matching_row(self, rows: List[Dict[str, str]],
+                           person: 'Person', time: datetime) -> Optional[float]:
+        """
+        Return the probability value from the first matching CSV row, or
+        None if no row matches or no numeric value is found.
+        """
+        age = getattr(person, 'age_at', lambda t: None)(time)
+        gender = person.attributes.get('gender', '')
+
+        for row in rows:
             if 'age_min' in row:
                 try:
-                    if age < int(row['age_min']):
-                        return False
-                except ValueError:
+                    if age is None or age < int(row['age_min']):
+                        continue
+                except (ValueError, TypeError):
                     pass
-            
             if 'age_max' in row:
                 try:
-                    if age > int(row['age_max']):
-                        return False
-                except ValueError:
+                    if age is None or age > int(row['age_max']):
+                        continue
+                except (ValueError, TypeError):
                     pass
-        
-        # Check gender if present
-        if 'gender' in row and row['gender']:
-            if row['gender'].lower() != person.attributes.get('gender', '').lower():
-                return False
-        
-        # Check other attributes
-        for key, value in row.items():
-            if key not in ['age', 'age_min', 'age_max', 'gender'] and value:
-                # Check if this is a probability column (for transitions)
-                is_prob_column = any(
-                    t.get('lookup_table_column') == key 
-                    for t in self.lookup_info.get('transitions', [])
-                )
-                
-                if not is_prob_column:
-                    # This is an attribute to match
-                    person_value = person.attributes.get(key)
-                    if str(person_value) != str(value):
-                        return False
-        
-        return True
-    
-    def _calculate_probabilities(self, rows: List[Dict[str, str]], 
-                                transitions: List[Dict[str, Any]]) -> Dict[str, float]:
-        """Calculate transition probabilities from matching rows."""
-        probabilities = {}
-        
-        for transition in transitions:
-            column = transition.get('lookup_table_column')
-            target = transition.get('transition')
-            
-            if not column or not target:
-                continue
-            
-            # Average probabilities from all matching rows
-            values = []
-            for row in rows:
-                if column in row:
-                    try:
-                        values.append(float(row[column]))
-                    except ValueError:
-                        pass
-            
-            if values:
-                probabilities[target] = sum(values) / len(values)
-            else:
-                probabilities[target] = 0.0
-        
-        # Normalize probabilities
-        total = sum(probabilities.values())
-        if total > 0:
-            for key in probabilities:
-                probabilities[key] /= total
-        
-        return probabilities
-    
-    def _select_by_probability(self, probabilities: Dict[str, float]) -> Optional[str]:
-        """Select a transition based on probabilities."""
-        if not probabilities:
-            return None
-        
-        rand = random.random()
-        cumulative = 0.0
-        
-        for target, prob in probabilities.items():
-            cumulative += prob
-            if rand < cumulative:
-                return target
-        
-        # Return last option if rounding errors occur
-        return list(probabilities.keys())[-1] if probabilities else None
+            if 'gender' in row and row['gender']:
+                if row['gender'].lower() != gender.lower():
+                    continue
+            # First numeric column that isn't a filter column is the probability.
+            for key, val in row.items():
+                if key in ('age_min', 'age_max', 'gender', 'age'):
+                    continue
+                try:
+                    return float(val)
+                except (ValueError, TypeError):
+                    continue
+        return None
