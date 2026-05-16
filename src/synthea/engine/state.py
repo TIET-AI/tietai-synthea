@@ -297,7 +297,11 @@ class CounterState(State):
         action = self.definition.get('action', 'increment')
         
         if attribute:
-            current = person.attributes.get(attribute, 0)
+            raw = person.attributes.get(attribute, 0)
+            try:
+                current = int(raw)
+            except (TypeError, ValueError, OverflowError):
+                current = 0
             if action == 'increment':
                 person.attributes[attribute] = current + 1
             elif action == 'decrement':
@@ -331,15 +335,29 @@ class EncounterState(State):
 
 class EncounterEndState(State):
     """A state that ends a healthcare encounter."""
-    
+
     def run(self, person: 'Person', time: datetime) -> bool:
-        """End the current encounter."""
+        """End the current encounter and yield to the next time step.
+
+        Returning False (yield) prevents modules that loop back to an Encounter
+        state immediately after EncounterEnd from cycling indefinitely within a
+        single time step — matching the Java Synthea engine's behaviour where
+        ending an encounter naturally breaks the within-step loop.
+        """
+        end_key = f'{self.module.name}.{self.name}_ended_at'
+        last_ended = person.attributes.get(end_key)
+
+        if last_ended == time:
+            # Already ended this encounter at this time step; yield again.
+            return False
+
         if hasattr(person, 'record') and 'current_encounter' in person.attributes:
             encounter = person.attributes['current_encounter']
             person.record.encounter_end(encounter, time)
             del person.attributes['current_encounter']
-        
-        return True
+
+        person.attributes[end_key] = time
+        return False
 
 
 class ConditionOnsetState(State):

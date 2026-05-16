@@ -138,19 +138,25 @@ class Logic:
         """Test a date condition."""
         operator_str = condition.get('operator', '==')
         
-        # Parse the date
-        date_str = condition.get('date')
-        if not date_str:
+        # Parse the date — 'date' may be an ISO string, a dict of {year,month,day},
+        # or absent (year/month/day as top-level keys).
+        date_val = condition.get('date')
+        if isinstance(date_val, dict):
+            year = date_val.get('year', condition.get('year'))
+            month = date_val.get('month', condition.get('month', 1))
+            day = date_val.get('day', condition.get('day', 1))
+            if not year:
+                return False
+            target_date = datetime(int(year), int(month), int(day))
+        elif isinstance(date_val, str):
+            target_date = datetime.fromisoformat(date_val.replace('Z', '+00:00'))
+        else:
             year = condition.get('year')
             month = condition.get('month', 1)
             day = condition.get('day', 1)
-            if year:
-                target_date = datetime(year, month, day)
-            else:
+            if not year:
                 return False
-        else:
-            # Parse ISO date string
-            target_date = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+            target_date = datetime(int(year), int(month), int(day))
         
         return Logic._compare_dates(time, operator_str, target_date)
     
