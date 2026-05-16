@@ -156,7 +156,7 @@ Examples:
 ## Project Structure
 
 ```
-tietai-symthea/
+tietai-synthea/
 ├── pyproject.toml        # UV-compatible project configuration
 ├── README.md            # This file
 ├── src/synthea/
@@ -580,6 +580,6 @@ This is a Python port of the original [Synthea](https://github.com/syntheticheal
 
 ## Support
 
-- Issues: [GitHub Issues](https://github.com/TIET-AI/tietai-symthea/issues)
-- Discussions: [GitHub Discussions](https://github.com/TIET-AI/tietai-symthea/discussions)
-- Documentation: [Wiki](https://github.com/TIET-AI/tietai-symthea/wiki)
+- Issues: [GitHub Issues](https://github.com/TIET-AI/tietai-synthea/issues)
+- Discussions: [GitHub Discussions](https://github.com/TIET-AI/tietai-synthea/discussions)
+- Documentation: [Wiki](https://github.com/TIET-AI/tietai-synthea/wiki)
