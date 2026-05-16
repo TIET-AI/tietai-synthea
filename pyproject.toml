@@ -57,7 +57,6 @@ dev = [
 ]
 
 physiology = [
-    "sbml2python>=0.2.0; sys_platform != 'win32'",
     "sympy>=1.9",
 ]
 
@@ -89,11 +88,6 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-
-[tool.uv]
-environments = [
-    "sys_platform != 'win32'",
-]
 
 [tool.mypy]
 python_version = "3.9"
