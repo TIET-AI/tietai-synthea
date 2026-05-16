@@ -10,8 +10,21 @@ from datetime import datetime, timedelta
 import operator
 import re
 
+from synthea.world.health_record import Code
+
 if TYPE_CHECKING:
     from synthea.world.person import Person
+
+
+def _to_code(raw: Any) -> Code:
+    """Convert a raw code dict (from JSON) to a Code instance, or pass through if already a Code."""
+    if isinstance(raw, Code):
+        return raw
+    return Code(
+        system=raw.get('system', ''),
+        code=raw.get('code', ''),
+        display=raw.get('display', ''),
+    )
 
 
 class Logic:
@@ -179,7 +192,7 @@ class Logic:
         if not codes:
             return False
         
-        observation = person.record.get_latest_observation(codes[0])
+        observation = person.record.get_latest_observation(_to_code(codes[0]))
         if not observation:
             return False
         
@@ -218,7 +231,7 @@ class Logic:
         if not codes:
             return False
         
-        return person.record.has_active_condition(codes[0])
+        return person.record.has_active_condition(_to_code(codes[0]))
     
     @staticmethod
     def _test_active_medication(condition: Dict[str, Any], person: 'Person') -> bool:
@@ -230,7 +243,7 @@ class Logic:
         if not codes:
             return False
         
-        return person.record.has_active_medication(codes[0])
+        return person.record.has_active_medication(_to_code(codes[0]))
     
     @staticmethod
     def _test_active_careplan(condition: Dict[str, Any], person: 'Person') -> bool:
@@ -242,7 +255,7 @@ class Logic:
         if not codes:
             return False
         
-        return person.record.has_active_careplan(codes[0])
+        return person.record.has_active_careplan(_to_code(codes[0]))
     
     @staticmethod
     def _test_prior_state(condition: Dict[str, Any], person: 'Person') -> bool:
