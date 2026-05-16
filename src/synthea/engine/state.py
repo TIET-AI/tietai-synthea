@@ -297,7 +297,11 @@ class CounterState(State):
         action = self.definition.get('action', 'increment')
         
         if attribute:
-            current = person.attributes.get(attribute, 0)
+            raw = person.attributes.get(attribute, 0)
+            try:
+                current = int(raw)
+            except (TypeError, ValueError):
+                current = 0
             if action == 'increment':
                 person.attributes[attribute] = current + 1
             elif action == 'decrement':
