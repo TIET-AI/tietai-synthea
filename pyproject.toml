@@ -90,6 +90,11 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 
+[tool.uv]
+environments = [
+    "sys_platform != 'win32'",
+]
+
 [tool.mypy]
 python_version = "3.9"
 warn_return_any = true
