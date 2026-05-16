@@ -303,7 +303,7 @@ class LookupTableTransition(Transition):
         if not isinstance(raw, list):
             logger.warning(
                 "lookup_table_transition expected a list but got %s; "
-                "transition will fall back to first entry",
+                "transition will be skipped",
                 type(raw).__name__,
             )
             raw = []
@@ -333,12 +333,13 @@ class LookupTableTransition(Transition):
         weights: List[float] = []
         for entry in self.entries:
             prob = float(entry.get('default_probability', 0.0))
-            # If a CSV exists, try to find a matching row and override prob.
+            # If a CSV exists, look up this entry's own probability column.
             csv_name = entry.get('lookup_table_name')
             if csv_name:
                 rows = self._load_csv(csv_name)
                 if rows:
-                    matched = self._find_matching_row(rows, person, time)
+                    target = entry.get('transition', '')
+                    matched = self._find_matching_row(rows, person, time, target)
                     if matched is not None:
                         prob = matched
             weights.append(prob)
@@ -356,11 +357,16 @@ class LookupTableTransition(Transition):
         return self.entries[-1].get('transition')
 
     def _find_matching_row(self, rows: List[Dict[str, str]],
-                           person: 'Person', time: datetime) -> Optional[float]:
+                           person: 'Person', time: datetime,
+                           transition_name: str = '') -> Optional[float]:
         """
-        Return the probability value from the first matching CSV row, or
-        None if no row matches or no numeric value is found.
+        Return this transition's probability from the first matching CSV row.
+
+        The CSV column for a transition is expected to be named after the
+        target state (``transition_name``). If that column is absent the
+        first numeric non-filter column is used as a fallback.
         """
+        _FILTER_COLS = frozenset({'age_min', 'age_max', 'age', 'gender'})
         age = getattr(person, 'age_at', lambda t: None)(time)
         gender = person.attributes.get('gender', '')
 
@@ -380,9 +386,15 @@ class LookupTableTransition(Transition):
             if 'gender' in row and row['gender']:
                 if row['gender'].lower() != gender.lower():
                     continue
-            # First numeric column that isn't a filter column is the probability.
+            # Prefer the column named after the transition target.
+            if transition_name and transition_name in row:
+                try:
+                    return float(row[transition_name])
+                except (ValueError, TypeError):
+                    pass
+            # Fall back to the first numeric non-filter column.
             for key, val in row.items():
-                if key in ('age_min', 'age_max', 'gender', 'age'):
+                if key in _FILTER_COLS:
                     continue
                 try:
                     return float(val)
