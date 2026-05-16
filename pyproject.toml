@@ -7,7 +7,7 @@ name = "synthea"
 version = "3.0.0"
 description = "Synthetic Patient Population Simulator"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9,<3.14"
 license = {text = "Apache-2.0"}
 authors = [
     {name = "Synthea Contributors"},
@@ -17,10 +17,11 @@ classifiers = [
     "Intended Audience :: Healthcare Industry",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
 ]
 
@@ -56,7 +57,7 @@ dev = [
 ]
 
 physiology = [
-    "sbml2python>=0.2.0",
+    "sbml2python>=0.2.0; sys_platform != 'win32'",
     "sympy>=1.9",
 ]
 
@@ -81,7 +82,7 @@ where = ["src"]
 
 [tool.black]
 line-length = 100
-target-version = ['py38']
+target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -90,7 +91,7 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
