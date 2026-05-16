@@ -300,7 +300,7 @@ class CounterState(State):
             raw = person.attributes.get(attribute, 0)
             try:
                 current = int(raw)
-            except (TypeError, ValueError):
+            except (TypeError, ValueError, OverflowError):
                 current = 0
             if action == 'increment':
                 person.attributes[attribute] = current + 1

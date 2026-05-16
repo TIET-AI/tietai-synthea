@@ -118,6 +118,28 @@ class TestStates:
         dec_state.run(person, datetime.now())
         assert person.attributes['counter'] == 1
     
+    def test_counter_state_none_attribute(self):
+        """Counter state must not crash when the attribute is None or non-numeric."""
+        module = Module('test')
+        inc_def = {'type': 'Counter', 'attribute': 'counter', 'action': 'increment'}
+        dec_def = {'type': 'Counter', 'attribute': 'counter', 'action': 'decrement'}
+        person = Person()
+
+        # Attribute explicitly set to None
+        person.attributes['counter'] = None
+        CounterState(module, 'inc', inc_def).run(person, datetime.now())
+        assert person.attributes['counter'] == 1
+
+        # Attribute set to a string
+        person.attributes['counter'] = 'not_a_number'
+        CounterState(module, 'inc', inc_def).run(person, datetime.now())
+        assert person.attributes['counter'] == 1
+
+        # Attribute set to float('inf') — int() raises OverflowError
+        person.attributes['counter'] = float('inf')
+        CounterState(module, 'dec', dec_def).run(person, datetime.now())
+        assert person.attributes['counter'] == -1
+
     def test_guard_state(self):
         """Test Guard state."""
         module = Module('test')
