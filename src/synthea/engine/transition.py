@@ -88,33 +88,54 @@ class DirectTransition(Transition):
 
 class DistributedTransition(Transition):
     """A transition that randomly selects from weighted options."""
-    
+
     def __init__(self, definition: Dict[str, Any]):
         super().__init__(definition)
         self.transitions = definition.get('distributed_transition', [])
         self._validate_distribution()
-    
+
+    @staticmethod
+    def _resolve_distribution(dist_value: Any, person: 'Person') -> float:
+        """Resolve a distribution value, which may be a float or an attribute reference dict."""
+        if isinstance(dist_value, dict):
+            attr = dist_value.get('attribute')
+            default = dist_value.get('default', 0.0)
+            if attr and person is not None:
+                val = person.attributes.get(attr, default)
+                try:
+                    return float(val)
+                except (TypeError, ValueError):
+                    return float(default)
+            return float(default)
+        try:
+            return float(dist_value)
+        except (TypeError, ValueError):
+            return 0.0
+
     def _validate_distribution(self):
-        """Validate that the distribution sums to 1.0."""
-        total = sum(t.get('distribution', 0) for t in self.transitions)
-        if abs(total - 1.0) > 0.001:
-            # Normalize if not exactly 1.0
+        """Validate that fixed distributions sum to 1.0; normalize if needed."""
+        # Skip normalization if any distribution is attribute-based (resolved at runtime)
+        if any(isinstance(t.get('distribution'), dict) for t in self.transitions):
+            return
+        total = sum(self._resolve_distribution(t.get('distribution', 0), None)
+                    for t in self.transitions)
+        if total > 0 and abs(total - 1.0) > 0.001:
             for t in self.transitions:
-                t['distribution'] = t.get('distribution', 0) / total
-    
+                t['distribution'] = self._resolve_distribution(t.get('distribution', 0), None) / total
+
     def follow(self, person: 'Person', time: datetime) -> Optional[str]:
         """Select a transition based on the probability distribution."""
         if not self.transitions:
             return None
-        
+
         rand = random.random()
         cumulative = 0.0
-        
+
         for transition in self.transitions:
-            cumulative += transition.get('distribution', 0)
+            cumulative += self._resolve_distribution(transition.get('distribution', 0), person)
             if rand < cumulative:
                 return transition.get('transition')
-        
+
         # Fallback to last transition if rounding errors occur
         return self.transitions[-1].get('transition') if self.transitions else None
 
@@ -183,68 +204,65 @@ class ComplexTransition(Transition):
             # No distributions - use first matching transition
             return self._resolve_transition(matching[0], person, time)
     
-    def _resolve_transition(self, transition: Dict[str, Any], person: 'Person', 
+    def _resolve_transition(self, transition: Dict[str, Any], person: 'Person',
                           time: datetime) -> Optional[str]:
         """Resolve a single transition which may itself be distributed."""
         if 'distributions' in transition:
-            return self._select_from_distributions(transition['distributions'])
+            return self._select_from_distributions(transition['distributions'], person)
         else:
             return transition.get('transition')
-    
-    def _select_distributed(self, transitions: List[Dict[str, Any]], 
+
+    def _select_distributed(self, transitions: List[Dict[str, Any]],
                           person: 'Person', time: datetime) -> Optional[str]:
         """Select from multiple transitions with distributions."""
-        # Normalize distributions across all matching transitions
         all_options = []
         for trans in transitions:
             if 'distributions' in trans:
                 for dist in trans['distributions']:
                     all_options.append({
                         'transition': dist.get('transition'),
-                        'distribution': dist.get('distribution', 0)
+                        'distribution': DistributedTransition._resolve_distribution(
+                            dist.get('distribution', 0), person),
                     })
             else:
-                # Transition without distribution gets equal weight
                 all_options.append({
                     'transition': trans.get('transition'),
-                    'distribution': 1.0 / len(transitions)
+                    'distribution': 1.0 / len(transitions),
                 })
-        
-        # Normalize probabilities
+
         total = sum(opt['distribution'] for opt in all_options)
         if total > 0:
             for opt in all_options:
                 opt['distribution'] /= total
-        
-        # Select based on distribution
+
         rand = random.random()
         cumulative = 0.0
-        
         for option in all_options:
             cumulative += option['distribution']
             if rand < cumulative:
                 return option['transition']
-        
+
         return all_options[-1]['transition'] if all_options else None
     
-    def _select_from_distributions(self, distributions: List[Dict[str, Any]]) -> Optional[str]:
+    def _select_from_distributions(self, distributions: List[Dict[str, Any]],
+                                   person: 'Person' = None) -> Optional[str]:
         """Select from a list of distributions."""
         if not distributions:
             return None
-        
-        # Normalize probabilities
-        total = sum(d.get('distribution', 0) for d in distributions)
+
+        resolved = [DistributedTransition._resolve_distribution(d.get('distribution', 0), person)
+                    for d in distributions]
+        total = sum(resolved)
         if total == 0:
             return distributions[0].get('transition') if distributions else None
-        
+
         rand = random.random()
         cumulative = 0.0
-        
-        for dist in distributions:
-            cumulative += dist.get('distribution', 0) / total
+        for dist, prob in zip(distributions, resolved):
+            cumulative += prob / total
             if rand < cumulative:
                 return dist.get('transition')
-        
+
         return distributions[-1].get('transition') if distributions else None
 
 
