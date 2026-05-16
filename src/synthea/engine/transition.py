@@ -95,7 +95,7 @@ class DistributedTransition(Transition):
         self._validate_distribution()
 
     @staticmethod
-    def _resolve_distribution(dist_value: Any, person: 'Person') -> float:
+    def _resolve_distribution(dist_value: Any, person: Optional['Person']) -> float:
         """Resolve a distribution value, which may be a float or an attribute reference dict."""
         if isinstance(dist_value, dict):
             attr = dist_value.get('attribute')
@@ -113,8 +113,7 @@ class DistributedTransition(Transition):
             return 0.0
 
     def _validate_distribution(self):
-        """Validate that fixed distributions sum to 1.0; normalize if needed."""
-        # Skip normalization if any distribution is attribute-based (resolved at runtime)
+        """Normalize fixed distributions to sum to 1.0; skip when any entry is attribute-based."""
         if any(isinstance(t.get('distribution'), dict) for t in self.transitions):
             return
         total = sum(self._resolve_distribution(t.get('distribution', 0), None)
@@ -128,16 +127,22 @@ class DistributedTransition(Transition):
         if not self.transitions:
             return None
 
-        rand = random.random()
-        cumulative = 0.0
+        # Resolve all weights for this person, then normalize before selecting so that
+        # attribute-based weights (which bypass static normalization) are handled correctly.
+        weights = [self._resolve_distribution(t.get('distribution', 0), person)
+                   for t in self.transitions]
+        total = sum(weights)
+        if total <= 0:
+            return self.transitions[-1].get('transition')
 
-        for transition in self.transitions:
-            cumulative += self._resolve_distribution(transition.get('distribution', 0), person)
+        rand = random.random() * total
+        cumulative = 0.0
+        for transition, weight in zip(self.transitions, weights):
+            cumulative += weight
             if rand < cumulative:
                 return transition.get('transition')
 
-        # Fallback to last transition if rounding errors occur
-        return self.transitions[-1].get('transition') if self.transitions else None
+        return self.transitions[-1].get('transition')
 
 
 class ConditionalTransition(Transition):
@@ -245,7 +250,7 @@ class ComplexTransition(Transition):
         return all_options[-1]['transition'] if all_options else None
     
     def _select_from_distributions(self, distributions: List[Dict[str, Any]],
-                                   person: 'Person' = None) -> Optional[str]:
+                                   person: Optional['Person'] = None) -> Optional[str]:
         """Select from a list of distributions."""
         if not distributions:
             return None
