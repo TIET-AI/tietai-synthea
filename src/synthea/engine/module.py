@@ -178,13 +178,15 @@ class Module:
         module_path = Path(path)
         
         if not module_path.exists():
-            # Try alternative paths
+            # Try alternative paths, including relative to this package file
+            _pkg_root = Path(__file__).parent.parent.parent.parent  # src/synthea/engine/module.py → project root
             alternatives = [
+                _pkg_root / 'resources' / 'modules',
                 Path('src/main/resources/modules'),
                 Path('../src/main/resources/modules'),
                 Path('modules'),
             ]
-            
+
             for alt in alternatives:
                 if alt.exists():
                     module_path = alt
