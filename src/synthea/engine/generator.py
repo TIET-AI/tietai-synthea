@@ -132,12 +132,9 @@ class Generator:
         
         # Initialize providers
         self._init_providers()
-        
+
         # Initialize payers
         self._init_payers()
-        
-        # Initialize exporter
-        self._init_exporter()
     
     def _init_location(self):
         """Initialize location data."""
@@ -208,6 +205,7 @@ class Generator:
     
     def run(self):
         """Run the generator to create the specified population."""
+        self._init_exporter()
         print(f"Generating {self.options.population_size} patients...")
         
         start_time = time_module.time()
@@ -306,23 +304,29 @@ class Generator:
                 person.attributes['gender'] = self.options.gender.upper()
             else:
                 person.attributes['gender'] = self.demographics.random_gender(person.random)
-            
+
+            # Set name
+            gender = person.attributes['gender']
+            first, last = self.demographics.random_name(gender, person.random)
+            person.attributes['first_name'] = first
+            person.attributes['last_name'] = last
+
             # Set race/ethnicity
             person.attributes['race'] = self.demographics.random_race(person.random)
             person.attributes['ethnicity'] = self.demographics.random_ethnicity(
-                person.attributes['race'], 
+                person.attributes['race'],
                 person.random
             )
-            
+
             # Set birth date
             if self.options.min_age == self.options.max_age:
                 age = self.options.min_age
             else:
                 age = person.random.randint(self.options.min_age, self.options.max_age)
-            
+
             birth_date = self.options.reference_date - timedelta(days=age * 365.25)
             person.attributes['birth_date'] = birth_date
-            
+
             # Set socioeconomic status
             person.attributes['socioeconomic_status'] = self.demographics.random_ses(person.random)
     
