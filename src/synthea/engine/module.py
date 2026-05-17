@@ -332,7 +332,9 @@ class Module:
                         if 'transition' in d:
                             targets.add(d['transition'])
         elif 'lookup_table_transition' in definition:
-            for t in definition['lookup_table_transition'].get('transitions', []):
+            ltt = definition['lookup_table_transition']
+            entries = ltt if isinstance(ltt, list) else ltt.get('transitions', [])
+            for t in entries:
                 if 'transition' in t:
                     targets.add(t['transition'])
         
