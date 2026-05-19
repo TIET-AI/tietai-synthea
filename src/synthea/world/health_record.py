@@ -498,6 +498,75 @@ class HealthRecord:
         """
         careplan.end_time = time
     
+    def device_start(self, time: datetime, code: Optional[Code] = None) -> Device:
+        """
+        Record a new device.
+
+        Args:
+            time: Start time
+            code: Device code
+
+        Returns:
+            The new device
+        """
+        device = Device(time=time)
+        if code:
+            device.codes = [code]
+
+        device.encounter = self.current_encounter
+
+        self.devices.append(device)
+
+        if self.current_encounter:
+            self.current_encounter.devices.append(device)
+
+        return device
+
+    def device_end(self, device: Device, time: datetime):
+        """
+        End a device.
+
+        Args:
+            device: The device to end
+            time: End time
+        """
+        device.end_time = time
+
+    def supply_list(self, time: datetime, supplies: List[Dict[str, Any]]) -> List[Supply]:
+        """
+        Record supplies.
+
+        Args:
+            time: Time of supply use
+            supplies: List of supply definitions with code and quantity
+
+        Returns:
+            The new supply entries
+        """
+        result = []
+        for supply_def in supplies:
+            supply = Supply(time=time)
+            code_data = supply_def.get('code')
+            if code_data and isinstance(code_data, dict):
+                supply.codes = [Code(
+                    system=code_data.get('system', ''),
+                    code=code_data.get('code', ''),
+                    display=code_data.get('display', ''),
+                )]
+            elif code_data and isinstance(code_data, Code):
+                supply.codes = [code_data]
+            supply.quantity = supply_def.get('quantity', 1)
+            supply.encounter = self.current_encounter
+
+            self.supplies.append(supply)
+
+            if self.current_encounter:
+                self.current_encounter.supplies.append(supply)
+
+            result.append(supply)
+
+        return result
+
     def death(self, time: datetime, cause: Optional[Code] = None):
         """
         Record death.

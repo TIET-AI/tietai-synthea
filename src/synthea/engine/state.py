@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from synthea.world.person import Person
     from synthea.engine.module import Module
 
-from synthea.world.health_record import Code
+from synthea.world.health_record import Code, Report
 
 
 def _parse_codes(raw: list) -> list:
@@ -160,13 +160,23 @@ class State(ABC):
             StateType.ENCOUNTER_END: EncounterEndState,
             StateType.CONDITION_ONSET: ConditionOnsetState,
             StateType.CONDITION_END: ConditionEndState,
+            StateType.ALLERGY_ONSET: AllergyOnsetState,
+            StateType.ALLERGY_END: AllergyEndState,
             StateType.MEDICATION_ORDER: MedicationOrderState,
             StateType.MEDICATION_END: MedicationEndState,
+            StateType.CAREPLAN_START: CarePlanStartState,
+            StateType.CAREPLAN_END: CarePlanEndState,
             StateType.PROCEDURE: ProcedureState,
             StateType.VITAL_SIGN: VitalSignState,
             StateType.OBSERVATION: ObservationState,
+            StateType.MULTI_OBSERVATION: MultiObservationState,
+            StateType.DIAGNOSTIC_REPORT: DiagnosticReportState,
             StateType.SYMPTOM: SymptomState,
             StateType.DEATH: DeathState,
+            StateType.CALL_SUBMODULE: CallSubmoduleState,
+            StateType.DEVICE: DeviceState,
+            StateType.DEVICE_END: DeviceEndState,
+            StateType.SUPPLY_LIST: SupplyListState,
             StateType.VACCINE: SimpleState,
             StateType.PHYSIOLOGY: SimpleState,
         }
@@ -591,5 +601,227 @@ class DeathState(State):
         
         if 'codes' in self.definition and hasattr(person, 'record'):
             person.record.death(death_time, self.definition['codes'][0])
-        
+
+        return True
+
+
+class AllergyOnsetState(State):
+    """A state that starts an allergy."""
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        """Start an allergy."""
+        codes = self.definition.get('codes', [])
+
+        if hasattr(person, 'record'):
+            encounter = person.attributes.get('current_encounter')
+            if encounter:
+                allergy = person.record.allergy_start(time, codes[0] if codes else None)
+                allergy.name = self.name
+                allergy.codes = codes
+
+                # Store allergy reference
+                assign_to = self.definition.get('assign_to_attribute')
+                if assign_to:
+                    person.attributes[assign_to] = allergy
+
+        return True
+
+
+class AllergyEndState(State):
+    """A state that ends an allergy."""
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        """End an allergy."""
+        referenced_by = self.definition.get('referenced_by_attribute')
+        allergy_onset = self.definition.get('allergy_onset')
+
+        if hasattr(person, 'record'):
+            if referenced_by and referenced_by in person.attributes:
+                allergy = person.attributes[referenced_by]
+                person.record.allergy_end(allergy, time)
+            elif allergy_onset:
+                # Find allergy by onset state name
+                pass
+
+        return True
+
+
+class CarePlanStartState(State):
+    """A state that starts a care plan."""
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        """Start a care plan."""
+        codes = self.definition.get('codes', [])
+        reason = self.definition.get('reason')
+        activities = self.definition.get('activities', [])
+        goals = self.definition.get('goals', [])
+
+        if hasattr(person, 'record'):
+            encounter = person.attributes.get('current_encounter')
+            if encounter:
+                careplan = person.record.careplan_start(time, codes[0] if codes else None)
+                careplan.name = self.name
+                careplan.codes = codes
+                if reason:
+                    careplan.reason = reason
+                careplan.activities = [
+                    _parse_codes([a])[0] if isinstance(a, dict) else a
+                    for a in activities
+                ]
+                careplan.goals = goals
+
+                # Store careplan reference
+                assign_to = self.definition.get('assign_to_attribute')
+                if assign_to:
+                    person.attributes[assign_to] = careplan
+
+        return True
+
+
+class CarePlanEndState(State):
+    """A state that ends a care plan."""
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        """End a care plan."""
+        referenced_by = self.definition.get('referenced_by_attribute')
+        careplan_ref = self.definition.get('careplan')
+
+        if hasattr(person, 'record'):
+            if referenced_by and referenced_by in person.attributes:
+                careplan = person.attributes[referenced_by]
+                person.record.careplan_end(careplan, time)
+            elif careplan_ref:
+                # Find careplan by state name
+                pass
+
+        return True
+
+
+class _ReportStateBase(State):
+    """Shared logic for MultiObservation and DiagnosticReport states."""
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        codes = self.definition.get('codes', [])
+        obs_defs = self.definition.get('observations', [])
+
+        if hasattr(person, 'record'):
+            encounter = person.attributes.get('current_encounter')
+            if encounter:
+                report = Report(time=time)
+                report.codes = codes
+                report.name = self.name
+                report.encounter = encounter
+
+                for obs_def in obs_defs:
+                    obs_codes = _parse_codes(obs_def.get('codes', []))
+                    unit = obs_def.get('unit')
+
+                    if 'value_code' in obs_def:
+                        value = obs_def['value_code']
+                    elif 'exact' in obs_def:
+                        value = obs_def['exact'].get('quantity')
+                        unit = obs_def['exact'].get('unit', unit)
+                    else:
+                        value = None
+
+                    observation = person.record.observation(
+                        time,
+                        obs_codes[0] if obs_codes else None,
+                        value,
+                        unit,
+                        encounter
+                    )
+                    observation.codes = obs_codes
+                    report.observations.append(observation)
+
+                person.record.reports.append(report)
+                if encounter:
+                    encounter.reports.append(report)
+
+        return True
+
+
+class MultiObservationState(_ReportStateBase):
+    """A state that creates a multi-observation report (e.g. vital sign panels)."""
+    pass
+
+
+class DiagnosticReportState(_ReportStateBase):
+    """A state that creates a diagnostic report with child observations."""
+    pass
+
+
+class CallSubmoduleState(State):
+    """A state that calls a submodule."""
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        """Load and process a submodule."""
+        from synthea.engine.module import Module
+
+        submodule_name = self.definition.get('submodule')
+        if not submodule_name:
+            return True
+
+        submodule = Module.get_module(submodule_name)
+        if not submodule:
+            logger.warning("Submodule '%s' not found", submodule_name)
+            return True
+
+        submodule.process(person, time)
+        return True
+
+
+class DeviceState(State):
+    """A state that records a device."""
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        """Record a device."""
+        codes = self.definition.get('codes', [])
+
+        if hasattr(person, 'record'):
+            encounter = person.attributes.get('current_encounter')
+            if encounter:
+                device = person.record.device_start(time, codes[0] if codes else None)
+                device.name = self.name
+                device.codes = codes
+
+                # Store device reference
+                assign_to = self.definition.get('assign_to_attribute')
+                if assign_to:
+                    person.attributes[assign_to] = device
+
+        return True
+
+
+class DeviceEndState(State):
+    """A state that ends a device."""
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        """End a device."""
+        referenced_by = self.definition.get('referenced_by_attribute')
+        device_ref = self.definition.get('device')
+
+        if hasattr(person, 'record'):
+            if referenced_by and referenced_by in person.attributes:
+                device = person.attributes[referenced_by]
+                person.record.device_end(device, time)
+            elif device_ref:
+                # Find device by state name
+                pass
+
+        return True
+
+
+class SupplyListState(State):
+    """A state that records supplies."""
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        """Record supplies."""
+        supplies = self.definition.get('supplies', [])
+
+        if hasattr(person, 'record'):
+            encounter = person.attributes.get('current_encounter')
+            if encounter:
+                person.record.supply_list(time, supplies)
+
         return True
