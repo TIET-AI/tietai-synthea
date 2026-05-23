@@ -2,6 +2,8 @@
 
 A Python implementation of Synthea™, a Synthetic Patient Population Simulator that generates realistic (but not real) patient data and associated health records.
 
+For a formal description of the framework, design goals, architecture, and generation pipeline, see the accompanying paper: [PySynthea: A Python-Native Framework for Scalable Synthetic Healthcare Data Generation](paper.pdf).
+
 ## Features
 
 - **Complete Patient Lifecycle**: Simulates patients from birth to death
@@ -573,6 +575,26 @@ We welcome contributions! Please:
 ## License
 
 Apache License 2.0
+
+## How to Cite
+
+If you use this library in academic work, research prototypes, benchmarks, or published software, please cite paper: [PySynthea: A Python-Native Framework for Scalable Synthetic Healthcare Data Generation](paper.pdf).
+:
+
+Cruz, R., & Rey-Blanco, D. (2026). *PySynthea: A Python-Native Framework for Scalable Synthetic Healthcare Data Generation*. TietAI. 2026-05-21.
+
+BibTeX:
+
+```bibtex
+@misc{cruz2026pysynthea,
+  title = {PySynthea: A Python-Native Framework for Scalable Synthetic Healthcare Data Generation},
+  author = {Cruz, Roberto and Rey-Blanco, David},
+  year = {2026},
+  month = may,
+  note = {Technical report, TietAI},
+  url = {https://github.com/TIET-AI/tietai-synthea}
+}
+```
 
 ## Acknowledgments
 
