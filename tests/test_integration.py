@@ -143,7 +143,7 @@ class TestIntegration:
             json.dump(module_def, f)
         
         # Load module
-        Module._load_json_module(module_file)
+        Module._load_json_module(module_file, temp_dir)
         module = Module.get_module("test_module")
         
         assert module is not None
@@ -157,6 +157,142 @@ class TestIntegration:
         assert result is True
         assert person.attributes.get('test_value') == 'success'
     
+    def test_submodule_path_resolution(self, temp_dir):
+        """Test that modules in subdirectories are reachable by relative path."""
+        Module.clear_cache()
+
+        sub_dir = temp_dir / "sub"
+        sub_dir.mkdir()
+        sub_def = {
+            "name": "My Submodule",
+            "states": {
+                "Initial": {
+                    "type": "Initial",
+                    "direct_transition": "Set_Marker"
+                },
+                "Set_Marker": {
+                    "type": "SetAttribute",
+                    "attribute": "sub_ran",
+                    "value": True,
+                    "direct_transition": "Terminal"
+                },
+                "Terminal": {"type": "Terminal"}
+            }
+        }
+        sub_file = sub_dir / "my_sub.json"
+        with open(sub_file, 'w') as f:
+            json.dump(sub_def, f)
+
+        Module._load_json_module(sub_file, temp_dir)
+
+        # Reachable by JSON name
+        assert Module.get_module("My Submodule") is not None
+        Module.clear_cache()
+        Module._load_json_module(sub_file, temp_dir)
+
+        # Reachable by relative path (what CallSubmodule uses)
+        assert Module.get_module("sub/my_sub") is not None
+
+    def test_duplicate_module_names(self, temp_dir):
+        """Test that modules with the same JSON name in different directories
+        get unique identities and don't overwrite each other's state tracking."""
+        Module.clear_cache()
+
+        # Use a unique JSON name to avoid interference from real modules
+        dir_a = temp_dir / "group_a"
+        dir_a.mkdir()
+        dir_b = temp_dir / "group_b"
+        dir_b.mkdir()
+
+        mod_a = {
+            "name": "test_dup",
+            "states": {
+                "Initial": {
+                    "type": "Initial",
+                    "direct_transition": "Step_A",
+                },
+                "Step_A": {
+                    "type": "SetAttribute",
+                    "attribute": "which",
+                    "value": "A",
+                    "direct_transition": "Terminal",
+                },
+                "Terminal": {"type": "Terminal"},
+            },
+        }
+        mod_b = {
+            "name": "test_dup",
+            "states": {
+                "Initial": {
+                    "type": "Initial",
+                    "direct_transition": "Step_B",
+                },
+                "Step_B": {
+                    "type": "SetAttribute",
+                    "attribute": "which",
+                    "value": "B",
+                    "direct_transition": "Terminal",
+                },
+                "Terminal": {"type": "Terminal"},
+            },
+        }
+
+        with open(dir_a / "dup.json", 'w') as f:
+            json.dump(mod_a, f)
+        with open(dir_b / "dup.json", 'w') as f:
+            json.dump(mod_b, f)
+
+        Module._load_json_module(dir_a / "dup.json", temp_dir)
+        Module._load_json_module(dir_b / "dup.json", temp_dir)
+
+        # Both reachable by path
+        a = Module.get_module("group_a/dup")
+        b = Module.get_module("group_b/dup")
+        assert a is not None
+        assert b is not None
+
+        # Unique path-based names prevent state tracking collisions
+        assert a.name == "group_a/dup"
+        assert b.name == "group_b/dup"
+
+        # JSON name alias goes to whichever loaded first (not overwritten)
+        alias = Module.get_module("test_dup")
+        assert alias is not None
+        assert alias.name == "group_a/dup"
+
+    def test_get_all_modules_excludes_submodules(self, temp_dir):
+        """get_all_modules returns only top-level modules, not submodules."""
+        Module.clear_cache()
+
+        sub = temp_dir / "sub"
+        sub.mkdir()
+        for name in ["alpha", "beta"]:
+            mod = {
+                "name": name,
+                "states": {
+                    "Initial": {"type": "Initial", "direct_transition": "Terminal"},
+                    "Terminal": {"type": "Terminal"},
+                },
+            }
+            with open(sub / f"{name}.json", "w") as f:
+                json.dump(mod, f)
+            with open(temp_dir / f"{name}.json", "w") as f:
+                json.dump(mod, f)
+
+        Module._load_json_modules(str(temp_dir))
+        all_mods = Module.get_all_modules()
+
+        # Only top-level modules (no '/' in key) — submodules run via CallSubmodule
+        assert "alpha" in all_mods
+        assert "beta" in all_mods
+        assert "sub/alpha" not in all_mods
+        assert "sub/beta" not in all_mods
+        assert all_mods == sorted(all_mods)
+
+        # But submodules are still reachable by path via get_module
+        assert Module.get_module("sub/alpha") is not None
+        assert Module.get_module("sub/beta") is not None
+
     def test_config_loading_and_override(self, temp_dir):
         """Test configuration loading and override."""
         # Create config file

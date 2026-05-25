@@ -31,6 +31,7 @@ class Module:
     # Class-level registry of loaded modules
     _modules: Dict[str, 'Module'] = {}
     _module_suppliers: Dict[str, Any] = {}
+    _primary_keys: Set[str] = set()
     
     def __init__(self, name: str):
         """
@@ -167,6 +168,7 @@ class Module:
                         obj != Module):
                         # Create a supplier function for lazy loading
                         cls._module_suppliers[module_name] = lambda m=obj: m()
+                        cls._primary_keys.add(module_name)
                         break
             except ImportError:
                 # Core module not implemented yet
@@ -197,24 +199,36 @@ class Module:
         # Recursively find all .json files
         for json_file in module_path.rglob('*.json'):
             try:
-                cls._load_json_module(json_file)
+                cls._load_json_module(json_file, module_path)
             except Exception as e:
                 print(f"Error loading module {json_file}: {e}")
-    
+
     @classmethod
-    def _load_json_module(cls, filepath: Path):
+    def _load_json_module(cls, filepath: Path, base_path: Path):
         """Load a single JSON module."""
         with open(filepath, 'r', encoding='utf-8') as f:
             definition = json.load(f)
-        
-        # Get module name from the JSON or filename
-        module_name = definition.get('name', filepath.stem)
-        
-        # Create supplier function that creates module from JSON
+
+        json_name = definition.get('name', filepath.stem)
+
+        # Use relative path as the canonical module identity, matching Java
+        # Synthea. This ensures unique state-tracking keys even when multiple
+        # modules share the same JSON name (e.g. heart/cabg/operation and
+        # heart/tavr/operation are both named "operation").
+        relative_path = str(filepath.relative_to(base_path).with_suffix(''))
+        path_key = relative_path.replace(os.sep, '/')
+
         def create_module():
-            return cls._create_from_json(module_name, definition)
-        
-        cls._module_suppliers[module_name] = create_module
+            return cls._create_from_json(path_key, definition)
+
+        # Register by path (primary key, used by CallSubmodule and generator)
+        cls._module_suppliers[path_key] = create_module
+        cls._primary_keys.add(path_key)
+
+        # Also register by JSON name as an alias for convenience, but only
+        # if no other module has already claimed that name
+        if json_name not in cls._module_suppliers:
+            cls._module_suppliers[json_name] = create_module
     
     @classmethod
     def _create_from_json(cls, name: str, definition: Dict[str, Any]) -> 'Module':
@@ -264,13 +278,20 @@ class Module:
     
     @classmethod
     def get_all_modules(cls) -> List[str]:
-        """Get list of all available module names."""
-        return list(cls._module_suppliers.keys())
+        """Get list of top-level module names (excludes submodules in subdirectories).
+
+        Submodules (paths containing '/') are only executed when called via
+        CallSubmodule states, not on every generator timestep. This matches
+        the Java Synthea behaviour.
+        """
+        return sorted(k for k in cls._primary_keys if '/' not in k)
     
     @classmethod
     def clear_cache(cls):
         """Clear the module cache."""
         cls._modules.clear()
+        cls._module_suppliers.clear()
+        cls._primary_keys.clear()
     
     def validate(self) -> List[str]:
         """
