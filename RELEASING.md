@@ -21,7 +21,7 @@ flow:
    |-------|-------|
    | PyPI Project Name | `py-synthea` |
    | Owner | `TIET-AI` |
-   | Repository name | `tietai-symthea` |
+   | Repository name | `tietai-synthea` |
    | Workflow name | `publish.yml` |
    | Environment name | `pypi` |
 3. Click **Add**. PyPI will now trust releases published by this repo's

@@ -70,10 +70,10 @@ visualization = [
 synthea = "synthea.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/TIET-AI/tietai-symthea"
-Repository = "https://github.com/TIET-AI/tietai-symthea"
-Documentation = "https://github.com/TIET-AI/tietai-symthea#readme"
-"Bug Tracker" = "https://github.com/TIET-AI/tietai-symthea/issues"
+Homepage = "https://github.com/TIET-AI/tietai-synthea"
+Repository = "https://github.com/TIET-AI/tietai-synthea"
+Documentation = "https://github.com/TIET-AI/tietai-synthea#readme"
+"Bug Tracker" = "https://github.com/TIET-AI/tietai-synthea/issues"
 "Upstream Synthea" = "https://github.com/synthetichealth/synthea"
 
 [tool.setuptools]

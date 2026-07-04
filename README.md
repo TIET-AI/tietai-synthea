@@ -58,8 +58,8 @@ pip install uv
 
 ```bash
 # Clone the repository
-git clone https://github.com/TIET-AI/tietai-symthea.git
-cd tietai-symthea
+git clone https://github.com/TIET-AI/tietai-synthea.git
+cd tietai-synthea
 
 # Create virtual environment and install dependencies with UV
 uv venv
