@@ -1,0 +1,313 @@
+{
+  "name": "Parkinson's Disease",
+  "remarks": [
+    "Idiopathic Parkinson disease. Onset predominantly after age 50, rising with age,",
+    "slight male predominance. Levodopa is first-line symptomatic therapy."
+  ],
+  "states": {
+    "Onset_Age_50_60": {
+      "type": "Delay",
+      "range": {
+        "low": 50,
+        "high": 60,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_60_70": {
+      "type": "Delay",
+      "range": {
+        "low": 60,
+        "high": 70,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_70_80": {
+      "type": "Delay",
+      "range": {
+        "low": 70,
+        "high": 80,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_80_90": {
+      "type": "Delay",
+      "range": {
+        "low": 80,
+        "high": 90,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.004,
+          "transition": "Onset_Age_50_60"
+        },
+        {
+          "distribution": 0.01,
+          "transition": "Onset_Age_60_70"
+        },
+        {
+          "distribution": 0.018,
+          "transition": "Onset_Age_70_80"
+        },
+        {
+          "distribution": 0.02,
+          "transition": "Onset_Age_80_90"
+        },
+        {
+          "distribution": 0.948,
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Onset_Entry": {
+      "type": "Simple",
+      "direct_transition": "Diagnosis_Encounter"
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "parkinsons",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Condition_Onset"
+    },
+    "Condition_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "parkinsons",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "49049000",
+          "display": "Parkinson's disease (disorder)"
+        }
+      ],
+      "direct_transition": "Symptom_0"
+    },
+    "Symptom_0": {
+      "type": "Symptom",
+      "symptom": "Tremor",
+      "cause": "Parkinson's disease (disorder)",
+      "range": {
+        "low": 40,
+        "high": 80
+      },
+      "direct_transition": "Symptom_1"
+    },
+    "Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Bradykinesia",
+      "cause": "Parkinson's disease (disorder)",
+      "range": {
+        "low": 40,
+        "high": 80
+      },
+      "direct_transition": "Symptom_2"
+    },
+    "Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Muscle rigidity",
+      "cause": "Parkinson's disease (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Symptom_3"
+    },
+    "Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Postural instability",
+      "cause": "Parkinson's disease (disorder)",
+      "range": {
+        "low": 20,
+        "high": 60
+      },
+      "direct_transition": "Workup_0"
+    },
+    "Workup_0": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "698354004",
+          "display": "Magnetic resonance imaging for measurement of brain volume (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Care_Plan"
+    },
+    "Care_Plan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "parkinsons_careplan",
+      "reason": "parkinsons",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229065009",
+          "display": "Exercise therapy (regime/therapy)"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "226060000",
+          "display": "Stress management (procedure)"
+        }
+      ],
+      "direct_transition": "Init_Med_0"
+    },
+    "Init_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "197444",
+          "display": "carbidopa 25 MG / levodopa 100 MG Oral Tablet"
+        }
+      ],
+      "reason": "parkinsons",
+      "assign_to_attribute": "parkinsons_meds",
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Manage_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 4,
+        "high": 8,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.745,
+          "transition": "Followup_Encounter"
+        },
+        {
+          "distribution": 0.04,
+          "transition": "Complication_Encounter"
+        },
+        {
+          "distribution": 0.015,
+          "transition": "Disease_Death"
+        }
+      ]
+    },
+    "Followup_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "reason": "parkinsons",
+      "direct_transition": "Refill_Med_0"
+    },
+    "Refill_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "197444",
+          "display": "carbidopa 25 MG / levodopa 100 MG Oral Tablet"
+        }
+      ],
+      "reason": "parkinsons",
+      "assign_to_attribute": "parkinsons_meds",
+      "direct_transition": "Refill_Med_1"
+    },
+    "Refill_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "859044",
+          "display": "pramipexole dihydrochloride 0.5 MG Oral Tablet"
+        }
+      ],
+      "reason": "parkinsons",
+      "assign_to_attribute": "parkinsons_meds",
+      "direct_transition": "End_Followup_Encounter"
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Complication_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "parkinsons",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission (procedure)"
+        }
+      ],
+      "direct_transition": "Complication_Onset"
+    },
+    "Complication_Onset": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "359817006",
+          "display": "Closed fracture of hip"
+        }
+      ],
+      "direct_transition": "End_Complication_Encounter"
+    },
+    "End_Complication_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Disease_Death": {
+      "type": "Death",
+      "range": {
+        "low": 1,
+        "high": 12,
+        "unit": "months"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "233604007",
+          "display": "Pneumonia (disorder)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}

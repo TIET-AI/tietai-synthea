@@ -1,0 +1,323 @@
+{
+  "name": "Major Depressive Disorder",
+  "remarks": [
+    "MDD with onset across adulthood, female predominant. PHQ-9 used for screening/monitoring.",
+    "First-line pharmacotherapy: SSRIs."
+  ],
+  "states": {
+    "Onset_Age_15_25": {
+      "type": "Delay",
+      "range": {
+        "low": 15,
+        "high": 25,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_25_40": {
+      "type": "Delay",
+      "range": {
+        "low": 25,
+        "high": 40,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_40_55": {
+      "type": "Delay",
+      "range": {
+        "low": 40,
+        "high": 55,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_55_75": {
+      "type": "Delay",
+      "range": {
+        "low": 55,
+        "high": 75,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.03,
+          "transition": "Onset_Age_15_25"
+        },
+        {
+          "distribution": 0.04,
+          "transition": "Onset_Age_25_40"
+        },
+        {
+          "distribution": 0.035,
+          "transition": "Onset_Age_40_55"
+        },
+        {
+          "distribution": 0.02,
+          "transition": "Onset_Age_55_75"
+        },
+        {
+          "distribution": 0.875,
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Onset_Entry": {
+      "type": "Simple",
+      "direct_transition": "Diagnosis_Encounter"
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "mdd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Condition_Onset"
+    },
+    "Condition_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "mdd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "370143000",
+          "display": "Major depressive disorder (disorder)"
+        }
+      ],
+      "direct_transition": "Symptom_0"
+    },
+    "Symptom_0": {
+      "type": "Symptom",
+      "symptom": "Depressed mood",
+      "cause": "Major depressive disorder (disorder)",
+      "range": {
+        "low": 40,
+        "high": 80
+      },
+      "direct_transition": "Symptom_1"
+    },
+    "Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Anhedonia",
+      "cause": "Major depressive disorder (disorder)",
+      "range": {
+        "low": 40,
+        "high": 80
+      },
+      "direct_transition": "Symptom_2"
+    },
+    "Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Sleep disturbance",
+      "cause": "Major depressive disorder (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Symptom_3"
+    },
+    "Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "cause": "Major depressive disorder (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Workup_0"
+    },
+    "Workup_0": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "715252007",
+          "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "direct_transition": "Workup_1"
+    },
+    "Workup_1": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "44261-6",
+          "display": "Patient Health Questionnaire 9 item (PHQ-9) total score [Reported]"
+        }
+      ],
+      "range": {
+        "low": 15,
+        "high": 24
+      },
+      "direct_transition": "Care_Plan"
+    },
+    "Care_Plan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "mdd_careplan",
+      "reason": "mdd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "228557008",
+          "display": "Cognitive and behavioral therapy"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "226060000",
+          "display": "Stress management (procedure)"
+        }
+      ],
+      "direct_transition": "Init_Med_0"
+    },
+    "Init_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "312938",
+          "display": "Sertraline 100 MG Oral Tablet"
+        }
+      ],
+      "reason": "mdd",
+      "assign_to_attribute": "mdd_meds",
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Manage_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 9,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.78,
+          "transition": "Followup_Encounter"
+        },
+        {
+          "distribution": 0.02,
+          "transition": "Complication_Encounter"
+        }
+      ]
+    },
+    "Followup_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "reason": "mdd",
+      "direct_transition": "Refill_Med_0"
+    },
+    "Refill_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "312938",
+          "display": "Sertraline 100 MG Oral Tablet"
+        }
+      ],
+      "reason": "mdd",
+      "assign_to_attribute": "mdd_meds",
+      "direct_transition": "Refill_Med_1"
+    },
+    "Refill_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "349332",
+          "display": "escitalopram 10 MG Oral Tablet"
+        }
+      ],
+      "reason": "mdd",
+      "assign_to_attribute": "mdd_meds",
+      "direct_transition": "Refill_Med_2"
+    },
+    "Refill_Med_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "310385",
+          "display": "FLUoxetine 20 MG Oral Capsule"
+        }
+      ],
+      "reason": "mdd",
+      "assign_to_attribute": "mdd_meds",
+      "direct_transition": "End_Followup_Encounter"
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Complication_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "mdd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission (procedure)"
+        }
+      ],
+      "direct_transition": "Complication_Onset"
+    },
+    "Complication_Onset": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "225444004",
+          "display": "At risk for suicide (finding)"
+        }
+      ],
+      "direct_transition": "End_Complication_Encounter"
+    },
+    "End_Complication_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}

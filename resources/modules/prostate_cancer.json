@@ -1,0 +1,301 @@
+{
+  "name": "Prostate Cancer",
+  "remarks": [
+    "Prostate adenocarcinoma in males, incidence rising sharply after age 55.",
+    "Diagnosis via elevated PSA + biopsy. Therapy: androgen deprivation +/- chemotherapy."
+  ],
+  "states": {
+    "Onset_Age_50_60": {
+      "type": "Delay",
+      "range": {
+        "low": 50,
+        "high": 60,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_60_70": {
+      "type": "Delay",
+      "range": {
+        "low": 60,
+        "high": 70,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_70_85": {
+      "type": "Delay",
+      "range": {
+        "low": 70,
+        "high": 85,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.02,
+          "transition": "Onset_Age_50_60"
+        },
+        {
+          "distribution": 0.05,
+          "transition": "Onset_Age_60_70"
+        },
+        {
+          "distribution": 0.07,
+          "transition": "Onset_Age_70_85"
+        },
+        {
+          "distribution": 0.86,
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Onset_Entry": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "transition": "Diagnosis_Encounter"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "prostate_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Condition_Onset"
+    },
+    "Condition_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "prostate_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "399068003",
+          "display": "Malignant tumor of prostate (disorder)"
+        }
+      ],
+      "direct_transition": "Symptom_0"
+    },
+    "Symptom_0": {
+      "type": "Symptom",
+      "symptom": "Urinary frequency",
+      "cause": "Malignant tumor of prostate (disorder)",
+      "range": {
+        "low": 20,
+        "high": 60
+      },
+      "direct_transition": "Symptom_1"
+    },
+    "Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Hematuria",
+      "cause": "Malignant tumor of prostate (disorder)",
+      "range": {
+        "low": 0,
+        "high": 30
+      },
+      "direct_transition": "Workup_0"
+    },
+    "Workup_0": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ng/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2857-1",
+          "display": "Prostate specific Ag [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 6,
+        "high": 30
+      },
+      "direct_transition": "Workup_1"
+    },
+    "Workup_1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "65575008",
+          "display": "Biopsy of prostate (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "Init_Med_0"
+    },
+    "Init_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "752899",
+          "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe"
+        }
+      ],
+      "reason": "prostate_cancer",
+      "assign_to_attribute": "prostate_cancer_meds",
+      "direct_transition": "Init_Med_1"
+    },
+    "Init_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "199123",
+          "display": "bicalutamide 50 MG Oral Tablet"
+        }
+      ],
+      "reason": "prostate_cancer",
+      "assign_to_attribute": "prostate_cancer_meds",
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Manage_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 6,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.71,
+          "transition": "Followup_Encounter"
+        },
+        {
+          "distribution": 0.06,
+          "transition": "Complication_Encounter"
+        },
+        {
+          "distribution": 0.03,
+          "transition": "Disease_Death"
+        }
+      ]
+    },
+    "Followup_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "reason": "prostate_cancer",
+      "direct_transition": "Refill_Med_0"
+    },
+    "Refill_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "752899",
+          "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe"
+        }
+      ],
+      "reason": "prostate_cancer",
+      "assign_to_attribute": "prostate_cancer_meds",
+      "direct_transition": "Refill_Med_1"
+    },
+    "Refill_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "199123",
+          "display": "bicalutamide 50 MG Oral Tablet"
+        }
+      ],
+      "reason": "prostate_cancer",
+      "assign_to_attribute": "prostate_cancer_meds",
+      "direct_transition": "End_Followup_Encounter"
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Complication_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "prostate_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Complication_Onset"
+    },
+    "Complication_Onset": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "94222008",
+          "display": "Secondary malignant neoplasm of bone"
+        }
+      ],
+      "direct_transition": "End_Complication_Encounter"
+    },
+    "End_Complication_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Disease_Death": {
+      "type": "Death",
+      "range": {
+        "low": 1,
+        "high": 12,
+        "unit": "months"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "399068003",
+          "display": "Malignant tumor of prostate (disorder)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}

@@ -1,0 +1,280 @@
+{
+  "name": "Bipolar Disorder",
+  "remarks": [
+    "Bipolar disorder, onset typically late adolescence to mid-20s.",
+    "Mood stabilizers (lithium, lamotrigine) and atypical antipsychotics (quetiapine)."
+  ],
+  "states": {
+    "Onset_Age_15_25": {
+      "type": "Delay",
+      "range": {
+        "low": 15,
+        "high": 25,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_25_35": {
+      "type": "Delay",
+      "range": {
+        "low": 25,
+        "high": 35,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_35_50": {
+      "type": "Delay",
+      "range": {
+        "low": 35,
+        "high": 50,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.012,
+          "transition": "Onset_Age_15_25"
+        },
+        {
+          "distribution": 0.01,
+          "transition": "Onset_Age_25_35"
+        },
+        {
+          "distribution": 0.005,
+          "transition": "Onset_Age_35_50"
+        },
+        {
+          "distribution": 0.973,
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Onset_Entry": {
+      "type": "Simple",
+      "direct_transition": "Diagnosis_Encounter"
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "bipolar",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Condition_Onset"
+    },
+    "Condition_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "bipolar",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "13746004",
+          "display": "Bipolar disorder (disorder)"
+        }
+      ],
+      "direct_transition": "Symptom_0"
+    },
+    "Symptom_0": {
+      "type": "Symptom",
+      "symptom": "Mood swings",
+      "cause": "Bipolar disorder (disorder)",
+      "range": {
+        "low": 40,
+        "high": 80
+      },
+      "direct_transition": "Symptom_1"
+    },
+    "Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Insomnia",
+      "cause": "Bipolar disorder (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Symptom_2"
+    },
+    "Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Irritability",
+      "cause": "Bipolar disorder (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Care_Plan"
+    },
+    "Care_Plan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "bipolar_careplan",
+      "reason": "bipolar",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "228557008",
+          "display": "Cognitive and behavioral therapy"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "226060000",
+          "display": "Stress management (procedure)"
+        }
+      ],
+      "direct_transition": "Init_Med_0"
+    },
+    "Init_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "197890",
+          "display": "lithium carbonate 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "bipolar",
+      "assign_to_attribute": "bipolar_meds",
+      "direct_transition": "Init_Med_1"
+    },
+    "Init_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "312743",
+          "display": "quetiapine 100 MG Oral Tablet"
+        }
+      ],
+      "reason": "bipolar",
+      "assign_to_attribute": "bipolar_meds",
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Manage_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 9,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.75,
+          "transition": "Followup_Encounter"
+        },
+        {
+          "distribution": 0.05,
+          "transition": "Complication_Encounter"
+        }
+      ]
+    },
+    "Followup_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "reason": "bipolar",
+      "direct_transition": "Refill_Med_0"
+    },
+    "Refill_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "197890",
+          "display": "lithium carbonate 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "bipolar",
+      "assign_to_attribute": "bipolar_meds",
+      "direct_transition": "Refill_Med_1"
+    },
+    "Refill_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198427",
+          "display": "lamotrigine 100 MG Oral Tablet"
+        }
+      ],
+      "reason": "bipolar",
+      "assign_to_attribute": "bipolar_meds",
+      "direct_transition": "Refill_Med_2"
+    },
+    "Refill_Med_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "312743",
+          "display": "quetiapine 100 MG Oral Tablet"
+        }
+      ],
+      "reason": "bipolar",
+      "assign_to_attribute": "bipolar_meds",
+      "direct_transition": "End_Followup_Encounter"
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Complication_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "bipolar",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "32485007",
+          "display": "Hospital admission (procedure)"
+        }
+      ],
+      "direct_transition": "Complication_Onset"
+    },
+    "Complication_Onset": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "9340000",
+          "display": "Bipolar I disorder, single manic episode"
+        }
+      ],
+      "direct_transition": "End_Complication_Encounter"
+    },
+    "End_Complication_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}

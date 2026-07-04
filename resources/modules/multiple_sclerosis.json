@@ -1,0 +1,309 @@
+{
+  "name": "Multiple Sclerosis",
+  "remarks": [
+    "Relapsing-remitting MS. Onset typically 20-40, female predominant (~2-3:1).",
+    "Acute relapses treated with high-dose IV methylprednisolone; chronic disease-modifying therapy."
+  ],
+  "states": {
+    "Onset_Age_18_30": {
+      "type": "Delay",
+      "range": {
+        "low": 18,
+        "high": 30,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_30_40": {
+      "type": "Delay",
+      "range": {
+        "low": 30,
+        "high": 40,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_40_50": {
+      "type": "Delay",
+      "range": {
+        "low": 40,
+        "high": 50,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_50_60": {
+      "type": "Delay",
+      "range": {
+        "low": 50,
+        "high": 60,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.0016,
+          "transition": "Onset_Age_18_30"
+        },
+        {
+          "distribution": 0.0016,
+          "transition": "Onset_Age_30_40"
+        },
+        {
+          "distribution": 0.0009,
+          "transition": "Onset_Age_40_50"
+        },
+        {
+          "distribution": 0.0005,
+          "transition": "Onset_Age_50_60"
+        },
+        {
+          "distribution": 0.9954,
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Onset_Entry": {
+      "type": "Simple",
+      "direct_transition": "Diagnosis_Encounter"
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "multiple_sclerosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Condition_Onset"
+    },
+    "Condition_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "multiple_sclerosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "24700007",
+          "display": "Multiple sclerosis (disorder)"
+        }
+      ],
+      "direct_transition": "Symptom_0"
+    },
+    "Symptom_0": {
+      "type": "Symptom",
+      "symptom": "Paresthesia",
+      "cause": "Multiple sclerosis (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Symptom_1"
+    },
+    "Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Visual disturbance",
+      "cause": "Multiple sclerosis (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Symptom_2"
+    },
+    "Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "cause": "Multiple sclerosis (disorder)",
+      "range": {
+        "low": 40,
+        "high": 80
+      },
+      "direct_transition": "Symptom_3"
+    },
+    "Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Muscle weakness",
+      "cause": "Multiple sclerosis (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Workup_0"
+    },
+    "Workup_0": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "698354004",
+          "display": "Magnetic resonance imaging for measurement of brain volume (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Workup_1"
+    },
+    "Workup_1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "241645008",
+          "display": "Magnetic resonance imaging of spine (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Care_Plan"
+    },
+    "Care_Plan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "multiple_sclerosis_careplan",
+      "reason": "multiple_sclerosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229065009",
+          "display": "Exercise therapy (regime/therapy)"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "226060000",
+          "display": "Stress management (procedure)"
+        }
+      ],
+      "direct_transition": "Init_Med_0"
+    },
+    "Init_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1743726",
+          "display": "methylprednisolone 1000 MG Injection"
+        }
+      ],
+      "reason": "multiple_sclerosis",
+      "assign_to_attribute": "multiple_sclerosis_meds",
+      "direct_transition": "Init_Med_1"
+    },
+    "Init_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1111641",
+          "display": "1 ML glatiramer acetate 20 MG/ML Prefilled Syringe"
+        }
+      ],
+      "reason": "multiple_sclerosis",
+      "assign_to_attribute": "multiple_sclerosis_meds",
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Manage_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 6,
+        "high": 12,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.7,
+          "transition": "Followup_Encounter"
+        },
+        {
+          "distribution": 0.1,
+          "transition": "Complication_Encounter"
+        }
+      ]
+    },
+    "Followup_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "reason": "multiple_sclerosis",
+      "direct_transition": "Refill_Med_0"
+    },
+    "Refill_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1373491",
+          "display": "dimethyl fumarate 240 MG Delayed Release Oral Capsule"
+        }
+      ],
+      "reason": "multiple_sclerosis",
+      "assign_to_attribute": "multiple_sclerosis_meds",
+      "direct_transition": "End_Followup_Encounter"
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Complication_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "multiple_sclerosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission (procedure)"
+        }
+      ],
+      "direct_transition": "Complication_Onset"
+    },
+    "Complication_Onset": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "24700007",
+          "display": "Multiple sclerosis (disorder)"
+        }
+      ],
+      "direct_transition": "End_Complication_Encounter"
+    },
+    "End_Complication_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}

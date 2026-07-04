@@ -1,0 +1,267 @@
+{
+  "name": "Pneumonia",
+  "remarks": [
+    "Community-acquired pneumonia. Acute illness that resolves; can recur across the lifespan.",
+    "Outpatient: macrolide/doxycycline or amoxicillin. Severe: hospital admission + ceftriaxone."
+  ],
+  "states": {
+    "Onset_Age_0_5": {
+      "type": "Delay",
+      "range": {
+        "low": 0,
+        "high": 5,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_5_40": {
+      "type": "Delay",
+      "range": {
+        "low": 5,
+        "high": 40,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_40_65": {
+      "type": "Delay",
+      "range": {
+        "low": 40,
+        "high": 65,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_65_90": {
+      "type": "Delay",
+      "range": {
+        "low": 65,
+        "high": 90,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.04,
+          "transition": "Onset_Age_0_5"
+        },
+        {
+          "distribution": 0.05,
+          "transition": "Onset_Age_5_40"
+        },
+        {
+          "distribution": 0.05,
+          "transition": "Onset_Age_40_65"
+        },
+        {
+          "distribution": 0.06,
+          "transition": "Onset_Age_65_90"
+        },
+        {
+          "distribution": 0.8,
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Onset_Entry": {
+      "type": "Simple",
+      "direct_transition": "Diagnosis_Encounter"
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "pneumonia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom (procedure)"
+        }
+      ],
+      "direct_transition": "Condition_Onset"
+    },
+    "Condition_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "pneumonia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "233604007",
+          "display": "Pneumonia (disorder)"
+        }
+      ],
+      "direct_transition": "Symptom_0"
+    },
+    "Symptom_0": {
+      "type": "Symptom",
+      "symptom": "Cough",
+      "cause": "Pneumonia (disorder)",
+      "range": {
+        "low": 50,
+        "high": 90
+      },
+      "direct_transition": "Symptom_1"
+    },
+    "Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Fever",
+      "cause": "Pneumonia (disorder)",
+      "range": {
+        "low": 40,
+        "high": 80
+      },
+      "direct_transition": "Symptom_2"
+    },
+    "Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Shortness of Breath",
+      "cause": "Pneumonia (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Symptom_3"
+    },
+    "Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Chest pain",
+      "cause": "Pneumonia (disorder)",
+      "range": {
+        "low": 20,
+        "high": 60
+      },
+      "direct_transition": "Workup_0"
+    },
+    "Workup_0": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "399208008",
+          "display": "Plain X-ray of chest (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "direct_transition": "Workup_1"
+    },
+    "Workup_1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "104173009",
+          "display": "Microbial culture of sputum (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "direct_transition": "Init_Med_0"
+    },
+    "Init_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "308460",
+          "display": "Azithromycin 250 MG Oral Tablet"
+        }
+      ],
+      "reason": "pneumonia",
+      "assign_to_attribute": "pneumonia_meds",
+      "direct_transition": "Init_Med_1"
+    },
+    "Init_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "308192",
+          "display": "amoxicillin 500 MG Oral Tablet"
+        }
+      ],
+      "reason": "pneumonia",
+      "assign_to_attribute": "pneumonia_meds",
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Recovery_Delay"
+    },
+    "Disease_Death": {
+      "type": "Death",
+      "range": {
+        "low": 1,
+        "high": 12,
+        "unit": "months"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "233604007",
+          "display": "Pneumonia (disorder)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Recovery_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 2,
+        "high": 4,
+        "unit": "weeks"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.98,
+          "transition": "Resolve_Pneumonia"
+        },
+        {
+          "distribution": 0.02,
+          "transition": "Disease_Death"
+        }
+      ]
+    },
+    "Resolve_Pneumonia": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "pneumonia",
+      "direct_transition": "Well_Interval"
+    },
+    "Well_Interval": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 15,
+        "unit": "years"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.6,
+          "transition": "Diagnosis_Encounter"
+        },
+        {
+          "distribution": 0.4,
+          "transition": "Terminal"
+        }
+      ]
+    }
+  },
+  "gmf_version": 1
+}

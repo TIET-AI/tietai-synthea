@@ -1,0 +1,229 @@
+{
+  "name": "Gastroesophageal Reflux Disease",
+  "remarks": [
+    "Chronic GERD. Prevalence rises with age and BMI. Managed with PPIs/H2 blockers and lifestyle."
+  ],
+  "states": {
+    "Onset_Age_20_35": {
+      "type": "Delay",
+      "range": {
+        "low": 20,
+        "high": 35,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_35_50": {
+      "type": "Delay",
+      "range": {
+        "low": 35,
+        "high": 50,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_50_65": {
+      "type": "Delay",
+      "range": {
+        "low": 50,
+        "high": 65,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_65_80": {
+      "type": "Delay",
+      "range": {
+        "low": 65,
+        "high": 80,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.05,
+          "transition": "Onset_Age_20_35"
+        },
+        {
+          "distribution": 0.06,
+          "transition": "Onset_Age_35_50"
+        },
+        {
+          "distribution": 0.05,
+          "transition": "Onset_Age_50_65"
+        },
+        {
+          "distribution": 0.03,
+          "transition": "Onset_Age_65_80"
+        },
+        {
+          "distribution": 0.81,
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Onset_Entry": {
+      "type": "Simple",
+      "direct_transition": "Diagnosis_Encounter"
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "gerd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom (procedure)"
+        }
+      ],
+      "direct_transition": "Condition_Onset"
+    },
+    "Condition_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "gerd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "235595009",
+          "display": "Gastroesophageal reflux disease (disorder)"
+        }
+      ],
+      "direct_transition": "Symptom_0"
+    },
+    "Symptom_0": {
+      "type": "Symptom",
+      "symptom": "Heartburn",
+      "cause": "Gastroesophageal reflux disease (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Symptom_1"
+    },
+    "Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Regurgitation",
+      "cause": "Gastroesophageal reflux disease (disorder)",
+      "range": {
+        "low": 20,
+        "high": 60
+      },
+      "direct_transition": "Symptom_2"
+    },
+    "Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Dysphagia",
+      "cause": "Gastroesophageal reflux disease (disorder)",
+      "range": {
+        "low": 0,
+        "high": 30
+      },
+      "direct_transition": "Care_Plan"
+    },
+    "Care_Plan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "gerd_careplan",
+      "reason": "gerd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "11816003",
+          "display": "Diet education (procedure)"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "226234005",
+          "display": "Healthy diet (finding)"
+        }
+      ],
+      "direct_transition": "Init_Med_0"
+    },
+    "Init_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198051",
+          "display": "omeprazole 20 MG Delayed Release Oral Capsule"
+        }
+      ],
+      "reason": "gerd",
+      "assign_to_attribute": "gerd_meds",
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Manage_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 6,
+        "high": 18,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.8,
+          "transition": "Followup_Encounter"
+        }
+      ]
+    },
+    "Followup_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "reason": "gerd",
+      "direct_transition": "Refill_Med_0"
+    },
+    "Refill_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198051",
+          "display": "omeprazole 20 MG Delayed Release Oral Capsule"
+        }
+      ],
+      "reason": "gerd",
+      "assign_to_attribute": "gerd_meds",
+      "direct_transition": "Refill_Med_1"
+    },
+    "Refill_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "310273",
+          "display": "famotidine 20 MG Oral Tablet"
+        }
+      ],
+      "reason": "gerd",
+      "assign_to_attribute": "gerd_meds",
+      "direct_transition": "End_Followup_Encounter"
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}

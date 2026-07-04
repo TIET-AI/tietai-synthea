@@ -1,0 +1,286 @@
+{
+  "name": "Generalized Anxiety Disorder",
+  "remarks": [
+    "GAD, female predominant, onset commonly in young-to-middle adulthood.",
+    "GAD-7 for screening. SSRIs/SNRIs first-line; buspirone adjunct."
+  ],
+  "states": {
+    "Onset_Age_15_25": {
+      "type": "Delay",
+      "range": {
+        "low": 15,
+        "high": 25,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_25_40": {
+      "type": "Delay",
+      "range": {
+        "low": 25,
+        "high": 40,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_40_55": {
+      "type": "Delay",
+      "range": {
+        "low": 40,
+        "high": 55,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_55_70": {
+      "type": "Delay",
+      "range": {
+        "low": 55,
+        "high": 70,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.03,
+          "transition": "Onset_Age_15_25"
+        },
+        {
+          "distribution": 0.035,
+          "transition": "Onset_Age_25_40"
+        },
+        {
+          "distribution": 0.025,
+          "transition": "Onset_Age_40_55"
+        },
+        {
+          "distribution": 0.012,
+          "transition": "Onset_Age_55_70"
+        },
+        {
+          "distribution": 0.898,
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Onset_Entry": {
+      "type": "Simple",
+      "direct_transition": "Diagnosis_Encounter"
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "gad",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Condition_Onset"
+    },
+    "Condition_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "gad",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "21897009",
+          "display": "Generalized anxiety disorder (disorder)"
+        }
+      ],
+      "direct_transition": "Symptom_0"
+    },
+    "Symptom_0": {
+      "type": "Symptom",
+      "symptom": "Anxiety",
+      "cause": "Generalized anxiety disorder (disorder)",
+      "range": {
+        "low": 40,
+        "high": 80
+      },
+      "direct_transition": "Symptom_1"
+    },
+    "Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Restlessness",
+      "cause": "Generalized anxiety disorder (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Symptom_2"
+    },
+    "Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Difficulty concentrating",
+      "cause": "Generalized anxiety disorder (disorder)",
+      "range": {
+        "low": 20,
+        "high": 60
+      },
+      "direct_transition": "Symptom_3"
+    },
+    "Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Sleep disturbance",
+      "cause": "Generalized anxiety disorder (disorder)",
+      "range": {
+        "low": 20,
+        "high": 60
+      },
+      "direct_transition": "Workup_0"
+    },
+    "Workup_0": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "710841007",
+          "display": "Assessment of anxiety (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "direct_transition": "Workup_1"
+    },
+    "Workup_1": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "{score}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "70274-6",
+          "display": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported]"
+        }
+      ],
+      "range": {
+        "low": 10,
+        "high": 21
+      },
+      "direct_transition": "Care_Plan"
+    },
+    "Care_Plan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "gad_careplan",
+      "reason": "gad",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "228557008",
+          "display": "Cognitive and behavioral therapy"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "226060000",
+          "display": "Stress management (procedure)"
+        }
+      ],
+      "direct_transition": "Init_Med_0"
+    },
+    "Init_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "349332",
+          "display": "escitalopram 10 MG Oral Tablet"
+        }
+      ],
+      "reason": "gad",
+      "assign_to_attribute": "gad_meds",
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Manage_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 9,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.8,
+          "transition": "Followup_Encounter"
+        }
+      ]
+    },
+    "Followup_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "reason": "gad",
+      "direct_transition": "Refill_Med_0"
+    },
+    "Refill_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "349332",
+          "display": "escitalopram 10 MG Oral Tablet"
+        }
+      ],
+      "reason": "gad",
+      "assign_to_attribute": "gad_meds",
+      "direct_transition": "Refill_Med_1"
+    },
+    "Refill_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "312938",
+          "display": "Sertraline 100 MG Oral Tablet"
+        }
+      ],
+      "reason": "gad",
+      "assign_to_attribute": "gad_meds",
+      "direct_transition": "Refill_Med_2"
+    },
+    "Refill_Med_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "866083",
+          "display": "buspirone hydrochloride 10 MG Oral Tablet"
+        }
+      ],
+      "reason": "gad",
+      "assign_to_attribute": "gad_meds",
+      "direct_transition": "End_Followup_Encounter"
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}

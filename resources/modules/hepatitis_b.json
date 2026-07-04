@@ -1,0 +1,264 @@
+{
+  "name": "Chronic Hepatitis B",
+  "remarks": [
+    "Chronic HBV infection. Often detected in adulthood via screening.",
+    "Antiviral suppression with tenofovir or entecavir; periodic monitoring."
+  ],
+  "states": {
+    "Onset_Age_20_35": {
+      "type": "Delay",
+      "range": {
+        "low": 20,
+        "high": 35,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_35_50": {
+      "type": "Delay",
+      "range": {
+        "low": 35,
+        "high": 50,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_50_65": {
+      "type": "Delay",
+      "range": {
+        "low": 50,
+        "high": 65,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.004,
+          "transition": "Onset_Age_20_35"
+        },
+        {
+          "distribution": 0.004,
+          "transition": "Onset_Age_35_50"
+        },
+        {
+          "distribution": 0.003,
+          "transition": "Onset_Age_50_65"
+        },
+        {
+          "distribution": 0.989,
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Onset_Entry": {
+      "type": "Simple",
+      "direct_transition": "Diagnosis_Encounter"
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "hepatitis_b",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Condition_Onset"
+    },
+    "Condition_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hepatitis_b",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "61977001",
+          "display": "Chronic type B viral hepatitis (disorder)"
+        }
+      ],
+      "direct_transition": "Symptom_0"
+    },
+    "Symptom_0": {
+      "type": "Symptom",
+      "symptom": "Fatigue",
+      "cause": "Chronic type B viral hepatitis (disorder)",
+      "range": {
+        "low": 10,
+        "high": 50
+      },
+      "direct_transition": "Workup_0"
+    },
+    "Workup_0": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "47758006",
+          "display": "Hepatitis B surface antigen measurement (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "direct_transition": "Workup_1"
+    },
+    "Workup_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "{nominal}",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "5196-1",
+          "display": "Hepatitis B virus surface Ag [Presence] in Serum"
+        }
+      ],
+      "range": {
+        "low": 1,
+        "high": 1
+      },
+      "direct_transition": "Workup_2"
+    },
+    "Workup_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "U/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "1742-6",
+          "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 40,
+        "high": 150
+      },
+      "direct_transition": "Init_Med_0"
+    },
+    "Init_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "349251",
+          "display": "tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hepatitis_b",
+      "assign_to_attribute": "hepatitis_b_meds",
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Manage_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 6,
+        "high": 12,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.77,
+          "transition": "Followup_Encounter"
+        },
+        {
+          "distribution": 0.03,
+          "transition": "Complication_Encounter"
+        }
+      ]
+    },
+    "Followup_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "reason": "hepatitis_b",
+      "direct_transition": "Refill_Med_0"
+    },
+    "Refill_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "349251",
+          "display": "tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hepatitis_b",
+      "assign_to_attribute": "hepatitis_b_meds",
+      "direct_transition": "Refill_Med_1"
+    },
+    "Refill_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "485434",
+          "display": "entecavir 0.5 MG Oral Tablet"
+        }
+      ],
+      "reason": "hepatitis_b",
+      "assign_to_attribute": "hepatitis_b_meds",
+      "direct_transition": "End_Followup_Encounter"
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Complication_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "hepatitis_b",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Complication_Onset"
+    },
+    "Complication_Onset": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "19943007",
+          "display": "Cirrhosis of liver (disorder)"
+        }
+      ],
+      "direct_transition": "End_Complication_Encounter"
+    },
+    "End_Complication_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}

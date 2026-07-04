@@ -1,0 +1,303 @@
+{
+  "name": "Inflammatory Bowel Disease",
+  "remarks": [
+    "Inflammatory bowel disease branching to Crohn's disease or ulcerative colitis.",
+    "Bimodal onset peaking 15-35. Step-up therapy: 5-ASA -> immunomodulator -> biologic."
+  ],
+  "states": {
+    "Onset_Age_15_25": {
+      "type": "Delay",
+      "range": {
+        "low": 15,
+        "high": 25,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_25_35": {
+      "type": "Delay",
+      "range": {
+        "low": 25,
+        "high": 35,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_35_50": {
+      "type": "Delay",
+      "range": {
+        "low": 35,
+        "high": 50,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Onset_Age_50_65": {
+      "type": "Delay",
+      "range": {
+        "low": 50,
+        "high": 65,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Entry"
+    },
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "distribution": 0.0025,
+          "transition": "Onset_Age_15_25"
+        },
+        {
+          "distribution": 0.002,
+          "transition": "Onset_Age_25_35"
+        },
+        {
+          "distribution": 0.0012,
+          "transition": "Onset_Age_35_50"
+        },
+        {
+          "distribution": 0.0008,
+          "transition": "Onset_Age_50_65"
+        },
+        {
+          "distribution": 0.9935,
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Onset_Entry": {
+      "type": "Simple",
+      "direct_transition": "Diagnosis_Encounter"
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ibd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "IBD_Branch"
+    },
+    "Condition_Onset": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "ibd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "34000006",
+          "display": "Crohn's disease (disorder)"
+        }
+      ],
+      "direct_transition": "Symptom_0"
+    },
+    "Symptom_0": {
+      "type": "Symptom",
+      "symptom": "Abdominal pain",
+      "cause": "Crohn's disease (disorder)",
+      "range": {
+        "low": 30,
+        "high": 70
+      },
+      "direct_transition": "Symptom_1"
+    },
+    "Symptom_1": {
+      "type": "Symptom",
+      "symptom": "Diarrhea",
+      "cause": "Crohn's disease (disorder)",
+      "range": {
+        "low": 40,
+        "high": 80
+      },
+      "direct_transition": "Symptom_2"
+    },
+    "Symptom_2": {
+      "type": "Symptom",
+      "symptom": "Rectal bleeding",
+      "cause": "Crohn's disease (disorder)",
+      "range": {
+        "low": 10,
+        "high": 50
+      },
+      "direct_transition": "Symptom_3"
+    },
+    "Symptom_3": {
+      "type": "Symptom",
+      "symptom": "Weight loss",
+      "cause": "Crohn's disease (disorder)",
+      "range": {
+        "low": 10,
+        "high": 50
+      },
+      "direct_transition": "Workup_0"
+    },
+    "Workup_0": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "73761001",
+          "display": "Colonoscopy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Workup_1"
+    },
+    "Workup_1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "76164006",
+          "display": "Biopsy of colon (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Init_Med_0"
+    },
+    "Init_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "833234",
+          "display": "mesalamine 800 MG Delayed Release Oral Tablet"
+        }
+      ],
+      "reason": "ibd",
+      "assign_to_attribute": "ibd_meds",
+      "direct_transition": "Init_Med_1"
+    },
+    "Init_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "312615",
+          "display": "predniSONE 20 MG Oral Tablet"
+        }
+      ],
+      "reason": "ibd",
+      "assign_to_attribute": "ibd_meds",
+      "direct_transition": "End_Diagnosis_Encounter"
+    },
+    "End_Diagnosis_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Manage_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 6,
+        "high": 12,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.8,
+          "transition": "Followup_Encounter"
+        }
+      ]
+    },
+    "Followup_Encounter": {
+      "type": "Encounter",
+      "wellness": true,
+      "reason": "ibd",
+      "direct_transition": "Refill_Med_0"
+    },
+    "Refill_Med_0": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "833234",
+          "display": "mesalamine 800 MG Delayed Release Oral Tablet"
+        }
+      ],
+      "reason": "ibd",
+      "assign_to_attribute": "ibd_meds",
+      "direct_transition": "Refill_Med_1"
+    },
+    "Refill_Med_1": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "197388",
+          "display": "azathioprine 50 MG Oral Tablet"
+        }
+      ],
+      "reason": "ibd",
+      "assign_to_attribute": "ibd_meds",
+      "direct_transition": "Refill_Med_2"
+    },
+    "Refill_Med_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1726844",
+          "display": "0.4 ML adalimumab 100 MG/ML Prefilled Syringe"
+        }
+      ],
+      "reason": "ibd",
+      "assign_to_attribute": "ibd_meds",
+      "direct_transition": "End_Followup_Encounter"
+    },
+    "End_Followup_Encounter": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "direct_transition": "Manage_Delay"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "IBD_Branch": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.5,
+          "transition": "Condition_Onset"
+        },
+        {
+          "distribution": 0.5,
+          "transition": "Condition_Onset_UC"
+        }
+      ]
+    },
+    "Condition_Onset_UC": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "ibd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "64766004",
+          "display": "Ulcerative colitis (disorder)"
+        }
+      ],
+      "direct_transition": "Symptom_0"
+    }
+  },
+  "gmf_version": 1
+}
