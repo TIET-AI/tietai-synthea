@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test (py${{ matrix.python-version }} · ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        include:
+          - os: windows-latest
+            python-version: "3.12"
+          - os: macos-latest
+            python-version: "3.12"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Sync dependencies (locked)
+        run: uv sync --extra dev --python ${{ matrix.python-version }}
+
+      - name: Run test suite
+        run: uv run --no-sync pytest -q
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: flake8 (critical errors only — hard gate)
+        # E9/F63/F7 catch real syntax and logic errors. F82 (undefined name) is
+        # excluded from the hard gate because the codebase uses string
+        # forward-reference annotations (e.g. 'Location', 'Person') that are not
+        # imported at runtime — F821 reports those as false positives.
+        run: uvx flake8 src --select=E9,F63,F7 --show-source --statistics
+
+      - name: black --check (informational)
+        run: uvx black --check src tests
+        continue-on-error: true
+
+  build:
+    name: build & verify distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Build sdist and wheel
+        run: uv build
+
+      - name: Validate metadata with twine
+        run: uvx twine check dist/*
+
+      - name: Verify bundled resources are present in the wheel
+        run: |
+          uv run --no-project python - <<'PY'
+          import glob, zipfile
+          whl = sorted(glob.glob("dist/*.whl"))[-1]
+          names = zipfile.ZipFile(whl).namelist()
+          res = [n for n in names if n.startswith("synthea/resources/")]
+          assert len(res) > 100, f"resources missing from wheel: only {len(res)} entries"
+          assert any(n.endswith(".ftl") for n in res), "clinical templates (.ftl) missing from wheel"
+          print(f"OK: {len(res)} resource files bundled in {whl}")
+          PY

@@ -16,6 +16,7 @@ import inspect
 
 from synthea.engine.state import State
 from synthea.engine.transition import Transition
+from synthea.helpers.resources import resource_path
 
 logger = logging.getLogger(__name__)
 
@@ -123,16 +124,19 @@ class Module:
         return None
     
     @classmethod
-    def load_modules(cls, path: str = 'resources/modules') -> Dict[str, 'Module']:
+    def load_modules(cls, path: Optional[str] = None) -> Dict[str, 'Module']:
         """
         Load all modules from the specified directory.
-        
+
         Args:
-            path: Path to the modules directory
-            
+            path: Path to the modules directory. Defaults to the modules
+                bundled with the installed ``synthea`` package.
+
         Returns:
             Dictionary of loaded modules
         """
+        if path is None:
+            path = str(resource_path('modules'))
         cls._modules.clear()
         cls._module_suppliers.clear()
         
@@ -182,6 +186,7 @@ class Module:
         if not module_path.exists():
             # Try alternative paths
             alternatives = [
+                resource_path('modules'),
                 Path('src/main/resources/modules'),
                 Path('../src/main/resources/modules'),
                 Path('modules'),

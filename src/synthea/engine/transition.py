@@ -13,6 +13,8 @@ import random
 import csv
 import os
 
+from synthea.helpers.resources import resource_path
+
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
@@ -293,6 +295,7 @@ class LookupTableTransition(Transition):
     _csv_cache: Dict[str, Optional[List[Dict[str, str]]]] = {}
 
     _CSV_BASES = [
+        str(resource_path('lookup_tables')),
         'resources/lookup_tables/',
         'src/main/resources/lookup_tables/',
     ]

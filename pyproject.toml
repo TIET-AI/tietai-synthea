@@ -3,14 +3,15 @@ requires = ["setuptools>=65", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "synthea"
-version = "3.0.0"
-description = "Synthetic Patient Population Simulator"
+name = "py-synthea"
+version = "1.0.0"
+description = "PySynthea - a Python-native synthetic patient population simulator"
 readme = "README.md"
 requires-python = ">=3.9,<3.14"
 license = {text = "Apache-2.0"}
 authors = [
-    {name = "Synthea Contributors"},
+    {name = "TietAI", email = "pysynthea@tiet.ai"},
+    {name = "PySynthea project contributors"},
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -69,15 +70,20 @@ visualization = [
 synthea = "synthea.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/synthetichealth/synthea"
-Documentation = "https://github.com/synthetichealth/synthea/wiki"
-"Bug Tracker" = "https://github.com/synthetichealth/synthea/issues"
+Homepage = "https://github.com/TIET-AI/tietai-synthea"
+Repository = "https://github.com/TIET-AI/tietai-synthea"
+Documentation = "https://github.com/TIET-AI/tietai-synthea#readme"
+"Bug Tracker" = "https://github.com/TIET-AI/tietai-synthea/issues"
+"Upstream Synthea" = "https://github.com/synthetichealth/synthea"
+
+[tool.setuptools]
+license-files = ["LICENSE", "NOTICE"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-"*" = ["*.json", "*.yaml", "*.yml", "*.csv", "*.properties"]
+synthea = ["resources/**/*"]
 
 [tool.black]
 line-length = 100

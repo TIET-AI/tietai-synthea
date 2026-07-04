@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Dict, Any, Optional, Union
 import os
 
+from synthea.helpers.resources import resource_path
+
 
 class Config:
     """Manages Synthea configuration settings."""
@@ -89,6 +91,7 @@ class Config:
             # Search for properties file in common locations
             search_paths = [
                 Path('synthea.properties'),
+                resource_path('synthea.properties'),
                 Path('src/main/resources/synthea.properties'),
                 Path('resources/synthea.properties'),
                 Path('../synthea.properties'),

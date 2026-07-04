@@ -1,0 +1,29 @@
+PySynthea
+Copyright 2025-2026 TietAI and the PySynthea project contributors
+
+This product includes software developed as a Python-native implementation
+derived from and inspired by Synthea(TM), the open-source synthetic patient
+population simulator.
+
+Synthea(TM) is developed by The MITRE Corporation and licensed under the
+Apache License, Version 2.0:
+
+    Synthea(TM) Patient Generator
+    Copyright 2017-2024 The MITRE Corporation
+    https://github.com/synthetichealth/synthea
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+Portions of the bundled data resources (for example the disease modules,
+demographic data, and clinical document templates under
+src/synthea/resources/) are derived from the Synthea project and remain
+licensed under the Apache License, Version 2.0.
+
+"Synthea" is a trademark of The MITRE Corporation. This project is not
+affiliated with, endorsed by, or sponsored by The MITRE Corporation. The
+name is used only nominatively, to identify the upstream project from which
+this work is derived.

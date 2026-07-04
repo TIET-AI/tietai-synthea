@@ -1,0 +1,4 @@
+# Normalize line endings to LF in the repository for all text files, so shell
+# steps in CI (executed on Linux runners) are never broken by CRLF. Binary
+# files are auto-detected and left untouched.
+* text=auto eol=lf

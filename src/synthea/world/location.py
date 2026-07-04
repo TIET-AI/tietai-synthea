@@ -12,6 +12,8 @@ from typing import Dict, Any, Optional, List, Tuple
 import random
 from dataclasses import dataclass
 
+from synthea.helpers.resources import resource_path
+
 
 @dataclass
 class City:
@@ -184,6 +186,7 @@ class Location:
     def _load_from_files(self):
         """Load location data from files."""
         paths = [
+            resource_path('geography'),
             Path('resources/geography'),
             Path('src/main/resources/geography'),
             Path('../resources/geography'),

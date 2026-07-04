@@ -16,9 +16,29 @@ For a formal description of the framework, design goals, architecture, and gener
 - **Configurable**: Extensive configuration options via properties file
 - **Fast**: Uses UV for blazing-fast dependency management
 
-## Prerequisites
+## Installation
 
-- Python 3.8 or higher
+### From PyPI (recommended)
+
+```bash
+pip install py-synthea
+```
+
+The distribution is published as **`py-synthea`**; the import name and CLI
+command are both `synthea`:
+
+```bash
+synthea -p 10            # generate 10 patients
+python -c "import synthea; print(synthea.__version__)"
+```
+
+All data resources (disease modules, demographics, growth charts, clinical
+templates) are bundled with the package, so it works from any directory — no
+repository checkout required.
+
+## Prerequisites (for development)
+
+- Python 3.9 or higher
 - [UV](https://github.com/astral-sh/uv) package manager
 
 ### Installing UV
@@ -34,12 +54,12 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 pip install uv
 ```
 
-## Installation
+### From source (development)
 
 ```bash
 # Clone the repository
-git clone https://github.com/TIET-AI/tietai-symthea.git
-cd tietai-symthea
+git clone https://github.com/TIET-AI/tietai-synthea.git
+cd tietai-synthea
 
 # Create virtual environment and install dependencies with UV
 uv venv
