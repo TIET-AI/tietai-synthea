@@ -12,6 +12,8 @@ from typing import Dict, Any, Optional, List, Tuple
 import random
 from dataclasses import dataclass
 
+from synthea.helpers.resources import resource_path
+
 
 @dataclass
 class DemographicDistribution:
@@ -130,6 +132,7 @@ class Demographics:
     def _load_names_from_file(self, filename: str, target_list: List[str]):
         """Load names from a file."""
         paths = [
+            resource_path('names') / filename,
             Path('resources/names') / filename,
             Path('src/main/resources/names') / filename,
             Path('../resources/names') / filename,
@@ -155,6 +158,7 @@ class Demographics:
             return
         
         paths = [
+            resource_path('geography') / f'{state.lower()}_demographics.json',
             Path('resources/geography') / f'{state.lower()}_demographics.json',
             Path('src/main/resources/geography') / f'{state.lower()}_demographics.json',
         ]

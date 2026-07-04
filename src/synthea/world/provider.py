@@ -12,6 +12,8 @@ import csv
 import json
 import random
 
+from synthea.helpers.resources import resource_path
+
 
 @dataclass
 class Provider:
@@ -81,6 +83,7 @@ class ProviderManager:
     def _load_from_csv(self):
         """Load providers from CSV file."""
         paths = [
+            resource_path('providers', 'providers.csv'),
             Path('resources/providers/providers.csv'),
             Path('src/main/resources/providers/providers.csv'),
             Path('../resources/providers/providers.csv'),

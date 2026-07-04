@@ -11,6 +11,8 @@ import csv
 import random
 from datetime import datetime, timedelta
 
+from synthea.helpers.resources import resource_path
+
 
 @dataclass
 class Payer:
@@ -73,6 +75,7 @@ class PayerManager:
     def _load_from_csv(self):
         """Load payers from CSV file."""
         paths = [
+            resource_path('payers', 'payers.csv'),
             Path('resources/payers/payers.csv'),
             Path('src/main/resources/payers/payers.csv'),
             Path('../resources/payers/payers.csv'),
