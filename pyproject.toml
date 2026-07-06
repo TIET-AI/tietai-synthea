@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tietai-synthea"
-version = "1.0.0"
+version = "1.0.1"
 description = "PySynthea - a Python-native synthetic patient population simulator"
 readme = "README.md"
 requires-python = ">=3.9,<3.14"
