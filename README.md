@@ -21,10 +21,10 @@ For a formal description of the framework, design goals, architecture, and gener
 ### From PyPI (recommended)
 
 ```bash
-pip install py-synthea
+pip install tietai-synthea
 ```
 
-The distribution is published as **`py-synthea`**; the import name and CLI
+The distribution is published as **`tietai-synthea`**; the import name and CLI
 command are both `synthea`:
 
 ```bash
