@@ -82,15 +82,20 @@ class GeneratorOptions:
 class Generator:
     """Main generator engine for creating synthetic patients."""
     
-    def __init__(self, options: Optional[GeneratorOptions] = None):
+    def __init__(self, options: Optional[GeneratorOptions] = None,
+                 config: Optional[Config] = None):
         """
         Initialize the generator.
-        
+
         Args:
             options: Configuration options for generation
+            config: A pre-loaded configuration to use (e.g. from the CLI, with
+                overrides such as ``exporter.baseDirectory`` already applied).
+                When omitted, a default config is created and loaded.
         """
         self.options = options or GeneratorOptions()
-        self.config = Config()
+        self.config = config if config is not None else Config()
+        self._config_provided = config is not None
         
         # Initialize random seed if provided
         if self.options.seed is not None:
@@ -120,8 +125,11 @@ class Generator:
     
     def _initialize(self):
         """Initialize all generator components."""
-        # Load configuration
-        self.config.load()
+        # Load configuration. Skip when a pre-configured Config was supplied
+        # (e.g. by the CLI), so caller overrides like exporter.baseDirectory are
+        # preserved and reach the exporter built below.
+        if not self._config_provided:
+            self.config.load()
         
         # Initialize location and demographics
         self._init_location()
@@ -159,11 +167,13 @@ class Generator:
         
         # Load modules from default location
         self.modules = Module.load_modules()
-        
+
         # Get list of modules to use
         self.module_list = self._get_module_list()
-        
-        print(f"Loaded {len(self.modules)} modules")
+
+        # Modules are registered as lazy suppliers, so count the full registry
+        # rather than the materialized dict (which is empty at this point).
+        print(f"Loaded {len(Module.get_all_modules())} modules")
     
     def _get_module_list(self) -> List[str]:
         """Get the list of modules to process for each patient."""

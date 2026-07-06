@@ -159,9 +159,8 @@ def main(population, seed, clinician_seed, gender, age, module, config, modules_
     click.echo("")
     
     try:
-        generator = Generator(options)
-        generator.config = config_obj
-        
+        generator = Generator(options, config=config_obj)
+
         # Override modules directory if specified
         if modules_dir:
             Module.load_modules(modules_dir)
