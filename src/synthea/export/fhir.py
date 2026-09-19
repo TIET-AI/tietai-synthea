@@ -105,7 +105,13 @@ class FHIRExporter(PatientExporter):
         for observation in person.record.observations:
             observation_entry = self.create_observation_entry(observation, person)
             bundle["entry"].append(observation_entry)
-        
+
+        # Add immunizations
+        for immunization in getattr(person.record, 'immunizations', []):
+            bundle["entry"].append(
+                self.create_immunization_entry(immunization, person)
+            )
+
         return bundle
     
     def create_patient_entry(self, person: 'Person') -> Dict[str, Any]:
@@ -116,20 +122,9 @@ class FHIRExporter(PatientExporter):
             "meta": {
                 "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"]
             } if self.use_us_core else {},
-            "identifier": [
-                {
-                    "system": "https://synthea.mitre.org/",
-                    "value": person.id
-                }
-            ],
+            "identifier": self._identifiers(person),
             "active": person.alive,
-            "name": [
-                {
-                    "use": "official",
-                    "family": person.attributes.get('last_name', 'Unknown'),
-                    "given": [person.attributes.get('first_name', 'Unknown')]
-                }
-            ],
+            "name": self._names(person),
             "gender": "male" if person.gender == 'M' else "female",
             "birthDate": person.birth_date.strftime('%Y-%m-%d') if person.birth_date else None,
         }
@@ -139,15 +134,52 @@ class FHIRExporter(PatientExporter):
             patient["deceasedDateTime"] = person.death_date.isoformat()
         
         # Add address
-        patient["address"] = [
-            {
-                "use": "home",
-                "city": person.attributes.get('city', 'Unknown'),
-                "state": person.attributes.get('state', 'Unknown'),
-                "postalCode": person.attributes.get('zip_code', '00000'),
-                "country": "US"
-            }
-        ]
+        address = {
+            "use": "home",
+            "city": person.attributes.get('city', 'Unknown'),
+            "state": person.attributes.get('state', 'Unknown'),
+            "postalCode": person.attributes.get('zip_code', '00000'),
+            "country": "US",
+        }
+        if person.attributes.get('address'):
+            address["line"] = [person.attributes['address']]
+        latitude = person.attributes.get('latitude')
+        longitude = person.attributes.get('longitude')
+        if latitude is not None and longitude is not None:
+            address["extension"] = [{
+                "url": "http://hl7.org/fhir/StructureDefinition/geolocation",
+                "extension": [
+                    {"url": "latitude", "valueDecimal": latitude},
+                    {"url": "longitude", "valueDecimal": longitude},
+                ],
+            }]
+        patient["address"] = [address]
+
+        telecom = []
+        if person.attributes.get('telephone'):
+            telecom.append({"system": "phone", "value": person.attributes['telephone'],
+                            "use": "home"})
+        if person.attributes.get('email'):
+            telecom.append({"system": "email", "value": person.attributes['email'],
+                            "use": "home"})
+        if telecom:
+            patient["telecom"] = telecom
+
+        marital = person.attributes.get('marital_status')
+        if marital:
+            patient["maritalStatus"] = {"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+                "code": marital.get('code'),
+                "display": marital.get('display'),
+            }]}
+
+        language = person.attributes.get('language_code')
+        if language:
+            patient["communication"] = [{"language": {"coding": [{
+                "system": language.get('system', 'urn:ietf:bcp:47'),
+                "code": language.get('code'),
+                "display": language.get('display'),
+            }]}}]
         
         # Add race/ethnicity extensions if US Core
         if self.use_us_core:
@@ -410,6 +442,23 @@ class FHIRExporter(PatientExporter):
             "effectiveDateTime": observation.time.isoformat()
         }
         
+        # Panels (blood pressure) carry their parts as components rather than
+        # a single value.
+        components = getattr(observation, 'components', None)
+        if components:
+            observation_resource["component"] = [
+                {
+                    "code": {"coding": [code.to_dict()]},
+                    "valueQuantity": {
+                        "value": value,
+                        "unit": unit or "",
+                        "system": "http://unitsofmeasure.org",
+                        "code": unit or "",
+                    },
+                }
+                for code, value, unit in components
+            ]
+
         # Add value based on type
         if observation.value is not None:
             if isinstance(observation.value, (int, float)):
@@ -442,6 +491,100 @@ class FHIRExporter(PatientExporter):
         
         return entry
     
+    # ------------------------------------------------------------------
+    # Patient identity
+    # ------------------------------------------------------------------
+
+    #: Identifier attribute -> (type code, display, system). The systems are
+    #: synthetic, matching the synthetic identifiers themselves.
+    IDENTIFIER_TYPES = [
+        ('identifier_mrn', 'MR', 'Medical Record Number',
+         'http://hospital.smarthealthit.org'),
+        ('identifier_ssn', 'SS', 'Social Security Number',
+         'http://hl7.org/fhir/sid/us-ssn'),
+        ('identifier_drivers', 'DL', "Driver's License",
+         'urn:oid:2.16.840.1.113883.4.3.25'),
+        ('identifier_passport', 'PPN', 'Passport Number',
+         'http://standardhealthrecord.org/fhir/StructureDefinition/passportNumber'),
+    ]
+
+    def _identifiers(self, person: 'Person') -> List[Dict[str, Any]]:
+        """Every identifier the patient carries, typed.
+
+        The generator's own patient id comes first so a bundle can always be
+        matched back to the run that produced it.
+        """
+        identifiers = [{
+            "system": "https://github.com/TIET-AI/tietai-synthea",
+            "value": person.id,
+        }]
+
+        for attribute, code, display, system in self.IDENTIFIER_TYPES:
+            value = person.attributes.get(attribute)
+            if not value:
+                continue
+            identifiers.append({
+                "type": {"coding": [{
+                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                    "code": code,
+                    "display": display,
+                }]},
+                "system": system,
+                "value": str(value),
+            })
+
+        return identifiers
+
+    def _names(self, person: 'Person') -> List[Dict[str, Any]]:
+        """Official name, plus a maiden name when the patient has one."""
+        given = person.attributes.get('first_name')
+        family = person.attributes.get('last_name')
+
+        official: Dict[str, Any] = {"use": "official"}
+        official["family"] = family if family else "Unknown"
+        official["given"] = [given] if given else ["Unknown"]
+        if person.attributes.get('name_prefix'):
+            official["prefix"] = [person.attributes['name_prefix']]
+
+        names = [official]
+
+        maiden = person.attributes.get('maiden_name')
+        if maiden:
+            names.append({
+                "use": "maiden",
+                "family": maiden,
+                "given": [given] if given else ["Unknown"],
+            })
+
+        return names
+
+    def create_immunization_entry(self, immunization, person: 'Person') -> Dict[str, Any]:
+        """Create a FHIR Immunization resource entry."""
+        resource = {
+            "resourceType": "Immunization",
+            "id": immunization.id,
+            "status": "completed",
+            "vaccineCode": {
+                "coding": [code.to_dict() for code in immunization.codes]
+            } if immunization.codes else {},
+            "patient": {"reference": f"urn:uuid:{person.id}"},
+            "occurrenceDateTime": immunization.time.isoformat(),
+            "primarySource": True,
+        }
+
+        if immunization.encounter:
+            resource["encounter"] = {
+                "reference": f"urn:uuid:{immunization.encounter.id}"
+            }
+
+        entry = {
+            "fullUrl": f"urn:uuid:{immunization.id}",
+            "resource": resource,
+        }
+        if self.use_transaction_bundle:
+            entry["request"] = {"method": "POST", "url": "Immunization"}
+        return entry
+
     def _map_race_code(self, race: str) -> str:
         """Map race to OMB category code."""
         race_map = {

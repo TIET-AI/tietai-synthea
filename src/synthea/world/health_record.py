@@ -90,7 +90,8 @@ class Encounter(Entry):
         self.imaging_studies: List['ImagingStudy'] = []
         self.devices: List['Device'] = []
         self.supplies: List['Supply'] = []
-    
+        self.immunizations: List['Immunization'] = []
+
     @property
     def is_active(self) -> bool:
         """Check if encounter is still active."""
@@ -167,6 +168,10 @@ class Observation(Entry):
     value: Any = None
     unit: Optional[str] = None
     category: str = "laboratory"
+    #: Parts of a panel, as ``(Code, value, unit)``. Blood pressure is one
+    #: Observation with systolic and diastolic components rather than two
+    #: separate Observations, which is what US Core expects.
+    components: List[Any] = field(default_factory=list)
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
@@ -231,6 +236,14 @@ class Supply(Entry):
     quantity: int = 1
 
 
+@dataclass
+class Immunization(Entry):
+    """Represents an administered vaccine."""
+    encounter: Optional[Encounter] = None
+    series_doses: Optional[int] = None
+    dose_number: Optional[int] = None
+
+
 class HealthRecord:
     """Complete health record for a person."""
     
@@ -272,6 +285,7 @@ class HealthRecord:
         self.imaging_studies: List[ImagingStudy] = []
         self.devices: List[Device] = []
         self.supplies: List[Supply] = []
+        self.immunizations: List[Immunization] = []
         
         # Death information
         self.death_date: Optional[datetime] = None
@@ -384,6 +398,7 @@ class HealthRecord:
         'ImagingStudy': 'imaging_studies',
         'Device': 'devices',
         'Supply': 'supplies',
+        'Immunization': 'immunizations',
     }
 
     def attach(self, entry: Entry, encounter: Optional[Encounter]) -> Entry:
@@ -681,6 +696,28 @@ class HealthRecord:
             result.append(supply)
 
         return result
+
+    def immunization(self, time: datetime, code: Optional[Code] = None,
+                     encounter: Optional[Encounter] = None) -> Immunization:
+        """Record an administered vaccine.
+
+        Args:
+            time: Administration time
+            code: CVX code for the vaccine
+            encounter: The visit at which it was given
+
+        Returns:
+            The new immunization
+        """
+        immunization = Immunization(time=time)
+        immunization.id = self.new_id()
+        if code:
+            immunization.codes = [code]
+
+        self.immunizations.append(immunization)
+        self.attach(immunization, encounter or self.current_encounter)
+
+        return immunization
 
     def death(self, time: datetime, cause: Optional[Code] = None):
         """

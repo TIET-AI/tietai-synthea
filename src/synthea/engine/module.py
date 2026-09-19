@@ -148,35 +148,50 @@ class Module:
         
         return cls._modules
     
+    #: Core modules, in the order they must run. `lifecycle` sets the age, BMI
+    #: and vital signs that disease-module logic conditions read, so it goes
+    #: first; `encounter` opens the routine visit that `wellness` Encounter
+    #: states attach to, so it goes before anything clinical.
+    CORE_MODULE_ORDER = [
+        'lifecycle',
+        'encounter',
+        'immunizations',
+        'health_insurance',
+        'quality_of_life',
+    ]
+
     @classmethod
     def _load_core_modules(cls):
-        """Load built-in core modules."""
-        core_modules = [
-            'lifecycle',
-            'encounter',
-            'health_insurance',
-            'death',
-            'quality_of_life',
-        ]
-        
-        for module_name in core_modules:
+        """Load the core modules written in Python.
+
+        A missing core module used to be swallowed silently, which is how the
+        engine ran for a year with no lifecycle at all: every patient was
+        nameless, ageless and immortal, and nothing said so. An import failure
+        is now logged.
+        """
+        for module_name in cls.CORE_MODULE_ORDER:
+            module_path = f'synthea.modules.core.{module_name}'
             try:
-                # Try to import the core module
-                module_path = f'synthea.modules.core.{module_name}'
                 imported = importlib.import_module(module_path)
-                
-                # Find the module class in the imported module
-                for name, obj in inspect.getmembers(imported):
-                    if (inspect.isclass(obj) and 
-                        issubclass(obj, Module) and 
-                        obj != Module):
-                        # Create a supplier function for lazy loading
-                        cls._module_suppliers[module_name] = lambda m=obj: m()
-                        cls._primary_keys.add(module_name)
-                        break
-            except ImportError:
-                # Core module not implemented yet
-                pass
+            except ImportError as error:
+                logger.warning(
+                    "Core module '%s' could not be imported (%s); patients will "
+                    "be generated without it.", module_name, error,
+                )
+                continue
+
+            for _, obj in inspect.getmembers(imported):
+                if (inspect.isclass(obj)
+                        and issubclass(obj, Module)
+                        and obj is not Module
+                        and obj.__module__ == module_path):
+                    cls._module_suppliers[module_name] = lambda m=obj: m()
+                    cls._primary_keys.add(module_name)
+                    break
+            else:
+                logger.warning(
+                    "Core module '%s' defines no Module subclass.", module_name,
+                )
     
     @classmethod
     def _load_json_modules(cls, path: str):
