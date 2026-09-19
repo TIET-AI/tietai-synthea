@@ -13,6 +13,159 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ---
 
+## [1.2.0] - 2026-09-19
+
+Patients now have an identity, a body that grows and ages, routine care, and a
+FHIR export that validates. 1.1.0 made the engine faithful to the modules; this
+makes the records it produces usable.
+
+Eleven of the thirteen [M1 milestone](https://github.com/TIET-AI/tietai-synthea/milestone/1)
+tickets are closed.
+
+### Added
+
+- **Core lifecycle** (#30). The engine tried to import five core modules and
+  swallowed the failure; none existed. Patients now get a name, street address,
+  telephone, email and four typed identifiers at birth, from the bundled
+  `names.yml`. Exported files are no longer called `Unknown_Person_*`.
+
+  Identifiers cannot collide with real ones by construction: social security
+  numbers use the never-issued `999` area, telephones the reserved `555`
+  exchange, emails the reserved `example.com` domain.
+
+- **Growth from the CDC charts** (#30). Each patient holds one height and one
+  weight percentile for life, evaluated through the charts' LMS parameters, so a
+  child's measurements are correlated across their whole childhood instead of
+  being redrawn at every visit. Adult height fixes at 20; adult weight gains,
+  plateaus at 49 and declines from 60.
+
+- **Vital signs** (#30). Blood pressure, heart rate, respiration rate and oxygen
+  saturation each timestep, from the reference ranges in `biometrics.yml`, and
+  never overwriting a value a disease module has already set.
+
+- **Background mortality** (#30). Previously a patient died only if a module
+  killed them, so populations contained implausible numbers of centenarians.
+
+- **Routine check-ups** (#29) at age-appropriate intervals, with vitals recorded
+  at each. This is what a `wellness` Encounter state attaches to.
+
+- **Immunizations** (#31). The bundled schedule, which nothing had ever read,
+  administered at check-ups. A vaccine licensed after a patient's birth is not
+  backdated. The `Vaccine` state, previously a no-op, now records module-driven
+  vaccinations.
+
+- **Imaging studies** (#33). The `ImagingStudy` state was a no-op, so 39 states
+  across 19 modules produced nothing. Studies, series and instances now carry
+  real DICOM UIDs under the `2.25.` arc.
+
+- **Reference data** (#37). 70 lookup tables, 14 cost tables, 4 payer tables and
+  geography, with `PROVENANCE.json` pinning the upstream commit and recording a
+  SHA-256 per file.
+
+- **FHIR validation gate** (#35). `synthea.export.validation` checks a bundle
+  against the R4B models in `fhir.resources`, and the suite fails on any invalid
+  resource, any null, or any reference that does not resolve.
+
+### Fixed
+
+- **The FHIR export was never valid** (#35). Every bundle this project has
+  written was invalid R4:
+
+  | | Was | Now |
+  |---|---|---|
+  | `Encounter.class` | `AMBULATORY`, the enum name upper-cased | An ActCode: `AMB`, `EMER`, `IMP`, `HH`, `VR` |
+  | `Coding.system` | `SNOMED-CT`, `RxNorm`, `CVX` | A URI |
+  | Open periods | `"end": null` | Absent |
+  | dateTimes | No timezone | UTC offset |
+  | `Quantity.code` | Display unit | UCUM symbol |
+  | `Observation.category` | Any string | One of nine valid codes |
+  | `Condition.category` | Absent | Present |
+  | Coded observation values | A bare `Coding` | A `CodeableConcept` |
+  | `fullUrl` | `urn:uuid:` plus a 16-character hash | A real UUID |
+
+  The coding system was the worst of these: every code was correct and
+  simultaneously unresolvable by any server.
+
+- **The bundled reference data never shipped** (#37). A blanket `*.csv` in
+  `.gitignore`, presumably added to keep generated output out of the repository,
+  silently excluded every provider, payer, cost and lookup table. They were
+  documented for a year while never being committed, so all 289 lookup-table
+  references fell back to a default probability and the age, sex, state and date
+  stratification did nothing.
+
+  `LookupTableTransition` could not have read them anyway: it looked for
+  `age_min` and `age_max` columns, and the real tables stratify on an age
+  *range*, a state name, an epoch-millisecond window or a patient attribute.
+
+- **Module-set vital signs never reached the record** (#32). They lived only on
+  the person object, invisible to every exporter. This is why observations
+  reading a vital sign exported with no value.
+
+- **Medication detail was ignored** (#28). `prescription` (400 uses),
+  `administration` (145) and `chronic` (336) were dropped, so prescriptions had
+  no dosage or refills. A drug given during a visit is now a
+  `MedicationAdministration`, not a request for a drug, and `reason` resolves to
+  the condition being treated instead of free text no consumer could resolve.
+
+- **Three condition types always returned false** (#32), so modules silently
+  took the wrong branch: `Active Allergy` (24 uses), `At Least` and `At Most`
+  (13 uses). `PriorState` now honours its `within` window.
+
+- **The configuration promised output it could not produce** (#36). Enabling the
+  CSV exporter raised an `ImportError` from deep inside start-up; C-CDA was
+  accepted and silently did nothing. Both now fail immediately with a message
+  naming the tracking issue.
+
+- **The package would not install on Python 3.14** (#85) despite the whole suite
+  passing there. The version ceiling was an untested assumption; it is gone, and
+  3.14 is in the CI matrix.
+
+- Ages came from a uniform draw between the requested bounds; they now follow
+  the demographic distribution, and birthdays are spread across the year.
+
+- `Patient.gender` reported `female` for any non-male patient, including unknown.
+
+### Changed
+
+- Core modules run first, in a defined order, because disease-module logic reads
+  the attributes they set. `generate.core_modules = false` turns them off.
+- An `ImportError` in a core module is now logged rather than swallowed. That
+  silence is how a missing lifecycle went unnoticed for a year.
+- Unknown distribution kinds, time units, code systems and condition types log
+  once per process instead of failing silently.
+- `Person` carries a `uuid` alongside its `id`, derived from the seed.
+- The wheel grows from 863 KB to 2.0 MB with the bundled reference data.
+
+### Known limitations
+
+- **Mortality is a fitted parametric hazard, not a published life table.** It
+  gives life expectancies of 75.3 and 80.5 years and a test asserts that, but
+  survival curves from this generator are plausible, not authoritative. Real
+  life tables are #55.
+- **Obesity is under-represented**: mean adult BMI 27.2 against a real 29.7, and
+  17% obese against 42%. `biometrics.yml` gives adult weight change without a
+  unit; read as kilograms per year it produced a mean BMI of 32 with two thirds
+  obese, so it is read as pounds. Calibrating properly is #55 and #56.
+- 68 MB of upstream data is deliberately **not** bundled: per-city census
+  demographics, veteran demographics, the provider directory and county FIPS
+  codes. Nothing in this version reads them. See `RESOURCES.md` and #37.
+- Encounters are not linked to a provider or clinician (#38); there is no
+  insurance, cost or claim modelling (#39); there are no clinical notes (#43).
+- `Death` states still ignore the time unit and read every quantity as years
+  (#81).
+- Generation costs roughly 3.6 s per patient across all modules (#71).
+
+### Upgrade notes
+
+- **Output changes completely again.** A seed does not reproduce a 1.1.0
+  population. Pin an exact version for any dataset you need to regenerate.
+- No change to the `synthea` command, its options, or the `Generator` /
+  `GeneratorOptions` / `Person` API. Enabling `exporter.csv.export` or
+  `exporter.ccda.export` now raises `NotImplementedError` at start-up instead of
+  an `ImportError` or silence.
+
+---
+
 ## [1.1.0] - 2026-09-19
 
 The first release of the engine-correctness work. Four defects in the Generic
@@ -151,6 +304,7 @@ Carried forward and tracked; none is a regression. See the
 Initial packaged release: Python-native Synthea engine, 99 bundled modules,
 FHIR R4 and JSON export, published to PyPI as `tietai-synthea`.
 
+[1.2.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/TIET-AI/tietai-synthea/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/TIET-AI/tietai-synthea/releases/tag/v1.0.0
