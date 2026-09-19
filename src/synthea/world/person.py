@@ -50,6 +50,10 @@ class Person:
         
         # Unique identifier
         self.id = self._generate_id()
+        # A real UUID as well: FHIR's `urn:uuid:` prefix must be followed by
+        # one, and the 16-character hash above is not a UUID. Derived from the
+        # seed so it stays reproducible.
+        self.uuid = self._generate_uuid()
     
     def _generate_id(self) -> str:
         """Generate a unique identifier for this person."""
@@ -57,6 +61,12 @@ class Person:
         hash_input = f"person_{self.seed}"
         return hashlib.sha256(hash_input.encode()).hexdigest()[:16]
     
+    def _generate_uuid(self) -> str:
+        """A reproducible UUID for this person, for FHIR references."""
+        import uuid as _uuid
+        digest = hashlib.sha256(f"person-uuid-{self.seed}".encode()).digest()
+        return str(_uuid.UUID(bytes=digest[:16], version=4))
+
     def init_health_record(self):
         """Initialize the person's health record."""
         from synthea.world.health_record import HealthRecord

@@ -108,8 +108,8 @@
     {
       "path": "lookup_tables/AML.csv",
       "upstream_path": "src/main/resources/modules/lookup_tables/AML.csv",
-      "bytes": 586,
-      "sha256": "3051c3b7e74dea2c1241c9047990bf7114bf0bc9f77c8e780cec63096a574463"
+      "bytes": 573,
+      "sha256": "1b3adc4c4f952f821a68537f7fc8fb8f1dff4aa64c180f884daefa4f1205bbd2"
     },
     {
       "path": "lookup_tables/ace_arb_amlodipine_benazepril_product_distribution.csv",
@@ -264,20 +264,20 @@
     {
       "path": "lookup_tables/cabg_details_num_art_cond.csv",
       "upstream_path": "src/main/resources/modules/lookup_tables/cabg_details_num_art_cond.csv",
-      "bytes": 309,
-      "sha256": "c57bfa3b69bf489c30770d5371c16939b2c70d8a54a62ff4726b98a68cf0ee17"
+      "bytes": 303,
+      "sha256": "83b40e51a5f5a2f8972cc0a19febe6233aa2f9e983c09b0298ad43e252267d1d"
     },
     {
       "path": "lookup_tables/cabg_details_num_grafts.csv",
       "upstream_path": "src/main/resources/modules/lookup_tables/cabg_details_num_grafts.csv",
-      "bytes": 272,
-      "sha256": "e3d0b5c666350aa3d0cfe8ff5ad6c0c8cee90cc19e95d0b6b25661dd03601b78"
+      "bytes": 268,
+      "sha256": "ded18e10cbe023d6adb64438ede1a1774a92e8679979cabbc0db074d89c75eb6"
     },
     {
       "path": "lookup_tables/cabg_details_operative_approach.csv",
       "upstream_path": "src/main/resources/modules/lookup_tables/cabg_details_operative_approach.csv",
-      "bytes": 143,
-      "sha256": "96edd0ddd8ebd13d67306c3a92710599b32a1a99cf64b9d22d8720f608b7d7b1"
+      "bytes": 139,
+      "sha256": "0d83265647798b6e8e943e19aea4b9465391596429a16612148d6a56623b498b"
     },
     {
       "path": "lookup_tables/covid-19-severity-outcomes.csv",
@@ -306,8 +306,8 @@
     {
       "path": "lookup_tables/diabetic_retinopathy_followup.csv",
       "upstream_path": "src/main/resources/modules/lookup_tables/diabetic_retinopathy_followup.csv",
-      "bytes": 319,
-      "sha256": "1f4ce826d444f7a1a199edfefbd7dcc0b933b3d3712e23141725f064f8a8106d"
+      "bytes": 309,
+      "sha256": "88f90f5d31195c5000cdbf40a8de8629ccb5d7889fba59efd5ab7cd75a5e3b7d"
     },
     {
       "path": "lookup_tables/emergency_inhaler_albuterol_product_distribution.csv",
@@ -474,8 +474,8 @@
     {
       "path": "lookup_tables/uti_recurrence.csv",
       "upstream_path": "src/main/resources/modules/lookup_tables/uti_recurrence.csv",
-      "bytes": 367,
-      "sha256": "baf597d27a7c139f962b7a100ff02abfcdc616c540478c7867e888305965aeda"
+      "bytes": 357,
+      "sha256": "b83c29603db32b3169cd3dd6aa4eb65f53943b595c69f24acd9f32c0f604aa35"
     },
     {
       "path": "lookup_tables/vhd_ar.csv",
@@ -528,20 +528,20 @@
     {
       "path": "payers/carriers.csv",
       "upstream_path": "src/main/resources/payers/carriers.csv",
-      "bytes": 4497,
-      "sha256": "caeebbcd40dd302afb6034ac8a48f365cafcee44bbe216febccbc1c0e99c43c4"
+      "bytes": 4405,
+      "sha256": "ff8010cafd2590793840cf9fcc00e8f53055613b03101c3c8209c627888eb4e7"
     },
     {
       "path": "payers/insurance_companies.csv",
       "upstream_path": "src/main/resources/payers/insurance_companies.csv",
-      "bytes": 824,
-      "sha256": "ea9904cacd49b705ed4fb424eb01e52aa538d4ecf60d8ac3b63db83337f145d7"
+      "bytes": 815,
+      "sha256": "00b11b3386dfb28654df7d510475eaf0dbe1ed7be9822eb3b3798af656c6a8ec"
     },
     {
       "path": "payers/insurance_eligibilities.csv",
       "upstream_path": "src/main/resources/payers/insurance_eligibilities.csv",
-      "bytes": 1085,
-      "sha256": "53658e768e390968cecffddafd067775954b87338710aaa1d78cfce2863b9050"
+      "bytes": 1077,
+      "sha256": "701231cd3b4c71b379f2447168d0e4dab5972c55321a8467ff618bd493e80ab1"
     },
     {
       "path": "payers/insurance_plans.csv",
@@ -549,5 +549,6 @@
       "bytes": 3185,
       "sha256": "5d80db633edb576d6d3148b79b2150299cfd864be84c20fdc8dfa149ed830660"
     }
-  ]
+  ],
+  "hash_note": "SHA-256 of content with line endings normalised to LF, so the manifest verifies identically on every platform."
 }

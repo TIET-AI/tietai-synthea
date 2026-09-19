@@ -53,7 +53,7 @@ class TestProvenance:
         for entry in manifest['files']:
             path = root / entry['path']
             assert path.exists(), f"missing bundled resource: {entry['path']}"
-            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            digest = hashlib.sha256(_normalised(path.read_bytes())).hexdigest()
             assert digest == entry['sha256'], f"modified resource: {entry['path']}"
 
     def test_every_lookup_table_a_module_references_is_bundled(self):
@@ -118,3 +118,14 @@ class TestExporterConfiguration:
         config.set('exporter.json.export', True)
 
         assert len(Exporter(config).patient_exporters) == 2
+
+
+def _normalised(payload: bytes) -> bytes:
+    """Content with line endings normalised to LF.
+
+    `.gitattributes` stores text as LF and git restores platform endings on
+    checkout, so the same file has different bytes on Windows and Linux.
+    Hashing raw bytes would make this check pass on one platform and fail on
+    another, which is worse than not checking at all.
+    """
+    return payload.replace(b"\r\n", b"\n")

@@ -6,11 +6,12 @@ This module exports patient data in FHIR R4 format.
 
 from pathlib import Path
 from typing import Dict, Any, Optional, List, TYPE_CHECKING
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 import uuid
 
 from synthea.export.exporter import PatientExporter
+from synthea.export.terminology import system_uri, ucum_code
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
@@ -30,17 +31,124 @@ _PERIOD_UNITS = {
 }
 
 
-def _coding(raw: Any) -> Dict[str, Any]:
-    """A FHIR coding from a Code object or a raw dict."""
-    if hasattr(raw, 'to_dict'):
-        return raw.to_dict()
-    if isinstance(raw, dict):
-        return {
-            'system': raw.get('system', ''),
-            'code': str(raw.get('code', '')),
-            'display': raw.get('display', ''),
-        }
-    return {'text': str(raw)}
+#: Encounter class, as the modules name it, mapped to the ActCode value FHIR
+#: requires. The enum name upper-cased ("AMBULATORY") is not an ActCode and no
+#: server will accept it.
+ACT_CODES = {
+    'ambulatory': ('AMB', 'ambulatory'),
+    'wellness': ('AMB', 'ambulatory'),
+    'outpatient': ('AMB', 'ambulatory'),
+    'urgentcare': ('AMB', 'ambulatory'),
+    'emergency': ('EMER', 'emergency'),
+    'inpatient': ('IMP', 'inpatient encounter'),
+    'snf': ('IMP', 'inpatient encounter'),
+    'hospice': ('HH', 'home health'),
+    'home': ('HH', 'home health'),
+    'virtual': ('VR', 'virtual'),
+}
+
+ACT_CODE_SYSTEM = 'http://terminology.hl7.org/CodeSystem/v3-ActCode'
+OBSERVATION_CATEGORY_SYSTEM = (
+    'http://terminology.hl7.org/CodeSystem/observation-category')
+CONDITION_CATEGORY_SYSTEM = (
+    'http://terminology.hl7.org/CodeSystem/condition-category')
+
+#: The only Observation categories FHIR defines. Anything else is reported as
+#: `exam`, because an unrecognised category code is invalid.
+OBSERVATION_CATEGORIES = {
+    'vital-signs', 'laboratory', 'imaging', 'survey', 'exam', 'procedure',
+    'therapy', 'activity', 'social-history',
+}
+
+US_CORE = 'http://hl7.org/fhir/us/core/StructureDefinition/'
+US_CORE_PROFILES = {
+    'Patient': US_CORE + 'us-core-patient',
+    'Encounter': US_CORE + 'us-core-encounter',
+    'Condition': US_CORE + 'us-core-condition-problems-health-concerns',
+    'Observation': US_CORE + 'us-core-observation-lab',
+    'Procedure': US_CORE + 'us-core-procedure',
+    'MedicationRequest': US_CORE + 'us-core-medicationrequest',
+    'Immunization': US_CORE + 'us-core-immunization',
+}
+
+US_CORE_VITAL_SIGNS = 'http://hl7.org/fhir/StructureDefinition/vitalsigns'
+
+
+def _observation_category(observation) -> str:
+    """A category code FHIR recognises; anything else becomes `exam`."""
+    category = getattr(observation, 'category', None)
+    return category if category in OBSERVATION_CATEGORIES else 'exam'
+
+
+def _act_code(encounter) -> Dict[str, str]:
+    """The ActCode for an encounter class.
+
+    The enum name upper-cased ("AMBULATORY") is not an ActCode value and no
+    server accepts it.
+    """
+    code, display = ACT_CODES.get(encounter.encounter_class.value, ('AMB', 'ambulatory'))
+    return {"system": ACT_CODE_SYSTEM, "code": code, "display": display}
+
+
+def prune(node: Any) -> Any:
+    """Drop every null from a structure.
+
+    FHIR has no null: an absent value is an absent field. An open encounter's
+    `period.end` used to serialise as JSON null, which makes it invalid.
+    """
+    if isinstance(node, dict):
+        return {k: prune(v) for k, v in node.items() if v is not None}
+    if isinstance(node, list):
+        return [prune(v) for v in node if v is not None]
+    return node
+
+
+def fhir_datetime(value) -> Optional[str]:
+    """An ISO timestamp with a timezone, as FHIR requires.
+
+    A dateTime carrying a time must carry an offset too. Simulation times are
+    naive, so they are stamped UTC rather than left ambiguous.
+    """
+    if value is None:
+        return None
+    if getattr(value, 'tzinfo', None) is None:
+        value = value.replace(tzinfo=timezone.utc)
+    return value.isoformat()
+
+
+def coding(raw: Any) -> Dict[str, Any]:
+    """A FHIR coding whose system is a URI.
+
+    The modules write 'SNOMED-CT' and 'RxNorm'. Those are not URIs, so every
+    code exported was correct and simultaneously unresolvable by any server.
+    """
+    if hasattr(raw, 'system'):
+        system, code, display = raw.system, raw.code, raw.display
+    elif isinstance(raw, dict):
+        system, code, display = raw.get('system'), raw.get('code'), raw.get('display')
+    else:
+        return {'display': str(raw)}
+
+    result = {'system': system_uri(system), 'code': str(code)}
+    if display:
+        result['display'] = display
+    return result
+
+
+def codings(items) -> List[Dict[str, Any]]:
+    return [coding(item) for item in (items or [])]
+
+
+def quantity(value, unit) -> Dict[str, Any]:
+    """A FHIR Quantity whose `code` is a UCUM symbol, not a display unit."""
+    result: Dict[str, Any] = {'value': value}
+    ucum = ucum_code(unit)
+    if unit:
+        result['unit'] = str(unit)
+    if ucum:
+        result['system'] = 'http://unitsofmeasure.org'
+        result['code'] = ucum
+    return result
 
 
 class FHIRExporter(PatientExporter):
@@ -86,6 +194,30 @@ class FHIRExporter(PatientExporter):
         
         return str(filepath)
     
+    def _entry(self, resource_type: str, resource_id: str,
+               resource: Dict[str, Any], vital_signs: bool = False) -> Dict[str, Any]:
+        """Wrap a resource as a bundle entry: profiled, pruned, addressable.
+
+        Every builder goes through here, so profile assignment and null pruning
+        cannot be forgotten for a newly added resource type.
+        """
+        profile = US_CORE_VITAL_SIGNS if vital_signs else US_CORE_PROFILES.get(resource_type)
+        if profile and self.use_us_core:
+            meta = resource.setdefault("meta", {})
+            if not meta.get("profile"):
+                meta["profile"] = [profile]
+
+        entry = {
+            "fullUrl": f"urn:uuid:{resource_id}",
+            "resource": prune(resource),
+        }
+        if self.use_transaction_bundle:
+            entry["request"] = {"method": "POST", "url": resource_type}
+        return entry
+
+    def _subject(self, person: 'Person') -> Dict[str, str]:
+        return {"reference": f"urn:uuid:{person.uuid}"}
+
     def create_bundle(self, person: 'Person') -> Dict[str, Any]:
         """
         Create a FHIR bundle for a person.
@@ -148,20 +280,20 @@ class FHIRExporter(PatientExporter):
         """Create a FHIR Patient resource entry."""
         patient = {
             "resourceType": "Patient",
-            "id": person.id,
+            "id": person.uuid,
             "meta": {
                 "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"]
             } if self.use_us_core else {},
             "identifier": self._identifiers(person),
             "active": person.alive,
             "name": self._names(person),
-            "gender": "male" if person.gender == 'M' else "female",
+            "gender": {"M": "male", "F": "female"}.get(person.gender, "unknown"),
             "birthDate": person.birth_date.strftime('%Y-%m-%d') if person.birth_date else None,
         }
         
         # Add death information if applicable
         if not person.alive and person.death_date:
-            patient["deceasedDateTime"] = person.death_date.isoformat()
+            patient["deceasedDateTime"] = fhir_datetime(person.death_date)
         
         # Add address
         address = {
@@ -254,19 +386,13 @@ class FHIRExporter(PatientExporter):
                 ]
             }
             patient["extension"].append(ethnicity_ext)
+
+            patient["extension"].append({
+                "url": US_CORE + "us-core-birthsex",
+                "valueCode": person.gender if person.gender in ('M', 'F') else 'UNK',
+            })
         
-        entry = {
-            "fullUrl": f"urn:uuid:{person.id}",
-            "resource": patient
-        }
-        
-        if self.use_transaction_bundle:
-            entry["request"] = {
-                "method": "POST",
-                "url": "Patient"
-            }
-        
-        return entry
+        return self._entry("Patient", person.uuid, patient)
     
     def create_encounter_entry(self, encounter: 'Encounter', person: 'Person') -> Dict[str, Any]:
         """Create a FHIR Encounter resource entry."""
@@ -274,23 +400,19 @@ class FHIRExporter(PatientExporter):
             "resourceType": "Encounter",
             "id": encounter.id,
             "status": "finished" if encounter.end_time else "in-progress",
-            "class": {
-                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-                "code": encounter.encounter_class.value.upper(),
-                "display": encounter.encounter_class.value.title()
-            },
+            "class": _act_code(encounter),
             "type": [
                 {
-                    "coding": [code.to_dict() for code in encounter.codes]
+                    "coding": codings(encounter.codes)
                 }
             ] if encounter.codes else [],
             "subject": {
-                "reference": f"urn:uuid:{person.id}",
+                "reference": f"urn:uuid:{person.uuid}",
                 "display": f"{person.attributes.get('first_name', '')} {person.attributes.get('last_name', '')}"
             },
             "period": {
-                "start": encounter.time.isoformat(),
-                "end": encounter.end_time.isoformat() if encounter.end_time else None
+                "start": fhir_datetime(encounter.time),
+                "end": fhir_datetime(encounter.end_time) if encounter.end_time else None
             }
         }
         
@@ -301,18 +423,7 @@ class FHIRExporter(PatientExporter):
                 }
             ]
         
-        entry = {
-            "fullUrl": f"urn:uuid:{encounter.id}",
-            "resource": encounter_resource
-        }
-        
-        if self.use_transaction_bundle:
-            entry["request"] = {
-                "method": "POST",
-                "url": "Encounter"
-            }
-        
-        return entry
+        return self._entry("Encounter", encounter.id, encounter_resource)
     
     def create_condition_entry(self, condition: 'Condition', person: 'Person') -> Dict[str, Any]:
         """Create a FHIR Condition resource entry."""
@@ -335,35 +446,29 @@ class FHIRExporter(PatientExporter):
                     }
                 ]
             },
+            "category": [{"coding": [{
+                "system": CONDITION_CATEGORY_SYSTEM,
+                "code": ("encounter-diagnosis" if condition.encounter
+                         else "problem-list-item"),
+            }]}],
             "code": {
-                "coding": [code.to_dict() for code in condition.codes]
+                "coding": codings(condition.codes)
             } if condition.codes else {},
             "subject": {
-                "reference": f"urn:uuid:{person.id}"
+                "reference": f"urn:uuid:{person.uuid}"
             },
-            "onsetDateTime": condition.time.isoformat()
+            "onsetDateTime": fhir_datetime(condition.time)
         }
         
         if condition.end_time:
-            condition_resource["abatementDateTime"] = condition.end_time.isoformat()
+            condition_resource["abatementDateTime"] = fhir_datetime(condition.end_time)
         
         if condition.encounter:
             condition_resource["encounter"] = {
                 "reference": f"urn:uuid:{condition.encounter.id}"
             }
         
-        entry = {
-            "fullUrl": f"urn:uuid:{condition.id}",
-            "resource": condition_resource
-        }
-        
-        if self.use_transaction_bundle:
-            entry["request"] = {
-                "method": "POST",
-                "url": "Condition"
-            }
-        
-        return entry
+        return self._entry("Condition", condition.id, condition_resource)
     
     def create_medication_entry(self, medication, person) -> Dict[str, Any]:
         """Create a MedicationRequest, or a MedicationAdministration.
@@ -383,10 +488,10 @@ class FHIRExporter(PatientExporter):
             "status": "stopped" if medication.end_time else "active",
             "intent": "order",
             "medicationCodeableConcept": {
-                "coding": [code.to_dict() for code in medication.codes]
+                "coding": codings(medication.codes)
             } if medication.codes else {},
-            "subject": {"reference": f"urn:uuid:{person.id}"},
-            "authoredOn": medication.time.isoformat(),
+            "subject": {"reference": f"urn:uuid:{person.uuid}"},
+            "authoredOn": fhir_datetime(medication.time),
         }
 
         if medication.encounter:
@@ -405,13 +510,7 @@ class FHIRExporter(PatientExporter):
         if dispense:
             resource["dispenseRequest"] = dispense
 
-        entry = {
-            "fullUrl": f"urn:uuid:{medication.id}",
-            "resource": resource,
-        }
-        if self.use_transaction_bundle:
-            entry["request"] = {"method": "POST", "url": "MedicationRequest"}
-        return entry
+        return self._entry("MedicationRequest", medication.id, resource)
 
     def _medication_administration(self, medication, person) -> Dict[str, Any]:
         resource = {
@@ -419,10 +518,10 @@ class FHIRExporter(PatientExporter):
             "id": medication.id,
             "status": "completed",
             "medicationCodeableConcept": {
-                "coding": [code.to_dict() for code in medication.codes]
+                "coding": codings(medication.codes)
             } if medication.codes else {},
-            "subject": {"reference": f"urn:uuid:{person.id}"},
-            "effectiveDateTime": medication.time.isoformat(),
+            "subject": {"reference": f"urn:uuid:{person.uuid}"},
+            "effectiveDateTime": fhir_datetime(medication.time),
         }
 
         if medication.encounter:
@@ -432,13 +531,7 @@ class FHIRExporter(PatientExporter):
 
         self._add_reason(resource, medication)
 
-        entry = {
-            "fullUrl": f"urn:uuid:{medication.id}",
-            "resource": resource,
-        }
-        if self.use_transaction_bundle:
-            entry["request"] = {"method": "POST", "url": "MedicationAdministration"}
-        return entry
+        return self._entry("MedicationAdministration", medication.id, resource)
 
     def _add_reason(self, resource: Dict[str, Any], medication) -> None:
         """Point at the condition being treated rather than naming it in text.
@@ -482,7 +575,7 @@ class FHIRExporter(PatientExporter):
         instructions = prescription.get('instructions')
         if instructions:
             dosage["additionalInstruction"] = [
-                {"coding": [_coding(instruction)]} for instruction in instructions
+                {"coding": [coding(instruction)]} for instruction in instructions
             ]
 
         return dosage if len(dosage) > 1 else {}
@@ -523,16 +616,16 @@ class FHIRExporter(PatientExporter):
                 "numberOfInstances": len(instances),
             }
             if definition.get('modality') is not None:
-                entry_series["modality"] = _coding(definition['modality'])
+                entry_series["modality"] = coding(definition['modality'])
             if definition.get('body_site') is not None:
-                entry_series["bodySite"] = _coding(definition['body_site'])
+                entry_series["bodySite"] = coding(definition['body_site'])
 
             entry_series["instance"] = [
                 {
                     "uid": instance.get('uid'),
                     "number": position,
                     "title": instance.get('title'),
-                    "sopClass": _coding(instance.get('sop_class')),
+                    "sopClass": coding(instance.get('sop_class')),
                 }
                 for position, instance in enumerate(instances, start=1)
                 if instance.get('sop_class') is not None
@@ -543,8 +636,8 @@ class FHIRExporter(PatientExporter):
             "resourceType": "ImagingStudy",
             "id": study.id,
             "status": "available",
-            "subject": {"reference": f"urn:uuid:{person.id}"},
-            "started": study.time.isoformat(),
+            "subject": {"reference": f"urn:uuid:{person.uuid}"},
+            "started": fhir_datetime(study.time),
             "numberOfSeries": len(series),
             "numberOfInstances": sum(s.get("numberOfInstances", 0) for s in series),
             "series": series,
@@ -560,15 +653,9 @@ class FHIRExporter(PatientExporter):
             resource["encounter"] = {"reference": f"urn:uuid:{study.encounter.id}"}
 
         if study.procedure_code is not None:
-            resource["procedureCode"] = [{"coding": [study.procedure_code.to_dict()]}]
+            resource["procedureCode"] = [{"coding": [coding(study.procedure_code)]}]
 
-        entry = {
-            "fullUrl": f"urn:uuid:{study.id}",
-            "resource": resource,
-        }
-        if self.use_transaction_bundle:
-            entry["request"] = {"method": "POST", "url": "ImagingStudy"}
-        return entry
+        return self._entry("ImagingStudy", study.id, resource)
 
     def create_procedure_entry(self, procedure: 'Procedure', person: 'Person') -> Dict[str, Any]:
         """Create a FHIR Procedure resource entry."""
@@ -577,12 +664,12 @@ class FHIRExporter(PatientExporter):
             "id": procedure.id,
             "status": "completed",
             "code": {
-                "coding": [code.to_dict() for code in procedure.codes]
+                "coding": codings(procedure.codes)
             } if procedure.codes else {},
             "subject": {
-                "reference": f"urn:uuid:{person.id}"
+                "reference": f"urn:uuid:{person.uuid}"
             },
-            "performedDateTime": procedure.time.isoformat()
+            "performedDateTime": fhir_datetime(procedure.time)
         }
         
         if procedure.encounter:
@@ -597,18 +684,7 @@ class FHIRExporter(PatientExporter):
                 }
             ]
         
-        entry = {
-            "fullUrl": f"urn:uuid:{procedure.id}",
-            "resource": procedure_resource
-        }
-        
-        if self.use_transaction_bundle:
-            entry["request"] = {
-                "method": "POST",
-                "url": "Procedure"
-            }
-        
-        return entry
+        return self._entry("Procedure", procedure.id, procedure_resource)
     
     def create_observation_entry(self, observation: 'Observation', person: 'Person') -> Dict[str, Any]:
         """Create a FHIR Observation resource entry."""
@@ -616,24 +692,17 @@ class FHIRExporter(PatientExporter):
             "resourceType": "Observation",
             "id": observation.id,
             "status": "final",
-            "category": [
-                {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                            "code": observation.category,
-                            "display": observation.category.title()
-                        }
-                    ]
-                }
-            ],
+            "category": [{"coding": [{
+                "system": OBSERVATION_CATEGORY_SYSTEM,
+                "code": _observation_category(observation),
+            }]}],
             "code": {
-                "coding": [code.to_dict() for code in observation.codes]
+                "coding": codings(observation.codes)
             } if observation.codes else {},
             "subject": {
-                "reference": f"urn:uuid:{person.id}"
+                "reference": f"urn:uuid:{person.uuid}"
             },
-            "effectiveDateTime": observation.time.isoformat()
+            "effectiveDateTime": fhir_datetime(observation.time)
         }
         
         # Panels (blood pressure) carry their parts as components rather than
@@ -642,48 +711,35 @@ class FHIRExporter(PatientExporter):
         if components:
             observation_resource["component"] = [
                 {
-                    "code": {"coding": [code.to_dict()]},
-                    "valueQuantity": {
-                        "value": value,
-                        "unit": unit or "",
-                        "system": "http://unitsofmeasure.org",
-                        "code": unit or "",
-                    },
+                    "code": {"coding": [coding(code)]},
+                    "valueQuantity": quantity(value, unit),
                 }
                 for code, value, unit in components
             ]
 
-        # Add value based on type
-        if observation.value is not None:
-            if isinstance(observation.value, (int, float)):
-                observation_resource["valueQuantity"] = {
-                    "value": observation.value,
-                    "unit": observation.unit or "",
-                    "system": "http://unitsofmeasure.org",
-                    "code": observation.unit or ""
-                }
-            elif isinstance(observation.value, str):
-                observation_resource["valueString"] = observation.value
-            elif isinstance(observation.value, dict):
-                observation_resource["valueCodeableConcept"] = observation.value
+        # Add value based on type. A coded value is a CodeableConcept, which
+        # wraps a list of codings; assigning the raw code dict produced a
+        # Coding where a CodeableConcept belongs, and left the module's short
+        # system name ('SNOMED-CT') in place of a URI.
+        value = observation.value
+        if value is not None:
+            if isinstance(value, bool):
+                observation_resource["valueBoolean"] = value
+            elif isinstance(value, (int, float)):
+                observation_resource["valueQuantity"] = quantity(
+                    value, observation.unit)
+            elif isinstance(value, dict) or hasattr(value, 'system'):
+                observation_resource["valueCodeableConcept"] = {
+                    "coding": [coding(value)]}
+            else:
+                observation_resource["valueString"] = str(value)
         
         if observation.encounter:
             observation_resource["encounter"] = {
                 "reference": f"urn:uuid:{observation.encounter.id}"
             }
         
-        entry = {
-            "fullUrl": f"urn:uuid:{observation.id}",
-            "resource": observation_resource
-        }
-        
-        if self.use_transaction_bundle:
-            entry["request"] = {
-                "method": "POST",
-                "url": "Observation"
-            }
-        
-        return entry
+        return self._entry("Observation", observation.id, observation_resource, vital_signs=(_observation_category(observation) == 'vital-signs'))
     
     # ------------------------------------------------------------------
     # Patient identity
@@ -759,10 +815,10 @@ class FHIRExporter(PatientExporter):
             "id": immunization.id,
             "status": "completed",
             "vaccineCode": {
-                "coding": [code.to_dict() for code in immunization.codes]
+                "coding": codings(immunization.codes)
             } if immunization.codes else {},
-            "patient": {"reference": f"urn:uuid:{person.id}"},
-            "occurrenceDateTime": immunization.time.isoformat(),
+            "patient": {"reference": f"urn:uuid:{person.uuid}"},
+            "occurrenceDateTime": fhir_datetime(immunization.time),
             "primarySource": True,
         }
 
@@ -771,13 +827,7 @@ class FHIRExporter(PatientExporter):
                 "reference": f"urn:uuid:{immunization.encounter.id}"
             }
 
-        entry = {
-            "fullUrl": f"urn:uuid:{immunization.id}",
-            "resource": resource,
-        }
-        if self.use_transaction_bundle:
-            entry["request"] = {"method": "POST", "url": "Immunization"}
-        return entry
+        return self._entry("Immunization", immunization.id, resource)
 
     def _map_race_code(self, race: str) -> str:
         """Map race to OMB category code."""
