@@ -25,6 +25,37 @@ from synthea.engine.values import (
 from synthea.world.health_record import Code, Report
 
 
+def _pending_key(module_name: str) -> str:
+    """Person-attribute key holding this module's undiagnosed entries."""
+    return f'{module_name}_pending_diagnoses'
+
+
+def _defer_diagnosis(person: 'Person', module_name: str,
+                     target_state: str, entry) -> None:
+    """Hold an entry until the named Encounter state runs.
+
+    In GMF, ``target_encounter`` means the condition starts now but is only
+    diagnosed at that later visit. The entry is already on the record; this
+    just remembers which visit should claim it.
+    """
+    pending = person.attributes.setdefault(_pending_key(module_name), {})
+    pending.setdefault(target_state, []).append(entry)
+
+
+def _claim_pending(person: 'Person', module_name: str, state_name: str) -> list:
+    """Take the entries waiting for this Encounter state to happen."""
+    pending = person.attributes.get(_pending_key(module_name))
+    if not pending:
+        return []
+    return pending.pop(state_name, [])
+
+
+def _current_encounter_is(person: 'Person', state_name: str) -> bool:
+    """Whether the encounter in progress was opened by the named state."""
+    encounter = person.attributes.get('current_encounter')
+    return encounter is not None and getattr(encounter, 'name', None) == state_name
+
+
 def _parse_codes(raw: list) -> list:
     """Convert raw code dicts from JSON to Code instances."""
     result = []
@@ -313,16 +344,20 @@ class EncounterState(State):
         codes = self.definition.get('codes', [])
         
         # Create encounter in person's health record
-        if hasattr(person, 'record'):
+        if getattr(person, 'record', None) is not None:
             encounter = person.record.encounter_start(time, encounter_class)
             encounter.name = self.name
             encounter.codes.extend(codes)
             if reason:
                 encounter.reason = reason
-            
+
             # Store current encounter
             person.attributes['current_encounter'] = encounter
-        
+
+            # Claim anything that has been waiting for this visit to diagnose it.
+            for entry in _claim_pending(person, self.module.name, self.name):
+                person.record.attach(entry, encounter)
+
         return True
 
 
@@ -357,22 +392,37 @@ class ConditionOnsetState(State):
     """A state that starts a medical condition."""
     
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Start a condition."""
-        target_encounter = self.definition.get('target_encounter', 'current_encounter')
+        """Start a condition.
+
+        The onset is recorded now whether or not a visit is in progress: people
+        fall ill before they see a clinician. ``target_encounter`` names the
+        Encounter state that diagnoses it, and the condition is linked to that
+        encounter when it happens (or immediately, if that encounter is already
+        the one in progress).
+        """
+        if getattr(person, 'record', None) is None:
+            return True
+
         codes = self.definition.get('codes', [])
-        
-        if hasattr(person, 'record'):
-            encounter = person.attributes.get(target_encounter)
-            if encounter:
-                condition = person.record.condition_start(time, codes[0] if codes else None)
-                condition.name = self.name
-                condition.codes = codes
-                
-                # Store condition reference
-                assign_to = self.definition.get('assign_to_attribute')
-                if assign_to:
-                    person.attributes[assign_to] = condition
-        
+        target_encounter = self.definition.get('target_encounter')
+        diagnose_now = target_encounter is None or _current_encounter_is(
+            person, target_encounter
+        )
+
+        condition = person.record.condition_start(
+            time, codes[0] if codes else None, attach=diagnose_now,
+        )
+        condition.name = self.name
+        condition.codes = codes
+
+        if not diagnose_now:
+            _defer_diagnosis(person, self.module.name, target_encounter, condition)
+
+        # Store condition reference
+        assign_to = self.definition.get('assign_to_attribute')
+        if assign_to:
+            person.attributes[assign_to] = condition
+
         return True
 
 
@@ -582,20 +632,33 @@ class AllergyOnsetState(State):
     """A state that starts an allergy."""
 
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Start an allergy."""
+        """Start an allergy.
+
+        Recorded at onset like a condition, and linked to the encounter named
+        by ``target_encounter`` when that visit happens.
+        """
+        if getattr(person, 'record', None) is None:
+            return True
+
         codes = self.definition.get('codes', [])
+        target_encounter = self.definition.get('target_encounter')
+        diagnose_now = target_encounter is None or _current_encounter_is(
+            person, target_encounter
+        )
 
-        if hasattr(person, 'record'):
-            encounter = person.attributes.get('current_encounter')
-            if encounter:
-                allergy = person.record.allergy_start(time, codes[0] if codes else None)
-                allergy.name = self.name
-                allergy.codes = codes
+        allergy = person.record.allergy_start(
+            time, codes[0] if codes else None, attach=diagnose_now,
+        )
+        allergy.name = self.name
+        allergy.codes = codes
 
-                # Store allergy reference
-                assign_to = self.definition.get('assign_to_attribute')
-                if assign_to:
-                    person.attributes[assign_to] = allergy
+        if not diagnose_now:
+            _defer_diagnosis(person, self.module.name, target_encounter, allergy)
+
+        # Store allergy reference
+        assign_to = self.definition.get('assign_to_attribute')
+        if assign_to:
+            person.attributes[assign_to] = allergy
 
         return True
 

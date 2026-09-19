@@ -217,7 +217,11 @@ class TestStates:
         assert person.attributes['mold_allergy'] is person.record.allergies[0]
 
     def test_allergy_onset_no_encounter(self):
-        """AllergyOnset does nothing without an active encounter."""
+        """AllergyOnset records the onset even with no visit in progress.
+
+        People develop allergies between appointments; the entry exists from
+        onset and simply has no encounter until one diagnoses it.
+        """
         module = Module('test')
         definition = {
             'type': 'AllergyOnset',
@@ -229,7 +233,8 @@ class TestStates:
 
         result = state.run(person, datetime.now())
         assert result is True
-        assert len(person.record.allergies) == 0
+        assert len(person.record.allergies) == 1
+        assert person.record.allergies[0].encounter is None
 
     def test_allergy_end_state(self):
         """Test AllergyEnd state ends an allergy via referenced_by_attribute."""

@@ -325,14 +325,50 @@ class HealthRecord:
         if self.current_encounter == encounter:
             self.current_encounter = None
     
-    def condition_start(self, time: datetime, code: Optional[Code] = None) -> Condition:
+    #: Which list on an Encounter an entry type belongs to, for `attach`.
+    _ENCOUNTER_BUCKETS = {
+        'Condition': 'conditions',
+        'Procedure': 'procedures',
+        'Medication': 'medications',
+        'Observation': 'observations',
+        'CarePlan': 'careplans',
+        'Report': 'reports',
+        'ImagingStudy': 'imaging_studies',
+        'Device': 'devices',
+        'Supply': 'supplies',
+    }
+
+    def attach(self, entry: Entry, encounter: Optional[Encounter]) -> Entry:
+        """Link an already-recorded entry to the encounter that handled it.
+
+        Used when a condition has its onset before the visit that diagnoses it:
+        the entry exists from onset, and this attaches it once that visit
+        happens.
+        """
+        if encounter is None:
+            return entry
+
+        entry.encounter = encounter
+        bucket = self._ENCOUNTER_BUCKETS.get(type(entry).__name__)
+        if bucket is not None:
+            items = getattr(encounter, bucket, None)
+            if items is not None and entry not in items:
+                items.append(entry)
+        return entry
+
+    def condition_start(self, time: datetime, code: Optional[Code] = None,
+                        attach: bool = True) -> Condition:
         """
         Record a new condition.
-        
+
         Args:
             time: Onset time
             code: Condition code
-            
+            attach: Whether to link the condition to the encounter in progress.
+                Pass ``False`` when the condition has its onset now but is
+                diagnosed at a later, named encounter; call :meth:`attach` when
+                that encounter happens.
+
         Returns:
             The new condition
         """
@@ -340,14 +376,12 @@ class HealthRecord:
         condition.id = self.new_id()
         if code:
             condition.codes = [code]
-        
-        condition.encounter = self.current_encounter
-        
+
         self.conditions.append(condition)
-        
-        if self.current_encounter:
-            self.current_encounter.conditions.append(condition)
-        
+
+        if attach:
+            self.attach(condition, self.current_encounter)
+
         return condition
     
     def condition_end(self, condition: Condition, time: datetime):
@@ -360,14 +394,17 @@ class HealthRecord:
         """
         condition.end_time = time
     
-    def allergy_start(self, time: datetime, code: Optional[Code] = None) -> Allergy:
+    def allergy_start(self, time: datetime, code: Optional[Code] = None,
+                      attach: bool = True) -> Allergy:
         """
         Record a new allergy.
-        
+
         Args:
             time: Onset time
             code: Allergy code
-            
+            attach: Whether to link the allergy to the encounter in progress.
+                See :meth:`condition_start`.
+
         Returns:
             The new allergy
         """
@@ -375,10 +412,12 @@ class HealthRecord:
         allergy.id = self.new_id()
         if code:
             allergy.codes = [code]
-        
-        allergy.encounter = self.current_encounter
+
         self.allergies.append(allergy)
-        
+
+        if attach:
+            self.attach(allergy, self.current_encounter)
+
         return allergy
     
     def allergy_end(self, allergy: Allergy, time: datetime):
