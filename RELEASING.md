@@ -39,6 +39,27 @@ flow:
 
 ---
 
+## Supported interpreters
+
+`requires-python` sets a **floor only** (`>=3.9`) and no upper bound. An
+exclusive ceiling locks users out of every new Python release until someone
+remembers to raise it, which is what happened with 3.14 in 1.1.0 (see #85).
+
+Each release is verified by CI against the interpreters in the
+[`ci.yml`](.github/workflows/ci.yml) test matrix — currently **3.9 through
+3.14** on Linux, plus 3.12 on Windows and macOS. Record that range in the
+release notes.
+
+When a new Python version appears:
+
+1. Add it to the CI matrix and run the suite.
+2. If it passes, add the `Programming Language :: Python :: X.Y` classifier and
+   regenerate the lock with `uv lock`.
+3. If it fails, open an issue with the actual incompatibility rather than
+   reintroducing a ceiling.
+
+---
+
 ## Cutting a release
 
 1. **Set the version.** Update it in **both** files so they match:
