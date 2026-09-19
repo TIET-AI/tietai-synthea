@@ -37,15 +37,17 @@ class TestStates:
         assert result is True  # Simple state always completes
     
     def test_delay_state(self):
-        """Test Delay state."""
+        """Test Delay state.
+
+        The duration sits directly on the state, not under a nested ``delay``
+        key: none of the 534 Delay states in the bundled modules uses one.
+        """
         module = Module('test')
         definition = {
             'type': 'Delay',
-            'delay': {
-                'exact': {
-                    'quantity': 7,
-                    'unit': 'days'
-                }
+            'exact': {
+                'quantity': 7,
+                'unit': 'days'
             }
         }
         state = DelayState(module, 'wait', definition)

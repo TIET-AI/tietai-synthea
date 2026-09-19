@@ -17,6 +17,11 @@ if TYPE_CHECKING:
     from synthea.world.person import Person
     from synthea.engine.module import Module
 
+from synthea.engine.values import (
+    duration_for,
+    passes_probability,
+    value_for,
+)
 from synthea.world.health_record import Code, Report
 
 
@@ -218,48 +223,28 @@ class DelayState(State):
     def run(self, person: 'Person', time: datetime) -> bool:
         """
         Wait for the specified delay.
-        
+
         Returns:
             True if the delay has passed, False otherwise
         """
-        if self.name not in person.attributes.get(f'{self.module.name}_delays', {}):
-            delay_def = self.definition.get('delay', {})
-            delay = self._calculate_delay(delay_def, person)
-            
-            delays = person.attributes.setdefault(f'{self.module.name}_delays', {})
-            delays[self.name] = time + delay
-            return False
-        
-        delay_time = person.attributes[f'{self.module.name}_delays'][self.name]
-        if time >= delay_time:
-            del person.attributes[f'{self.module.name}_delays'][self.name]
+        delays = person.attributes.setdefault(f'{self.module.name}_delays', {})
+
+        if self.name not in delays:
+            delays[self.name] = time + self._calculate_delay(person)
+
+        if time >= delays[self.name]:
+            del delays[self.name]
             return True
         return False
-    
-    def _calculate_delay(self, delay_def: Dict[str, Any], person: 'Person') -> timedelta:
-        """Calculate the delay duration based on the definition."""
-        if 'exact' in delay_def:
-            quantity = delay_def['exact']['quantity']
-            unit = delay_def['exact']['unit']
-        elif 'range' in delay_def:
-            low = delay_def['range']['low']
-            high = delay_def['range']['high']
-            quantity = person.random.uniform(low, high)
-            unit = delay_def['range']['unit']
-        else:
-            return timedelta(0)
-        
-        unit_map = {
-            'years': timedelta(days=365),
-            'months': timedelta(days=30),
-            'weeks': timedelta(weeks=1),
-            'days': timedelta(days=1),
-            'hours': timedelta(hours=1),
-            'minutes': timedelta(minutes=1),
-            'seconds': timedelta(seconds=1),
-        }
-        
-        return unit_map.get(unit, timedelta(0)) * quantity
+
+    def _calculate_delay(self, person: 'Person') -> timedelta:
+        """Calculate the delay duration from this state's definition.
+
+        The duration is written directly on the state (``exact``, ``range`` or
+        ``distribution``), not under a nested ``delay`` key: none of the
+        bundled modules uses one.
+        """
+        return duration_for(self.definition, person)
 
 
 class GuardState(State):
@@ -282,18 +267,17 @@ class SetAttributeState(State):
     """A state that sets an attribute on the person."""
     
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Set the specified attribute."""
+        """Set the specified attribute.
+
+        ``attribute`` names the target of the assignment, so the value can only
+        be sourced from another attribute through ``value_attribute``.
+        """
         attribute = self.definition.get('attribute')
-        if 'value' in self.definition:
-            value = self.definition['value']
-        elif 'value_code' in self.definition:
-            value = self.definition['value_code']
-        else:
-            value = None
-        
         if attribute:
-            person.attributes[attribute] = value
-        
+            person.attributes[attribute] = value_for(
+                self.definition, person, attribute_key='value_attribute',
+            )
+
         return True
 
 
@@ -495,18 +479,13 @@ class VitalSignState(State):
                 'unit': unit,
                 'time': time
             }
-        
+
         return True
-    
-    def _calculate_value(self, person: 'Person') -> float:
+
+    def _calculate_value(self, person: 'Person') -> Any:
         """Calculate the vital sign value."""
-        if 'exact' in self.definition:
-            return self.definition['exact']['quantity']
-        elif 'range' in self.definition:
-            low = self.definition['range']['low']
-            high = self.definition['range']['high']
-            return person.random.uniform(low, high)
-        return 0.0
+        return value_for(self.definition, person, default=0.0,
+                         attribute_key='attribute')
 
 
 class ObservationState(State):
@@ -536,48 +515,43 @@ class ObservationState(State):
         return True
     
     def _calculate_value(self, person: 'Person') -> Any:
-        """Calculate the observation value."""
-        if 'exact' in self.definition:
-            return self.definition['exact']['quantity']
-        elif 'range' in self.definition:
-            low = self.definition['range']['low']
-            high = self.definition['range']['high']
-            return person.random.uniform(low, high)
-        elif 'value_code' in self.definition:
-            return self.definition['value_code']
-        return None
+        """Calculate the observation value.
+
+        On an Observation, ``attribute`` and ``vital_sign`` name where to read
+        the value from rather than describing the observation itself.
+        """
+        return value_for(self.definition, person, attribute_key='attribute')
 
 
 class SymptomState(State):
     """A state that sets a symptom value."""
     
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Set a symptom."""
+        """Set a symptom.
+
+        A ``probability`` on the state means only that fraction of patients
+        reaching it express the symptom at all; the rest leave it unchanged.
+        """
         symptom = self.definition.get('symptom')
         cause = self.definition.get('cause')
-        
-        if symptom:
+
+        if symptom and passes_probability(self.definition, person):
             value = self._calculate_value(person)
             if not hasattr(person, 'symptoms'):
                 person.symptoms = {}
-            
+
             person.symptoms[symptom] = {
                 'value': value,
                 'cause': cause,
                 'time': time
             }
-        
+
         return True
-    
-    def _calculate_value(self, person: 'Person') -> float:
+
+    def _calculate_value(self, person: 'Person') -> Any:
         """Calculate the symptom value (0-100 scale)."""
-        if 'exact' in self.definition:
-            return self.definition['exact']['quantity']
-        elif 'range' in self.definition:
-            low = self.definition['range']['low']
-            high = self.definition['range']['high']
-            return person.random.uniform(low, high)
-        return 0.0
+        return value_for(self.definition, person, default=0.0,
+                         attribute_key='attribute')
 
 
 class DeathState(State):
@@ -715,14 +689,12 @@ class _ReportStateBase(State):
                 for obs_def in obs_defs:
                     obs_codes = _parse_codes(obs_def.get('codes', []))
                     unit = obs_def.get('unit')
-
-                    if 'value_code' in obs_def:
-                        value = obs_def['value_code']
-                    elif 'exact' in obs_def:
-                        value = obs_def['exact'].get('quantity')
+                    if isinstance(obs_def.get('exact'), dict):
                         unit = obs_def['exact'].get('unit', unit)
-                    else:
-                        value = None
+                    elif isinstance(obs_def.get('range'), dict):
+                        unit = obs_def['range'].get('unit', unit)
+
+                    value = value_for(obs_def, person, attribute_key='attribute')
 
                     observation = person.record.observation(
                         time,
