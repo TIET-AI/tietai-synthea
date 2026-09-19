@@ -170,9 +170,11 @@ class TestGenerator:
         assert person.attributes['ethnicity'] is not None
         assert person.attributes['socioeconomic_status'] in ['low', 'middle', 'high']
         
-        # Check age is approximately 25
+        # A person "aged 25" has had their 25th birthday but not their 26th.
+        # Birthdays are spread across the year rather than all falling on the
+        # reference date, so the age lands anywhere in [25, 26).
         age = person.age_at(datetime.now())
-        assert 24.5 < age < 25.5
+        assert 25.0 <= age < 26.0
     
     def test_location_assignment(self):
         """Test location attribute assignment."""

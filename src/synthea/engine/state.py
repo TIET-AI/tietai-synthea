@@ -220,7 +220,7 @@ class State(ABC):
             StateType.DEVICE: DeviceState,
             StateType.DEVICE_END: DeviceEndState,
             StateType.SUPPLY_LIST: SupplyListState,
-            StateType.VACCINE: SimpleState,
+            StateType.VACCINE: VaccineState,
             StateType.PHYSIOLOGY: SimpleState,
         }
         
@@ -343,14 +343,26 @@ class CounterState(State):
 
 
 class EncounterState(State):
-    """A state that starts a healthcare encounter."""
-    
+    """A state that starts a healthcare encounter.
+
+    ``"wellness": true`` means the module is not booking an appointment of its
+    own: it is attaching to the patient's next routine check-up, scheduled by
+    the core encounter module. Such a state **waits** until that visit happens.
+
+    Until this was implemented the flag was ignored and the state opened an
+    ambulatory encounter immediately, so every chronic-disease module diagnosed
+    its condition in the patient's first week of life.
+    """
+
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Start an encounter."""
+        """Start an encounter, or wait for the routine visit to attach to."""
+        if self.definition.get('wellness'):
+            return self._attach_to_wellness(person, time)
+
         encounter_class = self.definition.get('encounter_class', 'ambulatory')
         reason = self.definition.get('reason')
         codes = self.definition.get('codes', [])
-        
+
         # Create encounter in person's health record
         if getattr(person, 'record', None) is not None:
             encounter = person.record.encounter_start(time, encounter_class)
@@ -365,6 +377,35 @@ class EncounterState(State):
             # Claim anything that has been waiting for this visit to diagnose it.
             for entry in _claim_pending(person, self.module.name, self.name):
                 person.record.attach(entry, encounter)
+
+        return True
+
+
+    def _attach_to_wellness(self, person: 'Person', time: datetime) -> bool:
+        """Adopt the routine check-up in progress, or wait for the next one.
+
+        Returns False (yield to the next timestep) while no check-up is open,
+        which is how the module ends up sitting here until the patient attends.
+        """
+        if getattr(person, 'record', None) is None:
+            return True
+
+        encounter = person.attributes.get('current_wellness_encounter')
+        if encounter is None or encounter.time != time:
+            return False  # no visit today; come back next step
+
+        # The module joins the existing visit rather than opening its own, so
+        # its codes and reason describe what the visit found.
+        for code in self.definition.get('codes', []):
+            if code not in encounter.codes:
+                encounter.codes.append(code)
+        if self.definition.get('reason') and not encounter.reason:
+            encounter.reason = self.definition['reason']
+
+        person.attributes['current_encounter'] = encounter
+
+        for entry in _claim_pending(person, self.module.name, self.name):
+            person.record.attach(entry, encounter)
 
         return True
 
@@ -879,5 +920,47 @@ class SupplyListState(State):
             encounter = person.attributes.get('current_encounter')
             if encounter:
                 person.record.supply_list(time, supplies)
+
+        return True
+
+
+class VaccineState(State):
+    """A state that administers a vaccine.
+
+    Mapped to a no-op before this, so the five module-driven vaccinations in the
+    bundled modules recorded nothing. The routine childhood and adult schedule
+    is handled separately by the immunizations core module; this covers vaccines
+    a disease pathway gives for its own reasons, such as the COVID-19 and HIV
+    care modules.
+    """
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        if getattr(person, 'record', None) is None:
+            return True
+
+        encounter = person.attributes.get('current_encounter')
+        if encounter is None:
+            return True
+
+        codes = self.definition.get('codes', [])
+        if not codes:
+            return True
+
+        immunization = person.record.immunization(time, codes[0], encounter)
+        immunization.name = self.name
+        immunization.codes = list(codes)
+
+        series = self.definition.get('series')
+        if series is not None:
+            try:
+                immunization.dose_number = int(series)
+            except (TypeError, ValueError):
+                pass
+
+        person.record.register_state_entry(self.module.name, self.name, immunization)
+
+        assign_to = self.definition.get('assign_to_attribute')
+        if assign_to:
+            person.attributes[assign_to] = immunization
 
         return True
