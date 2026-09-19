@@ -278,3 +278,48 @@ class TestMortality:
         for person in (p for p in people if not p.alive):
             assert person.attributes.get('death_date')
             assert person.record.death_date is not None
+
+
+class TestVaccineState:
+    """Vaccines a disease module gives for its own reasons."""
+
+    def test_a_module_driven_vaccine_is_recorded(self):
+        """Regression: the Vaccine state was mapped to a no-op."""
+        from datetime import datetime as _dt
+
+        from synthea.engine.module import Module as _Module
+        from synthea.engine.state import VaccineState
+        from synthea.world.person import Person
+
+        person = Person(seed=31)
+        person.init_health_record()
+        encounter = person.record.encounter_start(_dt(2020, 1, 1), 'ambulatory')
+        person.attributes['current_encounter'] = encounter
+
+        VaccineState(_Module('hiv_care'), 'Administer Tdap', {
+            'type': 'Vaccine',
+            'series': 1,
+            'codes': [{'system': 'CVX', 'code': 115, 'display': 'Tdap'}],
+        }).run(person, _dt(2020, 1, 1))
+
+        assert len(person.record.immunizations) == 1
+        immunization = person.record.immunizations[0]
+        assert immunization.encounter is encounter
+        assert immunization.dose_number == 1
+
+    def test_without_a_visit_nothing_is_recorded(self):
+        from datetime import datetime as _dt
+
+        from synthea.engine.module import Module as _Module
+        from synthea.engine.state import VaccineState
+        from synthea.world.person import Person
+
+        person = Person(seed=31)
+        person.init_health_record()
+
+        VaccineState(_Module('hiv_care'), 'Administer Tdap', {
+            'type': 'Vaccine',
+            'codes': [{'system': 'CVX', 'code': 115, 'display': 'Tdap'}],
+        }).run(person, _dt(2020, 1, 1))
+
+        assert person.record.immunizations == []
