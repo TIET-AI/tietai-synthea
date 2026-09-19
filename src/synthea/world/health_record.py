@@ -9,7 +9,10 @@ from typing import Dict, Any, Optional, List, Union, TYPE_CHECKING
 from datetime import datetime
 from dataclasses import dataclass, field
 from enum import Enum
+import random
 import uuid
+
+from synthea.helpers.rng import derive_seed
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
@@ -239,7 +242,14 @@ class HealthRecord:
             person: The person this record belongs to
         """
         self.person = person
-        
+
+        # Record entry identifiers are drawn from a dedicated stream seeded from
+        # the person's seed, so a run is reproducible down to the resource ids.
+        # ``uuid.uuid4()`` reads system entropy and would break that.
+        self._id_random = random.Random(
+            derive_seed(getattr(person, 'seed', 0) or 0, 0, 'entry-id')
+        )
+
         # All encounters
         self.encounters: List[Encounter] = []
         
@@ -261,7 +271,16 @@ class HealthRecord:
         # Death information
         self.death_date: Optional[datetime] = None
         self.death_cause: Optional[Code] = None
-    
+
+    def new_id(self) -> str:
+        """Return a fresh, reproducible UUID for a record entry."""
+        return str(uuid.UUID(int=self._id_random.getrandbits(128), version=4))
+
+    def adopt(self, entry: 'Entry') -> 'Entry':
+        """Give an entry created outside this record a reproducible id."""
+        entry.id = self.new_id()
+        return entry
+
     def encounter_start(self, time: datetime, encounter_class: Union[str, EncounterClass],
                        provider: Optional['Provider'] = None) -> Encounter:
         """
@@ -283,6 +302,7 @@ class HealthRecord:
             encounter_class=encounter_class,
             provider=provider
         )
+        encounter.id = self.new_id()
         
         self.encounters.append(encounter)
         self.current_encounter = encounter
@@ -317,6 +337,7 @@ class HealthRecord:
             The new condition
         """
         condition = Condition(time=time)
+        condition.id = self.new_id()
         if code:
             condition.codes = [code]
         
@@ -351,6 +372,7 @@ class HealthRecord:
             The new allergy
         """
         allergy = Allergy(time=time)
+        allergy.id = self.new_id()
         if code:
             allergy.codes = [code]
         
@@ -383,6 +405,7 @@ class HealthRecord:
             The new medication
         """
         medication = Medication(time=time)
+        medication.id = self.new_id()
         if code:
             medication.codes = [code]
         
@@ -419,6 +442,7 @@ class HealthRecord:
             The new procedure
         """
         procedure = Procedure(time=time)
+        procedure.id = self.new_id()
         if code:
             procedure.codes = [code]
         
@@ -452,6 +476,7 @@ class HealthRecord:
             value=value,
             unit=unit
         )
+        observation.id = self.new_id()
         if code:
             observation.codes = [code]
         
@@ -476,6 +501,7 @@ class HealthRecord:
             The new care plan
         """
         careplan = CarePlan(time=time)
+        careplan.id = self.new_id()
         if code:
             careplan.codes = [code]
         
@@ -510,6 +536,7 @@ class HealthRecord:
             The new device
         """
         device = Device(time=time)
+        device.id = self.new_id()
         if code:
             device.codes = [code]
 
@@ -546,6 +573,7 @@ class HealthRecord:
         result = []
         for supply_def in supplies:
             supply = Supply(time=time)
+            supply.id = self.new_id()
             code_data = supply_def.get('code')
             if code_data and isinstance(code_data, dict):
                 supply.codes = [Code(
