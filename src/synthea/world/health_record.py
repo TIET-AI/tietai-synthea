@@ -141,11 +141,20 @@ class Allergy(Entry):
 
 @dataclass
 class Medication(Entry):
-    """Represents a medication prescription."""
+    """Represents a medication prescription or administration."""
     encounter: Optional[Encounter] = None
     end_time: Optional[datetime] = None
     reason: Optional[str] = None
     dosage: Optional[Dict[str, Any]] = None
+    #: The GMF ``prescription`` block: dosage, duration, refills, as-needed.
+    prescription: Optional[Dict[str, Any]] = None
+    #: True when the drug was given during the visit rather than prescribed,
+    #: which is a MedicationAdministration, not a MedicationRequest.
+    administration: bool = False
+    #: True for a long-term medication with no planned stop date.
+    chronic: bool = False
+    #: The condition being treated, once resolved from the module's `reason`.
+    reason_entry: Optional['Condition'] = None
     
     @property
     def is_active(self) -> bool:
@@ -208,11 +217,18 @@ class Report(Entry):
 
 @dataclass
 class ImagingStudy(Entry):
-    """Represents an imaging study."""
+    """Represents an imaging study.
+
+    ``dicom_uid`` and the per-series and per-instance UIDs are real DICOM
+    identifiers derived from UUIDs under the ``2.25.`` arc, so a generated study
+    can be handed to imaging software without colliding with anything.
+    """
     encounter: Optional[Encounter] = None
     modality: Optional[str] = None
     body_site: Optional[str] = None
     series: List[Dict[str, Any]] = field(default_factory=list)
+    dicom_uid: Optional[str] = None
+    procedure_code: Optional[Code] = None
 
 
 @dataclass
@@ -718,6 +734,29 @@ class HealthRecord:
         self.attach(immunization, encounter or self.current_encounter)
 
         return immunization
+
+    def imaging_study(self, time: datetime, procedure_code: Optional[Code] = None,
+                      encounter: Optional[Encounter] = None) -> ImagingStudy:
+        """Record an imaging study.
+
+        Args:
+            time: When the study was performed
+            procedure_code: The imaging procedure
+            encounter: The visit it belongs to
+
+        Returns:
+            The new imaging study
+        """
+        study = ImagingStudy(time=time)
+        study.id = self.new_id()
+        study.procedure_code = procedure_code
+        if procedure_code:
+            study.codes = [procedure_code]
+
+        self.imaging_studies.append(study)
+        self.attach(study, encounter or self.current_encounter)
+
+        return study
 
     def death(self, time: datetime, cause: Optional[Code] = None):
         """

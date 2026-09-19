@@ -5,12 +5,18 @@ This module provides the logic engine for evaluating conditions used in
 conditional transitions, guard states, and other conditional elements.
 """
 
-from typing import Dict, Any, Union, List, TYPE_CHECKING
+import logging
+from typing import Dict, Any, Optional, Union, List, TYPE_CHECKING
 from datetime import datetime, timedelta
 import operator
 import re
 
 from synthea.world.health_record import Code
+
+logger = logging.getLogger(__name__)
+
+#: Condition types already reported as unsupported, so each is logged once.
+_WARNED_CONDITIONS = set()
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
@@ -76,8 +82,14 @@ class Logic:
             return Logic._test_active_medication(condition, person)
         elif condition_type == 'Active CarePlan':
             return Logic._test_active_careplan(condition, person)
+        elif condition_type == 'Active Allergy':
+            return Logic._test_active_allergy(condition, person)
+        elif condition_type == 'At Least':
+            return Logic._test_at_least(condition, person, time)
+        elif condition_type == 'At Most':
+            return Logic._test_at_most(condition, person, time)
         elif condition_type == 'PriorState':
-            return Logic._test_prior_state(condition, person)
+            return Logic._test_prior_state(condition, person, time)
         elif condition_type == 'Attribute':
             return Logic._test_attribute(condition, person)
         elif condition_type == 'True':
@@ -85,7 +97,14 @@ class Logic:
         elif condition_type == 'False':
             return False
         else:
-            # Unknown condition type - default to False
+            # An unrecognised condition used to return False silently, which
+            # meant the module took the wrong branch and nothing said so.
+            if condition_type not in _WARNED_CONDITIONS:
+                _WARNED_CONDITIONS.add(condition_type)
+                logger.warning(
+                    "Unsupported condition type %r; treating it as false. "
+                    "The module will take the wrong branch.", condition_type,
+                )
             return False
     
     @staticmethod
@@ -264,23 +283,87 @@ class Logic:
         return person.record.has_active_careplan(_to_code(codes[0]))
     
     @staticmethod
-    def _test_prior_state(condition: Dict[str, Any], person: 'Person') -> bool:
+    def _test_active_allergy(condition: Dict[str, Any], person: 'Person') -> bool:
+        """Whether an allergy is currently active.
+
+        Used 24 times in the bundled modules and previously unsupported, so
+        every allergy check silently took the 'no allergy' branch.
+        """
+        if getattr(person, 'record', None) is None:
+            return False
+
+        codes = condition.get('codes', [])
+        if not codes:
+            return False
+
+        target = _to_code(codes[0])
+        return any(
+            allergy.is_active and any(c.code == target.code for c in allergy.codes)
+            for allergy in person.record.allergies
+        )
+
+    @staticmethod
+    def _count_true(condition: Dict[str, Any], person: 'Person',
+                    time: datetime) -> int:
+        return sum(
+            1 for sub in condition.get('conditions', [])
+            if Logic.test(sub, person, time)
+        )
+
+    @staticmethod
+    def _test_at_least(condition: Dict[str, Any], person: 'Person',
+                       time: datetime) -> bool:
+        """True when at least N of the sub-conditions hold."""
+        try:
+            minimum = int(condition.get('minimum', 1))
+        except (TypeError, ValueError):
+            minimum = 1
+        return Logic._count_true(condition, person, time) >= minimum
+
+    @staticmethod
+    def _test_at_most(condition: Dict[str, Any], person: 'Person',
+                      time: datetime) -> bool:
+        """True when at most N of the sub-conditions hold."""
+        try:
+            maximum = int(condition.get('maximum', 0))
+        except (TypeError, ValueError):
+            maximum = 0
+        return Logic._count_true(condition, person, time) <= maximum
+
+    @staticmethod
+    def _test_prior_state(condition: Dict[str, Any], person: 'Person',
+                          time: Optional[datetime] = None) -> bool:
         """Test if a specific state has been processed."""
         state_name = condition.get('name')
         module_name = condition.get('module')
-        
+
         if not state_name:
             return False
-        
-        # Check if the state has been visited
+
         if module_name:
             key = f'{module_name}.{state_name}_visited'
+            time_key = f'{module_name}.{state_name}_visited_at'
         else:
-            # Check current module
             key = f'{state_name}_visited'
-        
-        return person.attributes.get(key, False)
-    
+            time_key = f'{state_name}_visited_at'
+
+        if not person.attributes.get(key, False):
+            return False
+
+        window = condition.get('within')
+        if not window or time is None:
+            return True
+
+        # `within` narrows the question from "ever" to "recently". Ignoring it
+        # made a visit five years ago count the same as one last week.
+        visited_at = person.attributes.get(time_key)
+        if visited_at is None:
+            return True
+
+        from synthea.engine.values import to_timedelta
+        span = to_timedelta(window.get('quantity'), window.get('unit', 'years'))
+        return (time - visited_at) <= span
+
     @staticmethod
     def _test_attribute(condition: Dict[str, Any], person: 'Person') -> bool:
         """Test an attribute condition."""

@@ -76,7 +76,10 @@ class Module:
             state = self.states[current_state_name]
             
             # Mark state as visited (for PriorState conditions)
+            # Record when, not just whether: a PriorState condition with a
+            # `within` window needs the timestamp to answer 'recently?'.
             person.attributes[f'{self.name}.{current_state_name}_visited'] = True
+            person.attributes[f'{self.name}.{current_state_name}_visited_at'] = time
             
             # Run the state
             completed = state.run(person, time)
