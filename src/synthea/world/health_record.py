@@ -250,6 +250,11 @@ class HealthRecord:
             derive_seed(getattr(person, 'seed', 0) or 0, 0, 'entry-id')
         )
 
+        # Entries indexed by the module state that created them, so an end
+        # state can find what its matching start state produced
+        # (``"module.State_Name" -> [entries]``).
+        self._by_state: Dict[str, List[Entry]] = {}
+
         # All encounters
         self.encounters: List[Encounter] = []
         
@@ -280,6 +285,49 @@ class HealthRecord:
         """Give an entry created outside this record a reproducible id."""
         entry.id = self.new_id()
         return entry
+
+    # ------------------------------------------------------------------
+    # Finding entries again
+    #
+    # A GMF end state usually refers back to the state that started the thing
+    # ("condition_onset": "Febrile_Neutropenia") or to its codes, rather than
+    # holding a reference. These let it find the entry either way.
+    # ------------------------------------------------------------------
+
+    def register_state_entry(self, module_name: str, state_name: str,
+                             entry: Entry) -> Entry:
+        """Remember which module state produced an entry."""
+        self._by_state.setdefault(f'{module_name}.{state_name}', []).append(entry)
+        return entry
+
+    def find_by_state(self, module_name: str, state_name: str,
+                      kind: Optional[type] = None) -> Optional[Entry]:
+        """Most recent still-active entry produced by a module state."""
+        entries = self._by_state.get(f'{module_name}.{state_name}', [])
+        return self._most_recent_active(entries, kind)
+
+    def find_by_codes(self, codes: List[Code], pool: List[Entry],
+                      kind: Optional[type] = None) -> Optional[Entry]:
+        """Most recent still-active entry in ``pool`` carrying one of ``codes``."""
+        wanted = {str(getattr(code, 'code', code)) for code in codes}
+        matching = [
+            entry for entry in pool
+            if any(str(code.code) in wanted for code in entry.codes)
+        ]
+        return self._most_recent_active(matching, kind)
+
+    @staticmethod
+    def _most_recent_active(entries: List[Entry],
+                            kind: Optional[type] = None) -> Optional[Entry]:
+        """The latest entry that has not ended yet."""
+        candidates = [
+            entry for entry in entries
+            if (kind is None or isinstance(entry, kind))
+            and getattr(entry, 'end_time', None) is None
+        ]
+        if not candidates:
+            return None
+        return max(candidates, key=lambda entry: entry.time)
 
     def encounter_start(self, time: datetime, encounter_class: Union[str, EncounterClass],
                        provider: Optional['Provider'] = None) -> Encounter:
