@@ -18,6 +18,31 @@ if TYPE_CHECKING:
     from synthea.world.health_record import HealthRecord, Encounter, Condition, Medication, Procedure, Observation
 
 
+#: GMF time units mapped to the UCUM codes FHIR timing expects.
+_PERIOD_UNITS = {
+    'seconds': 's', 'second': 's',
+    'minutes': 'min', 'minute': 'min',
+    'hours': 'h', 'hour': 'h',
+    'days': 'd', 'day': 'd',
+    'weeks': 'wk', 'week': 'wk',
+    'months': 'mo', 'month': 'mo',
+    'years': 'a', 'year': 'a',
+}
+
+
+def _coding(raw: Any) -> Dict[str, Any]:
+    """A FHIR coding from a Code object or a raw dict."""
+    if hasattr(raw, 'to_dict'):
+        return raw.to_dict()
+    if isinstance(raw, dict):
+        return {
+            'system': raw.get('system', ''),
+            'code': str(raw.get('code', '')),
+            'display': raw.get('display', ''),
+        }
+    return {'text': str(raw)}
+
+
 class FHIRExporter(PatientExporter):
     """Exports patients in FHIR R4 format."""
     
@@ -111,6 +136,11 @@ class FHIRExporter(PatientExporter):
             bundle["entry"].append(
                 self.create_immunization_entry(immunization, person)
             )
+
+        
+        # Add imaging studies
+        for study in getattr(person.record, 'imaging_studies', []):
+            bundle['entry'].append(self.create_imaging_study_entry(study, person))
 
         return bundle
     
@@ -335,9 +365,19 @@ class FHIRExporter(PatientExporter):
         
         return entry
     
-    def create_medication_entry(self, medication: 'Medication', person: 'Person') -> Dict[str, Any]:
-        """Create a FHIR MedicationRequest resource entry."""
-        medication_resource = {
+    def create_medication_entry(self, medication, person) -> Dict[str, Any]:
+        """Create a MedicationRequest, or a MedicationAdministration.
+
+        A drug handed to the patient during the visit is not a request for one:
+        it is an administration. Exporting both as MedicationRequest, which is
+        what happened before, misrepresents 145 states in the bundled modules.
+        """
+        if getattr(medication, 'administration', False):
+            return self._medication_administration(medication, person)
+        return self._medication_request(medication, person)
+
+    def _medication_request(self, medication, person) -> Dict[str, Any]:
+        resource = {
             "resourceType": "MedicationRequest",
             "id": medication.id,
             "status": "stopped" if medication.end_time else "active",
@@ -345,37 +385,191 @@ class FHIRExporter(PatientExporter):
             "medicationCodeableConcept": {
                 "coding": [code.to_dict() for code in medication.codes]
             } if medication.codes else {},
-            "subject": {
-                "reference": f"urn:uuid:{person.id}"
-            },
-            "authoredOn": medication.time.isoformat()
+            "subject": {"reference": f"urn:uuid:{person.id}"},
+            "authoredOn": medication.time.isoformat(),
         }
-        
+
         if medication.encounter:
-            medication_resource["encounter"] = {
+            resource["encounter"] = {
                 "reference": f"urn:uuid:{medication.encounter.id}"
             }
-        
-        if medication.reason:
-            medication_resource["reasonCode"] = [
-                {
-                    "text": medication.reason
-                }
-            ]
-        
+
+        self._add_reason(resource, medication)
+
+        prescription = getattr(medication, 'prescription', None) or {}
+        dosage = self._dosage_instruction(prescription)
+        if dosage:
+            resource["dosageInstruction"] = [dosage]
+
+        dispense = self._dispense_request(prescription)
+        if dispense:
+            resource["dispenseRequest"] = dispense
+
         entry = {
             "fullUrl": f"urn:uuid:{medication.id}",
-            "resource": medication_resource
+            "resource": resource,
         }
-        
         if self.use_transaction_bundle:
-            entry["request"] = {
-                "method": "POST",
-                "url": "MedicationRequest"
-            }
-        
+            entry["request"] = {"method": "POST", "url": "MedicationRequest"}
         return entry
-    
+
+    def _medication_administration(self, medication, person) -> Dict[str, Any]:
+        resource = {
+            "resourceType": "MedicationAdministration",
+            "id": medication.id,
+            "status": "completed",
+            "medicationCodeableConcept": {
+                "coding": [code.to_dict() for code in medication.codes]
+            } if medication.codes else {},
+            "subject": {"reference": f"urn:uuid:{person.id}"},
+            "effectiveDateTime": medication.time.isoformat(),
+        }
+
+        if medication.encounter:
+            resource["context"] = {
+                "reference": f"urn:uuid:{medication.encounter.id}"
+            }
+
+        self._add_reason(resource, medication)
+
+        entry = {
+            "fullUrl": f"urn:uuid:{medication.id}",
+            "resource": resource,
+        }
+        if self.use_transaction_bundle:
+            entry["request"] = {"method": "POST", "url": "MedicationAdministration"}
+        return entry
+
+    def _add_reason(self, resource: Dict[str, Any], medication) -> None:
+        """Point at the condition being treated rather than naming it in text.
+
+        `reason` used to be exported as the raw module state name in a free-text
+        field, which no consumer could resolve to anything.
+        """
+        entry = getattr(medication, 'reason_entry', None)
+        if entry is not None:
+            resource["reasonReference"] = [{"reference": f"urn:uuid:{entry.id}"}]
+        elif medication.reason:
+            resource["reasonCode"] = [{"text": medication.reason}]
+
+    @staticmethod
+    def _dosage_instruction(prescription: Dict[str, Any]) -> Dict[str, Any]:
+        """Turn a GMF prescription block into a FHIR dosageInstruction."""
+        if not prescription:
+            return {}
+
+        dosage: Dict[str, Any] = {"sequence": 1}
+
+        if prescription.get('as_needed'):
+            dosage["asNeededBoolean"] = True
+
+        detail = prescription.get('dosage') or {}
+        amount = detail.get('amount')
+        frequency = detail.get('frequency')
+        period = detail.get('period')
+        unit = detail.get('unit')
+
+        if frequency and period and unit:
+            dosage["timing"] = {"repeat": {
+                "frequency": frequency,
+                "period": period,
+                "periodUnit": _PERIOD_UNITS.get(str(unit).lower(), 'd'),
+            }}
+
+        if amount:
+            dosage["doseAndRate"] = [{"doseQuantity": {"value": amount}}]
+
+        instructions = prescription.get('instructions')
+        if instructions:
+            dosage["additionalInstruction"] = [
+                {"coding": [_coding(instruction)]} for instruction in instructions
+            ]
+
+        return dosage if len(dosage) > 1 else {}
+
+    @staticmethod
+    def _dispense_request(prescription: Dict[str, Any]) -> Dict[str, Any]:
+        """Refills and supply duration."""
+        if not prescription:
+            return {}
+
+        dispense: Dict[str, Any] = {}
+
+        refills = prescription.get('refills')
+        if refills is not None:
+            dispense["numberOfRepeatsAllowed"] = refills
+
+        duration = prescription.get('duration')
+        if duration and duration.get('quantity'):
+            unit = str(duration.get('unit', 'days')).lower()
+            dispense["expectedSupplyDuration"] = {
+                "value": duration['quantity'],
+                "unit": unit,
+                "system": "http://unitsofmeasure.org",
+                "code": _PERIOD_UNITS.get(unit, 'd'),
+            }
+
+        return dispense
+
+    def create_imaging_study_entry(self, study, person) -> Dict[str, Any]:
+        """Create a FHIR ImagingStudy resource entry."""
+        series = []
+        for index, definition in enumerate(study.series or [], start=1):
+            instances = definition.get('instances') or []
+
+            entry_series: Dict[str, Any] = {
+                "uid": definition.get('uid'),
+                "number": index,
+                "numberOfInstances": len(instances),
+            }
+            if definition.get('modality') is not None:
+                entry_series["modality"] = _coding(definition['modality'])
+            if definition.get('body_site') is not None:
+                entry_series["bodySite"] = _coding(definition['body_site'])
+
+            entry_series["instance"] = [
+                {
+                    "uid": instance.get('uid'),
+                    "number": position,
+                    "title": instance.get('title'),
+                    "sopClass": _coding(instance.get('sop_class')),
+                }
+                for position, instance in enumerate(instances, start=1)
+                if instance.get('sop_class') is not None
+            ]
+            series.append(entry_series)
+
+        resource = {
+            "resourceType": "ImagingStudy",
+            "id": study.id,
+            "status": "available",
+            "subject": {"reference": f"urn:uuid:{person.id}"},
+            "started": study.time.isoformat(),
+            "numberOfSeries": len(series),
+            "numberOfInstances": sum(s.get("numberOfInstances", 0) for s in series),
+            "series": series,
+        }
+
+        if study.dicom_uid:
+            resource["identifier"] = [{
+                "system": "urn:dicom:uid",
+                "value": f"urn:oid:{study.dicom_uid}",
+            }]
+
+        if study.encounter:
+            resource["encounter"] = {"reference": f"urn:uuid:{study.encounter.id}"}
+
+        if study.procedure_code is not None:
+            resource["procedureCode"] = [{"coding": [study.procedure_code.to_dict()]}]
+
+        entry = {
+            "fullUrl": f"urn:uuid:{study.id}",
+            "resource": resource,
+        }
+        if self.use_transaction_bundle:
+            entry["request"] = {"method": "POST", "url": "ImagingStudy"}
+        return entry
+
     def create_procedure_entry(self, procedure: 'Procedure', person: 'Person') -> Dict[str, Any]:
         """Create a FHIR Procedure resource entry."""
         procedure_resource = {
