@@ -6,7 +6,6 @@ of synthetic patients and their health records.
 """
 
 import logging
-import random
 import multiprocessing as mp
 from typing import Dict, Any, Optional, List, Set, Tuple
 from datetime import datetime, timedelta
@@ -25,6 +24,7 @@ from synthea.world.location import Location
 from synthea.world.provider import Provider, ProviderManager
 from synthea.world.payer import PayerManager
 from synthea.helpers.config import Config
+from synthea.helpers.rng import resolve_seed
 from synthea.export.exporter import Exporter
 
 
@@ -37,7 +37,9 @@ class GeneratorOptions:
         self.seed: Optional[int] = None
         self.clinician_seed: Optional[int] = None
         self.reference_date: datetime = datetime.now()
-        self.end_date: datetime = datetime.now()
+        # ``None`` means "run the simulation up to the reference date". Setting
+        # it explicitly is only needed when the simulation should stop earlier.
+        self.end_date: Optional[datetime] = None
         self.min_age: int = 0
         self.max_age: int = 140
         self.gender: Optional[str] = None
@@ -49,7 +51,12 @@ class GeneratorOptions:
         self.city: Optional[str] = None
         self.log_level: str = 'info'
         self.threads: int = 1
-    
+
+    @property
+    def resolved_end_date(self) -> datetime:
+        """The time the simulation runs to; the reference date unless overridden."""
+        return self.end_date if self.end_date is not None else self.reference_date
+
     @classmethod
     def from_args(cls, args: Dict[str, Any]) -> 'GeneratorOptions':
         """Create options from command-line arguments."""
@@ -96,11 +103,12 @@ class Generator:
         self.options = options or GeneratorOptions()
         self.config = config if config is not None else Config()
         self._config_provided = config is not None
-        
-        # Initialize random seed if provided
-        if self.options.seed is not None:
-            random.seed(self.options.seed)
-        
+
+        # No global ``random.seed()`` here: every draw during simulation comes
+        # from the person's own generator, whose seed is derived from
+        # ``(population seed, patient index)``. Seeding the global module would
+        # make results depend on how many draws other code happened to make.
+
         # Components
         self.demographics: Optional[Demographics] = None
         self.location: Optional[Location] = None
@@ -204,7 +212,12 @@ class Generator:
     
     def _init_providers(self):
         """Initialize healthcare providers."""
-        self.provider_manager = ProviderManager()
+        clinician_seed = self.options.clinician_seed
+        if clinician_seed is None and self.options.seed is not None:
+            # Derive it from the population seed so a seeded run is fully
+            # reproducible without the caller having to set both.
+            clinician_seed = resolve_seed(self.options.seed, 0, 'clinician')
+        self.provider_manager = ProviderManager(seed=clinician_seed)
         self.provider_manager.load(self.location)
     
     def _init_payers(self):
@@ -246,26 +259,38 @@ class Generator:
                 pbar.update(1)
     
     def _run_parallel(self):
-        """Run generation in parallel."""
-        with ProcessPoolExecutor(max_workers=self.options.threads) as executor:
+        """Run generation across worker processes.
+
+        Each worker builds its own Generator once (via the pool initializer)
+        rather than having one pickled per patient, and returns the statistics
+        it produced so the parent's totals are correct. Because every person's
+        seed is derived from ``(population seed, index)``, the population is
+        identical to a sequential run with the same seed.
+        """
+        with ProcessPoolExecutor(
+            max_workers=self.options.threads,
+            initializer=_init_worker,
+            initargs=(self.options, self.config),
+        ) as executor:
             with tqdm(total=self.options.population_size) as pbar:
-                futures = []
-                
-                for i in range(self.options.population_size):
-                    future = executor.submit(self._generate_and_record, i)
-                    futures.append(future)
-                
-                for future in futures:
-                    future.result()
+                for delta in executor.map(
+                    _generate_one,
+                    range(self.options.population_size),
+                    chunksize=_parallel_chunksize(
+                        self.options.population_size, self.options.threads
+                    ),
+                ):
+                    for key, value in delta.items():
+                        self.stats[key] += value
                     pbar.update(1)
-    
-    def _generate_and_record(self, index: int) -> bool:
-        """Generate and record a single person."""
+
+    def _generate_and_record(self, index: int) -> Dict[str, int]:
+        """Generate and record a single person, returning its statistics delta."""
+        before = dict(self.stats)
         person = self.generate_person(index)
-        if person:
+        if person is not None:
             self.record_person(person)
-            return True
-        return False
+        return {key: self.stats[key] - before.get(key, 0) for key in self.stats}
     
     def generate_person(self, index: int) -> Optional[Person]:
         """
@@ -277,12 +302,11 @@ class Generator:
         Returns:
             The generated Person, or None if rejected
         """
-        # Create person with unique seed
-        if self.options.seed is not None:
-            person_seed = self.options.seed + index
-        else:
-            person_seed = random.randint(0, 2**32 - 1)
-        
+        # Create person with a seed derived purely from (population seed, index),
+        # so patient N is identical however many patients ran before it and on
+        # however many threads.
+        person_seed = resolve_seed(self.options.seed, index, 'person')
+
         person = Person(person_seed)
         
         # Set demographics
@@ -369,7 +393,7 @@ class Generator:
         
         # Start from birth
         current_time = person.attributes.get('birth_date', datetime.now())
-        end_time = self.options.end_date
+        end_time = self.options.resolved_end_date
         
         # Time step (1 week)
         time_step = timedelta(days=7)
@@ -425,3 +449,34 @@ class Generator:
         if self.stats['total_generated'] > 0:
             rate = self.stats['total_generated'] / elapsed_time
             print(f"Generation Rate: {rate:.2f} patients/second")
+
+# ---------------------------------------------------------------------------
+# Process-pool workers
+#
+# These live at module level so they can be pickled by ProcessPoolExecutor on
+# spawn-based platforms (Windows, macOS). The pool initializer builds one
+# Generator per worker process; without it a Generator would be pickled and
+# rebuilt for every patient.
+# ---------------------------------------------------------------------------
+
+_WORKER_GENERATOR: Optional[Generator] = None
+
+
+def _init_worker(options: GeneratorOptions, config: Config) -> None:
+    """Build this worker process's Generator once."""
+    global _WORKER_GENERATOR
+    _WORKER_GENERATOR = Generator(options, config=config)
+
+
+def _generate_one(index: int) -> Dict[str, int]:
+    """Generate, record and report one patient in a worker process."""
+    if _WORKER_GENERATOR is None:  # pragma: no cover - defensive
+        raise RuntimeError("worker generator was not initialized")
+    return _WORKER_GENERATOR._generate_and_record(index)
+
+
+def _parallel_chunksize(population_size: int, threads: int) -> int:
+    """Pick a chunk size that keeps workers busy without starving the tail."""
+    if threads <= 1:
+        return 1
+    return max(1, population_size // (threads * 4))

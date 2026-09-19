@@ -10,6 +10,8 @@ from typing import Dict, Any, Optional, List, TYPE_CHECKING
 from datetime import datetime, timedelta
 import hashlib
 
+from synthea.helpers.rng import random_seed
+
 if TYPE_CHECKING:
     from synthea.world.health_record import HealthRecord
 
@@ -29,7 +31,10 @@ class Person:
             self.seed = seed
             self.random = random.Random(seed)
         else:
-            self.seed = random.randint(0, 2**32 - 1)
+            # Draw from system entropy rather than the global ``random`` module,
+            # so an unseeded person is never made reproducible (or a seeded one
+            # perturbed) by unrelated code seeding the global generator.
+            self.seed = random_seed()
             self.random = random.Random(self.seed)
         
         # Core attributes

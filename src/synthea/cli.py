@@ -123,7 +123,6 @@ def main(population, seed, clinician_seed, gender, age, module, config, modules_
     if reference_date:
         try:
             options.reference_date = datetime.strptime(reference_date, '%Y%m%d')
-            options.end_date = options.reference_date
         except ValueError:
             click.echo(f"Error: Invalid date format '{reference_date}'. Use YYYYMMDD.", err=True)
             sys.exit(1)

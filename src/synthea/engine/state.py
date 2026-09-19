@@ -9,7 +9,6 @@ from typing import Dict, Any, Optional, List, TYPE_CHECKING
 from datetime import datetime, timedelta
 from enum import Enum
 import logging
-import random
 import copy
 
 logger = logging.getLogger(__name__)
@@ -245,7 +244,7 @@ class DelayState(State):
         elif 'range' in delay_def:
             low = delay_def['range']['low']
             high = delay_def['range']['high']
-            quantity = random.uniform(low, high)
+            quantity = person.random.uniform(low, high)
             unit = delay_def['range']['unit']
         else:
             return timedelta(0)
@@ -506,7 +505,7 @@ class VitalSignState(State):
         elif 'range' in self.definition:
             low = self.definition['range']['low']
             high = self.definition['range']['high']
-            return random.uniform(low, high)
+            return person.random.uniform(low, high)
         return 0.0
 
 
@@ -543,7 +542,7 @@ class ObservationState(State):
         elif 'range' in self.definition:
             low = self.definition['range']['low']
             high = self.definition['range']['high']
-            return random.uniform(low, high)
+            return person.random.uniform(low, high)
         elif 'value_code' in self.definition:
             return self.definition['value_code']
         return None
@@ -577,7 +576,7 @@ class SymptomState(State):
         elif 'range' in self.definition:
             low = self.definition['range']['low']
             high = self.definition['range']['high']
-            return random.uniform(low, high)
+            return person.random.uniform(low, high)
         return 0.0
 
 
@@ -591,7 +590,7 @@ class DeathState(State):
         elif 'range' in self.definition:
             low = self.definition['range']['low']
             high = self.definition['range']['high']
-            years = random.uniform(low, high)
+            years = person.random.uniform(low, high)
             death_time = time + timedelta(days=years * 365)
         else:
             death_time = time
@@ -708,6 +707,7 @@ class _ReportStateBase(State):
             encounter = person.attributes.get('current_encounter')
             if encounter:
                 report = Report(time=time)
+                person.record.adopt(report)
                 report.codes = codes
                 report.name = self.name
                 report.encounter = encounter
