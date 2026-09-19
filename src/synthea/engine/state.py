@@ -22,7 +22,15 @@ from synthea.engine.values import (
     passes_probability,
     value_for,
 )
-from synthea.world.health_record import Code, Report
+from synthea.world.health_record import (
+    Allergy,
+    CarePlan,
+    Code,
+    Condition,
+    Device,
+    Medication,
+    Report,
+)
 
 
 def _pending_key(module_name: str) -> str:
@@ -414,6 +422,7 @@ class ConditionOnsetState(State):
         )
         condition.name = self.name
         condition.codes = codes
+        person.record.register_state_entry(self.module.name, self.name, condition)
 
         if not diagnose_now:
             _defer_diagnosis(person, self.module.name, target_encounter, condition)
@@ -426,23 +435,68 @@ class ConditionOnsetState(State):
         return True
 
 
-class ConditionEndState(State):
-    """A state that ends a medical condition."""
-    
+class _EndState(State):
+    """Shared resolution for the states that end something.
+
+    A GMF end state names what to end in one of three ways, and modules use all
+    of them: an attribute holding the entry (``referenced_by_attribute``), the
+    name of the state that started it (``condition_onset``, ``medication_order``,
+    ``careplan``, ``allergy_onset``, ``device``), or the ``codes`` of the thing
+    itself. Only the first was implemented, so 250 end states did nothing:
+    chronic conditions never resolved and medications never stopped.
+
+    All three are tried in turn, because a module may give more than one.
+    """
+
+    #: Record entry class this state ends.
+    ENTRY_TYPE: type = None
+    #: Definition key naming the state that started it.
+    START_STATE_KEY: str = ''
+    #: Attribute on the record holding every entry of this type.
+    POOL: str = ''
+    #: Record method that ends the entry.
+    END_METHOD: str = ''
+
     def run(self, person: 'Person', time: datetime) -> bool:
-        """End a condition."""
-        referenced_by = self.definition.get('referenced_by_attribute')
-        condition_onset = self.definition.get('condition_onset')
-        
-        if hasattr(person, 'record'):
-            if referenced_by and referenced_by in person.attributes:
-                condition = person.attributes[referenced_by]
-                person.record.condition_end(condition, time)
-            elif condition_onset:
-                # Find condition by onset state name
-                pass
-        
+        record = getattr(person, 'record', None)
+        if record is None:
+            return True
+
+        entry = self._resolve(person, record)
+        if entry is not None:
+            getattr(record, self.END_METHOD)(entry, time)
+
         return True
+
+    def _resolve(self, person: 'Person', record) -> Optional[Any]:
+        """Find the entry this state should end, or None if there is none."""
+        referenced_by = self.definition.get('referenced_by_attribute')
+        if referenced_by:
+            entry = person.attributes.get(referenced_by)
+            if isinstance(entry, self.ENTRY_TYPE) and getattr(entry, 'end_time', None) is None:
+                return entry
+
+        start_state = self.definition.get(self.START_STATE_KEY)
+        if start_state:
+            entry = record.find_by_state(self.module.name, start_state, self.ENTRY_TYPE)
+            if entry is not None:
+                return entry
+
+        codes = self.definition.get('codes')
+        if codes:
+            return record.find_by_codes(codes, getattr(record, self.POOL, []),
+                                        self.ENTRY_TYPE)
+
+        return None
+
+
+class ConditionEndState(_EndState):
+    """A state that ends a medical condition."""
+
+    ENTRY_TYPE = Condition
+    START_STATE_KEY = 'condition_onset'
+    POOL = 'conditions'
+    END_METHOD = 'condition_end'
 
 
 class MedicationOrderState(State):
@@ -463,6 +517,8 @@ class MedicationOrderState(State):
                 )
                 medication.name = self.name
                 medication.codes = codes
+                person.record.register_state_entry(
+                    self.module.name, self.name, medication)
                 if reason:
                     medication.reason = reason
                 
@@ -474,23 +530,13 @@ class MedicationOrderState(State):
         return True
 
 
-class MedicationEndState(State):
+class MedicationEndState(_EndState):
     """A state that ends a medication."""
-    
-    def run(self, person: 'Person', time: datetime) -> bool:
-        """End a medication."""
-        referenced_by = self.definition.get('referenced_by_attribute')
-        medication_order = self.definition.get('medication_order')
-        
-        if hasattr(person, 'record'):
-            if referenced_by and referenced_by in person.attributes:
-                medication = person.attributes[referenced_by]
-                person.record.medication_end(medication, time)
-            elif medication_order:
-                # Find medication by order state name
-                pass
-        
-        return True
+
+    ENTRY_TYPE = Medication
+    START_STATE_KEY = 'medication_order'
+    POOL = 'medications'
+    END_METHOD = 'medication_end'
 
 
 class ProcedureState(State):
@@ -651,6 +697,7 @@ class AllergyOnsetState(State):
         )
         allergy.name = self.name
         allergy.codes = codes
+        person.record.register_state_entry(self.module.name, self.name, allergy)
 
         if not diagnose_now:
             _defer_diagnosis(person, self.module.name, target_encounter, allergy)
@@ -663,23 +710,13 @@ class AllergyOnsetState(State):
         return True
 
 
-class AllergyEndState(State):
+class AllergyEndState(_EndState):
     """A state that ends an allergy."""
 
-    def run(self, person: 'Person', time: datetime) -> bool:
-        """End an allergy."""
-        referenced_by = self.definition.get('referenced_by_attribute')
-        allergy_onset = self.definition.get('allergy_onset')
-
-        if hasattr(person, 'record'):
-            if referenced_by and referenced_by in person.attributes:
-                allergy = person.attributes[referenced_by]
-                person.record.allergy_end(allergy, time)
-            elif allergy_onset:
-                # Find allergy by onset state name
-                pass
-
-        return True
+    ENTRY_TYPE = Allergy
+    START_STATE_KEY = 'allergy_onset'
+    POOL = 'allergies'
+    END_METHOD = 'allergy_end'
 
 
 class CarePlanStartState(State):
@@ -698,6 +735,8 @@ class CarePlanStartState(State):
                 careplan = person.record.careplan_start(time, codes[0] if codes else None)
                 careplan.name = self.name
                 careplan.codes = codes
+                person.record.register_state_entry(
+                    self.module.name, self.name, careplan)
                 if reason:
                     careplan.reason = reason
                 careplan.activities = [
@@ -714,23 +753,13 @@ class CarePlanStartState(State):
         return True
 
 
-class CarePlanEndState(State):
+class CarePlanEndState(_EndState):
     """A state that ends a care plan."""
 
-    def run(self, person: 'Person', time: datetime) -> bool:
-        """End a care plan."""
-        referenced_by = self.definition.get('referenced_by_attribute')
-        careplan_ref = self.definition.get('careplan')
-
-        if hasattr(person, 'record'):
-            if referenced_by and referenced_by in person.attributes:
-                careplan = person.attributes[referenced_by]
-                person.record.careplan_end(careplan, time)
-            elif careplan_ref:
-                # Find careplan by state name
-                pass
-
-        return True
+    ENTRY_TYPE = CarePlan
+    START_STATE_KEY = 'careplan'
+    POOL = 'careplans'
+    END_METHOD = 'careplan_end'
 
 
 class _ReportStateBase(State):
@@ -819,6 +848,8 @@ class DeviceState(State):
                 device = person.record.device_start(time, codes[0] if codes else None)
                 device.name = self.name
                 device.codes = codes
+                person.record.register_state_entry(
+                    self.module.name, self.name, device)
 
                 # Store device reference
                 assign_to = self.definition.get('assign_to_attribute')
@@ -828,23 +859,13 @@ class DeviceState(State):
         return True
 
 
-class DeviceEndState(State):
+class DeviceEndState(_EndState):
     """A state that ends a device."""
 
-    def run(self, person: 'Person', time: datetime) -> bool:
-        """End a device."""
-        referenced_by = self.definition.get('referenced_by_attribute')
-        device_ref = self.definition.get('device')
-
-        if hasattr(person, 'record'):
-            if referenced_by and referenced_by in person.attributes:
-                device = person.attributes[referenced_by]
-                person.record.device_end(device, time)
-            elif device_ref:
-                # Find device by state name
-                pass
-
-        return True
+    ENTRY_TYPE = Device
+    START_STATE_KEY = 'device'
+    POOL = 'devices'
+    END_METHOD = 'device_end'
 
 
 class SupplyListState(State):
