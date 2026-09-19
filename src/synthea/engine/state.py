@@ -9,7 +9,6 @@ from typing import Dict, Any, Optional, List, TYPE_CHECKING
 from datetime import datetime, timedelta
 from enum import Enum
 import logging
-import random
 import copy
 
 logger = logging.getLogger(__name__)
@@ -18,7 +17,51 @@ if TYPE_CHECKING:
     from synthea.world.person import Person
     from synthea.engine.module import Module
 
-from synthea.world.health_record import Code, Report
+from synthea.engine.values import (
+    duration_for,
+    passes_probability,
+    value_for,
+)
+from synthea.world.health_record import (
+    Allergy,
+    CarePlan,
+    Code,
+    Condition,
+    Device,
+    Medication,
+    Report,
+)
+
+
+def _pending_key(module_name: str) -> str:
+    """Person-attribute key holding this module's undiagnosed entries."""
+    return f'{module_name}_pending_diagnoses'
+
+
+def _defer_diagnosis(person: 'Person', module_name: str,
+                     target_state: str, entry) -> None:
+    """Hold an entry until the named Encounter state runs.
+
+    In GMF, ``target_encounter`` means the condition starts now but is only
+    diagnosed at that later visit. The entry is already on the record; this
+    just remembers which visit should claim it.
+    """
+    pending = person.attributes.setdefault(_pending_key(module_name), {})
+    pending.setdefault(target_state, []).append(entry)
+
+
+def _claim_pending(person: 'Person', module_name: str, state_name: str) -> list:
+    """Take the entries waiting for this Encounter state to happen."""
+    pending = person.attributes.get(_pending_key(module_name))
+    if not pending:
+        return []
+    return pending.pop(state_name, [])
+
+
+def _current_encounter_is(person: 'Person', state_name: str) -> bool:
+    """Whether the encounter in progress was opened by the named state."""
+    encounter = person.attributes.get('current_encounter')
+    return encounter is not None and getattr(encounter, 'name', None) == state_name
 
 
 def _parse_codes(raw: list) -> list:
@@ -219,48 +262,28 @@ class DelayState(State):
     def run(self, person: 'Person', time: datetime) -> bool:
         """
         Wait for the specified delay.
-        
+
         Returns:
             True if the delay has passed, False otherwise
         """
-        if self.name not in person.attributes.get(f'{self.module.name}_delays', {}):
-            delay_def = self.definition.get('delay', {})
-            delay = self._calculate_delay(delay_def, person)
-            
-            delays = person.attributes.setdefault(f'{self.module.name}_delays', {})
-            delays[self.name] = time + delay
-            return False
-        
-        delay_time = person.attributes[f'{self.module.name}_delays'][self.name]
-        if time >= delay_time:
-            del person.attributes[f'{self.module.name}_delays'][self.name]
+        delays = person.attributes.setdefault(f'{self.module.name}_delays', {})
+
+        if self.name not in delays:
+            delays[self.name] = time + self._calculate_delay(person)
+
+        if time >= delays[self.name]:
+            del delays[self.name]
             return True
         return False
-    
-    def _calculate_delay(self, delay_def: Dict[str, Any], person: 'Person') -> timedelta:
-        """Calculate the delay duration based on the definition."""
-        if 'exact' in delay_def:
-            quantity = delay_def['exact']['quantity']
-            unit = delay_def['exact']['unit']
-        elif 'range' in delay_def:
-            low = delay_def['range']['low']
-            high = delay_def['range']['high']
-            quantity = random.uniform(low, high)
-            unit = delay_def['range']['unit']
-        else:
-            return timedelta(0)
-        
-        unit_map = {
-            'years': timedelta(days=365),
-            'months': timedelta(days=30),
-            'weeks': timedelta(weeks=1),
-            'days': timedelta(days=1),
-            'hours': timedelta(hours=1),
-            'minutes': timedelta(minutes=1),
-            'seconds': timedelta(seconds=1),
-        }
-        
-        return unit_map.get(unit, timedelta(0)) * quantity
+
+    def _calculate_delay(self, person: 'Person') -> timedelta:
+        """Calculate the delay duration from this state's definition.
+
+        The duration is written directly on the state (``exact``, ``range`` or
+        ``distribution``), not under a nested ``delay`` key: none of the
+        bundled modules uses one.
+        """
+        return duration_for(self.definition, person)
 
 
 class GuardState(State):
@@ -283,18 +306,17 @@ class SetAttributeState(State):
     """A state that sets an attribute on the person."""
     
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Set the specified attribute."""
+        """Set the specified attribute.
+
+        ``attribute`` names the target of the assignment, so the value can only
+        be sourced from another attribute through ``value_attribute``.
+        """
         attribute = self.definition.get('attribute')
-        if 'value' in self.definition:
-            value = self.definition['value']
-        elif 'value_code' in self.definition:
-            value = self.definition['value_code']
-        else:
-            value = None
-        
         if attribute:
-            person.attributes[attribute] = value
-        
+            person.attributes[attribute] = value_for(
+                self.definition, person, attribute_key='value_attribute',
+            )
+
         return True
 
 
@@ -330,16 +352,20 @@ class EncounterState(State):
         codes = self.definition.get('codes', [])
         
         # Create encounter in person's health record
-        if hasattr(person, 'record'):
+        if getattr(person, 'record', None) is not None:
             encounter = person.record.encounter_start(time, encounter_class)
             encounter.name = self.name
             encounter.codes.extend(codes)
             if reason:
                 encounter.reason = reason
-            
+
             # Store current encounter
             person.attributes['current_encounter'] = encounter
-        
+
+            # Claim anything that has been waiting for this visit to diagnose it.
+            for entry in _claim_pending(person, self.module.name, self.name):
+                person.record.attach(entry, encounter)
+
         return True
 
 
@@ -374,42 +400,103 @@ class ConditionOnsetState(State):
     """A state that starts a medical condition."""
     
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Start a condition."""
-        target_encounter = self.definition.get('target_encounter', 'current_encounter')
+        """Start a condition.
+
+        The onset is recorded now whether or not a visit is in progress: people
+        fall ill before they see a clinician. ``target_encounter`` names the
+        Encounter state that diagnoses it, and the condition is linked to that
+        encounter when it happens (or immediately, if that encounter is already
+        the one in progress).
+        """
+        if getattr(person, 'record', None) is None:
+            return True
+
         codes = self.definition.get('codes', [])
-        
-        if hasattr(person, 'record'):
-            encounter = person.attributes.get(target_encounter)
-            if encounter:
-                condition = person.record.condition_start(time, codes[0] if codes else None)
-                condition.name = self.name
-                condition.codes = codes
-                
-                # Store condition reference
-                assign_to = self.definition.get('assign_to_attribute')
-                if assign_to:
-                    person.attributes[assign_to] = condition
-        
+        target_encounter = self.definition.get('target_encounter')
+        diagnose_now = target_encounter is None or _current_encounter_is(
+            person, target_encounter
+        )
+
+        condition = person.record.condition_start(
+            time, codes[0] if codes else None, attach=diagnose_now,
+        )
+        condition.name = self.name
+        condition.codes = codes
+        person.record.register_state_entry(self.module.name, self.name, condition)
+
+        if not diagnose_now:
+            _defer_diagnosis(person, self.module.name, target_encounter, condition)
+
+        # Store condition reference
+        assign_to = self.definition.get('assign_to_attribute')
+        if assign_to:
+            person.attributes[assign_to] = condition
+
         return True
 
 
-class ConditionEndState(State):
-    """A state that ends a medical condition."""
-    
+class _EndState(State):
+    """Shared resolution for the states that end something.
+
+    A GMF end state names what to end in one of three ways, and modules use all
+    of them: an attribute holding the entry (``referenced_by_attribute``), the
+    name of the state that started it (``condition_onset``, ``medication_order``,
+    ``careplan``, ``allergy_onset``, ``device``), or the ``codes`` of the thing
+    itself. Only the first was implemented, so 250 end states did nothing:
+    chronic conditions never resolved and medications never stopped.
+
+    All three are tried in turn, because a module may give more than one.
+    """
+
+    #: Record entry class this state ends.
+    ENTRY_TYPE: type = None
+    #: Definition key naming the state that started it.
+    START_STATE_KEY: str = ''
+    #: Attribute on the record holding every entry of this type.
+    POOL: str = ''
+    #: Record method that ends the entry.
+    END_METHOD: str = ''
+
     def run(self, person: 'Person', time: datetime) -> bool:
-        """End a condition."""
-        referenced_by = self.definition.get('referenced_by_attribute')
-        condition_onset = self.definition.get('condition_onset')
-        
-        if hasattr(person, 'record'):
-            if referenced_by and referenced_by in person.attributes:
-                condition = person.attributes[referenced_by]
-                person.record.condition_end(condition, time)
-            elif condition_onset:
-                # Find condition by onset state name
-                pass
-        
+        record = getattr(person, 'record', None)
+        if record is None:
+            return True
+
+        entry = self._resolve(person, record)
+        if entry is not None:
+            getattr(record, self.END_METHOD)(entry, time)
+
         return True
+
+    def _resolve(self, person: 'Person', record) -> Optional[Any]:
+        """Find the entry this state should end, or None if there is none."""
+        referenced_by = self.definition.get('referenced_by_attribute')
+        if referenced_by:
+            entry = person.attributes.get(referenced_by)
+            if isinstance(entry, self.ENTRY_TYPE) and getattr(entry, 'end_time', None) is None:
+                return entry
+
+        start_state = self.definition.get(self.START_STATE_KEY)
+        if start_state:
+            entry = record.find_by_state(self.module.name, start_state, self.ENTRY_TYPE)
+            if entry is not None:
+                return entry
+
+        codes = self.definition.get('codes')
+        if codes:
+            return record.find_by_codes(codes, getattr(record, self.POOL, []),
+                                        self.ENTRY_TYPE)
+
+        return None
+
+
+class ConditionEndState(_EndState):
+    """A state that ends a medical condition."""
+
+    ENTRY_TYPE = Condition
+    START_STATE_KEY = 'condition_onset'
+    POOL = 'conditions'
+    END_METHOD = 'condition_end'
 
 
 class MedicationOrderState(State):
@@ -430,6 +517,8 @@ class MedicationOrderState(State):
                 )
                 medication.name = self.name
                 medication.codes = codes
+                person.record.register_state_entry(
+                    self.module.name, self.name, medication)
                 if reason:
                     medication.reason = reason
                 
@@ -441,23 +530,13 @@ class MedicationOrderState(State):
         return True
 
 
-class MedicationEndState(State):
+class MedicationEndState(_EndState):
     """A state that ends a medication."""
-    
-    def run(self, person: 'Person', time: datetime) -> bool:
-        """End a medication."""
-        referenced_by = self.definition.get('referenced_by_attribute')
-        medication_order = self.definition.get('medication_order')
-        
-        if hasattr(person, 'record'):
-            if referenced_by and referenced_by in person.attributes:
-                medication = person.attributes[referenced_by]
-                person.record.medication_end(medication, time)
-            elif medication_order:
-                # Find medication by order state name
-                pass
-        
-        return True
+
+    ENTRY_TYPE = Medication
+    START_STATE_KEY = 'medication_order'
+    POOL = 'medications'
+    END_METHOD = 'medication_end'
 
 
 class ProcedureState(State):
@@ -496,18 +575,13 @@ class VitalSignState(State):
                 'unit': unit,
                 'time': time
             }
-        
+
         return True
-    
-    def _calculate_value(self, person: 'Person') -> float:
+
+    def _calculate_value(self, person: 'Person') -> Any:
         """Calculate the vital sign value."""
-        if 'exact' in self.definition:
-            return self.definition['exact']['quantity']
-        elif 'range' in self.definition:
-            low = self.definition['range']['low']
-            high = self.definition['range']['high']
-            return random.uniform(low, high)
-        return 0.0
+        return value_for(self.definition, person, default=0.0,
+                         attribute_key='attribute')
 
 
 class ObservationState(State):
@@ -537,48 +611,43 @@ class ObservationState(State):
         return True
     
     def _calculate_value(self, person: 'Person') -> Any:
-        """Calculate the observation value."""
-        if 'exact' in self.definition:
-            return self.definition['exact']['quantity']
-        elif 'range' in self.definition:
-            low = self.definition['range']['low']
-            high = self.definition['range']['high']
-            return random.uniform(low, high)
-        elif 'value_code' in self.definition:
-            return self.definition['value_code']
-        return None
+        """Calculate the observation value.
+
+        On an Observation, ``attribute`` and ``vital_sign`` name where to read
+        the value from rather than describing the observation itself.
+        """
+        return value_for(self.definition, person, attribute_key='attribute')
 
 
 class SymptomState(State):
     """A state that sets a symptom value."""
     
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Set a symptom."""
+        """Set a symptom.
+
+        A ``probability`` on the state means only that fraction of patients
+        reaching it express the symptom at all; the rest leave it unchanged.
+        """
         symptom = self.definition.get('symptom')
         cause = self.definition.get('cause')
-        
-        if symptom:
+
+        if symptom and passes_probability(self.definition, person):
             value = self._calculate_value(person)
             if not hasattr(person, 'symptoms'):
                 person.symptoms = {}
-            
+
             person.symptoms[symptom] = {
                 'value': value,
                 'cause': cause,
                 'time': time
             }
-        
+
         return True
-    
-    def _calculate_value(self, person: 'Person') -> float:
+
+    def _calculate_value(self, person: 'Person') -> Any:
         """Calculate the symptom value (0-100 scale)."""
-        if 'exact' in self.definition:
-            return self.definition['exact']['quantity']
-        elif 'range' in self.definition:
-            low = self.definition['range']['low']
-            high = self.definition['range']['high']
-            return random.uniform(low, high)
-        return 0.0
+        return value_for(self.definition, person, default=0.0,
+                         attribute_key='attribute')
 
 
 class DeathState(State):
@@ -591,7 +660,7 @@ class DeathState(State):
         elif 'range' in self.definition:
             low = self.definition['range']['low']
             high = self.definition['range']['high']
-            years = random.uniform(low, high)
+            years = person.random.uniform(low, high)
             death_time = time + timedelta(days=years * 365)
         else:
             death_time = time
@@ -609,41 +678,45 @@ class AllergyOnsetState(State):
     """A state that starts an allergy."""
 
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Start an allergy."""
+        """Start an allergy.
+
+        Recorded at onset like a condition, and linked to the encounter named
+        by ``target_encounter`` when that visit happens.
+        """
+        if getattr(person, 'record', None) is None:
+            return True
+
         codes = self.definition.get('codes', [])
+        target_encounter = self.definition.get('target_encounter')
+        diagnose_now = target_encounter is None or _current_encounter_is(
+            person, target_encounter
+        )
 
-        if hasattr(person, 'record'):
-            encounter = person.attributes.get('current_encounter')
-            if encounter:
-                allergy = person.record.allergy_start(time, codes[0] if codes else None)
-                allergy.name = self.name
-                allergy.codes = codes
+        allergy = person.record.allergy_start(
+            time, codes[0] if codes else None, attach=diagnose_now,
+        )
+        allergy.name = self.name
+        allergy.codes = codes
+        person.record.register_state_entry(self.module.name, self.name, allergy)
 
-                # Store allergy reference
-                assign_to = self.definition.get('assign_to_attribute')
-                if assign_to:
-                    person.attributes[assign_to] = allergy
+        if not diagnose_now:
+            _defer_diagnosis(person, self.module.name, target_encounter, allergy)
+
+        # Store allergy reference
+        assign_to = self.definition.get('assign_to_attribute')
+        if assign_to:
+            person.attributes[assign_to] = allergy
 
         return True
 
 
-class AllergyEndState(State):
+class AllergyEndState(_EndState):
     """A state that ends an allergy."""
 
-    def run(self, person: 'Person', time: datetime) -> bool:
-        """End an allergy."""
-        referenced_by = self.definition.get('referenced_by_attribute')
-        allergy_onset = self.definition.get('allergy_onset')
-
-        if hasattr(person, 'record'):
-            if referenced_by and referenced_by in person.attributes:
-                allergy = person.attributes[referenced_by]
-                person.record.allergy_end(allergy, time)
-            elif allergy_onset:
-                # Find allergy by onset state name
-                pass
-
-        return True
+    ENTRY_TYPE = Allergy
+    START_STATE_KEY = 'allergy_onset'
+    POOL = 'allergies'
+    END_METHOD = 'allergy_end'
 
 
 class CarePlanStartState(State):
@@ -662,6 +735,8 @@ class CarePlanStartState(State):
                 careplan = person.record.careplan_start(time, codes[0] if codes else None)
                 careplan.name = self.name
                 careplan.codes = codes
+                person.record.register_state_entry(
+                    self.module.name, self.name, careplan)
                 if reason:
                     careplan.reason = reason
                 careplan.activities = [
@@ -678,23 +753,13 @@ class CarePlanStartState(State):
         return True
 
 
-class CarePlanEndState(State):
+class CarePlanEndState(_EndState):
     """A state that ends a care plan."""
 
-    def run(self, person: 'Person', time: datetime) -> bool:
-        """End a care plan."""
-        referenced_by = self.definition.get('referenced_by_attribute')
-        careplan_ref = self.definition.get('careplan')
-
-        if hasattr(person, 'record'):
-            if referenced_by and referenced_by in person.attributes:
-                careplan = person.attributes[referenced_by]
-                person.record.careplan_end(careplan, time)
-            elif careplan_ref:
-                # Find careplan by state name
-                pass
-
-        return True
+    ENTRY_TYPE = CarePlan
+    START_STATE_KEY = 'careplan'
+    POOL = 'careplans'
+    END_METHOD = 'careplan_end'
 
 
 class _ReportStateBase(State):
@@ -708,6 +773,7 @@ class _ReportStateBase(State):
             encounter = person.attributes.get('current_encounter')
             if encounter:
                 report = Report(time=time)
+                person.record.adopt(report)
                 report.codes = codes
                 report.name = self.name
                 report.encounter = encounter
@@ -715,14 +781,12 @@ class _ReportStateBase(State):
                 for obs_def in obs_defs:
                     obs_codes = _parse_codes(obs_def.get('codes', []))
                     unit = obs_def.get('unit')
-
-                    if 'value_code' in obs_def:
-                        value = obs_def['value_code']
-                    elif 'exact' in obs_def:
-                        value = obs_def['exact'].get('quantity')
+                    if isinstance(obs_def.get('exact'), dict):
                         unit = obs_def['exact'].get('unit', unit)
-                    else:
-                        value = None
+                    elif isinstance(obs_def.get('range'), dict):
+                        unit = obs_def['range'].get('unit', unit)
+
+                    value = value_for(obs_def, person, attribute_key='attribute')
 
                     observation = person.record.observation(
                         time,
@@ -784,6 +848,8 @@ class DeviceState(State):
                 device = person.record.device_start(time, codes[0] if codes else None)
                 device.name = self.name
                 device.codes = codes
+                person.record.register_state_entry(
+                    self.module.name, self.name, device)
 
                 # Store device reference
                 assign_to = self.definition.get('assign_to_attribute')
@@ -793,23 +859,13 @@ class DeviceState(State):
         return True
 
 
-class DeviceEndState(State):
+class DeviceEndState(_EndState):
     """A state that ends a device."""
 
-    def run(self, person: 'Person', time: datetime) -> bool:
-        """End a device."""
-        referenced_by = self.definition.get('referenced_by_attribute')
-        device_ref = self.definition.get('device')
-
-        if hasattr(person, 'record'):
-            if referenced_by and referenced_by in person.attributes:
-                device = person.attributes[referenced_by]
-                person.record.device_end(device, time)
-            elif device_ref:
-                # Find device by state name
-                pass
-
-        return True
+    ENTRY_TYPE = Device
+    START_STATE_KEY = 'device'
+    POOL = 'devices'
+    END_METHOD = 'device_end'
 
 
 class SupplyListState(State):

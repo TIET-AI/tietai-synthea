@@ -9,7 +9,6 @@ from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional, List, TYPE_CHECKING
 from datetime import datetime
 import logging
-import random
 import csv
 import os
 
@@ -137,7 +136,7 @@ class DistributedTransition(Transition):
         if total <= 0:
             return self.transitions[-1].get('transition')
 
-        rand = random.random() * total
+        rand = person.random.random() * total
         cumulative = 0.0
         for transition, weight in zip(self.transitions, weights):
             cumulative += weight
@@ -242,7 +241,7 @@ class ComplexTransition(Transition):
             for opt in all_options:
                 opt['distribution'] /= total
 
-        rand = random.random()
+        rand = person.random.random()
         cumulative = 0.0
         for option in all_options:
             cumulative += option['distribution']
@@ -252,7 +251,7 @@ class ComplexTransition(Transition):
         return all_options[-1]['transition'] if all_options else None
     
     def _select_from_distributions(self, distributions: List[Dict[str, Any]],
-                                   person: Optional['Person'] = None) -> Optional[str]:
+                                   person: 'Person') -> Optional[str]:
         """Select from a list of distributions."""
         if not distributions:
             return None
@@ -263,7 +262,7 @@ class ComplexTransition(Transition):
         if total == 0:
             return distributions[0].get('transition') if distributions else None
 
-        rand = random.random()
+        rand = person.random.random()
         cumulative = 0.0
         for dist, prob in zip(distributions, resolved):
             cumulative += prob / total
@@ -351,7 +350,7 @@ class LookupTableTransition(Transition):
         if total <= 0:
             return self.entries[-1].get('transition')
 
-        rand = random.random() * total
+        rand = person.random.random() * total
         cumulative = 0.0
         for entry, w in zip(self.entries, weights):
             cumulative += w

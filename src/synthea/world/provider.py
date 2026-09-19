@@ -13,6 +13,7 @@ import json
 import random
 
 from synthea.helpers.resources import resource_path
+from synthea.helpers.rng import random_seed
 
 
 @dataclass
@@ -53,12 +54,19 @@ class Clinician:
 class ProviderManager:
     """Manages healthcare providers and clinicians."""
     
-    def __init__(self):
-        """Initialize provider manager."""
+    def __init__(self, seed: Optional[int] = None):
+        """Initialize provider manager.
+
+        Args:
+            seed: Seed for clinician generation. Kept separate from the patient
+                seed so that adding or removing clinicians does not perturb the
+                patients themselves.
+        """
         self.providers: Dict[str, Provider] = {}
         self.clinicians: Dict[str, Clinician] = {}
         self.providers_by_type: Dict[str, List[Provider]] = {}
         self.providers_by_location: Dict[str, List[Provider]] = {}
+        self.random = random.Random(seed if seed is not None else random_seed())
     
     def load(self, location: Optional['Location'] = None):
         """
@@ -198,9 +206,9 @@ class ProviderManager:
             for _ in range(num_clinicians):
                 clinician = Clinician(
                     id=f"clinician-{clinician_id}",
-                    first_name=random.choice(first_names),
-                    last_name=random.choice(last_names),
-                    specialty=random.choice(specialties),
+                    first_name=self.random.choice(first_names),
+                    last_name=self.random.choice(last_names),
+                    specialty=self.random.choice(specialties),
                     provider=provider
                 )
                 self.clinicians[clinician.id] = clinician

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tietai-synthea"
-version = "1.0.1"
+version = "1.1.0"
 description = "PySynthea - a Python-native synthetic patient population simulator"
 readme = "README.md"
 requires-python = ">=3.9,<3.14"
@@ -74,6 +74,7 @@ Homepage = "https://github.com/TIET-AI/tietai-synthea"
 Repository = "https://github.com/TIET-AI/tietai-synthea"
 Documentation = "https://github.com/TIET-AI/tietai-synthea#readme"
 "Bug Tracker" = "https://github.com/TIET-AI/tietai-synthea/issues"
+Changelog = "https://github.com/TIET-AI/tietai-synthea/blob/main/CHANGELOG.md"
 "Upstream Synthea" = "https://github.com/synthetichealth/synthea"
 
 [tool.setuptools]

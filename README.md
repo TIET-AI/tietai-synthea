@@ -4,6 +4,9 @@ A Python implementation of Synthea™, a Synthetic Patient Population Simulator 
 
 For a formal description of the framework, design goals, architecture, and generation pipeline, see the accompanying paper: [PySynthea: A Python-Native Framework for Scalable Synthetic Healthcare Data Generation](paper.pdf).
 
+See [CHANGELOG.md](CHANGELOG.md) for what changed in each release, including the
+known limitations of the current engine.
+
 ## Features
 
 - **Complete Patient Lifecycle**: Simulates patients from birth to death

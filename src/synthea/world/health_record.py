@@ -9,7 +9,10 @@ from typing import Dict, Any, Optional, List, Union, TYPE_CHECKING
 from datetime import datetime
 from dataclasses import dataclass, field
 from enum import Enum
+import random
 import uuid
+
+from synthea.helpers.rng import derive_seed
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
@@ -239,7 +242,19 @@ class HealthRecord:
             person: The person this record belongs to
         """
         self.person = person
-        
+
+        # Record entry identifiers are drawn from a dedicated stream seeded from
+        # the person's seed, so a run is reproducible down to the resource ids.
+        # ``uuid.uuid4()`` reads system entropy and would break that.
+        self._id_random = random.Random(
+            derive_seed(getattr(person, 'seed', 0) or 0, 0, 'entry-id')
+        )
+
+        # Entries indexed by the module state that created them, so an end
+        # state can find what its matching start state produced
+        # (``"module.State_Name" -> [entries]``).
+        self._by_state: Dict[str, List[Entry]] = {}
+
         # All encounters
         self.encounters: List[Encounter] = []
         
@@ -261,7 +276,59 @@ class HealthRecord:
         # Death information
         self.death_date: Optional[datetime] = None
         self.death_cause: Optional[Code] = None
-    
+
+    def new_id(self) -> str:
+        """Return a fresh, reproducible UUID for a record entry."""
+        return str(uuid.UUID(int=self._id_random.getrandbits(128), version=4))
+
+    def adopt(self, entry: 'Entry') -> 'Entry':
+        """Give an entry created outside this record a reproducible id."""
+        entry.id = self.new_id()
+        return entry
+
+    # ------------------------------------------------------------------
+    # Finding entries again
+    #
+    # A GMF end state usually refers back to the state that started the thing
+    # ("condition_onset": "Febrile_Neutropenia") or to its codes, rather than
+    # holding a reference. These let it find the entry either way.
+    # ------------------------------------------------------------------
+
+    def register_state_entry(self, module_name: str, state_name: str,
+                             entry: Entry) -> Entry:
+        """Remember which module state produced an entry."""
+        self._by_state.setdefault(f'{module_name}.{state_name}', []).append(entry)
+        return entry
+
+    def find_by_state(self, module_name: str, state_name: str,
+                      kind: Optional[type] = None) -> Optional[Entry]:
+        """Most recent still-active entry produced by a module state."""
+        entries = self._by_state.get(f'{module_name}.{state_name}', [])
+        return self._most_recent_active(entries, kind)
+
+    def find_by_codes(self, codes: List[Code], pool: List[Entry],
+                      kind: Optional[type] = None) -> Optional[Entry]:
+        """Most recent still-active entry in ``pool`` carrying one of ``codes``."""
+        wanted = {str(getattr(code, 'code', code)) for code in codes}
+        matching = [
+            entry for entry in pool
+            if any(str(code.code) in wanted for code in entry.codes)
+        ]
+        return self._most_recent_active(matching, kind)
+
+    @staticmethod
+    def _most_recent_active(entries: List[Entry],
+                            kind: Optional[type] = None) -> Optional[Entry]:
+        """The latest entry that has not ended yet."""
+        candidates = [
+            entry for entry in entries
+            if (kind is None or isinstance(entry, kind))
+            and getattr(entry, 'end_time', None) is None
+        ]
+        if not candidates:
+            return None
+        return max(candidates, key=lambda entry: entry.time)
+
     def encounter_start(self, time: datetime, encounter_class: Union[str, EncounterClass],
                        provider: Optional['Provider'] = None) -> Encounter:
         """
@@ -283,6 +350,7 @@ class HealthRecord:
             encounter_class=encounter_class,
             provider=provider
         )
+        encounter.id = self.new_id()
         
         self.encounters.append(encounter)
         self.current_encounter = encounter
@@ -305,28 +373,63 @@ class HealthRecord:
         if self.current_encounter == encounter:
             self.current_encounter = None
     
-    def condition_start(self, time: datetime, code: Optional[Code] = None) -> Condition:
+    #: Which list on an Encounter an entry type belongs to, for `attach`.
+    _ENCOUNTER_BUCKETS = {
+        'Condition': 'conditions',
+        'Procedure': 'procedures',
+        'Medication': 'medications',
+        'Observation': 'observations',
+        'CarePlan': 'careplans',
+        'Report': 'reports',
+        'ImagingStudy': 'imaging_studies',
+        'Device': 'devices',
+        'Supply': 'supplies',
+    }
+
+    def attach(self, entry: Entry, encounter: Optional[Encounter]) -> Entry:
+        """Link an already-recorded entry to the encounter that handled it.
+
+        Used when a condition has its onset before the visit that diagnoses it:
+        the entry exists from onset, and this attaches it once that visit
+        happens.
+        """
+        if encounter is None:
+            return entry
+
+        entry.encounter = encounter
+        bucket = self._ENCOUNTER_BUCKETS.get(type(entry).__name__)
+        if bucket is not None:
+            items = getattr(encounter, bucket, None)
+            if items is not None and entry not in items:
+                items.append(entry)
+        return entry
+
+    def condition_start(self, time: datetime, code: Optional[Code] = None,
+                        attach: bool = True) -> Condition:
         """
         Record a new condition.
-        
+
         Args:
             time: Onset time
             code: Condition code
-            
+            attach: Whether to link the condition to the encounter in progress.
+                Pass ``False`` when the condition has its onset now but is
+                diagnosed at a later, named encounter; call :meth:`attach` when
+                that encounter happens.
+
         Returns:
             The new condition
         """
         condition = Condition(time=time)
+        condition.id = self.new_id()
         if code:
             condition.codes = [code]
-        
-        condition.encounter = self.current_encounter
-        
+
         self.conditions.append(condition)
-        
-        if self.current_encounter:
-            self.current_encounter.conditions.append(condition)
-        
+
+        if attach:
+            self.attach(condition, self.current_encounter)
+
         return condition
     
     def condition_end(self, condition: Condition, time: datetime):
@@ -339,24 +442,30 @@ class HealthRecord:
         """
         condition.end_time = time
     
-    def allergy_start(self, time: datetime, code: Optional[Code] = None) -> Allergy:
+    def allergy_start(self, time: datetime, code: Optional[Code] = None,
+                      attach: bool = True) -> Allergy:
         """
         Record a new allergy.
-        
+
         Args:
             time: Onset time
             code: Allergy code
-            
+            attach: Whether to link the allergy to the encounter in progress.
+                See :meth:`condition_start`.
+
         Returns:
             The new allergy
         """
         allergy = Allergy(time=time)
+        allergy.id = self.new_id()
         if code:
             allergy.codes = [code]
-        
-        allergy.encounter = self.current_encounter
+
         self.allergies.append(allergy)
-        
+
+        if attach:
+            self.attach(allergy, self.current_encounter)
+
         return allergy
     
     def allergy_end(self, allergy: Allergy, time: datetime):
@@ -383,6 +492,7 @@ class HealthRecord:
             The new medication
         """
         medication = Medication(time=time)
+        medication.id = self.new_id()
         if code:
             medication.codes = [code]
         
@@ -419,6 +529,7 @@ class HealthRecord:
             The new procedure
         """
         procedure = Procedure(time=time)
+        procedure.id = self.new_id()
         if code:
             procedure.codes = [code]
         
@@ -452,6 +563,7 @@ class HealthRecord:
             value=value,
             unit=unit
         )
+        observation.id = self.new_id()
         if code:
             observation.codes = [code]
         
@@ -476,6 +588,7 @@ class HealthRecord:
             The new care plan
         """
         careplan = CarePlan(time=time)
+        careplan.id = self.new_id()
         if code:
             careplan.codes = [code]
         
@@ -510,6 +623,7 @@ class HealthRecord:
             The new device
         """
         device = Device(time=time)
+        device.id = self.new_id()
         if code:
             device.codes = [code]
 
@@ -546,6 +660,7 @@ class HealthRecord:
         result = []
         for supply_def in supplies:
             supply = Supply(time=time)
+            supply.id = self.new_id()
             code_data = supply_def.get('code')
             if code_data and isinstance(code_data, dict):
                 supply.codes = [Code(
