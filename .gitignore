@@ -19,6 +19,13 @@ build/
 *.db-journal
 *.csv
 *.tsv
+
+# ...but the package's own reference data is source, not output. The blanket
+# *.csv rule above is why the provider, payer, cost and lookup tables were
+# documented for a year while never actually shipping: they were silently
+# excluded from every commit. See issue #37.
+!src/synthea/resources/**/*.csv
+!src/synthea/resources/**/*.tsv
 *.xls
 *.xlsx
 *.tmp
