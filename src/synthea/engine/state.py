@@ -20,8 +20,10 @@ if TYPE_CHECKING:
 from synthea.engine.values import (
     duration_for,
     passes_probability,
+    to_timedelta,
     value_for,
 )
+from synthea.world.dicom import series_uid, sop_instance_uid, study_uid
 from synthea.world.health_record import (
     Allergy,
     CarePlan,
@@ -31,6 +33,28 @@ from synthea.world.health_record import (
     Medication,
     Report,
 )
+
+
+#: LOINC codes for the vital signs modules set by name. A VitalSign state
+#: usually gives no `codes`, so without this the value could not be exported.
+VITAL_SIGN_LOINC = {
+    'Height': ('8302-2', 'Body Height'),
+    'Weight': ('29463-7', 'Body Weight'),
+    'Body Mass Index': ('39156-5', 'Body mass index (BMI) [Ratio]'),
+    'Systolic Blood Pressure': ('8480-6', 'Systolic blood pressure'),
+    'Diastolic Blood Pressure': ('8462-4', 'Diastolic blood pressure'),
+    'Heart Rate': ('8867-4', 'Heart rate'),
+    'Respiration Rate': ('9279-1', 'Respiratory rate'),
+    'Oxygen Saturation': ('2708-6', 'Oxygen saturation in Arterial blood'),
+}
+
+
+def vital_sign_codes(vital_sign: str) -> list:
+    """The LOINC code for a named vital sign, if one is known."""
+    entry = VITAL_SIGN_LOINC.get(vital_sign)
+    if entry is None:
+        return []
+    return [Code(system='http://loinc.org', code=entry[0], display=entry[1])]
 
 
 def _pending_key(module_name: str) -> str:
@@ -220,7 +244,8 @@ class State(ABC):
             StateType.DEVICE: DeviceState,
             StateType.DEVICE_END: DeviceEndState,
             StateType.SUPPLY_LIST: SupplyListState,
-            StateType.VACCINE: SimpleState,
+            StateType.IMAGING_STUDY: ImagingStudyState,
+            StateType.VACCINE: VaccineState,
             StateType.PHYSIOLOGY: SimpleState,
         }
         
@@ -343,14 +368,26 @@ class CounterState(State):
 
 
 class EncounterState(State):
-    """A state that starts a healthcare encounter."""
-    
+    """A state that starts a healthcare encounter.
+
+    ``"wellness": true`` means the module is not booking an appointment of its
+    own: it is attaching to the patient's next routine check-up, scheduled by
+    the core encounter module. Such a state **waits** until that visit happens.
+
+    Until this was implemented the flag was ignored and the state opened an
+    ambulatory encounter immediately, so every chronic-disease module diagnosed
+    its condition in the patient's first week of life.
+    """
+
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Start an encounter."""
+        """Start an encounter, or wait for the routine visit to attach to."""
+        if self.definition.get('wellness'):
+            return self._attach_to_wellness(person, time)
+
         encounter_class = self.definition.get('encounter_class', 'ambulatory')
         reason = self.definition.get('reason')
         codes = self.definition.get('codes', [])
-        
+
         # Create encounter in person's health record
         if getattr(person, 'record', None) is not None:
             encounter = person.record.encounter_start(time, encounter_class)
@@ -365,6 +402,35 @@ class EncounterState(State):
             # Claim anything that has been waiting for this visit to diagnose it.
             for entry in _claim_pending(person, self.module.name, self.name):
                 person.record.attach(entry, encounter)
+
+        return True
+
+
+    def _attach_to_wellness(self, person: 'Person', time: datetime) -> bool:
+        """Adopt the routine check-up in progress, or wait for the next one.
+
+        Returns False (yield to the next timestep) while no check-up is open,
+        which is how the module ends up sitting here until the patient attends.
+        """
+        if getattr(person, 'record', None) is None:
+            return True
+
+        encounter = person.attributes.get('current_wellness_encounter')
+        if encounter is None or encounter.time != time:
+            return False  # no visit today; come back next step
+
+        # The module joins the existing visit rather than opening its own, so
+        # its codes and reason describe what the visit found.
+        for code in self.definition.get('codes', []):
+            if code not in encounter.codes:
+                encounter.codes.append(code)
+        if self.definition.get('reason') and not encounter.reason:
+            encounter.reason = self.definition['reason']
+
+        person.attributes['current_encounter'] = encounter
+
+        for entry in _claim_pending(person, self.module.name, self.name):
+            person.record.attach(entry, encounter)
 
         return True
 
@@ -500,34 +566,67 @@ class ConditionEndState(_EndState):
 
 
 class MedicationOrderState(State):
-    """A state that prescribes a medication."""
-    
+    """A state that prescribes or administers a medication."""
+
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Prescribe a medication."""
+        """Prescribe a medication, or record one given during the visit."""
         codes = self.definition.get('codes', [])
         reason = self.definition.get('reason')
 
-        if hasattr(person, 'record'):
-            encounter = person.attributes.get('current_encounter')
-            if encounter:
-                medication = person.record.medication_start(
-                    time, 
-                    codes[0] if codes else None,
-                    encounter
+        if getattr(person, 'record', None) is None:
+            return True
+
+        encounter = person.attributes.get('current_encounter')
+        if encounter is None:
+            return True
+
+        medication = person.record.medication_start(
+            time, codes[0] if codes else None, encounter,
+        )
+        medication.name = self.name
+        medication.codes = codes
+        person.record.register_state_entry(self.module.name, self.name, medication)
+
+        # How the drug is taken, and for how long.
+        medication.prescription = self.definition.get('prescription')
+        medication.chronic = bool(self.definition.get('chronic'))
+        medication.administration = bool(self.definition.get('administration'))
+
+        if reason:
+            medication.reason = reason
+            medication.reason_entry = self._resolve_reason(person, reason)
+
+        # A drug given during the visit is finished when the visit is. A
+        # prescription with a stated duration ends when it runs out; a chronic
+        # one has no planned end at all.
+        if medication.administration:
+            medication.end_time = time
+        else:
+            duration = (medication.prescription or {}).get('duration')
+            if duration and not medication.chronic:
+                medication.end_time = time + to_timedelta(
+                    duration.get('quantity'), duration.get('unit', 'days'),
                 )
-                medication.name = self.name
-                medication.codes = codes
-                person.record.register_state_entry(
-                    self.module.name, self.name, medication)
-                if reason:
-                    medication.reason = reason
-                
-                # Store medication reference
-                assign_to = self.definition.get('assign_to_attribute')
-                if assign_to:
-                    person.attributes[assign_to] = medication
-        
+
+        # Store medication reference
+        assign_to = self.definition.get('assign_to_attribute')
+        if assign_to:
+            person.attributes[assign_to] = medication
+
         return True
+
+    def _resolve_reason(self, person: 'Person', reason: str):
+        """Find the condition this drug treats, so the export can reference it.
+
+        ``reason`` names either the state that started a condition or an
+        attribute holding one.
+        """
+        found = person.record.find_by_state(self.module.name, reason, Condition)
+        if found is not None:
+            return found
+
+        candidate = person.attributes.get(reason)
+        return candidate if isinstance(candidate, Condition) else None
 
 
 class MedicationEndState(_EndState):
@@ -568,15 +667,45 @@ class VitalSignState(State):
         vital_sign = self.definition.get('vital_sign')
         unit = self.definition.get('unit')
         
-        if vital_sign and hasattr(person, 'vital_signs'):
-            value = self._calculate_value(person)
-            person.vital_signs[vital_sign] = {
-                'value': value,
-                'unit': unit,
-                'time': time
-            }
+        if not vital_sign or not hasattr(person, 'vital_signs'):
+            return True
+
+        value = self._calculate_value(person)
+        person.vital_signs[vital_sign] = {
+            'value': value,
+            'unit': unit,
+            'time': time,
+        }
+
+        # A vital set by a module must also reach the record, or it is invisible
+        # to every exporter. Previously it lived only on the person, which is
+        # why observations reading a vital sign exported with no value.
+        self._record_observation(person, time, vital_sign, value, unit)
 
         return True
+
+    def _record_observation(self, person: 'Person', time: datetime,
+                            vital_sign: str, value: Any, unit: Any) -> None:
+        """Record the vital as an Observation on the visit in progress."""
+        if getattr(person, 'record', None) is None or value is None:
+            return
+
+        encounter = person.attributes.get('current_encounter')
+        if encounter is None:
+            # Nothing to hang it on; the value still lives on the person and a
+            # later Observation state can read it.
+            return
+
+        codes = self.definition.get('codes') or vital_sign_codes(vital_sign)
+        if not codes:
+            return
+
+        observation = person.record.observation(
+            time, codes[0], value, unit, encounter,
+        )
+        observation.codes = list(codes)
+        observation.category = 'vital-signs'
+        observation.name = vital_sign
 
     def _calculate_value(self, person: 'Person') -> Any:
         """Calculate the vital sign value."""
@@ -881,3 +1010,122 @@ class SupplyListState(State):
                 person.record.supply_list(time, supplies)
 
         return True
+
+
+class VaccineState(State):
+    """A state that administers a vaccine.
+
+    Mapped to a no-op before this, so the five module-driven vaccinations in the
+    bundled modules recorded nothing. The routine childhood and adult schedule
+    is handled separately by the immunizations core module; this covers vaccines
+    a disease pathway gives for its own reasons, such as the COVID-19 and HIV
+    care modules.
+    """
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        if getattr(person, 'record', None) is None:
+            return True
+
+        encounter = person.attributes.get('current_encounter')
+        if encounter is None:
+            return True
+
+        codes = self.definition.get('codes', [])
+        if not codes:
+            return True
+
+        immunization = person.record.immunization(time, codes[0], encounter)
+        immunization.name = self.name
+        immunization.codes = list(codes)
+
+        series = self.definition.get('series')
+        if series is not None:
+            try:
+                immunization.dose_number = int(series)
+            except (TypeError, ValueError):
+                pass
+
+        person.record.register_state_entry(self.module.name, self.name, immunization)
+
+        assign_to = self.definition.get('assign_to_attribute')
+        if assign_to:
+            person.attributes[assign_to] = immunization
+
+        return True
+
+
+class ImagingStudyState(State):
+    """A state that performs an imaging study.
+
+    Mapped to a no-op before this: 39 ImagingStudy states across 19 modules did
+    nothing, so a patient could have a chest X-ray procedure recorded with no
+    study attached to it.
+
+    The study, each series and each instance get real DICOM UIDs, so the output
+    can be handed to imaging software or used to name files that a PACS will
+    accept.
+    """
+
+    def run(self, person: 'Person', time: datetime) -> bool:
+        if getattr(person, 'record', None) is None:
+            return True
+
+        encounter = person.attributes.get('current_encounter')
+        if encounter is None:
+            return True
+
+        procedure_code = _first_code(self.definition.get('procedure_code'))
+        study = person.record.imaging_study(time, procedure_code, encounter)
+        study.name = self.name
+        study.dicom_uid = study_uid(person)
+        study.series = [
+            self._build_series(person, definition)
+            for definition in self.definition.get('series', [])
+        ]
+
+        if study.series:
+            study.modality = study.series[0].get('modality')
+            study.body_site = study.series[0].get('body_site')
+
+        # An imaging study is also a procedure that happened at this visit.
+        if procedure_code is not None:
+            procedure = person.record.procedure(time, procedure_code, encounter)
+            procedure.name = self.name
+            procedure.codes = [procedure_code]
+
+        person.record.register_state_entry(self.module.name, self.name, study)
+
+        assign_to = self.definition.get('assign_to_attribute')
+        if assign_to:
+            person.attributes[assign_to] = study
+
+        return True
+
+    def _build_series(self, person: 'Person', definition: Dict[str, Any]) -> Dict[str, Any]:
+        instances = [
+            {
+                'uid': sop_instance_uid(person),
+                'title': instance.get('title'),
+                'sop_class': _first_code(instance.get('sop_class')),
+            }
+            for instance in definition.get('instances', [])
+        ]
+        return {
+            'uid': series_uid(person),
+            'modality': _first_code(definition.get('modality')),
+            'body_site': _first_code(definition.get('body_site')),
+            'instances': instances,
+        }
+
+
+def _first_code(raw: Any) -> Optional[Code]:
+    """Coerce a single code definition to a Code."""
+    if raw is None:
+        return None
+    if isinstance(raw, Code):
+        return raw
+    if isinstance(raw, dict):
+        return _parse_codes([raw])[0] if _parse_codes([raw]) else None
+    if isinstance(raw, list) and raw:
+        return _first_code(raw[0])
+    return None

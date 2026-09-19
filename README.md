@@ -10,12 +10,12 @@ known limitations of the current engine.
 ## Features
 
 - **Complete Patient Lifecycle**: Simulates patients from birth to death
-- **231 Disease Modules**: Comprehensive set of conditions including diabetes, heart disease, COVID-19, cancer, and more
+- **99 top-level disease modules** (256 JSON files including submodules): diabetes, heart disease, COVID-19, cancer, and more
 - **Modular Disease Framework**: JSON-based state machines for conditions
-- **Multiple Export Formats**: FHIR R4, CSV, JSON
-- **Real-World Data**: CDC growth charts, immunization schedules, provider databases, cost data
-- **Demographics**: Based on real census data with geographic distributions
-- **Healthcare System**: Complete with providers, payers, and cost modeling
+- **Export Formats**: FHIR R4 and JSON (CSV and C-CDA are not implemented; enabling them is refused with a clear error)
+- **Real-World Data**: CDC growth charts, immunization schedules, cost and payer tables, stratified lookup tables (see [RESOURCES.md](RESOURCES.md) for exactly what ships)
+- **Demographics**: names, addresses, identifiers, growth from CDC charts, vital signs and background mortality
+- **Reproducible**: the same seed produces the same population, on one worker or many
 - **Configurable**: Extensive configuration options via properties file
 - **Fast**: Uses UV for blazing-fast dependency management
 
@@ -204,8 +204,8 @@ tietai-synthea/
 │   ├── helpers/         # Utilities
 │   │   └── config.py    # Configuration
 │   └── cli.py           # Command-line interface
-├── resources/           # Data files (394+ files)
-│   ├── modules/         # 231 Disease modules (JSON)
+├── src/synthea/resources/   # Data files, shipped inside the package
+│   ├── modules/         # 256 JSON files; 99 top-level modules
 │   │   ├── allergies/   # Allergy-related modules
 │   │   ├── breast_cancer/ # Cancer modules
 │   │   ├── covid19/     # COVID-19 modules
@@ -418,7 +418,7 @@ uv run ptw -- --testmon
 
 ## Available Disease Modules
 
-The Python implementation includes all 231 disease modules from the original Synthea project:
+The Python implementation bundles 256 module files from the original Synthea project, 99 of which are top-level modules; the rest are submodules invoked via `CallSubmodule`:
 
 ### Major Conditions
 - **Cardiovascular**: Atrial Fibrillation, Heart Disease, Hypertension, Stroke

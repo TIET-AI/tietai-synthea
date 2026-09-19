@@ -90,7 +90,8 @@ class Encounter(Entry):
         self.imaging_studies: List['ImagingStudy'] = []
         self.devices: List['Device'] = []
         self.supplies: List['Supply'] = []
-    
+        self.immunizations: List['Immunization'] = []
+
     @property
     def is_active(self) -> bool:
         """Check if encounter is still active."""
@@ -140,11 +141,20 @@ class Allergy(Entry):
 
 @dataclass
 class Medication(Entry):
-    """Represents a medication prescription."""
+    """Represents a medication prescription or administration."""
     encounter: Optional[Encounter] = None
     end_time: Optional[datetime] = None
     reason: Optional[str] = None
     dosage: Optional[Dict[str, Any]] = None
+    #: The GMF ``prescription`` block: dosage, duration, refills, as-needed.
+    prescription: Optional[Dict[str, Any]] = None
+    #: True when the drug was given during the visit rather than prescribed,
+    #: which is a MedicationAdministration, not a MedicationRequest.
+    administration: bool = False
+    #: True for a long-term medication with no planned stop date.
+    chronic: bool = False
+    #: The condition being treated, once resolved from the module's `reason`.
+    reason_entry: Optional['Condition'] = None
     
     @property
     def is_active(self) -> bool:
@@ -167,6 +177,10 @@ class Observation(Entry):
     value: Any = None
     unit: Optional[str] = None
     category: str = "laboratory"
+    #: Parts of a panel, as ``(Code, value, unit)``. Blood pressure is one
+    #: Observation with systolic and diastolic components rather than two
+    #: separate Observations, which is what US Core expects.
+    components: List[Any] = field(default_factory=list)
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
@@ -203,11 +217,18 @@ class Report(Entry):
 
 @dataclass
 class ImagingStudy(Entry):
-    """Represents an imaging study."""
+    """Represents an imaging study.
+
+    ``dicom_uid`` and the per-series and per-instance UIDs are real DICOM
+    identifiers derived from UUIDs under the ``2.25.`` arc, so a generated study
+    can be handed to imaging software without colliding with anything.
+    """
     encounter: Optional[Encounter] = None
     modality: Optional[str] = None
     body_site: Optional[str] = None
     series: List[Dict[str, Any]] = field(default_factory=list)
+    dicom_uid: Optional[str] = None
+    procedure_code: Optional[Code] = None
 
 
 @dataclass
@@ -229,6 +250,14 @@ class Supply(Entry):
     """Represents medical supplies."""
     encounter: Optional[Encounter] = None
     quantity: int = 1
+
+
+@dataclass
+class Immunization(Entry):
+    """Represents an administered vaccine."""
+    encounter: Optional[Encounter] = None
+    series_doses: Optional[int] = None
+    dose_number: Optional[int] = None
 
 
 class HealthRecord:
@@ -272,6 +301,7 @@ class HealthRecord:
         self.imaging_studies: List[ImagingStudy] = []
         self.devices: List[Device] = []
         self.supplies: List[Supply] = []
+        self.immunizations: List[Immunization] = []
         
         # Death information
         self.death_date: Optional[datetime] = None
@@ -384,6 +414,7 @@ class HealthRecord:
         'ImagingStudy': 'imaging_studies',
         'Device': 'devices',
         'Supply': 'supplies',
+        'Immunization': 'immunizations',
     }
 
     def attach(self, entry: Entry, encounter: Optional[Encounter]) -> Entry:
@@ -681,6 +712,51 @@ class HealthRecord:
             result.append(supply)
 
         return result
+
+    def immunization(self, time: datetime, code: Optional[Code] = None,
+                     encounter: Optional[Encounter] = None) -> Immunization:
+        """Record an administered vaccine.
+
+        Args:
+            time: Administration time
+            code: CVX code for the vaccine
+            encounter: The visit at which it was given
+
+        Returns:
+            The new immunization
+        """
+        immunization = Immunization(time=time)
+        immunization.id = self.new_id()
+        if code:
+            immunization.codes = [code]
+
+        self.immunizations.append(immunization)
+        self.attach(immunization, encounter or self.current_encounter)
+
+        return immunization
+
+    def imaging_study(self, time: datetime, procedure_code: Optional[Code] = None,
+                      encounter: Optional[Encounter] = None) -> ImagingStudy:
+        """Record an imaging study.
+
+        Args:
+            time: When the study was performed
+            procedure_code: The imaging procedure
+            encounter: The visit it belongs to
+
+        Returns:
+            The new imaging study
+        """
+        study = ImagingStudy(time=time)
+        study.id = self.new_id()
+        study.procedure_code = procedure_code
+        if procedure_code:
+            study.codes = [procedure_code]
+
+        self.imaging_studies.append(study)
+        self.attach(study, encounter or self.current_encounter)
+
+        return study
 
     def death(self, time: datetime, cause: Optional[Code] = None):
         """

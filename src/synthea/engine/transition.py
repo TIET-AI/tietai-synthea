@@ -273,24 +273,31 @@ class ComplexTransition(Transition):
 
 
 class LookupTableTransition(Transition):
+    """A transition whose probabilities come from a CSV lookup table.
+
+    The bundled tables are stratified by patient and by date. A row is selected
+    by matching every column that is not a transition target, and the remaining
+    columns give that row's probability for each target:
+
+        age,gender,state,Prescribe_Benazepril,Prescribe_Enalapril
+        0-3,M,Alabama,0.0,0.0
+        45-64,F,Alabama,0.31,0.12
+
+    Four column names are interpreted rather than compared literally:
+
+    ``age``    an inclusive range in years, ``"45-64"``
+    ``time``   an inclusive range of epoch milliseconds, used by the COVID-19
+               modules to make probabilities follow the real pandemic timeline
+    ``gender`` compared case-insensitively against the patient's
+    anything else
+               compared against the patient attribute of the same name, which
+               is how tables stratify by disease stage or treatment
+
+    Until the tables were bundled every one of the 289 references in the module
+    set fell back to ``default_probability``, so the stratification did nothing.
     """
-    A transition that uses CSV lookup tables for age/gender-stratified
-    probabilities.
 
-    GMF format:
-        "lookup_table_transition": [
-          {"transition": "State_A", "default_probability": 0.6,
-           "lookup_table_name": "table.csv"},
-          {"transition": "State_B", "default_probability": 0.4,
-           "lookup_table_name": "table.csv"}
-        ]
-
-    When the CSV is available the per-row probability columns are used;
-    otherwise ``default_probability`` values are used as weights and
-    normalised to a valid distribution before sampling.
-    """
-
-    # Shared cache so the same CSV is read once per process.
+    #: Parsed tables, keyed by filename, shared across the process.
     _csv_cache: Dict[str, Optional[List[Dict[str, str]]]] = {}
 
     _CSV_BASES = [
@@ -311,95 +318,131 @@ class LookupTableTransition(Transition):
             raw = []
         self.entries: List[Dict[str, Any]] = raw
 
-    def _load_csv(self, name: str) -> Optional[List[Dict[str, str]]]:
-        if name in self._csv_cache:
-            return self._csv_cache[name]
-        for base in self._CSV_BASES:
+    # ------------------------------------------------------------------
+    # Loading
+    # ------------------------------------------------------------------
+
+    @classmethod
+    def _load_csv(cls, name: str) -> Optional[List[Dict[str, str]]]:
+        if name in cls._csv_cache:
+            return cls._csv_cache[name]
+
+        for base in cls._CSV_BASES:
             full = os.path.join(base, name)
-            if os.path.exists(full):
-                try:
-                    with open(full, 'r', encoding='utf-8') as f:
-                        rows = list(csv.DictReader(f))
-                    self._csv_cache[name] = rows
-                    return rows
-                except Exception as e:
-                    logger.warning("Failed to read lookup table %s: %s", full, e)
-                    break
-        self._csv_cache[name] = None
+            if not os.path.exists(full):
+                continue
+            try:
+                # utf-8-sig: several bundled tables carry a byte order mark,
+                # which would otherwise become part of the first column name.
+                with open(full, 'r', encoding='utf-8-sig', newline='') as handle:
+                    rows = list(csv.DictReader(handle))
+                cls._csv_cache[name] = rows
+                return rows
+            except Exception as error:
+                logger.warning("Failed to read lookup table %s: %s", full, error)
+                break
+
+        logger.warning(
+            "Lookup table '%s' not found; falling back to default probabilities.",
+            name,
+        )
+        cls._csv_cache[name] = None
         return None
+
+    # ------------------------------------------------------------------
+    # Selection
+    # ------------------------------------------------------------------
 
     def follow(self, person: 'Person', time: datetime) -> Optional[str]:
         if not self.entries:
             return None
 
+        targets = {entry.get('transition') for entry in self.entries}
         weights: List[float] = []
+
         for entry in self.entries:
-            prob = float(entry.get('default_probability', 0.0))
-            # If a CSV exists, look up this entry's own probability column.
-            csv_name = entry.get('lookup_table_name')
-            if csv_name:
-                rows = self._load_csv(csv_name)
+            probability = _as_float(entry.get('default_probability'), 0.0)
+
+            name = entry.get('lookup_table_name')
+            if name:
+                rows = self._load_csv(name)
                 if rows:
-                    target = entry.get('transition', '')
-                    matched = self._find_matching_row(rows, person, time, target)
-                    if matched is not None:
-                        prob = matched
-            weights.append(prob)
+                    row = self._matching_row(rows, person, time, targets)
+                    if row is not None:
+                        probability = _as_float(
+                            row.get(entry.get('transition', '')), probability)
+
+            weights.append(probability)
 
         total = sum(weights)
         if total <= 0:
             return self.entries[-1].get('transition')
 
-        rand = person.random.random() * total
+        draw = person.random.random() * total
         cumulative = 0.0
-        for entry, w in zip(self.entries, weights):
-            cumulative += w
-            if rand < cumulative:
+        for entry, weight in zip(self.entries, weights):
+            cumulative += weight
+            if draw < cumulative:
                 return entry.get('transition')
         return self.entries[-1].get('transition')
 
-    def _find_matching_row(self, rows: List[Dict[str, str]],
-                           person: 'Person', time: datetime,
-                           transition_name: str = '') -> Optional[float]:
-        """
-        Return this transition's probability from the first matching CSV row.
-
-        The CSV column for a transition is expected to be named after the
-        target state (``transition_name``). If that column is absent the
-        first numeric non-filter column is used as a fallback.
-        """
-        _FILTER_COLS = frozenset({'age_min', 'age_max', 'age', 'gender'})
-        age = getattr(person, 'age_at', lambda t: None)(time)
-        gender = person.attributes.get('gender', '')
-
+    def _matching_row(self, rows: List[Dict[str, str]], person: 'Person',
+                      time: datetime, targets: set) -> Optional[Dict[str, str]]:
+        """The first row whose selector columns all match this patient."""
         for row in rows:
-            if 'age_min' in row:
-                try:
-                    if age is None or age < int(row['age_min']):
-                        continue
-                except (ValueError, TypeError):
-                    pass
-            if 'age_max' in row:
-                try:
-                    if age is None or age > int(row['age_max']):
-                        continue
-                except (ValueError, TypeError):
-                    pass
-            if 'gender' in row and row['gender']:
-                if row['gender'].lower() != gender.lower():
-                    continue
-            # Prefer the column named after the transition target.
-            if transition_name and transition_name in row:
-                try:
-                    return float(row[transition_name])
-                except (ValueError, TypeError):
-                    pass
-            # Fall back to the first numeric non-filter column.
-            for key, val in row.items():
-                if key in _FILTER_COLS:
-                    continue
-                try:
-                    return float(val)
-                except (ValueError, TypeError):
-                    continue
+            if all(
+                _column_matches(column, value, person, time)
+                for column, value in row.items()
+                if column not in targets and column
+            ):
+                return row
         return None
+
+
+def _column_matches(column: str, value: Optional[str], person: 'Person',
+                    time: datetime) -> bool:
+    """Whether one selector column matches the patient."""
+    if value is None or value == '':
+        return True
+
+    key = column.strip().lower()
+
+    if key == 'age':
+        return _in_numeric_range(value, person.age_at(time))
+
+    if key == 'time':
+        epoch_millis = time.timestamp() * 1000.0
+        return _in_numeric_range(value, epoch_millis)
+
+    if key == 'gender':
+        return value.strip().lower() == str(
+            person.attributes.get('gender', '')).strip().lower()
+
+    attribute = person.attributes.get(column) or person.attributes.get(key)
+    if attribute is None:
+        # The table stratifies by something this patient has no value for, so
+        # it cannot be the right row.
+        return False
+    return str(attribute).strip().lower() == value.strip().lower()
+
+
+def _in_numeric_range(value: str, candidate: float) -> bool:
+    """Whether a number falls in an inclusive ``low-high`` range."""
+    text = value.strip()
+    if '-' not in text:
+        bound = _as_float(text, None)
+        return bound is not None and abs(candidate - bound) < 1e-9
+
+    low_text, _, high_text = text.partition('-')
+    low = _as_float(low_text, None)
+    high = _as_float(high_text, None)
+    if low is None or high is None:
+        return False
+    return low <= candidate <= high
+
+
+def _as_float(value: Any, default):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default

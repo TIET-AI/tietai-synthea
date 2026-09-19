@@ -1,0 +1,554 @@
+{
+  "source_repository": "https://github.com/synthetichealth/synthea",
+  "source_commit": "d9d07a6eef91ee5144293b42ab64224d84d124f8",
+  "licence": "Apache-2.0",
+  "files": [
+    {
+      "path": "costs/devices.csv",
+      "upstream_path": "src/main/resources/costs/devices.csv",
+      "bytes": 321,
+      "sha256": "751f003d80d629a0848b04b69df6d4960291a0217240d1f09ed6efe5585b9a9c"
+    },
+    {
+      "path": "costs/devices_adjustments.csv",
+      "upstream_path": "src/main/resources/costs/devices_adjustments.csv",
+      "bytes": 546,
+      "sha256": "9a524d5518681a9a8e94dee372e894323b77a91bee77f9a58e6e452fe023fd81"
+    },
+    {
+      "path": "costs/dialysis_adjustments.csv",
+      "upstream_path": "src/main/resources/costs/dialysis_adjustments.csv",
+      "bytes": 546,
+      "sha256": "68b8f218400c5993fe69d27c6796a2d5c57e9f95c76b6b7438967f04689e07cb"
+    },
+    {
+      "path": "costs/encounters.csv",
+      "upstream_path": "src/main/resources/costs/encounters.csv",
+      "bytes": 659,
+      "sha256": "cd7e68a05ff27d04c99f29c9c6cddb9bcd0ba425aa008c0481a4fa05c28ea0f2"
+    },
+    {
+      "path": "costs/encounters_adjustments.csv",
+      "upstream_path": "src/main/resources/costs/encounters_adjustments.csv",
+      "bytes": 8983,
+      "sha256": "b3306e4c504111e42c482b055f08b8a32b6e0f4f011c66ed9d8161039158607e"
+    },
+    {
+      "path": "costs/immunizations.csv",
+      "upstream_path": "src/main/resources/costs/immunizations.csv",
+      "bytes": 27,
+      "sha256": "2b7aaee7fc9ca31392b550ecbd616f29f76d54898c078d9ee102181cae1c78b9"
+    },
+    {
+      "path": "costs/labs_adjustments.csv",
+      "upstream_path": "src/main/resources/costs/labs_adjustments.csv",
+      "bytes": 546,
+      "sha256": "2427249afad97aab888c54e62692132acd0b67519a2875b683dd449bd8ee4482"
+    },
+    {
+      "path": "costs/medications.csv",
+      "upstream_path": "src/main/resources/costs/medications.csv",
+      "bytes": 20909,
+      "sha256": "c2ab00c58f7115fb53c105ec7d400bfe1a991f754b986e6276e7ee4c7d878c13"
+    },
+    {
+      "path": "costs/medications_adjustments.csv",
+      "upstream_path": "src/main/resources/costs/medications_adjustments.csv",
+      "bytes": 546,
+      "sha256": "7c52e6cbcc57e2822d6d87d57e2ef7e5875ac16b7216f77805f5728a408d67d8"
+    },
+    {
+      "path": "costs/pde_oop_thresholds.csv",
+      "upstream_path": "src/main/resources/costs/pde_oop_thresholds.csv",
+      "bytes": 144,
+      "sha256": "b0d6edc29586cec8171be8678b225a24f586bbcd2dfc2821ce70a489041dd52f"
+    },
+    {
+      "path": "costs/procedures.csv",
+      "upstream_path": "src/main/resources/costs/procedures.csv",
+      "bytes": 206831,
+      "sha256": "6c3b20792b77f657b5e3eb4549a6a1989f6ababf42f600854bab5f23bd0cce4f"
+    },
+    {
+      "path": "costs/procedures_adjustments.csv",
+      "upstream_path": "src/main/resources/costs/procedures_adjustments.csv",
+      "bytes": 546,
+      "sha256": "e9e416072a3f49cbce51ba163e15b244129ab45d7cbeb34c95e71cb3697af1b0"
+    },
+    {
+      "path": "costs/supplies.csv",
+      "upstream_path": "src/main/resources/costs/supplies.csv",
+      "bytes": 168,
+      "sha256": "990fd9133b598eb5536e5f2cb9fcc49630852a17fb006092590e268201f2895c"
+    },
+    {
+      "path": "costs/supplies_adjustments.csv",
+      "upstream_path": "src/main/resources/costs/supplies_adjustments.csv",
+      "bytes": 546,
+      "sha256": "9a524d5518681a9a8e94dee372e894323b77a91bee77f9a58e6e452fe023fd81"
+    },
+    {
+      "path": "geography/sdoh.csv",
+      "upstream_path": "src/main/resources/geography/sdoh.csv",
+      "bytes": 224172,
+      "sha256": "dd315f7f0d6a50d3dbe7d3088187c563a301b8563d6dd5d0fe5128f97d5c0d41"
+    },
+    {
+      "path": "geography/timezones.csv",
+      "upstream_path": "src/main/resources/geography/timezones.csv",
+      "bytes": 2059,
+      "sha256": "d4472926064654554cc3e59ed5898a6da2ee975bc56a77a00a83e227951768f4"
+    },
+    {
+      "path": "geography/zipcodes.csv",
+      "upstream_path": "src/main/resources/geography/zipcodes.csv",
+      "bytes": 3351770,
+      "sha256": "dff12ff8015a3bb1ed95ab9453a0f721a7b3dbb9513c071ddfbd073a8023557d"
+    },
+    {
+      "path": "lookup_tables/AML.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/AML.csv",
+      "bytes": 573,
+      "sha256": "1b3adc4c4f952f821a68537f7fc8fb8f1dff4aa64c180f884daefa4f1205bbd2"
+    },
+    {
+      "path": "lookup_tables/ace_arb_amlodipine_benazepril_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_amlodipine_benazepril_product_distribution.csv",
+      "bytes": 11780,
+      "sha256": "63e398bda6c9ca81d34355fe6d0c4c7c9941810264a2175eecf1b5321985bc7f"
+    },
+    {
+      "path": "lookup_tables/ace_arb_benazepril_hydrochlorothiazide_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_benazepril_hydrochlorothiazide_product_distribution.csv",
+      "bytes": 5598,
+      "sha256": "f85c5afc1003d70f92c5eb23f45fd63714afb081854fe580dfd3cf46152360b6"
+    },
+    {
+      "path": "lookup_tables/ace_arb_benazepril_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_benazepril_product_distribution.csv",
+      "bytes": 11069,
+      "sha256": "8b493292a6140c3561e87a7f604e3c11b741844d539e76123cbda0d5207a5f7d"
+    },
+    {
+      "path": "lookup_tables/ace_arb_enalapril_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_enalapril_product_distribution.csv",
+      "bytes": 11987,
+      "sha256": "e70e21ef27a546ec1cd89cdf7bb6fbebed2fec96806cba51f7ae7e44b19bda99"
+    },
+    {
+      "path": "lookup_tables/ace_arb_hydrochlorothiazide_lisinopril_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_hydrochlorothiazide_lisinopril_product_distribution.csv",
+      "bytes": 12304,
+      "sha256": "d15c40395912d035a91714e29544fa96eb8eaefd5c3ce05814e16cad3999afcf"
+    },
+    {
+      "path": "lookup_tables/ace_arb_hydrochlorothiazide_losartan_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_hydrochlorothiazide_losartan_product_distribution.csv",
+      "bytes": 16545,
+      "sha256": "a1966325329af9e323b5916922b8a3e953d78abb0121897fbd0a84207718685b"
+    },
+    {
+      "path": "lookup_tables/ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv",
+      "bytes": 10501,
+      "sha256": "d90ed04b3f677d59641b1c2a6eeb21a50c783f24d7496e0a00d9246ea65dadb9"
+    },
+    {
+      "path": "lookup_tables/ace_arb_ingredient_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_ingredient_distribution.csv",
+      "bytes": 55412,
+      "sha256": "a0b3953e8aa6898b3cb93ab095896718d5a790a34a5141694847faaca160d89e"
+    },
+    {
+      "path": "lookup_tables/ace_arb_irbesartan_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_irbesartan_product_distribution.csv",
+      "bytes": 8691,
+      "sha256": "bab4ca03cc8da9ad188841075d8b023239b2e553a22448b87a4c92a16930363a"
+    },
+    {
+      "path": "lookup_tables/ace_arb_lisinopril_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_lisinopril_product_distribution.csv",
+      "bytes": 30641,
+      "sha256": "8f04a1a1dd2e5321ddfc4faf1617111412616a4d8f8d23a99e65906d9bb75c1b"
+    },
+    {
+      "path": "lookup_tables/ace_arb_losartan_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_losartan_product_distribution.csv",
+      "bytes": 17565,
+      "sha256": "0ea321b18090141d7e61be1421e921a12b3b951346acdcae6b099a0f7981f59a"
+    },
+    {
+      "path": "lookup_tables/ace_arb_quinapril_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_quinapril_product_distribution.csv",
+      "bytes": 5233,
+      "sha256": "3bf8ba5f4d5ae071337171c9b51fd53b446bd4327f52d17706bb2315243ecdd2"
+    },
+    {
+      "path": "lookup_tables/ace_arb_ramipril_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_ramipril_product_distribution.csv",
+      "bytes": 8568,
+      "sha256": "efba3c1acd66700474f65b7adde01dec47b5bf22e723315e97a0f9d8138d2c71"
+    },
+    {
+      "path": "lookup_tables/ace_arb_sacubitril_valsartan_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_sacubitril_valsartan_product_distribution.csv",
+      "bytes": 5408,
+      "sha256": "6eca232a87907b2e6e3d31e8ee4529e3359ac4284e6d882906c52c324361ee82"
+    },
+    {
+      "path": "lookup_tables/ace_arb_telmisartan_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_telmisartan_product_distribution.csv",
+      "bytes": 8079,
+      "sha256": "c5af4abef19ca4f836f2d9f40919c9ff92986829258d7a97d0a302250cc19ff5"
+    },
+    {
+      "path": "lookup_tables/ace_arb_valsartan_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/ace_arb_valsartan_product_distribution.csv",
+      "bytes": 13906,
+      "sha256": "69981cd29f2ada66286af33236812f45606a85a9cecc50d96cc86c4f41123a59"
+    },
+    {
+      "path": "lookup_tables/beta_blocker_atenolol_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/beta_blocker_atenolol_product_distribution.csv",
+      "bytes": 13174,
+      "sha256": "9330a4f3025f4f5faa1b0daf2014e39daf7310fbc201324485d96d0646214a50"
+    },
+    {
+      "path": "lookup_tables/beta_blocker_bisoprolol_hydrochlorothiazide_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/beta_blocker_bisoprolol_hydrochlorothiazide_product_distribution.csv",
+      "bytes": 5808,
+      "sha256": "084244960fec7647257e9410337d1dee44f20a64ac869c6a31717819338caeca"
+    },
+    {
+      "path": "lookup_tables/beta_blocker_bisoprolol_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/beta_blocker_bisoprolol_product_distribution.csv",
+      "bytes": 5542,
+      "sha256": "cf135dc94664cf83fc542d06cfe1874952d43dcd00d9e186100d8939b95a7904"
+    },
+    {
+      "path": "lookup_tables/beta_blocker_carvedilol_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/beta_blocker_carvedilol_product_distribution.csv",
+      "bytes": 24092,
+      "sha256": "cdfd439bcea5aa62c22ec513a68b01ddba6b16776551cda2c8284c0b017030c1"
+    },
+    {
+      "path": "lookup_tables/beta_blocker_ingredient_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/beta_blocker_ingredient_distribution.csv",
+      "bytes": 32595,
+      "sha256": "5a9a64f9e82d562f90f9aabea7298aa952ebf91be36731cf569fdae2d4329954"
+    },
+    {
+      "path": "lookup_tables/beta_blocker_labetalol_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/beta_blocker_labetalol_product_distribution.csv",
+      "bytes": 10949,
+      "sha256": "daea0a27a07492779158dd0f5d3253916da9021372be3ff761dd3ad1d54762f7"
+    },
+    {
+      "path": "lookup_tables/beta_blocker_metoprolol_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/beta_blocker_metoprolol_product_distribution.csv",
+      "bytes": 31791,
+      "sha256": "a64a61bee56700cc1d2e86759aa98083ac2cf093fb0ab6854ca471e2f0ee0b4d"
+    },
+    {
+      "path": "lookup_tables/beta_blocker_nebivolol_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/beta_blocker_nebivolol_product_distribution.csv",
+      "bytes": 8683,
+      "sha256": "64f6bf28bcdd6cb10394db28f343555d6906de34eb2fdc807b9f66800827de14"
+    },
+    {
+      "path": "lookup_tables/beta_blocker_propranolol_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/beta_blocker_propranolol_product_distribution.csv",
+      "bytes": 28725,
+      "sha256": "aa8adab340f8c85e2eeaefb39e621e9b12d9640a255dc4d0e1a085e75ccd6740"
+    },
+    {
+      "path": "lookup_tables/cabg_details_num_art_cond.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/cabg_details_num_art_cond.csv",
+      "bytes": 303,
+      "sha256": "83b40e51a5f5a2f8972cc0a19febe6233aa2f9e983c09b0298ad43e252267d1d"
+    },
+    {
+      "path": "lookup_tables/cabg_details_num_grafts.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/cabg_details_num_grafts.csv",
+      "bytes": 268,
+      "sha256": "ded18e10cbe023d6adb64438ede1a1774a92e8679979cabbc0db074d89c75eb6"
+    },
+    {
+      "path": "lookup_tables/cabg_details_operative_approach.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/cabg_details_operative_approach.csv",
+      "bytes": 139,
+      "sha256": "0d83265647798b6e8e943e19aea4b9465391596429a16612148d6a56623b498b"
+    },
+    {
+      "path": "lookup_tables/covid-19-severity-outcomes.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/covid-19-severity-outcomes.csv",
+      "bytes": 248,
+      "sha256": "eb089049c88d50f9e8a6999d4726c46582cfad6dfbc84bf5a5172568a9f63ebc"
+    },
+    {
+      "path": "lookup_tables/covid-19-survival-outcomes.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/covid-19-survival-outcomes.csv",
+      "bytes": 1203,
+      "sha256": "6a5ca34d187885cf37ec720254a773415deedbe2eaa6a55560d403cbbe3844d1"
+    },
+    {
+      "path": "lookup_tables/covid19_prob.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/covid19_prob.csv",
+      "bytes": 36417,
+      "sha256": "81d0729a24316c4899e452a7bc8ce30a9e086d6f31b41524727f395531f49839"
+    },
+    {
+      "path": "lookup_tables/covid_dose_rates.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/covid_dose_rates.csv",
+      "bytes": 15796,
+      "sha256": "35c2fbd825f6ecc047a3c151856f5d0f9696a066db0c152384410acbf61caf06"
+    },
+    {
+      "path": "lookup_tables/diabetic_retinopathy_followup.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/diabetic_retinopathy_followup.csv",
+      "bytes": 309,
+      "sha256": "88f90f5d31195c5000cdbf40a8de8629ccb5d7889fba59efd5ab7cd75a5e3b7d"
+    },
+    {
+      "path": "lookup_tables/emergency_inhaler_albuterol_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/emergency_inhaler_albuterol_product_distribution.csv",
+      "bytes": 648,
+      "sha256": "1dfad2e68dc79a8431c2ebd200de3b2a365c2e777d8e119e98f4d8dd3372ef8b"
+    },
+    {
+      "path": "lookup_tables/emergency_inhaler_ingredient_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/emergency_inhaler_ingredient_distribution.csv",
+      "bytes": 77,
+      "sha256": "05bccc7399d46920d557e6a4570a4e6bb1a541ba1361819836cbc7b9cded29e8"
+    },
+    {
+      "path": "lookup_tables/emergency_inhaler_levalbuterol_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/emergency_inhaler_levalbuterol_product_distribution.csv",
+      "bytes": 231,
+      "sha256": "580dca3c73b6d3afe28d6ae24dfe7876995be71acc30ef936765a731ef9766ea"
+    },
+    {
+      "path": "lookup_tables/hiv_care.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/hiv_care.csv",
+      "bytes": 2605,
+      "sha256": "197c3e296da99d00a93efebd8b2b210b9917610dd0830c362d20b2bf106bdd85"
+    },
+    {
+      "path": "lookup_tables/hiv_diagnosis_early.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/hiv_diagnosis_early.csv",
+      "bytes": 29514,
+      "sha256": "571b698e89bb02fa47e863ed07af584e645a9660e1367fb0f81658ff8beefc9b"
+    },
+    {
+      "path": "lookup_tables/hiv_diagnosis_later.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/hiv_diagnosis_later.csv",
+      "bytes": 18010,
+      "sha256": "e20c786ef61fea9cdb593359da95a2c2794734355e442a7a5d1c0aaf549b96bc"
+    },
+    {
+      "path": "lookup_tables/hiv_mortality_early.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/hiv_mortality_early.csv",
+      "bytes": 18834,
+      "sha256": "fa09e2541f000df968cee72d15bc0a5764aa716055a7b6e92a2b329a6b534108"
+    },
+    {
+      "path": "lookup_tables/hiv_mortality_later.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/hiv_mortality_later.csv",
+      "bytes": 18539,
+      "sha256": "ca912ac10a1ce996f6941ec9adfd119dafa448d9452850e56c475339280a03fd"
+    },
+    {
+      "path": "lookup_tables/hiv_mortality_very_early.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/hiv_mortality_very_early.csv",
+      "bytes": 536,
+      "sha256": "917e8a83e66e9f3e473a55329f54c560e3b56f3a4e259490f5ee2017aa923ad4"
+    },
+    {
+      "path": "lookup_tables/hiv_stage.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/hiv_stage.csv",
+      "bytes": 2979,
+      "sha256": "c528795aed7bd9f25436c5a45c1598bfb1e4aea37f47f5baaca54bc95b8b5a41"
+    },
+    {
+      "path": "lookup_tables/maintenance_inhaler_beclomethasone_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/maintenance_inhaler_beclomethasone_product_distribution.csv",
+      "bytes": 246,
+      "sha256": "9b1cbfedea58bfbb1f7ddfd6c941e159fa3919a0453ec7a785c530deb4ce9a9c"
+    },
+    {
+      "path": "lookup_tables/maintenance_inhaler_budesonide_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/maintenance_inhaler_budesonide_product_distribution.csv",
+      "bytes": 458,
+      "sha256": "61b1d2898da632aab113fee264a96e919477dbb54ace3c56f30125868b2c622b"
+    },
+    {
+      "path": "lookup_tables/maintenance_inhaler_fluticasone_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/maintenance_inhaler_fluticasone_product_distribution.csv",
+      "bytes": 778,
+      "sha256": "0ab99d69a4e85b10b2f91277101bca745690d88946ce55a0087f8a73033ac502"
+    },
+    {
+      "path": "lookup_tables/maintenance_inhaler_ingredient_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/maintenance_inhaler_ingredient_distribution.csv",
+      "bytes": 147,
+      "sha256": "21c0b8fa33a4e61b515eb8c8b500a81896dd224ad52cd1d807c8130e8c74b6ba"
+    },
+    {
+      "path": "lookup_tables/maintenance_inhaler_mometasone_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/maintenance_inhaler_mometasone_product_distribution.csv",
+      "bytes": 450,
+      "sha256": "bb05a73d457078b980ac01ec10846932bc455c13e7732ce193157b8197956aac"
+    },
+    {
+      "path": "lookup_tables/or_blood_anemia_check.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/or_blood_anemia_check.csv",
+      "bytes": 569,
+      "sha256": "8fcbd090c56e146ec940dce08657e12b922c77cf6a273210e96745a40342ad23"
+    },
+    {
+      "path": "lookup_tables/or_blood_plasma_check.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/or_blood_plasma_check.csv",
+      "bytes": 584,
+      "sha256": "f19bcf1d266850584af38147351be35ac66dc797e91b17ff75ce79d5f84208bf"
+    },
+    {
+      "path": "lookup_tables/or_blood_platelet_check.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/or_blood_platelet_check.csv",
+      "bytes": 580,
+      "sha256": "3033e35e73c174efab271925b0916c1b9f5bb16bf07062de9613c9a19bfe0efe"
+    },
+    {
+      "path": "lookup_tables/statin_atorvastatin_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/statin_atorvastatin_product_distribution.csv",
+      "bytes": 21730,
+      "sha256": "d2dbc2f7d0fc4cc9132888041165afb9a92789188d24bd65226a56800c5eb4f4"
+    },
+    {
+      "path": "lookup_tables/statin_ezetimibe_simvastatin_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/statin_ezetimibe_simvastatin_product_distribution.csv",
+      "bytes": 5272,
+      "sha256": "d7b62037589f93bfd358af66b9249972cddc0885637a73c9eb1158da3de9aad3"
+    },
+    {
+      "path": "lookup_tables/statin_ingredient_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/statin_ingredient_distribution.csv",
+      "bytes": 23996,
+      "sha256": "17e991e0408214df2b2dda4d6ce2ca8e61316414839533cc3c8a7ded60b841ce"
+    },
+    {
+      "path": "lookup_tables/statin_lovastatin_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/statin_lovastatin_product_distribution.csv",
+      "bytes": 9378,
+      "sha256": "e980b630bde1c8f52077312d4c1df9e2adb8602198225df44e825d6b882989bc"
+    },
+    {
+      "path": "lookup_tables/statin_pitavastatin_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/statin_pitavastatin_product_distribution.csv",
+      "bytes": 5726,
+      "sha256": "e092897d10fbdcd97d4f35e149745c477c2cae0faf67d98097086960997225e6"
+    },
+    {
+      "path": "lookup_tables/statin_pravastatin_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/statin_pravastatin_product_distribution.csv",
+      "bytes": 14568,
+      "sha256": "00fa19703ac2f11b4064b2b4c3b6021c082409d252e8701e1991ffd3c7452ce7"
+    },
+    {
+      "path": "lookup_tables/statin_rosuvastatin_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/statin_rosuvastatin_product_distribution.csv",
+      "bytes": 18754,
+      "sha256": "d6b230dc4b01a74109ce4df4aaf93e6989b185363e00c16e99b89bc1efe922b6"
+    },
+    {
+      "path": "lookup_tables/statin_simvastatin_product_distribution.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/statin_simvastatin_product_distribution.csv",
+      "bytes": 16245,
+      "sha256": "70991ccbfc1b1a80ab6d9a4bf24a3ed9f62d134aec04ba3ef5920f8d66e203b9"
+    },
+    {
+      "path": "lookup_tables/uti.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/uti.csv",
+      "bytes": 338,
+      "sha256": "c3eec06429961a4484d1ab5f14973b778e59b0b80bbdad3fa2629329c8dbf231"
+    },
+    {
+      "path": "lookup_tables/uti_recurrence.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/uti_recurrence.csv",
+      "bytes": 357,
+      "sha256": "b83c29603db32b3169cd3dd6aa4eb65f53943b595c69f24acd9f32c0f604aa35"
+    },
+    {
+      "path": "lookup_tables/vhd_ar.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/vhd_ar.csv",
+      "bytes": 1208,
+      "sha256": "87e4bdeb707ca454bd72690319f405290cf00982b7ba484202a10e4cc6a07b4f"
+    },
+    {
+      "path": "lookup_tables/vhd_as.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/vhd_as.csv",
+      "bytes": 1209,
+      "sha256": "bbdb8e225b752c8c3dfbfbfedaa90c73d1fe0427536f9cbd74953b2306a67c86"
+    },
+    {
+      "path": "lookup_tables/vhd_mr.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/vhd_mr.csv",
+      "bytes": 1208,
+      "sha256": "5b87d9ecd6768bd0b32bbd1aefcf758ad56a9838c153a63fd0aa2808488f1e4d"
+    },
+    {
+      "path": "lookup_tables/vhd_ms.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/vhd_ms.csv",
+      "bytes": 1206,
+      "sha256": "c9ecb1908a21a58a5b802483f4983a56dc8228d477b2f913402a2a69f13064dc"
+    },
+    {
+      "path": "lookup_tables/vhd_pr.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/vhd_pr.csv",
+      "bytes": 1195,
+      "sha256": "6a6591ca68b1b18355ecf99ad048e5670a9280a565cb74d2aa649ff012263d0c"
+    },
+    {
+      "path": "lookup_tables/vhd_ps.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/vhd_ps.csv",
+      "bytes": 1202,
+      "sha256": "3d0cd9ca1959c3bcefa97275989eed16749a43877b5bb31f5a68a1fa85d58422"
+    },
+    {
+      "path": "lookup_tables/vhd_tr.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/vhd_tr.csv",
+      "bytes": 1211,
+      "sha256": "76584a6157ad7beafabe2dbd92210389d0e69638107367d304f034eaf9448203"
+    },
+    {
+      "path": "lookup_tables/vhd_ts.csv",
+      "upstream_path": "src/main/resources/modules/lookup_tables/vhd_ts.csv",
+      "bytes": 1213,
+      "sha256": "6cca76c0ec2391d70eceaeed20b16d17fa19d4b969d8299724b74bff16a33cb7"
+    },
+    {
+      "path": "payers/carriers.csv",
+      "upstream_path": "src/main/resources/payers/carriers.csv",
+      "bytes": 4405,
+      "sha256": "ff8010cafd2590793840cf9fcc00e8f53055613b03101c3c8209c627888eb4e7"
+    },
+    {
+      "path": "payers/insurance_companies.csv",
+      "upstream_path": "src/main/resources/payers/insurance_companies.csv",
+      "bytes": 815,
+      "sha256": "00b11b3386dfb28654df7d510475eaf0dbe1ed7be9822eb3b3798af656c6a8ec"
+    },
+    {
+      "path": "payers/insurance_eligibilities.csv",
+      "upstream_path": "src/main/resources/payers/insurance_eligibilities.csv",
+      "bytes": 1077,
+      "sha256": "701231cd3b4c71b379f2447168d0e4dab5972c55321a8467ff618bd493e80ab1"
+    },
+    {
+      "path": "payers/insurance_plans.csv",
+      "upstream_path": "src/main/resources/payers/insurance_plans.csv",
+      "bytes": 3185,
+      "sha256": "5d80db633edb576d6d3148b79b2150299cfd864be84c20fdc8dfa149ed830660"
+    }
+  ],
+  "hash_note": "SHA-256 of content with line endings normalised to LF, so the manifest verifies identically on every platform."
+}

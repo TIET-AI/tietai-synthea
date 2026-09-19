@@ -184,31 +184,32 @@ class Generator:
         print(f"Loaded {len(Module.get_all_modules())} modules")
     
     def _get_module_list(self) -> List[str]:
-        """Get the list of modules to process for each patient."""
-        # Core modules that always run
-        core_modules = [
-            'lifecycle',
-            'encounter',
-            'health_insurance',
-            'quality_of_life',
-        ]
-        
-        # Get all available modules
-        all_modules = Module.get_all_modules()
-        
-        # Filter based on configuration
-        enabled_modules = []
-        for module_name in all_modules:
-            if module_name in core_modules:
-                enabled_modules.append(module_name)
-            elif self.config.get(f'generate.{module_name}', True):
-                enabled_modules.append(module_name)
-        
-        # Add death module last if enabled
-        if 'death' in all_modules:
-            enabled_modules.append('death')
-        
-        return enabled_modules
+        """The modules to process for each patient, in execution order.
+
+        Core modules run first and in their declared order, because disease
+        modules read the attributes they set. Previously the list was sorted
+        alphabetically, which would have interleaved them.
+        """
+        all_modules = set(Module.get_all_modules())
+        core = Module.CORE_MODULE_ORDER
+
+        enabled: List[str] = []
+
+        if self.config.get_bool('generate.core_modules', True):
+            enabled.extend(name for name in core if name in all_modules)
+        else:
+            logger.warning(
+                "generate.core_modules is off: patients will have no identity, "
+                "growth, vital signs, routine visits or background mortality.",
+            )
+
+        for module_name in sorted(all_modules):
+            if module_name in core:
+                continue
+            if self.config.get(f'generate.{module_name}', True):
+                enabled.append(module_name)
+
+        return enabled
     
     def _init_providers(self):
         """Initialize healthcare providers."""
@@ -348,14 +349,19 @@ class Generator:
                 person.random
             )
             
-            # Set birth date
-            if self.options.min_age == self.options.max_age:
-                age = self.options.min_age
-            else:
-                age = person.random.randint(self.options.min_age, self.options.max_age)
-            
-            birth_date = self.options.reference_date - timedelta(days=age * 365.25)
+            # Set birth date. Ages follow the demographic age distribution
+            # rather than being uniform between the bounds: a uniform draw over
+            # 0-140 produced as many 130-year-olds as 30-year-olds.
+            age = self._choose_age(person)
+
+            # Spread birthdays across the year instead of stacking them on the
+            # reference date.
+            birth_date = (
+                self.options.reference_date
+                - timedelta(days=age * 365.25 + person.random.uniform(0, 365))
+            )
             person.attributes['birth_date'] = birth_date
+            person.attributes['age_at_creation'] = age
             
             # Set socioeconomic status
             person.attributes['socioeconomic_status'] = self.demographics.random_ses(person.random)
@@ -372,6 +378,23 @@ class Generator:
             person.attributes['latitude'] = coords[0]
             person.attributes['longitude'] = coords[1]
     
+    def _choose_age(self, person: Person) -> int:
+        """Draw an age within the requested bounds, weighted by demographics."""
+        low = max(0, int(self.options.min_age))
+        high = max(low, int(self.options.max_age))
+        if low == high:
+            return low
+
+        if self.demographics is not None:
+            for _ in range(50):
+                candidate = self.demographics.random_age(person.random)
+                if low <= candidate <= high:
+                    return candidate
+
+        # The requested band may sit outside the distribution's mass; fall back
+        # to a uniform draw rather than looping forever.
+        return person.random.randint(low, high)
+
     def _meets_criteria(self, person: Person) -> bool:
         """Check if a person meets the generation criteria."""
         # Check gender filter
@@ -397,6 +420,9 @@ class Generator:
         
         # Time step (1 week)
         time_step = timedelta(days=7)
+        # Background mortality is expressed per year, so the lifecycle module
+        # needs to know how much of a year a step represents.
+        person.attributes['timestep_years'] = time_step.days / 365.25
         
         # Process each time step
         while current_time <= end_time and person.alive:

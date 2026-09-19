@@ -71,27 +71,41 @@ class Exporter:
         
         self._init_exporters()
     
+    #: Exporters named in the configuration that do not exist yet, and the
+    #: issue tracking each. Enabling one used to either raise an ImportError
+    #: from deep inside start-up (CSV) or silently do nothing (CCDA), both of
+    #: which leave the operator believing they have output they do not have.
+    UNIMPLEMENTED = {
+        'exporter.csv.export': (
+            'CSV', 'https://github.com/TIET-AI/tietai-synthea/issues/42'),
+        'exporter.ccda.export': (
+            'C-CDA', 'https://github.com/TIET-AI/tietai-synthea/issues/36'),
+        'exporter.text.export': (
+            'plain text', 'https://github.com/TIET-AI/tietai-synthea/issues/43'),
+    }
+
     def _init_exporters(self):
-        """Initialize enabled exporters."""
-        # FHIR exporter
+        """Initialise the enabled exporters, refusing the ones that do not exist."""
+        self._reject_unimplemented()
+
         if self.config.get_bool('exporter.fhir.export', True):
             from synthea.export.fhir import FHIRExporter
             self.patient_exporters.append(FHIRExporter(self.config, self.base_dir))
-        
-        # CSV exporter
-        if self.config.get_bool('exporter.csv.export', False):
-            from synthea.export.csv_exporter import CSVExporter
-            self.patient_exporters.append(CSVExporter(self.config, self.base_dir))
-        
-        # JSON exporter
+
         if self.config.get_bool('exporter.json.export', False):
             self.patient_exporters.append(JSONExporter(self.config, self.base_dir))
-        
-        # CCDA exporter
-        if self.config.get_bool('exporter.ccda.export', False):
-            # CCDA exporter would be implemented separately
-            pass
-    
+
+    def _reject_unimplemented(self):
+        """Fail immediately, and clearly, for an exporter that does not exist."""
+        for key, (name, issue) in self.UNIMPLEMENTED.items():
+            if not self.config.get_bool(key, False):
+                continue
+            raise NotImplementedError(
+                f"{key} is set, but the {name} exporter is not implemented in "
+                f"this version. Turn it off, or follow {issue}. "
+                f"Available exporters: exporter.fhir.export, exporter.json.export."
+            )
+
     def export(self, person: 'Person'):
         """
         Export a person using all enabled exporters.
