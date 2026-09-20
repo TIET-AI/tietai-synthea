@@ -7,6 +7,7 @@ This module exports patient data in FHIR R4 format.
 from pathlib import Path
 from typing import Dict, Any, Optional, List, TYPE_CHECKING
 from datetime import datetime, timezone
+import base64
 import hashlib
 import json
 import uuid
@@ -74,6 +75,7 @@ US_CORE_PROFILES = {
     'Practitioner': US_CORE + 'us-core-practitioner',
     'PractitionerRole': US_CORE + 'us-core-practitionerrole',
     'Location': US_CORE + 'us-core-location',
+    'DocumentReference': US_CORE + 'us-core-documentreference',
 }
 
 US_CORE_VITAL_SIGNS = 'http://hl7.org/fhir/StructureDefinition/vitalsigns'
@@ -170,6 +172,10 @@ def _stable_uuid(namespace: str, value: str) -> str:
 
 def _organization_uuid(provider) -> str:
     return _stable_uuid('organization', provider.id)
+
+
+def _note_uuid(encounter) -> str:
+    return _stable_uuid('note', encounter.id)
 
 
 def _location_uuid(provider) -> str:
@@ -372,6 +378,7 @@ class FHIRExporter(PatientExporter):
 
         self._add_care_team(bundle, person)
         self._add_financial(bundle, person)
+        self._add_notes(bundle, person)
 
         return bundle
     
@@ -949,6 +956,80 @@ class FHIRExporter(PatientExporter):
             }
 
         return self._entry("Immunization", immunization.id, resource)
+
+    def _add_notes(self, bundle: Dict[str, Any], person: 'Person') -> None:
+        """Add a DocumentReference for every encounter that has a note."""
+        from synthea.world.notes import NOTE_ATTRIBUTE
+
+        for encounter in person.record.encounters:
+            text = getattr(encounter, NOTE_ATTRIBUTE, None)
+            if text:
+                bundle["entry"].append(
+                    self.create_document_reference_entry(encounter, text, person))
+
+    def create_document_reference_entry(self, encounter, text: str,
+                                        person: 'Person') -> Dict[str, Any]:
+        """The encounter's clinical note, as a DocumentReference.
+
+        The note is carried base64-encoded in `content.attachment.data`, which
+        is how a FHIR server expects an inline document; a consumer that wants
+        the text decodes it rather than parsing a narrative.
+        """
+        from synthea.world.notes import NOTE_CODE, NOTE_DISPLAY
+
+        encoded = base64.b64encode(text.encode('utf-8')).decode('ascii')
+        written = encounter.end_time or encounter.time
+
+        resource: Dict[str, Any] = {
+            "resourceType": "DocumentReference",
+            "id": _note_uuid(encounter),
+            "status": "current",
+            "docStatus": "final",
+            "type": {"coding": [{
+                "system": "http://loinc.org",
+                "code": NOTE_CODE,
+                "display": NOTE_DISPLAY,
+            }]},
+            "category": [{"coding": [{
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/us-core-documentreference-category",
+                "code": "clinical-note",
+                "display": "Clinical Note",
+            }]}],
+            "subject": self._subject(person),
+            "date": fhir_datetime(written),
+            "content": [{
+                "attachment": {
+                    "contentType": "text/plain; charset=utf-8",
+                    "data": encoded,
+                },
+                "format": {
+                    "system": "http://ihe.net/fhir/ValueSet/IHE.FormatCode.codesystem",
+                    "code": "urn:ihe:iti:xds:2017:mimeTypeSufficient",
+                    "display": "mimeType Sufficient",
+                },
+            }],
+            "context": {
+                "encounter": [{"reference": f"urn:uuid:{encounter.id}"}],
+                "period": {
+                    "start": fhir_datetime(encounter.time),
+                    "end": fhir_datetime(encounter.end_time),
+                },
+            },
+        }
+
+        clinician = getattr(encounter, 'clinician', None)
+        if clinician is not None:
+            resource["author"] = [{
+                "reference": f"urn:uuid:{_practitioner_uuid(clinician)}"
+            }]
+
+        provider = getattr(encounter, 'provider', None)
+        if provider is not None:
+            resource["custodian"] = {
+                "reference": f"urn:uuid:{_organization_uuid(provider)}"
+            }
+
+        return self._entry("DocumentReference", resource["id"], resource)
 
     def _add_care_team(self, bundle: Dict[str, Any], person: 'Person') -> None:
         """Add every facility and practitioner the record references, once.
