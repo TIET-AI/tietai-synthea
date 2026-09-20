@@ -57,6 +57,13 @@ class Entry:
     time: datetime
     codes: List[Code] = field(default_factory=list)
     name: Optional[str] = None
+    #: What this cost, and how it was split. Populated for the entry types a
+    #: claim is built from; None for everything else.
+    cost: Optional[float] = None
+    payer_cost: Optional[float] = None
+    patient_cost: Optional[float] = None
+    #: The coverage in force when it happened.
+    coverage: Optional[Any] = None
     
     def __post_init__(self):
         """Generate unique ID after initialization."""
@@ -377,6 +384,30 @@ class HealthRecord:
                 bucket.remove(entry)
         self._index_active(entry)
 
+    def charge(self, entry: Entry, kind: str) -> Entry:
+        """Price an entry and split it between payer and patient.
+
+        Called as entries are created rather than at export time, so the split
+        reflects the coverage in force on the day rather than whatever the
+        patient has at the end of their life.
+        """
+        from synthea.world.costs import cost_of
+        from synthea.world.payer import PayerManager
+
+        person = self.person
+        try:
+            entry.cost = cost_of(kind, entry.codes, person)
+        except Exception:  # pragma: no cover - never fail a run over pricing
+            logger.warning("Could not price a %s entry", kind, exc_info=True)
+            return entry
+
+        coverage = person.attributes.get('current_coverage')
+        entry.coverage = coverage
+        entry.payer_cost, entry.patient_cost = PayerManager.split(
+            coverage, entry.cost)
+
+        return entry
+
     def new_id(self) -> str:
         """Return a fresh, reproducible UUID for a record entry."""
         return str(uuid.UUID(int=self._id_random.getrandbits(128), version=4))
@@ -453,6 +484,7 @@ class HealthRecord:
         encounter.id = self.new_id()
         
         self.encounters.append(encounter)
+        self.charge(encounter, 'encounter')
         self.current_encounter = encounter
 
         # Every encounter gets a facility and a clinician, with routine
@@ -616,6 +648,7 @@ class HealthRecord:
         
         self.medications.append(medication)
         self._index_active(medication)
+        self.charge(medication, 'medication')
         
         if medication.encounter:
             medication.encounter.medications.append(medication)
@@ -654,6 +687,7 @@ class HealthRecord:
         procedure.encounter = encounter or self.current_encounter
         
         self.procedures.append(procedure)
+        self.charge(procedure, 'procedure')
         
         if procedure.encounter:
             procedure.encounter.procedures.append(procedure)
@@ -822,6 +856,7 @@ class HealthRecord:
             immunization.codes = [code]
 
         self.immunizations.append(immunization)
+        self.charge(immunization, 'immunization')
         self.attach(immunization, encounter or self.current_encounter)
 
         return immunization

@@ -159,9 +159,10 @@ def quantity(value, unit) -> Dict[str, Any]:
 def _stable_uuid(namespace: str, value: str) -> str:
     """A reproducible UUID for a thing that has an id but not a UUID.
 
-    Facilities and clinicians come from CSV rows, so their identifiers are not
-    UUIDs, and FHIR's `urn:uuid:` references need one. Deriving it from the id
-    keeps the same facility the same resource across every patient in a run.
+    Payers, facilities and clinicians come from CSV rows, so their identifiers
+    are not UUIDs, and FHIR's `urn:uuid:` references need one. Deriving it from
+    the id keeps the same payer or facility the same resource across every
+    patient in a run.
     """
     digest = hashlib.sha256(f"{namespace}:{value}".encode('utf-8')).digest()
     return str(uuid.UUID(bytes=digest[:16], version=4))
@@ -191,6 +192,59 @@ def _facility_address(provider) -> Dict[str, Any]:
         "postalCode": provider.zip_code or None,
         "country": "US",
     }
+
+
+#: Coverage kind mapped to the ActCode FHIR wants on Coverage.type.
+COVERAGE_TYPES = {
+    'medicare': 'PUBLICPOL',
+    'medicaid': 'PUBLICPOL',
+    'private': 'HIP',
+    'none': 'PUBLICPOL',
+}
+
+
+def _money(amount) -> Dict[str, Any]:
+    """A FHIR Money value in US dollars."""
+    return {"value": round(float(amount or 0.0), 2), "currency": "USD"}
+
+
+def _adjudication(code: str, amount) -> Dict[str, Any]:
+    return {
+        "category": {"coding": [{
+            "system": "http://terminology.hl7.org/CodeSystem/adjudication",
+            "code": code,
+        }]},
+        "amount": _money(amount),
+    }
+
+
+def _coverage_index(person, coverage) -> int:
+    """Which coverage period this claim falls under.
+
+    The claim must reference a Coverage that is in the bundle, so the index is
+    resolved against the patient's own history rather than invented.
+    """
+    history = person.attributes.get('coverage_history') or []
+    for index, candidate in enumerate(history):
+        if candidate is coverage:
+            return index
+    return 0
+
+
+def _payer_uuid(payer) -> str:
+    return _stable_uuid('payer', payer.id)
+
+
+def _coverage_uuid(person, index: int) -> str:
+    return _stable_uuid('coverage', f"{person.id}:{index}")
+
+
+def _claim_uuid(encounter) -> str:
+    return _stable_uuid('claim', encounter.id)
+
+
+def _eob_uuid(encounter) -> str:
+    return _stable_uuid('eob', encounter.id)
 
 
 class FHIRExporter(PatientExporter):
@@ -317,6 +371,7 @@ class FHIRExporter(PatientExporter):
             bundle['entry'].append(self.create_imaging_study_entry(study, person))
 
         self._add_care_team(bundle, person)
+        self._add_financial(bundle, person)
 
         return bundle
     
@@ -1002,6 +1057,195 @@ class FHIRExporter(PatientExporter):
             }
 
         return self._entry("PractitionerRole", resource["id"], resource)
+
+    def _add_financial(self, bundle: Dict[str, Any], person: 'Person') -> None:
+        """Add coverage, and a claim per encounter that cost something.
+
+        A claim is only meaningful with the payer that was in force on the day,
+        which is why the cost split is computed as entries are recorded rather
+        than here.
+        """
+        history = person.attributes.get('coverage_history') or []
+        insurers: Dict[str, Any] = {}
+
+        for index, coverage in enumerate(history):
+            if coverage.plan is not None:
+                insurers.setdefault(coverage.plan.payer.id, coverage.plan.payer)
+            bundle["entry"].append(
+                self.create_coverage_entry(coverage, index, person))
+
+        for payer in insurers.values():
+            bundle["entry"].append(self.create_payer_entry(payer))
+
+        for encounter in person.record.encounters:
+            if not getattr(encounter, 'cost', None):
+                continue
+            bundle["entry"].append(self.create_claim_entry(encounter, person))
+            bundle["entry"].append(
+                self.create_explanation_of_benefit_entry(encounter, person))
+
+    def create_payer_entry(self, payer) -> Dict[str, Any]:
+        """The insurer, as an Organization."""
+        resource: Dict[str, Any] = {
+            "resourceType": "Organization",
+            "id": _payer_uuid(payer),
+            "active": True,
+            "identifier": [{
+                "system": "https://github.com/synthetichealth/synthea",
+                "value": payer.id,
+            }],
+            "name": payer.name,
+            "type": [{"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+                "code": "ins",
+                "display": "Insurance Company",
+            }]}],
+        }
+        return self._entry("Organization", resource["id"], resource)
+
+    def create_coverage_entry(self, coverage, index: int,
+                              person: 'Person') -> Dict[str, Any]:
+        """One period of insurance cover."""
+        resource: Dict[str, Any] = {
+            "resourceType": "Coverage",
+            "id": _coverage_uuid(person, index),
+            "status": "active" if coverage.end is None else "cancelled",
+            "beneficiary": self._subject(person),
+            "period": {
+                "start": fhir_datetime(coverage.start),
+                "end": fhir_datetime(coverage.end),
+            },
+            "type": {"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                "code": COVERAGE_TYPES.get(coverage.kind, 'PUBLICPOL'),
+            }]},
+        }
+
+        if coverage.plan is not None:
+            resource["payor"] = [{
+                "reference": f"urn:uuid:{_payer_uuid(coverage.plan.payer)}",
+                "display": coverage.plan.payer.name,
+            }]
+            resource["class"] = [{
+                "type": {"coding": [{
+                    "system": "http://terminology.hl7.org/CodeSystem/coverage-class",
+                    "code": "plan",
+                }]},
+                "value": coverage.plan.id,
+                "name": coverage.plan.name,
+            }]
+        else:
+            # An uninsured period is still a fact about the patient, and FHIR
+            # requires a payor, so the patient is their own.
+            resource["payor"] = [self._subject(person)]
+
+        return self._entry("Coverage", resource["id"], resource)
+
+    def create_claim_entry(self, encounter, person: 'Person') -> Dict[str, Any]:
+        """The claim submitted for an encounter."""
+        resource: Dict[str, Any] = {
+            "resourceType": "Claim",
+            "id": _claim_uuid(encounter),
+            "status": "active",
+            "type": {"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/claim-type",
+                "code": "institutional",
+            }]},
+            "use": "claim",
+            "patient": self._subject(person),
+            "created": fhir_datetime(encounter.time),
+            "provider": (
+                {"reference": f"urn:uuid:{_organization_uuid(encounter.provider)}"}
+                if getattr(encounter, 'provider', None) is not None
+                else self._subject(person)
+            ),
+            "priority": {"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/processpriority",
+                "code": "normal",
+            }]},
+            "item": [{
+                "sequence": 1,
+                "productOrService": (
+                    {"coding": codings(encounter.codes)} if encounter.codes
+                    else {"text": "Encounter"}
+                ),
+                "encounter": [{"reference": f"urn:uuid:{encounter.id}"}],
+                "net": _money(encounter.cost),
+            }],
+            "total": _money(encounter.cost),
+        }
+
+        coverage = getattr(encounter, 'coverage', None)
+        resource["insurance"] = [{
+            "sequence": 1,
+            "focal": True,
+            "coverage": {
+                "reference": f"urn:uuid:{_coverage_uuid(person, _coverage_index(person, coverage))}"
+            },
+        }]
+        if coverage is not None and coverage.plan is not None:
+            resource["insurer"] = {
+                "reference": f"urn:uuid:{_payer_uuid(coverage.plan.payer)}"
+            }
+
+        return self._entry("Claim", resource["id"], resource)
+
+    def create_explanation_of_benefit_entry(self, encounter,
+                                            person: 'Person') -> Dict[str, Any]:
+        """How the claim was adjudicated between payer and patient."""
+        coverage = getattr(encounter, 'coverage', None)
+
+        resource: Dict[str, Any] = {
+            "resourceType": "ExplanationOfBenefit",
+            "id": _eob_uuid(encounter),
+            "status": "active",
+            "type": {"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/claim-type",
+                "code": "institutional",
+            }]},
+            "use": "claim",
+            "patient": self._subject(person),
+            "created": fhir_datetime(encounter.time),
+            "outcome": "complete",
+            "insurer": (
+                {"reference": f"urn:uuid:{_payer_uuid(coverage.plan.payer)}"}
+                if coverage is not None and coverage.plan is not None
+                else self._subject(person)
+            ),
+            "provider": (
+                {"reference": f"urn:uuid:{_organization_uuid(encounter.provider)}"}
+                if getattr(encounter, 'provider', None) is not None
+                else self._subject(person)
+            ),
+            "claim": {"reference": f"urn:uuid:{_claim_uuid(encounter)}"},
+            "insurance": [{
+                "focal": True,
+                "coverage": {
+                    "reference": f"urn:uuid:{_coverage_uuid(person, _coverage_index(person, coverage))}"
+                },
+            }],
+            "item": [{
+                "sequence": 1,
+                "productOrService": (
+                    {"coding": codings(encounter.codes)} if encounter.codes
+                    else {"text": "Encounter"}
+                ),
+                "adjudication": [
+                    _adjudication('submitted', encounter.cost),
+                    _adjudication('benefit', encounter.payer_cost or 0.0),
+                    _adjudication('copay', encounter.patient_cost or 0.0),
+                ],
+            }],
+            "total": [{
+                "category": {"coding": [{
+                    "system": "http://terminology.hl7.org/CodeSystem/adjudication",
+                    "code": "submitted",
+                }]},
+                "amount": _money(encounter.cost),
+            }],
+        }
+
+        return self._entry("ExplanationOfBenefit", resource["id"], resource)
 
     def _map_race_code(self, race: str) -> str:
         """Map race to OMB category code."""
