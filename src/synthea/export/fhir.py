@@ -13,6 +13,7 @@ import json
 import uuid
 
 from synthea.export.exporter import PatientExporter
+from synthea.export import profiles
 from synthea.export.terminology import system_uri, ucum_code
 
 if TYPE_CHECKING:
@@ -292,6 +293,55 @@ def _record_end(person) -> Any:
     return latest or person.attributes.get('birth_date')
 
 
+def _close_references(entries, pool):
+    """Add anything the chosen entries reference, so the document stands alone.
+
+    A Composition that points at an Organization the reader does not have is a
+    broken document, and the reader finds out at read time rather than here.
+    """
+    chosen = {entry['fullUrl']: entry for entry in entries}
+    available = {entry['fullUrl']: entry for entry in pool}
+
+    frontier = list(chosen)
+    while frontier:
+        entry = chosen[frontier.pop()]
+        for reference in _references_in(entry['resource']):
+            if reference in available and reference not in chosen:
+                chosen[reference] = available[reference]
+                frontier.append(reference)
+
+    # Keep the pool's order: resources must still precede what references them.
+    return [entry for entry in pool if entry['fullUrl'] in chosen]
+
+
+def _references_in(node):
+    """Every `urn:uuid:` reference inside a resource."""
+    found = []
+    if isinstance(node, dict):
+        reference = node.get('reference')
+        if isinstance(reference, str) and reference.startswith('urn:uuid:'):
+            found.append(reference)
+        for value in node.values():
+            found.extend(_references_in(value))
+    elif isinstance(node, list):
+        for item in node:
+            found.extend(_references_in(item))
+    return found
+
+
+def _composition_uuid(person) -> str:
+    return _stable_uuid('composition', person.id)
+
+
+def _required_sections(profile):
+    """The sections this profile must emit even when empty."""
+    from synthea.export.profiles import IPS_REQUIRED_SECTIONS
+
+    if profile.code in ('ips', 'ehds'):
+        return IPS_REQUIRED_SECTIONS
+    return ()
+
+
 def _provenance_uuid(person) -> str:
     return _stable_uuid('provenance', person.id)
 
@@ -350,7 +400,7 @@ def _version() -> str:
 class FHIRExporter(PatientExporter):
     """Exports patients in FHIR R4 format."""
     
-    def __init__(self, config: 'Config', base_dir: Path):
+    def __init__(self, config: 'Config', base_dir: Path, locale=None):
         """
         Initialize FHIR exporter.
         
@@ -364,32 +414,110 @@ class FHIRExporter(PatientExporter):
         self.output_dir.mkdir(exist_ok=True)
         
         self.use_transaction_bundle = config.get_bool('exporter.fhir.transaction_bundle', True)
-        self.use_us_core = config.get_bool('exporter.fhir.use_us_core_ig', True)
+        # Which implementation guide this bundle is shaped for. Resolved
+        # once: an explicit setting beats the locale's default, which beats
+        # US Core.
+        self.locale = locale
+        self.profile = profiles.resolve(config, locale)
+
+        # Kept because a great deal of code and configuration still asks the
+        # question this way.
+        self.use_us_core = self.profile.us_extensions
     
     def export(self, person: 'Person', time: int) -> Optional[str]:
-        """Export person to FHIR."""
+        """Write this patient's bundle, or bundles."""
         if not hasattr(person, 'record') or not person.record:
             return None
-        
-        # Create FHIR bundle
-        bundle = self.create_bundle(person)
-        
-        # Generate filename
+
+        if self.profile.code == 'ehds':
+            # EHDS consumers ask for a priority category, not for "a patient",
+            # so each category is its own document rather than one bundle a
+            # reader has to filter.
+            return self._export_ehds(person)
+
+        return self._write(self.create_bundle(person), self._filename(person))
+
+    def _export_ehds(self, person: 'Person') -> Optional[str]:
+        """One document per EHDS priority category."""
+        from synthea.export.profiles import EHDS_CATEGORIES
+
+        full = self.create_bundle(person)
+        written = []
+
+        for code, title, loinc, sections in EHDS_CATEGORIES:
+            bundle = self._category_bundle(full, person, code, title, loinc,
+                                           sections)
+            if bundle is None:
+                continue
+            written.append(
+                self._write(bundle, self._filename(person, suffix=code),
+                            subdirectory=code))
+
+        return written[0] if written else None
+
+    def _category_bundle(self, full: Dict[str, Any], person: 'Person',
+                         code: str, title: str, loinc: str,
+                         sections) -> Optional[Dict[str, Any]]:
+        """One priority category, carrying only what it needs.
+
+        A category document holds the resources its sections reference, plus
+        the Patient and anything those resources point at, so it stands alone
+        rather than referring out to a bundle the consumer does not have.
+        """
+        wanted = {resource_type for _, _, types in sections
+                  for resource_type in types}
+        wanted.add('Patient')
+
+        entries = [entry for entry in full['entry']
+                   if entry['resource']['resourceType'] in wanted]
+
+        clinical = [entry for entry in entries
+                    if entry['resource']['resourceType'] != 'Patient']
+        if not clinical:
+            # Nothing to report in this category. An empty discharge report is
+            # not a document, it is noise.
+            return None
+
+        entries = _close_references(entries, full['entry'])
+
+        bundle = {
+            "resourceType": "Bundle",
+            "type": "document",
+            "entry": entries,
+        }
+
+        composition = self.create_composition_entry(bundle, person,
+                                                    sections=sections)
+        composition['resource']['title'] = title
+        composition['resource']['type'] = {"coding": [{
+            "system": "http://loinc.org",
+            "code": loinc,
+            "display": title,
+        }]}
+        bundle['entry'].insert(0, composition)
+
+        return bundle
+
+    def _filename(self, person: 'Person', suffix: str = '') -> str:
+        tail = f"_{suffix}" if suffix else ''
         if self.config.get_bool('exporter.use_uuid_filenames', False):
-            filename = f"{person.id}.json"
-        else:
-            first_name = person.attributes.get('first_name', 'Unknown')
-            last_name = person.attributes.get('last_name', 'Person')
-            filename = f"{first_name}_{last_name}_{person.id[:8]}.json"
-        
-        filepath = self.output_dir / filename
-        
-        # Write FHIR bundle
-        with open(filepath, 'w', encoding='utf-8') as f:
-            json.dump(bundle, f, indent=2, default=str)
-        
+            return f"{person.id}{tail}.json"
+
+        first_name = person.attributes.get('first_name', 'Unknown')
+        last_name = person.attributes.get('last_name', 'Person')
+        return f"{first_name}_{last_name}_{person.id[:8]}{tail}.json"
+
+    def _write(self, bundle: Dict[str, Any], filename: str,
+               subdirectory: str = '') -> str:
+        directory = self.output_dir / subdirectory if subdirectory else self.output_dir
+        directory.mkdir(parents=True, exist_ok=True)
+
+        filepath = directory / filename
+        with open(filepath, 'w', encoding='utf-8') as handle:
+            json.dump(bundle, handle, indent=2, default=str)
+
         return str(filepath)
-    
+
     def _entry(self, resource_type: str, resource_id: str,
                resource: Dict[str, Any], vital_signs: bool = False) -> Dict[str, Any]:
         """Wrap a resource as a bundle entry: profiled, pruned, addressable.
@@ -397,8 +525,8 @@ class FHIRExporter(PatientExporter):
         Every builder goes through here, so profile assignment and null pruning
         cannot be forgotten for a newly added resource type.
         """
-        profile = US_CORE_VITAL_SIGNS if vital_signs else US_CORE_PROFILES.get(resource_type)
-        if profile and self.use_us_core:
+        profile = self.profile.profile_for(resource_type, vital_signs)
+        if profile:
             meta = resource.setdefault("meta", {})
             if not meta.get("profile"):
                 meta["profile"] = [profile]
@@ -426,7 +554,7 @@ class FHIRExporter(PatientExporter):
         """
         bundle = {
             "resourceType": "Bundle",
-            "type": "transaction" if self.use_transaction_bundle else "collection",
+            "type": self._bundle_type(),
             "entry": []
         }
         
@@ -502,6 +630,12 @@ class FHIRExporter(PatientExporter):
         self._add_notes(bundle, person)
         bundle['entry'].append(self.create_provenance_entry(bundle, person))
 
+        if self.profile.composition:
+            # A document is led by its Composition: FHIR requires it to be the
+            # first entry, and a reader treats entry[0] as the index.
+            bundle["entry"].insert(
+                0, self.create_composition_entry(bundle, person))
+
         return bundle
     
     def create_patient_entry(self, person: 'Person') -> Dict[str, Any]:
@@ -509,9 +643,8 @@ class FHIRExporter(PatientExporter):
         patient = {
             "resourceType": "Patient",
             "id": person.uuid,
-            "meta": {
-                "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"]
-            } if self.use_us_core else {},
+            # _entry assigns meta.profile from the selected profile.
+            "meta": {},
             "identifier": self._identifiers(person),
             "active": person.alive,
             "name": self._names(person),
@@ -571,8 +704,14 @@ class FHIRExporter(PatientExporter):
                 "display": language.get('display'),
             }]}}]
         
-        # Add race/ethnicity extensions if US Core
-        if self.use_us_core:
+        # Race and ethnicity are US Core extensions using OMB categories.
+        # Emitting them for a locale that does not record race would be
+        # inventing data, so both the profile and the locale must want them.
+        records_race = True
+        if self.locale is not None:
+            records_race = bool(getattr(self.locale, 'race_categories', ()))
+
+        if self.profile.us_extensions and records_race:
             patient["extension"] = []
             
             # Race extension
@@ -1743,6 +1882,113 @@ class FHIRExporter(PatientExporter):
         }
 
         return self._entry("Provenance", resource["id"], resource)
+
+    def _bundle_type(self) -> str:
+        """The bundle type for the selected profile.
+
+        A document profile overrides the configured transaction/collection
+        choice, because a Composition-led bundle that claims to be a
+        transaction is not a document and will not be read as one.
+        """
+        if self.profile.bundle_type:
+            return self.profile.bundle_type
+        return "transaction" if self.use_transaction_bundle else "collection"
+
+    def create_composition_entry(self, bundle: Dict[str, Any],
+                                 person: 'Person',
+                                 sections=None) -> Dict[str, Any]:
+        """The Composition that makes a bundle a document.
+
+        Sections are built from what the bundle already contains, so a section
+        never references a resource that is not there.
+
+        The sections a profile marks as required are emitted even when empty,
+        with an explicit "none known" entry. That is not padding: in a patient
+        summary "no known allergies" is a clinical statement, and an absent
+        allergies section means "we did not look", which is a different and
+        more dangerous thing to tell a clinician.
+        """
+        by_type: Dict[str, List[str]] = {}
+        for entry in bundle["entry"]:
+            resource = entry.get("resource", {})
+            by_type.setdefault(resource.get("resourceType"), []).append(
+                entry["fullUrl"])
+
+        wanted = (self.profile.composition_sections if sections is None
+                  else sections)
+        required = {title for title, _, _ in _required_sections(self.profile)}
+
+        built: List[Dict[str, Any]] = []
+        for title, code, types in wanted:
+            references = [
+                {"reference": url}
+                for resource_type in types
+                for url in by_type.get(resource_type, [])
+            ]
+
+            if not references and title not in required:
+                continue
+
+            section: Dict[str, Any] = {
+                "title": title,
+                "code": {"coding": [{
+                    "system": "http://loinc.org",
+                    "code": code,
+                    "display": title,
+                }]},
+            }
+
+            if references:
+                section["entry"] = references
+            else:
+                section["emptyReason"] = {"coding": [{
+                    "system": "http://terminology.hl7.org/CodeSystem/list-empty-reason",
+                    "code": "nilknown",
+                    "display": "Nil Known",
+                }]}
+                section["text"] = {
+                    "status": "generated",
+                    "div": (f'<div xmlns="http://www.w3.org/1999/xhtml">'
+                            f'No known {title.lower()}.</div>'),
+                }
+
+            built.append(section)
+
+        authored = _record_end(person)
+
+        resource: Dict[str, Any] = {
+            "resourceType": "Composition",
+            "id": _composition_uuid(person),
+            "status": "final",
+            "type": {"coding": [{
+                "system": "http://loinc.org",
+                "code": "60591-5",
+                "display": "Patient summary Document",
+            }]},
+            "subject": self._subject(person),
+            "date": fhir_datetime(authored),
+            "title": f"Patient Summary ({self.profile.name})",
+            "section": built,
+        }
+
+        author = self._composition_author(person)
+        if author is not None:
+            resource["author"] = [author]
+
+        return self._entry("Composition", resource["id"], resource)
+
+    def _composition_author(self, person: 'Person') -> Optional[Dict[str, Any]]:
+        """Who authored the summary.
+
+        The most recent encounter's organization, because a summary is
+        attributed to the institution that holds the record rather than to
+        whichever clinician happened to be last.
+        """
+        for encounter in reversed(person.record.encounters):
+            provider = getattr(encounter, 'provider', None)
+            if provider is not None:
+                return {"reference": f"urn:uuid:{_organization_uuid(provider)}"}
+        return None
 
     def _map_race_code(self, race: str) -> str:
         """Map race to OMB category code."""
