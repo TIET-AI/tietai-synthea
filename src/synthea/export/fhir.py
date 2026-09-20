@@ -265,6 +265,33 @@ def _care_team_uuid(careplan) -> str:
     return _stable_uuid('care-team', careplan.id)
 
 
+def _self_pay(person, encounters) -> Any:
+    """A self-pay coverage period spanning the encounters that were priced.
+
+    Used only when a patient has costs and no coverage history, so that the
+    Coverage a claim references is always present in the bundle.
+    """
+    from synthea.world.payer import Coverage
+
+    start = min(encounter.time for encounter in encounters)
+    return Coverage(plan=None, start=start, kind='none')
+
+
+def _record_end(person) -> Any:
+    """When the record was last written to.
+
+    Not `datetime.now()`: the export is reproducible from a seed, and a
+    wall-clock timestamp made two runs of the same population differ. The
+    latest time in the record is both deterministic and the honest answer to
+    "when was this assembled".
+    """
+    times = [entry.time for entry in person.record.encounters]
+    times += [getattr(entry, 'end_time', None)
+              for entry in person.record.encounters]
+    latest = max((time for time in times if time is not None), default=None)
+    return latest or person.attributes.get('birth_date')
+
+
 def _provenance_uuid(person) -> str:
     return _stable_uuid('provenance', person.id)
 
@@ -1242,6 +1269,18 @@ class FHIRExporter(PatientExporter):
         than here.
         """
         history = person.attributes.get('coverage_history') or []
+        priced = [encounter for encounter in person.record.encounters
+                  if getattr(encounter, 'cost', None)]
+
+        # A Claim must reference a Coverage that is in the bundle, and FHIR
+        # requires the reference. A patient can have priced care and no
+        # coverage history at all — the insurance module never ran, or they
+        # were uninsured for the whole record — and the claim then pointed at
+        # a Coverage that was never emitted. Self-pay is a real answer to
+        # "who covers this", so it is written down rather than left dangling.
+        if priced and not history:
+            history = [_self_pay(person, priced)]
+
         insurers: Dict[str, Any] = {}
 
         for index, coverage in enumerate(history):
@@ -1253,9 +1292,7 @@ class FHIRExporter(PatientExporter):
         for payer in insurers.values():
             bundle["entry"].append(self.create_payer_entry(payer))
 
-        for encounter in person.record.encounters:
-            if not getattr(encounter, 'cost', None):
-                continue
+        for encounter in priced:
             bundle["entry"].append(self.create_claim_entry(encounter, person))
             bundle["entry"].append(
                 self.create_explanation_of_benefit_entry(encounter, person))
@@ -1690,7 +1727,7 @@ class FHIRExporter(PatientExporter):
             "resourceType": "Provenance",
             "id": _provenance_uuid(person),
             "target": targets,
-            "recorded": fhir_datetime(datetime.now(timezone.utc)),
+            "recorded": fhir_datetime(_record_end(person)),
             "activity": {"coding": [{
                 "system": "http://terminology.hl7.org/CodeSystem/v3-DataOperation",
                 "code": "CREATE",
