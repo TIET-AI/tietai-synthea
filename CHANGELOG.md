@@ -13,6 +13,140 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ---
 
+## [1.4.0] - 2026-09-20
+
+The generator stops being American by construction. Localisation is a pluggable
+pack, export profiling is selectable, and the configuration file does what it
+says.
+
+**A seed reproduces a 1.3.0 population exactly.** This is the first release
+where that is true — every earlier one changed generated output. Verified by
+comparing the SHA-256 of every bundle from a seeded run against v1.3.0.
+
+### Added
+
+- **Pluggable locale packs** (#45). Everything country-specific — names,
+  addresses, identifiers, coverage, currency, coding conventions, note
+  language — now lives in a locale pack, so using the generator outside the
+  United States no longer means forking it.
+
+  ```
+  synthea --list-locales
+  synthea -p 100 --locale us
+  ```
+
+  Two rules keep the seam honest, and both are enforced by test: **the engine
+  never branches on a locale code**, and **a pack needs no engine change to
+  exist**. Packs are discovered through the `synthea.locales` entry point, so
+  one can ship to PyPI independently of this project.
+
+  The United States is the reference pack and still the only one. Identity,
+  identifiers and conventions read from the pack; demographics, providers,
+  payers, costs and the export profile are the next migration. Spain is #46.
+
+  `docs/writing-a-locale-pack.md` is the developer guide.
+
+  Two interface decisions a reader will otherwise ask about. Names come from a
+  *function*, not name lists, because name structure is not universal — Spain
+  uses two surnames, Iceland uses patronymics, and some cultures do not split a
+  name into given and family at all; a list-based interface would have quietly
+  forced every country into the American shape. And an empty `race_categories`
+  means *this locale does not record race*, which is the common case worldwide;
+  the exporter omits the extension rather than mapping a population onto OMB
+  categories, which would be inventing data that then looks authoritative.
+
+- **Selectable export profiles** (#47). Profiling was a single boolean,
+  `exporter.fhir.use_us_core_ig`. There are now four:
+
+  | | |
+  |---|---|
+  | `us-core` | the default, and what every previous release produced |
+  | `ips` | International Patient Summary: one Composition-led document |
+  | `ehds` | EHDS priority categories: one document per category |
+  | `none` | valid R4 with no profile claims |
+
+  ```
+  synthea -p 100 --profile ips
+  ```
+
+  Selection is by specificity: `exporter.fhir.profile`, else the locale pack's
+  default, else US Core. A Spanish locale should produce IPS without the
+  operator having to know to ask, but an operator who does ask wins.
+
+  **Required IPS sections are emitted even when empty**, carrying `nilknown`
+  and "No known allergies". An absent allergies section means "we did not
+  look", which is a different and more dangerous thing to tell a clinician
+  than "none known". Optional sections are still omitted.
+
+  An empty EHDS category produces no document at all — an empty discharge
+  report is noise, not a document. Every document's references are closed over
+  its own bundle, so it stands alone for whoever receives it.
+
+- **`synthea --list-locales`** and **`--locale`**, **`--profile`**.
+
+### Fixed
+
+- **Nine configuration keys were recognised, accepted without error, and read
+  by nothing** (#106). Setting `exporter.only_living = true` got you deceased
+  patients anyway, with no warning. Silence is the worst of the three possible
+  behaviours: worse than working, and worse than refusing.
+
+  Now working: `generate.geography.state` / `.city` /
+  `.use_demographics`, `generate.modules.enabled` / `.disabled`,
+  `generate.reference_year`, `exporter.only_living`, and
+  `exporter.fhir.server_url` (which now really posts bundles, with failures
+  logged rather than fatal — a long generation should not be lost because a
+  server went away).
+
+  A city without a state is ignored with a warning, because city names are not
+  unique across states. Core lifecycle modules survive a module filter, or
+  patients would lose their identity, growth and vital signs. A filter that
+  matches nothing warns rather than silently producing patients with no
+  disease — that is a typo, not an instruction.
+
+- **Race and ethnicity extensions no longer depend on the profile alone.** Both
+  the profile and the locale must want them, so a locale that records no race
+  emits none.
+
+### Changed
+
+- `exporter.fhir.use_us_core_ig = false` now resolves to the `none` profile.
+  It means what it always meant; existing configuration files keep working.
+- The shipped `synthea.properties` documents every key that works, so the file
+  is the reference rather than the wiki.
+
+### Known limitations
+
+Unchanged from 1.3.0 except where noted.
+
+- **The United States is still the only locale pack.** The architecture exists;
+  adding a country is now writing a pack rather than forking the generator, but
+  nobody has written one yet (#46).
+- Demographics, providers, payers and costs still read their bundled files
+  directly rather than through the pack. That is the next migration.
+- `exporter.append_mode` is still inert. It only means something with a CSV
+  exporter (#42).
+- **`SupplyDelivery` still never appears** — no bundled module reaches a
+  `SupplyList` state (#101).
+- The population is still plausible rather than calibrated: mortality is a
+  fitted hazard, not a life table, and obesity is under-represented (#55, #56).
+- No NDJSON bulk export (#41), no CSV exporter (#42), no module coverage
+  report (#44).
+
+### Upgrade notes
+
+- **Output does not change.** A 1.3.0 seed reproduces the same population, for
+  the first time in this project's history. If you pinned 1.3.0 to keep a
+  dataset reproducible, you can move to 1.4.0 without regenerating.
+- No change to the `synthea` command's existing options or the `Generator` /
+  `GeneratorOptions` / `Person` API. `--locale`, `--list-locales` and
+  `--profile` are new.
+- If you set any of the nine configuration keys above expecting them to work,
+  **they now do** — which may change your output. That is the point, but it is
+  a behaviour change worth knowing about before you run a large job.
+
+---
+
 ## [1.3.0] - 2026-09-20
 
 Records now say **where care happened, who gave it, who paid for it, and what
@@ -501,6 +635,7 @@ Carried forward and tracked; none is a regression. See the
 Initial packaged release: Python-native Synthea engine, 99 bundled modules,
 FHIR R4 and JSON export, published to PyPI as `tietai-synthea`.
 
+[1.4.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.0.1...v1.1.0
