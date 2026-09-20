@@ -461,6 +461,13 @@ class Generator:
         
         # Finalize record
         person.finalize_health_record(current_time)
+
+        # Notes are written against the finished record, so that "active at
+        # the time of the visit" is resolved from what actually happened
+        # rather than guessed while the simulation is still running.
+        if self.config.get_bool('generate.clinical_notes', True):
+            from synthea.world import notes
+            notes.write_notes(person)
     
     def record_person(self, person: Person):
         """
