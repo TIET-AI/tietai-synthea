@@ -9,11 +9,15 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, Any, Optional, List, TYPE_CHECKING
 import json
+import logging
 import os
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
     from synthea.helpers.config import Config
+
+
+logger = logging.getLogger(__name__)
 
 
 class PatientExporter(ABC):
@@ -66,6 +70,10 @@ class Exporter:
         self.base_dir.mkdir(parents=True, exist_ok=True)
         
         # Initialize exporters based on configuration
+        # Deceased patients are dropped at export rather than never
+        # generated, so the population statistics still count them.
+        self.only_living = config.get_bool('exporter.only_living', False)
+
         self.patient_exporters: List[PatientExporter] = []
         self.post_exporters: List[PostCompletionExporter] = []
         
@@ -90,6 +98,11 @@ class Exporter:
             from synthea.export.fhir import FHIRExporter
             self.patient_exporters.append(FHIRExporter(self.config, self.base_dir))
 
+        server_url = str(self.config.get('exporter.fhir.server_url', '') or '').strip()
+        if server_url:
+            self.patient_exporters.append(
+                FHIRServerExporter(self.config, server_url))
+
         if self.config.get_bool('exporter.json.export', False):
             self.patient_exporters.append(JSONExporter(self.config, self.base_dir))
 
@@ -108,18 +121,20 @@ class Exporter:
             )
 
     def export(self, person: 'Person'):
+        """Export a person using all enabled exporters.
+
+        `exporter.only_living` is applied here rather than inside each
+        exporter, so a new exporter cannot forget it.
         """
-        Export a person using all enabled exporters.
-        
-        Args:
-            person: The person to export
-        """
+        if self.only_living and not getattr(person, 'alive', True):
+            return
+
         for exporter in self.patient_exporters:
             try:
                 exporter.export(person, 0)
             except Exception as e:
                 print(f"Error exporting with {exporter.__class__.__name__}: {e}")
-    
+
     def run_post_completion(self, stats: Dict[str, Any]):
         """
         Run post-completion exporters.
@@ -237,3 +252,62 @@ class TextExporter(PatientExporter):
         filepath.write_text(body, encoding='utf-8')
 
         return str(filepath)
+
+
+class FHIRServerExporter(PatientExporter):
+    """POSTs each patient's bundle to a FHIR server.
+
+    `exporter.fhir.server_url` was documented and read by nothing, so bundles
+    were silently only ever written to disk. This posts them.
+
+    Failures are reported and do not stop the run: a long generation should not
+    be lost because a server went away half way through. The count of failures
+    is kept so the caller can tell a clean run from a partial one.
+    """
+
+    def __init__(self, config: 'Config', server_url: str):
+        self.config = config
+        self.server_url = server_url.rstrip('/')
+        self.timeout = float(config.get('exporter.fhir.server_timeout', 30) or 30)
+        self.posted = 0
+        self.failed = 0
+
+    def export(self, person: 'Person', time: int) -> Optional[str]:
+        import json as _json
+        import urllib.error
+        import urllib.request
+
+        from synthea.export.fhir import FHIRExporter
+
+        bundle = FHIRExporter(self.config, Path('.')).create_bundle(person)
+        payload = _json.dumps(bundle).encode('utf-8')
+
+        request = urllib.request.Request(
+            self.server_url,
+            data=payload,
+            headers={
+                'Content-Type': 'application/fhir+json',
+                'Accept': 'application/fhir+json',
+            },
+            method='POST',
+        )
+
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                self.posted += 1
+                return f"{self.server_url} ({response.status})"
+        except urllib.error.HTTPError as error:
+            self.failed += 1
+            detail = ''
+            try:
+                detail = error.read().decode('utf-8', 'replace')[:500]
+            except Exception:  # pragma: no cover - best effort only
+                pass
+            logger.error("FHIR server rejected a bundle (%s): %s",
+                         error.code, detail)
+        except Exception as error:
+            self.failed += 1
+            logger.error("Could not post a bundle to %s: %s",
+                         self.server_url, error)
+
+        return None

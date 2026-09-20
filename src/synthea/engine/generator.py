@@ -28,6 +28,17 @@ from synthea.helpers.rng import resolve_seed
 from synthea.export.exporter import Exporter
 
 
+def _name_set(value) -> set:
+    """A set of lower-cased module names from a comma or space separated list."""
+    if value in (None, '', False):
+        return set()
+    if isinstance(value, (list, tuple, set)):
+        parts = list(value)
+    else:
+        parts = str(value).replace(',', ' ').split()
+    return {str(part).strip().lower() for part in parts if str(part).strip()}
+
+
 class GeneratorOptions:
     """Configuration options for the Generator."""
     
@@ -37,6 +48,9 @@ class GeneratorOptions:
         self.seed: Optional[int] = None
         self.clinician_seed: Optional[int] = None
         self.reference_date: datetime = datetime.now()
+        #: True when the caller asked for a specific reference date, so
+        #: `generate.reference_year` must not override it.
+        self.reference_date_explicit: bool = False
         # ``None`` means "run the simulation up to the reference date". Setting
         # it explicitly is only needed when the simulation should stop earlier.
         self.end_date: Optional[datetime] = None
@@ -80,6 +94,7 @@ class GeneratorOptions:
             options.city = args['city']
         if 'reference_date' in args:
             options.reference_date = datetime.strptime(args['reference_date'], '%Y%m%d')
+            options.reference_date_explicit = True
         if 'threads' in args:
             options.threads = int(args['threads'])
         
@@ -103,6 +118,7 @@ class Generator:
         self.options = options or GeneratorOptions()
         self.config = config if config is not None else Config()
         self._config_provided = config is not None
+        self._apply_reference_year()
 
         # No global ``random.seed()`` here: every draw during simulation comes
         # from the person's own generator, whose seed is derived from
@@ -131,6 +147,34 @@ class Generator:
         # Initialize components
         self._initialize()
     
+    def _apply_reference_year(self):
+        """Honour `generate.reference_year` when no reference date was given.
+
+        `GeneratorOptions.reference_date` defaults to "now", so a configured
+        year only takes effect if the caller did not ask for a specific date.
+        An explicit `-r` always wins.
+        """
+        if getattr(self.options, 'reference_date_explicit', False):
+            return
+
+        year = self.config.get('generate.reference_year')
+        if year in (None, ''):
+            return
+
+        try:
+            year = int(year)
+        except (TypeError, ValueError):
+            logger.warning("generate.reference_year is not a year: %r", year)
+            return
+
+        try:
+            self.options.reference_date = self.options.reference_date.replace(
+                year=year)
+        except ValueError:
+            # 29 February in a non-leap year.
+            self.options.reference_date = self.options.reference_date.replace(
+                year=year, day=28)
+
     def _initialize(self):
         """Initialize all generator components."""
         # Load configuration. Skip when a pre-configured Config was supplied
@@ -156,19 +200,41 @@ class Generator:
         self._init_exporter()
     
     def _init_location(self):
-        """Initialize location data."""
+        """Initialize location data.
+
+        The CLI wins over the configuration file, so `--state` overrides
+        `generate.geography.state` rather than the other way round.
+        """
         self.location = Location()
-        
-        if self.options.state:
-            self.location.set_state(self.options.state)
-            if self.options.city:
-                self.location.set_city(self.options.city)
-    
+
+        state = self.options.state or self.config.get('generate.geography.state')
+        city = self.options.city or self.config.get('generate.geography.city')
+
+        if state:
+            self.location.set_state(str(state))
+            if city:
+                self.location.set_city(str(city))
+        elif city:
+            logger.warning(
+                "A city (%s) was given without a state, so it is ignored: "
+                "city names are not unique across states.", city,
+            )
+
     def _init_demographics(self):
-        """Initialize demographics data."""
+        """Initialize demographics data.
+
+        `generate.geography.use_demographics` turns off the census-derived
+        age, sex and race distributions, falling back to the built-in national
+        defaults. Useful when the population should be shaped by your own
+        filters rather than by a place.
+        """
         self.demographics = Demographics()
-        self.demographics.load(self.location)
-    
+
+        if self.config.get_bool('generate.geography.use_demographics', True):
+            self.demographics.load(self.location)
+        else:
+            self.demographics.load(None)
+
     def _load_modules(self):
         """Load all modules."""
         print("Loading modules...")
@@ -203,14 +269,38 @@ class Generator:
                 "growth, vital signs, routine visits or background mortality.",
             )
 
+        allowed = _name_set(self.config.get('generate.modules.enabled'))
+        blocked = _name_set(self.config.get('generate.modules.disabled'))
+
+        overlap = allowed & blocked
+        if overlap:
+            logger.warning(
+                "These modules are in both generate.modules.enabled and "
+                "generate.modules.disabled, and are disabled: %s",
+                ', '.join(sorted(overlap)),
+            )
+
         for module_name in sorted(all_modules):
             if module_name in core:
+                continue
+            if allowed and module_name.lower() not in allowed:
+                continue
+            if module_name.lower() in blocked:
                 continue
             if self.config.get(f'generate.{module_name}', True):
                 enabled.append(module_name)
 
+        # A filter that matches nothing is a typo, not an instruction to
+        # generate patients with no disease modules at all.
+        if (allowed or blocked) and not [
+                name for name in enabled if name not in core]:
+            logger.warning(
+                "The module filters left no disease modules enabled. Check "
+                "generate.modules.enabled / .disabled against --list-modules.",
+            )
+
         return enabled
-    
+
     def _init_providers(self):
         """Initialize healthcare providers."""
         clinician_seed = self.options.clinician_seed
