@@ -56,7 +56,7 @@ class PostCompletionExporter(ABC):
 class Exporter:
     """Main exporter orchestrator."""
     
-    def __init__(self, config: 'Config'):
+    def __init__(self, config: 'Config', locale=None):
         """
         Initialize the exporter.
         
@@ -64,6 +64,9 @@ class Exporter:
             config: Configuration object
         """
         self.config = config
+        # The locale pack decides the default export profile, and whether
+        # US-specific patient extensions belong at all.
+        self.locale = locale
         self.base_dir = Path(config.get_string('exporter.baseDirectory', './output'))
         
         # Create output directory
@@ -96,7 +99,8 @@ class Exporter:
 
         if self.config.get_bool('exporter.fhir.export', True):
             from synthea.export.fhir import FHIRExporter
-            self.patient_exporters.append(FHIRExporter(self.config, self.base_dir))
+            self.patient_exporters.append(
+                FHIRExporter(self.config, self.base_dir, self.locale))
 
         server_url = str(self.config.get('exporter.fhir.server_url', '') or '').strip()
         if server_url:
