@@ -16,6 +16,9 @@ from synthea.helpers.resources import resource_path
 
 logger = logging.getLogger(__name__)
 
+#: Unix epoch, for date ranges expressed in milliseconds.
+_EPOCH = datetime(1970, 1, 1)
+
 if TYPE_CHECKING:
     from synthea.world.person import Person
 
@@ -300,6 +303,9 @@ class LookupTableTransition(Transition):
     #: Parsed tables, keyed by filename, shared across the process.
     _csv_cache: Dict[str, Optional[List[Dict[str, str]]]] = {}
 
+    #: Selector columns parsed once per (table, target columns).
+    _compiled_cache: Dict[tuple, List[tuple]] = {}
+
     _CSV_BASES = [
         str(resource_path('lookup_tables')),
         'resources/lookup_tables/',
@@ -367,7 +373,7 @@ class LookupTableTransition(Transition):
             if name:
                 rows = self._load_csv(name)
                 if rows:
-                    row = self._matching_row(rows, person, time, targets)
+                    row = self._matching_row(name, rows, person, time, targets)
                     if row is not None:
                         probability = _as_float(
                             row.get(entry.get('transition', '')), probability)
@@ -386,59 +392,122 @@ class LookupTableTransition(Transition):
                 return entry.get('transition')
         return self.entries[-1].get('transition')
 
-    def _matching_row(self, rows: List[Dict[str, str]], person: 'Person',
-                      time: datetime, targets: set) -> Optional[Dict[str, str]]:
+    def _matching_row(self, name: str, rows: List[Dict[str, str]],
+                      person: 'Person', time: datetime,
+                      targets: set) -> Optional[Dict[str, str]]:
         """The first row whose selector columns all match this patient."""
-        for row in rows:
-            if all(
-                _column_matches(column, value, person, time)
-                for column, value in row.items()
-                if column not in targets and column
-            ):
+        age: Optional[float] = None
+        millis: Optional[float] = None
+        attributes = person.attributes
+
+        for selectors, row in self._compiled(name, rows, targets):
+            for kind, column, key, low, high, expected in selectors:
+                if kind == _AGE:
+                    if age is None:
+                        age = person.age_at(time)
+                    if not low <= age <= high:
+                        break
+                elif kind == _TIME:
+                    if millis is None:
+                        # Not time.timestamp(): on Windows it raises OSError
+                        # for any date before 1970, and patients are routinely
+                        # born before then. The COVID-19 modules use epoch
+                        # millisecond windows, so every timestep of every such
+                        # patient was throwing.
+                        millis = (time - _EPOCH).total_seconds() * 1000.0
+                    if not low <= millis <= high:
+                        break
+                elif kind == _NEVER:
+                    break
+                else:
+                    if kind == _GENDER:
+                        actual = attributes.get('gender', '')
+                    else:
+                        actual = attributes.get(column)
+                        if actual is None:
+                            actual = attributes.get(key)
+                        if actual is None:
+                            # The table stratifies by something this patient
+                            # has no value for, so it cannot be the right row.
+                            break
+                    if str(actual).strip().lower() != expected:
+                        break
+            else:
                 return row
+
         return None
 
+    @classmethod
+    def _compiled(cls, name: str, rows: List[Dict[str, str]],
+                  targets: set) -> List[tuple]:
+        """The table's selector columns, parsed once.
 
-def _column_matches(column: str, value: Optional[str], person: 'Person',
-                    time: datetime) -> bool:
-    """Whether one selector column matches the patient."""
-    if value is None or value == '':
-        return True
+        Matching used to re-read every cell of every candidate row on every
+        lookup — stripping, splitting on ``-`` and calling ``float`` each time.
+        With ~500-row tables consulted once per module per timestep that was
+        88% of the time spent generating a patient. The parsed form is cached
+        per (table name, target columns) and the rows themselves are
+        returned unchanged, so callers still get the original dict. The key is
+        the table's name rather than the list's identity, because a list that
+        goes out of scope can have its id reused by another.
+        """
+        key = (name, frozenset(targets))
+        compiled = cls._compiled_cache.get(key)
+        if compiled is None:
+            compiled = [
+                (
+                    tuple(
+                        _compile_column(column, value)
+                        for column, value in row.items()
+                        if column and column not in targets
+                        and value is not None and value != ''
+                    ),
+                    row,
+                )
+                for row in rows
+            ]
+            cls._compiled_cache[key] = compiled
+        return compiled
 
+
+#: Selector kinds, as small integers so matching compares ints not strings.
+_AGE, _TIME, _GENDER, _ATTRIBUTE, _NEVER = range(5)
+
+#: A single numeric bound is matched with the tolerance the string comparison
+#: used to apply, expressed as a range so there is only one code path.
+_TOLERANCE = 1e-9
+
+
+def _compile_column(column: str, value: str) -> tuple:
+    """Parse one selector cell into ``(kind, column, key, low, high, expected)``."""
     key = column.strip().lower()
 
-    if key == 'age':
-        return _in_numeric_range(value, person.age_at(time))
+    if key in ('age', 'time'):
+        kind = _AGE if key == 'age' else _TIME
+        bounds = _numeric_range(value)
+        if bounds is None:
+            return (_NEVER, column, key, 0.0, 0.0, '')
+        return (kind, column, key, bounds[0], bounds[1], '')
 
-    if key == 'time':
-        epoch_millis = time.timestamp() * 1000.0
-        return _in_numeric_range(value, epoch_millis)
-
-    if key == 'gender':
-        return value.strip().lower() == str(
-            person.attributes.get('gender', '')).strip().lower()
-
-    attribute = person.attributes.get(column) or person.attributes.get(key)
-    if attribute is None:
-        # The table stratifies by something this patient has no value for, so
-        # it cannot be the right row.
-        return False
-    return str(attribute).strip().lower() == value.strip().lower()
+    kind = _GENDER if key == 'gender' else _ATTRIBUTE
+    return (kind, column, key, 0.0, 0.0, value.strip().lower())
 
 
-def _in_numeric_range(value: str, candidate: float) -> bool:
-    """Whether a number falls in an inclusive ``low-high`` range."""
+def _numeric_range(value: str) -> Optional[tuple]:
+    """An inclusive ``low-high`` range, or a single value as a tight one."""
     text = value.strip()
     if '-' not in text:
         bound = _as_float(text, None)
-        return bound is not None and abs(candidate - bound) < 1e-9
+        if bound is None:
+            return None
+        return (bound - _TOLERANCE, bound + _TOLERANCE)
 
     low_text, _, high_text = text.partition('-')
     low = _as_float(low_text, None)
     high = _as_float(high_text, None)
     if low is None or high is None:
-        return False
-    return low <= candidate <= high
+        return None
+    return (low, high)
 
 
 def _as_float(value: Any, default):
