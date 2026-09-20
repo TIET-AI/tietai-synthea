@@ -52,6 +52,10 @@ from synthea.engine.module import Module
               help='Overflow population')
 @click.option('--graphviz', type=str,
               help='Generate Graphviz visualization for specified module')
+@click.option('--locale', type=str, default=None,
+              help='Locale pack to generate for (default: us)')
+@click.option('--list-locales', is_flag=True,
+              help='List the installed locale packs')
 @click.option('--list-modules', is_flag=True,
               help='List all available modules')
 @click.option('--version', is_flag=True,
@@ -59,7 +63,8 @@ from synthea.engine.module import Module
 @click.argument('location', nargs=-1)
 def main(population, seed, clinician_seed, gender, age, module, config, modules_dir,
          output_dir, reference_date, state, city, threads, log_level, only_dead,
-         keep_patients, overflow, graphviz, list_modules, version, location):
+         keep_patients, overflow, graphviz, locale, list_locales, list_modules,
+         version, location):
     """
     Synthea Patient Generator
     
@@ -72,6 +77,8 @@ def main(population, seed, clinician_seed, gender, age, module, config, modules_
         synthea -p 1000 Massachusetts Boston
         
         synthea -s 12345 -p 50 --state California
+        
+        synthea -p 100 --locale us
     """
     
     # Handle version flag
@@ -80,6 +87,11 @@ def main(population, seed, clinician_seed, gender, age, module, config, modules_
         click.echo(f"Synthea Python v{__version__}")
         sys.exit(0)
     
+    # Handle list locales flag
+    if list_locales:
+        list_available_locales()
+        sys.exit(0)
+
     # Handle list modules flag
     if list_modules:
         list_available_modules(modules_dir)
@@ -379,3 +391,28 @@ cli.add_command(fetch_data)
 
 if __name__ == '__main__':
     cli()
+
+def list_available_locales():
+    """Print the installed locale packs."""
+    from synthea import locale as locale_registry
+
+    packs = locale_registry.available()
+    if not packs:
+        click.echo("No locale packs are installed.")
+        return
+
+    click.echo(f"{len(packs)} locale pack(s) installed:")
+    click.echo()
+    for code, pack in packs:
+        default = '  (default)' if code == locale_registry.DEFAULT_LOCALE else ''
+        click.echo(f"  {code:<8} {pack.name}{default}")
+        click.echo(f"           country {pack.country_code}, "
+                   f"language {pack.language}, currency {pack.currency}")
+        codes = ', '.join(s.type_code for s in pack.identifiers) or 'none'
+        click.echo(f"           profile {pack.export_profile}, "
+                   f"identifiers: {codes}")
+    click.echo()
+    click.echo(
+        "Packs are discovered through the 'synthea.locales' entry point, "
+        "so one can ship as a separate package.")
+    click.echo("Select one with --locale or generate.locale.")

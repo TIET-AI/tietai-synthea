@@ -26,6 +26,7 @@ from synthea.world.payer import PayerManager
 from synthea.helpers.config import Config
 from synthea.helpers.rng import resolve_seed
 from synthea.export.exporter import Exporter
+from synthea import locale as locale_registry
 
 
 def _name_set(value) -> set:
@@ -64,6 +65,7 @@ class GeneratorOptions:
         self.state: Optional[str] = None
         self.city: Optional[str] = None
         self.log_level: str = 'info'
+        self.locale: Optional[str] = None
         self.threads: int = 1
 
     @property
@@ -92,6 +94,9 @@ class GeneratorOptions:
             options.state = args['state']
         if 'city' in args:
             options.city = args['city']
+        if args.get('locale'):
+            options.locale = args['locale']
+
         if 'reference_date' in args:
             options.reference_date = datetime.strptime(args['reference_date'], '%Y%m%d')
             options.reference_date_explicit = True
@@ -119,6 +124,12 @@ class Generator:
         self.config = config if config is not None else Config()
         self._config_provided = config is not None
         self._apply_reference_year()
+
+        # Resolved once, not per patient: an unknown locale should fail at
+        # start-up rather than after the first hour of a long run.
+        self.locale = locale_registry.get(
+            self.options.locale or self.config.get('generate.locale')
+        )
 
         # No global ``random.seed()`` here: every draw during simulation comes
         # from the person's own generator, whose seed is derived from
@@ -410,6 +421,9 @@ class Generator:
         # recorded.
         person.providers = self.provider_manager
         person.payers = self.payer_manager
+
+        # Identity, coding and export conventions all come from here.
+        person.locale = self.locale
         
         # Set demographics
         self._set_demographics(person)
