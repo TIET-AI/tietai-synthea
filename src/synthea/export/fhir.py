@@ -76,6 +76,12 @@ US_CORE_PROFILES = {
     'PractitionerRole': US_CORE + 'us-core-practitionerrole',
     'Location': US_CORE + 'us-core-location',
     'DocumentReference': US_CORE + 'us-core-documentreference',
+    'AllergyIntolerance': US_CORE + 'us-core-allergyintolerance',
+    'CarePlan': US_CORE + 'us-core-careplan',
+    'CareTeam': US_CORE + 'us-core-careteam',
+    'DiagnosticReport': US_CORE + 'us-core-diagnosticreport-lab',
+    'Goal': US_CORE + 'us-core-goal',
+    'Provenance': US_CORE + 'us-core-provenance',
 }
 
 US_CORE_VITAL_SIGNS = 'http://hl7.org/fhir/StructureDefinition/vitalsigns'
@@ -251,6 +257,67 @@ def _claim_uuid(encounter) -> str:
 
 def _eob_uuid(encounter) -> str:
     return _stable_uuid('eob', encounter.id)
+def _goal_uuid(careplan, index: int) -> str:
+    return _stable_uuid('goal', f"{careplan.id}:{index}")
+
+
+def _care_team_uuid(careplan) -> str:
+    return _stable_uuid('care-team', careplan.id)
+
+
+def _provenance_uuid(person) -> str:
+    return _stable_uuid('provenance', person.id)
+
+
+def _device_identifier(device) -> str:
+    """A device identifier derived from the record's own id."""
+    return _stable_uuid('device-di', device.id).replace('-', '')[:14]
+
+
+def _device_udi(device) -> str:
+    """A UDI in the HRF shape, built from synthetic parts only."""
+    identifier = _device_identifier(device)
+    serial = _stable_uuid('device-serial', device.id).replace('-', '')[:10]
+    return (f"(01){identifier}"
+            f"(11){device.time.strftime('%y%m%d')}"
+            f"(21){serial}")
+
+
+#: The `category` an allergy falls into, from the code system it was written
+#: in. A drug allergy coded in RxNorm is a medication allergy; anything else
+#: the modules produce is a substance.
+def _allergy_category(allergy) -> str:
+    if not allergy.codes:
+        return 'environment'
+    system = str(allergy.codes[0].system or '').lower()
+    if 'rxnorm' in system:
+        return 'medication'
+    display = str(allergy.codes[0].display or '').lower()
+    if 'food' in display or 'peanut' in display or 'milk' in display:
+        return 'food'
+    return 'environment'
+
+
+#: FHIR criticality is a three-value code, not the module's severity word.
+_CRITICALITY = {
+    'mild': 'low',
+    'moderate': 'low',
+    'severe': 'high',
+}
+
+
+def _allergy_criticality(severity: str) -> str:
+    return _CRITICALITY.get(str(severity).lower(), 'unable-to-assess')
+
+
+def _version() -> str:
+    """The generator's version, for the Provenance agent."""
+    try:
+        from importlib.metadata import version
+
+        return version('pysynthea')
+    except Exception:  # pragma: no cover - source checkout without metadata
+        return 'unknown'
 
 
 class FHIRExporter(PatientExporter):
@@ -376,9 +443,37 @@ class FHIRExporter(PatientExporter):
         for study in getattr(person.record, 'imaging_studies', []):
             bundle['entry'].append(self.create_imaging_study_entry(study, person))
 
+        for allergy in getattr(person.record, 'allergies', []):
+            bundle['entry'].append(
+                self.create_allergy_intolerance_entry(allergy, person))
+
+        # A CarePlan references its Goals and its CareTeam, so those go in
+        # first: a transaction bundle is processed in order, and a reference
+        # to an entry that has not been created yet does not resolve.
+        for careplan in getattr(person.record, 'careplans', []):
+            for index, goal in enumerate(careplan.goals or []):
+                bundle['entry'].append(
+                    self.create_goal_entry(careplan, index, goal, person))
+            bundle['entry'].append(self.create_care_team_entry(careplan, person))
+            bundle['entry'].append(self.create_care_plan_entry(careplan, person))
+
+        # Observations are already in the bundle, so a report can reference
+        # them by id.
+        for report in getattr(person.record, 'reports', []):
+            bundle['entry'].append(
+                self.create_diagnostic_report_entry(report, person))
+
+        for device in getattr(person.record, 'devices', []):
+            bundle['entry'].append(self.create_device_entry(device, person))
+
+        for supply in getattr(person.record, 'supplies', []):
+            bundle['entry'].append(
+                self.create_supply_delivery_entry(supply, person))
+
         self._add_care_team(bundle, person)
         self._add_financial(bundle, person)
         self._add_notes(bundle, person)
+        bundle['entry'].append(self.create_provenance_entry(bundle, person))
 
         return bundle
     
@@ -1327,6 +1422,290 @@ class FHIRExporter(PatientExporter):
         }
 
         return self._entry("ExplanationOfBenefit", resource["id"], resource)
+    def create_allergy_intolerance_entry(self, allergy,
+                                         person: 'Person') -> Dict[str, Any]:
+        """The patient's allergy, with whatever reaction the module recorded."""
+        resource: Dict[str, Any] = {
+            "resourceType": "AllergyIntolerance",
+            "id": allergy.id,
+            "clinicalStatus": {"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+                "code": "resolved" if allergy.end_time else "active",
+            }]},
+            "verificationStatus": {"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+                "code": "confirmed",
+            }]},
+            "type": "allergy",
+            "category": [_allergy_category(allergy)],
+            "code": {"coding": codings(allergy.codes)} if allergy.codes else None,
+            "patient": self._subject(person),
+            "recordedDate": fhir_datetime(allergy.time),
+            "onsetDateTime": fhir_datetime(allergy.time),
+        }
+
+        if allergy.severity:
+            resource["criticality"] = _allergy_criticality(allergy.severity)
+
+        if allergy.reactions:
+            manifestations = [
+                {"coding": [coding(reaction)]} if not isinstance(reaction, str)
+                else {"text": reaction}
+                for reaction in allergy.reactions
+            ]
+            reaction: Dict[str, Any] = {"manifestation": manifestations}
+            if allergy.severity in ('mild', 'moderate', 'severe'):
+                reaction["severity"] = allergy.severity
+            resource["reaction"] = [reaction]
+
+        if allergy.encounter is not None:
+            resource["encounter"] = {
+                "reference": f"urn:uuid:{allergy.encounter.id}"}
+
+        return self._entry("AllergyIntolerance", allergy.id, resource)
+
+    def create_goal_entry(self, careplan, index: int, goal,
+                          person: 'Person') -> Dict[str, Any]:
+        """One goal of a care plan.
+
+        The record holds goals as free text, which is what the modules write,
+        so the description is a `text` rather than an invented code.
+        """
+        resource: Dict[str, Any] = {
+            "resourceType": "Goal",
+            "id": _goal_uuid(careplan, index),
+            "lifecycleStatus": "completed" if careplan.end_time else "active",
+            "description": (
+                {"coding": [coding(goal)]} if hasattr(goal, 'code')
+                else {"text": str(goal)}
+            ),
+            "subject": self._subject(person),
+            "startDate": careplan.time.date().isoformat(),
+        }
+        return self._entry("Goal", resource["id"], resource)
+
+    def create_care_team_entry(self, careplan,
+                               person: 'Person') -> Dict[str, Any]:
+        """Who is looking after the patient for this care plan."""
+        resource: Dict[str, Any] = {
+            "resourceType": "CareTeam",
+            "id": _care_team_uuid(careplan),
+            "status": "inactive" if careplan.end_time else "active",
+            "subject": self._subject(person),
+            "period": {
+                "start": fhir_datetime(careplan.time),
+                "end": fhir_datetime(careplan.end_time),
+            },
+        }
+
+        encounter = careplan.encounter
+        clinician = getattr(encounter, 'clinician', None) if encounter else None
+        provider = getattr(encounter, 'provider', None) if encounter else None
+
+        participants: List[Dict[str, Any]] = [{
+            "role": [{"coding": [{
+                "system": "http://snomed.info/sct",
+                "code": "116154003",
+                "display": "Patient",
+            }]}],
+            "member": self._subject(person),
+        }]
+
+        if clinician is not None:
+            participants.append({
+                "role": [{"coding": [{
+                    "system": "http://snomed.info/sct",
+                    "code": "223366009",
+                    "display": "Healthcare professional",
+                }]}],
+                "member": {
+                    "reference": f"urn:uuid:{_practitioner_uuid(clinician)}"},
+            })
+
+        if provider is not None:
+            resource["managingOrganization"] = [
+                {"reference": f"urn:uuid:{_organization_uuid(provider)}"}]
+
+        resource["participant"] = participants
+
+        if encounter is not None:
+            resource["encounter"] = {"reference": f"urn:uuid:{encounter.id}"}
+
+        return self._entry("CareTeam", resource["id"], resource)
+
+    def create_care_plan_entry(self, careplan,
+                               person: 'Person') -> Dict[str, Any]:
+        """The care plan, pointing at the goals and team created alongside it."""
+        resource: Dict[str, Any] = {
+            "resourceType": "CarePlan",
+            "id": careplan.id,
+            "status": "completed" if careplan.end_time else "active",
+            "intent": "plan",
+            "category": [{"coding": [{
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan",
+            }]}],
+            "subject": self._subject(person),
+            "period": {
+                "start": fhir_datetime(careplan.time),
+                "end": fhir_datetime(careplan.end_time),
+            },
+            "careTeam": [
+                {"reference": f"urn:uuid:{_care_team_uuid(careplan)}"}],
+        }
+
+        if careplan.codes:
+            resource["category"].append({"coding": codings(careplan.codes)})
+
+        if careplan.goals:
+            resource["goal"] = [
+                {"reference": f"urn:uuid:{_goal_uuid(careplan, index)}"}
+                for index in range(len(careplan.goals))
+            ]
+
+        if careplan.activities:
+            resource["activity"] = [
+                {"detail": {
+                    "status": "completed" if careplan.end_time else "in-progress",
+                    "code": ({"coding": [coding(activity)]}
+                             if hasattr(activity, 'code')
+                             else {"text": str(activity)}),
+                }}
+                for activity in careplan.activities
+            ]
+
+        if careplan.encounter is not None:
+            resource["encounter"] = {
+                "reference": f"urn:uuid:{careplan.encounter.id}"}
+
+        return self._entry("CarePlan", careplan.id, resource)
+
+    def create_diagnostic_report_entry(self, report,
+                                       person: 'Person') -> Dict[str, Any]:
+        """A panel of results, referencing the Observations it is made of."""
+        resource: Dict[str, Any] = {
+            "resourceType": "DiagnosticReport",
+            "id": report.id,
+            "status": "final",
+            "category": [{"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+                "code": "LAB",
+            }]}],
+            "code": {"coding": codings(report.codes)} if report.codes else None,
+            "subject": self._subject(person),
+            "effectiveDateTime": fhir_datetime(report.time),
+            "issued": fhir_datetime(report.time),
+        }
+
+        if report.observations:
+            resource["result"] = [
+                {"reference": f"urn:uuid:{observation.id}"}
+                for observation in report.observations
+            ]
+
+        if report.encounter is not None:
+            resource["encounter"] = {
+                "reference": f"urn:uuid:{report.encounter.id}"}
+
+        provider = (getattr(report.encounter, 'provider', None)
+                    if report.encounter else None)
+        if provider is not None:
+            resource["performer"] = [
+                {"reference": f"urn:uuid:{_organization_uuid(provider)}"}]
+
+        return self._entry("DiagnosticReport", report.id, resource)
+
+    def create_device_entry(self, device, person: 'Person') -> Dict[str, Any]:
+        """An implanted or issued device, with a UDI carrier.
+
+        The UDI is derived from the device's own id so it is stable across a
+        run, and it is not a registered issuing agency's number: these are
+        synthetic devices and must not collide with a real UDI.
+        """
+        resource: Dict[str, Any] = {
+            "resourceType": "Device",
+            "id": device.id,
+            "status": "inactive" if device.end_time else "active",
+            "patient": self._subject(person),
+            "manufactureDate": fhir_datetime(device.time),
+            "type": {"coding": codings(device.codes)} if device.codes else None,
+            "udiCarrier": [{
+                "deviceIdentifier": _device_identifier(device),
+                "carrierHRF": _device_udi(device),
+            }],
+        }
+
+        if device.manufacturer:
+            resource["manufacturer"] = device.manufacturer
+        if device.model:
+            resource["modelNumber"] = device.model
+        if device.end_time:
+            resource["expirationDate"] = fhir_datetime(device.end_time)
+
+        return self._entry("Device", device.id, resource)
+
+    def create_supply_delivery_entry(self, supply,
+                                     person: 'Person') -> Dict[str, Any]:
+        """Supplies handed to the patient."""
+        resource: Dict[str, Any] = {
+            "resourceType": "SupplyDelivery",
+            "id": supply.id,
+            "status": "completed",
+            "patient": self._subject(person),
+            "type": {"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/supply-item-type",
+                "code": "device",
+            }]},
+            "suppliedItem": {
+                "quantity": {"value": supply.quantity},
+                "itemCodeableConcept": (
+                    {"coding": codings(supply.codes)} if supply.codes else None),
+            },
+            "occurrenceDateTime": fhir_datetime(supply.time),
+        }
+
+        provider = (getattr(supply.encounter, 'provider', None)
+                    if supply.encounter else None)
+        if provider is not None:
+            resource["supplier"] = {
+                "reference": f"urn:uuid:{_organization_uuid(provider)}"}
+
+        return self._entry("SupplyDelivery", supply.id, resource)
+
+    def create_provenance_entry(self, bundle: Dict[str, Any],
+                                person: 'Person') -> Dict[str, Any]:
+        """Says this record was generated, and by what.
+
+        A consumer that mixes synthetic and real data needs to be able to tell
+        them apart from the record itself rather than from where the file came
+        from. The Provenance targets every other entry in the bundle.
+        """
+        targets = [
+            {"reference": entry["fullUrl"]}
+            for entry in bundle["entry"]
+            if entry.get("fullUrl")
+        ]
+
+        resource: Dict[str, Any] = {
+            "resourceType": "Provenance",
+            "id": _provenance_uuid(person),
+            "target": targets,
+            "recorded": fhir_datetime(datetime.now(timezone.utc)),
+            "activity": {"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/v3-DataOperation",
+                "code": "CREATE",
+                "display": "create",
+            }]},
+            "agent": [{
+                "type": {"coding": [{
+                    "system": "http://terminology.hl7.org/CodeSystem/provenance-participant-type",
+                    "code": "assembler",
+                }]},
+                "who": {"display": f"PySynthea {_version()}"},
+            }],
+        }
+
+        return self._entry("Provenance", resource["id"], resource)
 
     def _map_race_code(self, race: str) -> str:
         """Map race to OMB category code."""
