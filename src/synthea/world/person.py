@@ -50,6 +50,9 @@ class Person:
 
         # Set by the generator so encounters can find a facility.
         self.providers = None
+
+        # Set by the generator: the payer tables, for pricing care.
+        self.payers = None
         
         # Unique identifier
         self.id = self._generate_id()

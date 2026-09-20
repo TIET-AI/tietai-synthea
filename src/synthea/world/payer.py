@@ -1,304 +1,302 @@
-"""
-Insurance payer model for Synthea.
+"""Who pays for care.
 
-This module manages insurance payers and coverage.
+The payer tables have shipped since 1.2.0 and nothing read them: every patient
+was uninsured, no encounter had a payer, and there were no claims. A record
+without coverage cannot exercise a payer mix, an eligibility rule, or a claims
+pipeline — which is a large part of what synthetic health data is used for.
+
+Eligibility here is **deliberately simplified**. The upstream project drives it
+from poverty multipliers, spend-down files and qualifying-code lists; this uses
+age and socioeconomic status:
+
+    65 or over            -> Medicare
+    low income           -> Medicaid, or uninsured
+    otherwise            -> a private plan available in the patient's state
+
+That reproduces the shape of the United States payer mix without pretending to
+implement means testing. Doing it properly belongs with the target-data work in
+#55, and the resulting payer mix is asserted against published shares by test so
+the simplification cannot drift unnoticed.
 """
 
-from typing import Dict, Any, Optional, List
-from dataclasses import dataclass
-from pathlib import Path
+from __future__ import annotations
+
 import csv
-import random
-from datetime import datetime, timedelta
+import logging
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Dict, List, Optional, TYPE_CHECKING
 
 from synthea.helpers.resources import resource_path
+from synthea.helpers.rng import random_seed
+
+logger = logging.getLogger(__name__)
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from synthea.world.person import Person
+
+#: Age at which Medicare eligibility begins.
+MEDICARE_AGE = 65
+
+#: Share of low-income adults who end up on Medicaid rather than uninsured.
+#: The rest are the coverage gap, which is a real feature of the population.
+MEDICAID_TAKEUP = 0.74
+
+#: Share of working-age adults with private coverage who get it through an
+#: employer rather than buying it directly. Recorded on the coverage so a
+#: consumer can tell the two apart.
+EMPLOYER_SHARE = 0.83
 
 
 @dataclass
 class Payer:
-    """Represents an insurance payer."""
+    """An insurance company."""
     id: str
     name: str
-    ownership: str  # private, government
-    states_covered: List[str]
-    deductible: float
-    default_copay: float
-    default_coinsurance: float
-    monthly_premium: float
-    
+    ownership: str
+    states_covered: List[str] = field(default_factory=list)
+
     def covers_state(self, state: str) -> bool:
-        """Check if payer covers a state."""
-        return not self.states_covered or state in self.states_covered
+        """Whether the payer operates in a state."""
+        if not self.states_covered or '*' in self.states_covered:
+            return True
+        return _state_code(state) in {_state_code(s) for s in self.states_covered}
 
 
 @dataclass
-class InsurancePlan:
-    """Represents an individual's insurance plan."""
+class Plan:
+    """A specific insurance product."""
+    id: str
     payer: Payer
-    start_date: datetime
-    end_date: Optional[datetime] = None
-    member_id: str = ""
-    group_id: str = ""
-    
+    name: str
+    deductible: float = 0.0
+    coinsurance: float = 0.0
+    copay: float = 0.0
+    monthly_premium: float = 0.0
+    max_out_of_pocket: float = 0.0
+    eligibility: str = ''
+
+
+@dataclass
+class Coverage:
+    """A patient's insurance over a period."""
+    plan: Optional[Plan]
+    start: datetime
+    end: Optional[datetime] = None
+    kind: str = 'none'          # medicare | medicaid | private | none
+    via_employer: bool = False
+
     @property
-    def is_active(self) -> bool:
-        """Check if plan is currently active."""
-        return self.end_date is None or self.end_date > datetime.now()
+    def is_insured(self) -> bool:
+        return self.plan is not None
+
+
+#: The plan every uninsured patient "has", so downstream code never has to
+#: special-case a missing payer.
+NO_INSURANCE = Payer(id='no-insurance', name='NO_INSURANCE',
+                     ownership='NO_INSURANCE', states_covered=['*'])
 
 
 class PayerManager:
-    """Manages insurance payers."""
-    
-    def __init__(self):
-        """Initialize payer manager."""
+    """Loads payers and plans, and decides who covers a patient."""
+
+    def __init__(self, seed: Optional[int] = None):
         self.payers: Dict[str, Payer] = {}
-        self.private_payers: List[Payer] = []
-        self.government_payers: List[Payer] = []
-        
-        # Special payers
-        self.no_insurance: Optional[Payer] = None
-        self.medicare: Optional[Payer] = None
-        self.medicaid: Optional[Payer] = None
-    
+        self.plans: Dict[str, Plan] = {}
+        self.plans_by_eligibility: Dict[str, List[Plan]] = {}
+        self._seed = seed if seed is not None else random_seed()
+
+    # ------------------------------------------------------------------
+    # Loading
+    # ------------------------------------------------------------------
+
     def load(self):
-        """Load payer data."""
-        # Try to load from CSV file
-        self._load_from_csv()
-        
-        # If no payers loaded, create defaults
-        if not self.payers:
-            self._create_default_payers()
-        
-        # Index payers
-        self._index_payers()
-    
-    def _load_from_csv(self):
-        """Load payers from CSV file."""
-        paths = [
-            resource_path('payers', 'payers.csv'),
-            Path('resources/payers/payers.csv'),
-            Path('src/main/resources/payers/payers.csv'),
-            Path('../resources/payers/payers.csv'),
-        ]
-        
-        for path in paths:
-            if path.exists():
-                try:
-                    with open(path, 'r', encoding='utf-8') as f:
-                        reader = csv.DictReader(f)
-                        for row in reader:
-                            payer = self._parse_payer_row(row)
-                            if payer:
-                                self.payers[payer.id] = payer
-                    break
-                except Exception:
-                    pass
-    
-    def _parse_payer_row(self, row: Dict[str, str]) -> Optional[Payer]:
-        """Parse a payer from CSV row."""
+        """Load payers and their plans."""
+        self._load_payers()
+        self._load_plans()
+
+        if not self.plans:
+            logger.warning(
+                "No insurance plans found; every patient will be uninsured.")
+
+    def _load_payers(self):
+        path = resource_path('payers', 'insurance_companies.csv')
+        if not path.exists():
+            return
         try:
-            states = row.get('states_covered', '').split('|') if row.get('states_covered') else []
-            
-            return Payer(
-                id=row.get('id', ''),
-                name=row.get('name', ''),
-                ownership=row.get('ownership', 'private'),
-                states_covered=states,
-                deductible=float(row.get('deductible', 0)),
-                default_copay=float(row.get('default_copay', 25)),
-                default_coinsurance=float(row.get('default_coinsurance', 0.2)),
-                monthly_premium=float(row.get('monthly_premium', 400))
-            )
-        except (ValueError, KeyError):
-            return None
-    
-    def _create_default_payers(self):
-        """Create default payers."""
-        # No Insurance
-        no_insurance = Payer(
-            id="no_insurance",
-            name="No Insurance",
-            ownership="private",
-            states_covered=[],
-            deductible=0,
-            default_copay=0,
-            default_coinsurance=1.0,  # 100% responsibility
-            monthly_premium=0
-        )
-        self.payers[no_insurance.id] = no_insurance
-        self.no_insurance = no_insurance
-        
-        # Medicare
-        medicare = Payer(
-            id="medicare",
-            name="Medicare",
-            ownership="government",
-            states_covered=[],  # All states
-            deductible=1600,
-            default_copay=20,
-            default_coinsurance=0.2,
-            monthly_premium=170
-        )
-        self.payers[medicare.id] = medicare
-        self.medicare = medicare
-        
-        # Medicaid
-        medicaid = Payer(
-            id="medicaid",
-            name="Medicaid",
-            ownership="government",
-            states_covered=[],  # All states
-            deductible=0,
-            default_copay=5,
-            default_coinsurance=0,
-            monthly_premium=0
-        )
-        self.payers[medicaid.id] = medicaid
-        self.medicaid = medicaid
-        
-        # Blue Cross Blue Shield
-        bcbs = Payer(
-            id="bcbs",
-            name="Blue Cross Blue Shield",
-            ownership="private",
-            states_covered=[],
-            deductible=2000,
-            default_copay=30,
-            default_coinsurance=0.2,
-            monthly_premium=450
-        )
-        self.payers[bcbs.id] = bcbs
-        
-        # Aetna
-        aetna = Payer(
-            id="aetna",
-            name="Aetna",
-            ownership="private",
-            states_covered=[],
-            deductible=1500,
-            default_copay=25,
-            default_coinsurance=0.15,
-            monthly_premium=400
-        )
-        self.payers[aetna.id] = aetna
-        
-        # United Healthcare
-        united = Payer(
-            id="united",
-            name="United Healthcare",
-            ownership="private",
-            states_covered=[],
-            deductible=1800,
-            default_copay=25,
-            default_coinsurance=0.2,
-            monthly_premium=425
-        )
-        self.payers[united.id] = united
-        
-        # Cigna
-        cigna = Payer(
-            id="cigna",
-            name="Cigna",
-            ownership="private",
-            states_covered=[],
-            deductible=1600,
-            default_copay=30,
-            default_coinsurance=0.2,
-            monthly_premium=410
-        )
-        self.payers[cigna.id] = cigna
-    
-    def _index_payers(self):
-        """Index payers by type."""
-        self.private_payers.clear()
-        self.government_payers.clear()
-        
-        for payer in self.payers.values():
-            if payer.ownership == 'government':
-                self.government_payers.append(payer)
-            else:
-                self.private_payers.append(payer)
-            
-            # Identify special payers
-            if 'medicare' in payer.name.lower():
-                self.medicare = payer
-            elif 'medicaid' in payer.name.lower():
-                self.medicaid = payer
-            elif 'no insurance' in payer.name.lower():
-                self.no_insurance = payer
-    
-    def select_payer(self, person: 'Person', rand: random.Random) -> Payer:
+            with open(path, 'r', encoding='utf-8-sig', newline='') as handle:
+                for row in csv.DictReader(handle):
+                    identifier = (row.get('Id') or '').strip()
+                    name = (row.get('Name') or '').strip()
+                    if not identifier or not name:
+                        continue
+                    covered = (row.get('States Covered') or '*').strip()
+                    self.payers[identifier] = Payer(
+                        id=identifier,
+                        name=name,
+                        ownership=(row.get('Ownership') or 'Private').strip(),
+                        states_covered=[s.strip() for s in covered.split('|') if s.strip()],
+                    )
+        except Exception as error:  # pragma: no cover - defensive
+            logger.warning("Could not read payers from %s: %s", path, error)
+
+    def _load_plans(self):
+        path = resource_path('payers', 'insurance_plans.csv')
+        if not path.exists():
+            return
+        try:
+            with open(path, 'r', encoding='utf-8-sig', newline='') as handle:
+                for row in csv.DictReader(handle):
+                    payer = self.payers.get((row.get('Payer Id') or '').strip())
+                    plan_id = (row.get('Plan Id') or '').strip()
+                    if payer is None or not plan_id:
+                        continue
+
+                    plan = Plan(
+                        id=plan_id,
+                        payer=payer,
+                        name=(row.get('Name') or payer.name).strip(),
+                        deductible=_as_float(row.get('Deductible'), 0.0),
+                        coinsurance=_as_float(row.get('Default Coinsurance'), 0.0),
+                        copay=_as_float(row.get('Default Copay'), 0.0),
+                        monthly_premium=_as_float(row.get('Monthly Premium'), 0.0),
+                        max_out_of_pocket=_as_float(row.get('Max Out of Pocket'), 0.0),
+                        eligibility=(row.get('Eligibility Policy') or '').strip(),
+                    )
+                    self.plans[plan_id] = plan
+                    self.plans_by_eligibility.setdefault(
+                        plan.eligibility, []).append(plan)
+        except Exception as error:  # pragma: no cover - defensive
+            logger.warning("Could not read plans from %s: %s", path, error)
+
+    # ------------------------------------------------------------------
+    # Eligibility
+    # ------------------------------------------------------------------
+
+    def _plans_for(self, policy: str) -> List[Plan]:
+        return self.plans_by_eligibility.get(policy, [])
+
+    def _private_plans(self, state: Optional[str]) -> List[Plan]:
+        """Plans that are neither Medicare nor Medicaid and cover the state."""
+        public = {'MedicareEligible', 'MedicaidEligible', 'DualEligible'}
+        candidates = [
+            plan for policy, plans in self.plans_by_eligibility.items()
+            if policy not in public
+            for plan in plans
+        ]
+        if state:
+            covering = [p for p in candidates if p.payer.covers_state(state)]
+            if covering:
+                return covering
+        return candidates
+
+    def kind_for(self, person: 'Person', age: float) -> str:
+        """Which kind of cover a patient qualifies for at this age.
+
+        Separate from plan selection so a patient can keep the same plan while
+        their eligibility is unchanged.
         """
-        Select an insurance payer for a person.
-        
-        Args:
-            person: The person to select payer for
-            rand: Random generator
-            
-        Returns:
-            Selected payer
+        if age >= MEDICARE_AGE:
+            return 'medicare'
+
+        status = str(person.attributes.get('socioeconomic_status', 'middle')).lower()
+        if status != 'low':
+            return 'private'
+
+        # Low income: Medicaid where it is taken up, otherwise the coverage
+        # gap, which is a real feature of the population rather than an
+        # omission. Decided once per patient, not per year, because churning
+        # in and out of Medicaid annually is not what happens.
+        settled = person.attributes.get('medicaid_enrolled')
+        if settled is None:
+            settled = person.random.random() < MEDICAID_TAKEUP
+            person.attributes['medicaid_enrolled'] = settled
+
+        return 'medicaid' if settled else 'none'
+
+    def coverage_for(self, person: 'Person', age: float, time: datetime,
+                     kind: Optional[str] = None) -> Coverage:
+        """The coverage a patient should have at this age."""
+        kind = kind or self.kind_for(person, age)
+        state = person.attributes.get('state')
+
+        if kind == 'medicare':
+            plans = self._plans_for('MedicareEligible')
+            if plans:
+                return Coverage(plan=person.random.choice(plans), start=time,
+                                kind='medicare')
+
+        if kind == 'medicaid':
+            plans = self._plans_for('MedicaidEligible')
+            if plans:
+                return Coverage(plan=person.random.choice(plans), start=time,
+                                kind='medicaid')
+
+        if kind == 'private':
+            plans = self._private_plans(state)
+            if plans:
+                return Coverage(
+                    plan=person.random.choice(plans),
+                    start=time,
+                    kind='private',
+                    via_employer=person.random.random() < EMPLOYER_SHARE,
+                )
+
+        return Coverage(plan=None, start=time, kind='none')
+
+    # ------------------------------------------------------------------
+    # Paying
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def split(coverage: Optional[Coverage], cost: float) -> tuple:
+        """Split a cost into (payer share, patient share).
+
+        A copay is taken first, then coinsurance applies to the rest. This is a
+        simplification: real adjudication runs the deductible down over the
+        plan year and stops at the out-of-pocket maximum. What matters for a
+        generated claim is that the two shares are plausible and sum to the
+        total.
         """
-        age = person.age
-        ses = person.attributes.get('socioeconomic_status', 'middle')
-        
-        # Medicare eligibility (65+)
-        if age >= 65 and self.medicare:
-            return self.medicare
-        
-        # Medicaid eligibility (low income)
-        if ses == 'low' and self.medicaid:
-            if rand.random() < 0.4:  # 40% of low income on Medicaid
-                return self.medicaid
-        
-        # Probability of having insurance
-        insurance_prob = {
-            'low': 0.6,
-            'middle': 0.85,
-            'high': 0.95
-        }
-        
-        has_insurance = rand.random() < insurance_prob.get(ses, 0.85)
-        
-        if not has_insurance and self.no_insurance:
-            return self.no_insurance
-        
-        # Select from private payers
-        if self.private_payers:
-            # Filter by state if needed
-            state = person.attributes.get('state')
-            if state:
-                available = [p for p in self.private_payers if p.covers_state(state)]
-            else:
-                available = self.private_payers
-            
-            if available:
-                # Weight by market share (simplified)
-                return rand.choice(available)
-        
-        # Fallback
-        return self.no_insurance or list(self.payers.values())[0]
-    
-    def assign_insurance(self, person: 'Person', time: datetime,
-                        rand: random.Random) -> InsurancePlan:
-        """
-        Assign insurance to a person.
-        
-        Args:
-            person: The person to assign insurance to
-            time: Current simulation time
-            rand: Random generator
-            
-        Returns:
-            Insurance plan
-        """
-        payer = self.select_payer(person, rand)
-        
-        # Create insurance plan
-        plan = InsurancePlan(
-            payer=payer,
-            start_date=time,
-            member_id=f"{person.id[:8]}-{rand.randint(1000, 9999)}",
-            group_id=f"GRP-{rand.randint(100000, 999999)}"
-        )
-        
-        return plan
+        if coverage is None or not coverage.is_insured:
+            return 0.0, round(cost, 2)
+
+        plan = coverage.plan
+        patient = min(cost, plan.copay)
+        remainder = cost - patient
+
+        # The file stores "Default Coinsurance" as the share the *payer*
+        # covers, which is why Medicare reads 0.8.
+        payer_share = remainder * plan.coinsurance
+        patient += remainder - payer_share
+
+        return round(payer_share, 2), round(patient, 2)
+
+
+def _as_float(value, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+_STATE_CODES = {
+    'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR',
+    'california': 'CA', 'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE',
+    'district of columbia': 'DC', 'florida': 'FL', 'georgia': 'GA',
+    'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN',
+    'iowa': 'IA', 'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA',
+    'maine': 'ME', 'maryland': 'MD', 'massachusetts': 'MA', 'michigan': 'MI',
+    'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO', 'montana': 'MT',
+    'nebraska': 'NE', 'nevada': 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ',
+    'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC',
+    'north dakota': 'ND', 'ohio': 'OH', 'oklahoma': 'OK', 'oregon': 'OR',
+    'pennsylvania': 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
+    'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT',
+    'vermont': 'VT', 'virginia': 'VA', 'washington': 'WA',
+    'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY',
+}
+
+
+def _state_code(state: str) -> str:
+    return _STATE_CODES.get(str(state).strip().lower(), str(state).strip().upper())

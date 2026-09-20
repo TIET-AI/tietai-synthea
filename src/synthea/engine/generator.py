@@ -223,7 +223,11 @@ class Generator:
     
     def _init_payers(self):
         """Initialize insurance payers."""
-        self.payer_manager = PayerManager()
+        # Its own stream, so a change to payer selection cannot perturb
+        # patients or clinicians.
+        payer_seed = (resolve_seed(self.options.seed, 0, 'payer')
+                      if self.options.seed is not None else None)
+        self.payer_manager = PayerManager(seed=payer_seed)
         self.payer_manager.load()
     
     def _init_exporter(self):
@@ -311,8 +315,11 @@ class Generator:
         person = Person(person_seed)
         # States and core modules create encounters in several places, so
         # the provider manager travels with the person rather than being
-        # threaded through every call site.
+        # threaded through every call site. The insurance module needs the
+        # payer tables for the same reason: entries are priced as they are
+        # recorded.
         person.providers = self.provider_manager
+        person.payers = self.payer_manager
         
         # Set demographics
         self._set_demographics(person)
