@@ -35,6 +35,7 @@ build/
 *.env
 .env
 venv/
+.venv/
 ENV/
 .envrc
 pip-wheel-metadata/
