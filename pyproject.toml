@@ -68,7 +68,7 @@ visualization = [
 ]
 
 [project.scripts]
-synthea = "synthea.cli:main"
+synthea = "synthea.cli:cli"
 
 [project.urls]
 Homepage = "https://github.com/TIET-AI/tietai-synthea"

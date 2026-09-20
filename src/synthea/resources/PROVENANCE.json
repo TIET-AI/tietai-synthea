@@ -548,6 +548,54 @@
       "upstream_path": "src/main/resources/payers/insurance_plans.csv",
       "bytes": 3185,
       "sha256": "5d80db633edb576d6d3148b79b2150299cfd864be84c20fdc8dfa149ed830660"
+    },
+    {
+      "path": "providers/hospitals.csv",
+      "upstream_path": "src/main/resources/providers/hospitals.csv",
+      "bytes": 1811863,
+      "sha256": "83cccb5b1ba3957e3bdd142843048f45d3074271dbd1998ccc3089768d37fed6"
+    },
+    {
+      "path": "providers/ihs_centers.csv",
+      "upstream_path": "src/main/resources/providers/ihs_centers.csv",
+      "bytes": 59637,
+      "sha256": "af1d0b50bad3eac4c58147047adde240a3aa51413b140a7fec7ab84d83572d6f"
+    },
+    {
+      "path": "providers/ihs_facilities.csv",
+      "upstream_path": "src/main/resources/providers/ihs_facilities.csv",
+      "bytes": 7617,
+      "sha256": "c2de1ffc27d3ff65565f67f060d677f7184d38a7344a073d904cc014939153e0"
+    },
+    {
+      "path": "providers/longterm.csv",
+      "upstream_path": "src/main/resources/providers/longterm.csv",
+      "bytes": 75351,
+      "sha256": "ebc9e72ff9ab22bcf04ee094270301ebbaf6ca5e5f1855c40db8f4c858d11e94"
+    },
+    {
+      "path": "providers/primary_care_facilities.csv",
+      "upstream_path": "src/main/resources/providers/primary_care_facilities.csv",
+      "bytes": 6305120,
+      "sha256": "33b8ae245f574261303b41235089b1cbe70dc17b7c9279934ca8bae34d2d51a9"
+    },
+    {
+      "path": "providers/primary_care_facilities_children.csv",
+      "upstream_path": "src/main/resources/providers/primary_care_facilities_children.csv",
+      "bytes": 117430,
+      "sha256": "36b12944e15be4ea4a87e7da78651ee67ceaa843d73947618950ac0c4281906a"
+    },
+    {
+      "path": "providers/urgent_care_facilities.csv",
+      "upstream_path": "src/main/resources/providers/urgent_care_facilities.csv",
+      "bytes": 301178,
+      "sha256": "86e0f6d93b1536d1d45eca59fa379cd209eeddd5a562e17a67efc16b3d91918b"
+    },
+    {
+      "path": "providers/va_facilities.csv",
+      "upstream_path": "src/main/resources/providers/va_facilities.csv",
+      "bytes": 256346,
+      "sha256": "b5df7cae10e7bc61977694c836bf6f927c4aa3d111f9bb274ec6d97fe25bacd6"
     }
   ],
   "hash_note": "SHA-256 of content with line endings normalised to LF, so the manifest verifies identically on every platform."

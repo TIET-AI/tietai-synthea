@@ -27,6 +27,7 @@ clause 8).
 | `costs/` | 14 CSV | 236 KB | Encounter, medication, procedure, device costs |
 | `payers/` | 4 CSV | 9 KB | Insurance carriers, plans, eligibility |
 | `geography/` | 4 | 3.5 MB | ZIP codes, time zones, social determinants |
+| `providers/` | 8 CSV | 8.5 MB | Hospitals, primary care, urgent care and more |
 | `templates/` | 32 | ~200 KB | Clinical note and C-CDA templates |
 | `physiology/` | 7 | ~100 KB | SBML circulation models |
 | `keep_modules/` | 9 | small | Priority module sets |
@@ -115,21 +116,33 @@ SBML circulation models and generator configuration.
 
 ---
 
-## Not bundled
+## Fetched on demand
 
-Four upstream datasets are deliberately left out. Together they are **68 MB**,
-which would make the wheel roughly eighty times larger for data that nothing in
-this version reads.
+Four upstream datasets are large enough that bundling them would grow the wheel
+by an order of magnitude for data most runs never touch. They are **downloaded
+on request** rather than omitted:
 
-| Dataset | Size | Why not, and what it blocks |
+```bash
+synthea fetch-data --list      # what is available, and whether you have it
+synthea fetch-data             # everything
+synthea fetch-data facilities  # just one
+```
+
+| Dataset | Size | What it unlocks |
 |---|---|---|
-| `geography/demographics.csv` | 25.9 MB | Per-city census breakdowns. Ages currently come from a built-in national distribution instead. Needed for locale-accurate demographics ([#55](https://github.com/TIET-AI/tietai-synthea/issues/55)) |
-| `geography/veteran_demographics.csv` | 19.5 MB | Only the veterans modules use it |
-| `providers/` (15 CSV) | 19.4 MB | Real facility directory. Encounters are not yet linked to a provider ([#38](https://github.com/TIET-AI/tietai-synthea/issues/38)) |
-| `geography/fipscodes.csv` | 3.0 MB | County FIPS codes; nothing reads them |
+| `demographics` | 24.7 MB | Per-city census age, sex, race and income. Without it, ages come from a built-in national distribution |
+| `facilities` | 9.5 MB | Nursing, rehabilitation, home health, dialysis, hospice and surgical centres. Hospitals, primary care and urgent care are already bundled |
+| `veteran-demographics` | 18.6 MB | Used only by the veterans modules |
+| `fipscodes` | 2.8 MB | County FIPS codes |
 
-Bundling these properly means an on-demand download rather than a bigger wheel.
-That is tracked in [#37](https://github.com/TIET-AI/tietai-synthea/issues/37).
+Loaders look in the cache first and fall back to the bundled resources, so a run
+works without any of this and improves with it.
+
+**Nothing downloads implicitly.** Generating patients never reaches the network;
+only `fetch-data` does, and a test asserts it.
+
+The cache location follows `SYNTHEA_DATA_DIR`, then `XDG_DATA_HOME`, then the
+platform default, so a shared or read-only installation still works.
 
 ---
 

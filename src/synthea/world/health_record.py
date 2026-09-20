@@ -9,10 +9,13 @@ from typing import Dict, Any, Optional, List, Union, TYPE_CHECKING
 from datetime import datetime
 from dataclasses import dataclass, field
 from enum import Enum
+import logging
 import random
 import uuid
 
 from synthea.helpers.rng import derive_seed
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
@@ -75,6 +78,8 @@ class Encounter(Entry):
     """Represents a healthcare encounter."""
     encounter_class: EncounterClass = EncounterClass.AMBULATORY
     provider: Optional['Provider'] = None
+    #: The practitioner who saw the patient.
+    clinician: Optional[Any] = None
     reason: Optional[str] = None
     discharge_disposition: Optional[str] = None
     end_time: Optional[datetime] = None
@@ -449,9 +454,20 @@ class HealthRecord:
         
         self.encounters.append(encounter)
         self.current_encounter = encounter
-        
+
+        # Every encounter gets a facility and a clinician, with routine
+        # care going to the patient's usual practice. Done here because
+        # encounters are created from several different places.
+        if provider is None:
+            manager = getattr(self.person, 'providers', None)
+            if manager is not None:
+                try:
+                    manager.assign_to_encounter(self.person, encounter)
+                except Exception:  # pragma: no cover - never fail a run
+                    logger.warning('Could not assign a provider', exc_info=True)
+
         return encounter
-    
+
     def encounter_end(self, encounter: Encounter, time: datetime,
                      discharge_disposition: Optional[str] = None):
         """
