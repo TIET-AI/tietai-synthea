@@ -13,6 +13,203 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ---
 
+## [1.3.0] - 2026-09-20
+
+Records now say **where care happened, who gave it, who paid for it, and what
+the clinician wrote**. 1.2.0 gave patients an identity and a body; this gives
+the record around them.
+
+A generated bundle carries 23 resource types, against 9 the 1.2.0 exporter
+could emit.
+
+Five of the eight [M2 milestone](https://github.com/TIET-AI/tietai-synthea/milestone/2)
+tickets are closed (#37, #38, #39, #40, #43).
+
+Measured on a 10-patient run, ages 0–90:
+
+| | |
+|---|---|
+| resource types | 23 |
+| encounters | 416 |
+| clinical notes | 416, none empty |
+| claims / EOBs | 416 / 416 |
+| dangling references | 0 |
+| FHIR validation issues | 0 |
+| JSON nulls | 0 |
+
+### Added
+
+- **Real facilities and clinicians on every encounter** (#38, #37). Encounters
+  had no provider at all: the manager looked for facility data that was never
+  bundled, fell back to three hard-coded clinics, and no encounter ever
+  referenced them. A record could not answer the most basic question asked of
+  it — where did this happen, and who saw the patient.
+
+  50,000 real facilities now ship (8.5 MB; the wheel goes from 2.0 MB to
+  5.2 MB). A patient keeps one primary care practice and largely one clinician;
+  other encounters go to the nearest facility of the type they need, because a
+  random facility per encounter produces a history that looks nothing like a
+  real patient's. Bundles carry `Organization`, `Location`, `Practitioner` and
+  `PractitionerRole`.
+
+  The rest — nursing, rehabilitation, home health, dialysis, hospice, surgical
+  centres and 45 MB of census data — is fetched on request:
+
+  ```
+  synthea fetch-data --list
+  synthea fetch-data facilities
+  ```
+
+  Loaders read the cache first and fall back to what is bundled, so a run works
+  without the download and improves with it. **Nothing downloads implicitly**:
+  generating patients never reaches the network, and a test asserts it by
+  making `urlopen` raise during a run.
+
+- **Insurance, costs and claims** (#39). The payer and cost tables had shipped
+  since 1.2.0 and nothing read them: every patient was uninsured and every
+  encounter free. Patients now hold coverage across a lifetime, care is priced
+  from the bundled cost tables with a triangular draw over the published
+  low/mode/high, and the cost is split between payer and patient **at the time
+  of care** rather than at export. Bundles carry `Coverage`, `Claim`,
+  `ExplanationOfBenefit` and an `Organization` per insurer.
+
+  Eligibility is deliberately simplified — age and socioeconomic status, not
+  means testing — and says so at the point of use. Doing it properly is #55.
+  The resulting payer mix (private 75% / Medicaid 20% / Medicare 5%) is
+  asserted against bounds by test so the simplification cannot drift unnoticed.
+
+- **Clinical notes** (#43). `templates/notes/note.ftl` shipped from the Java
+  port and was never used, so records had no free text at all. It is ported to
+  Jinja2, and every finished encounter now has a note: chief complaint, history
+  of present illness, social history, allergies, medications, vitals, and an
+  assessment and plan.
+
+  Notes export as a `DocumentReference` (base64 `text/plain`, category
+  `clinical-note`, linked to its encounter) and, with `exporter.text.export`,
+  as one text file per patient. `generate.clinical_notes` defaults to **true**;
+  `exporter.text.export` used to raise `NotImplementedError` and now works.
+
+  `notes.set_post_processor` is the seam for an external service to rewrite
+  notes in a clinician's voice. Nothing in this package calls out to one.
+
+- **The rest of the record** (#40). The model had held allergies, care plans,
+  reports, devices and supplies since the port, and the exporter emitted none
+  of them. Adds `AllergyIntolerance`, `CarePlan`, `Goal`, `CareTeam`,
+  `DiagnosticReport`, `Device`, `SupplyDelivery` and a run-level `Provenance`.
+
+  Resource ordering is now part of the contract: a transaction bundle is
+  applied in order, so goals and the care team are emitted before the CarePlan
+  that references them, reports after their Observations, and the Provenance
+  last because it targets everything else.
+
+  Device UDIs are derived from the record's own id — stable across a run, built
+  from synthetic parts only, so they cannot collide with a registered UDI.
+  `Provenance` records that the data was generated and by what version, so a
+  consumer mixing synthetic and real data can tell them apart **from the record
+  itself** rather than from where the file came from.
+
+### Fixed
+
+- **Timed deaths were wrong by orders of magnitude, and cut lives short**
+  (#81). The `Death` state ignored the time unit and multiplied every quantity
+  by 365, so `{"quantity": 1, "unit": "days"}` scheduled death a year out; 29
+  of the 35 `Death` states carrying a delay use months, days, weeks or hours.
+  A scheduled death also killed the patient immediately, so a module saying
+  "expected lifespan 4 to 10 years" ended the simulation on the spot and the
+  years of care in between were never generated. Death is now scheduled and
+  carried out when it arrives, earliest schedule winning.
+
+- **Record lookups were quadratic** (#71). `has_active_condition`,
+  `has_active_medication`, `has_active_careplan` and `get_latest_observation`
+  each scanned the whole record, and the logic engine calls them on every
+  timestep for every module — so cost grew with the square of the record size,
+  and 1.2.0 had made records far larger. Entries are now indexed by code as
+  they start and removed as they end. 6 patients aged 40–85: **24.10 →
+  14.76 s/patient**.
+
+- **Lookup-table matching was 88% of the cost of generating a patient** (#71).
+  `LookupTableTransition` re-read every cell of every candidate row on every
+  lookup — stripping, splitting on `-`, calling `float` — for a few hundred
+  rows, once per module per timestep. Tables are compiled once now. A profiled
+  3-patient run went **221s → 29.8s**, a 7.4× speedup; the test suite dropped
+  from 305s to 200s.
+
+  Equivalence is not assumed: 30 differential tests check the compiled matcher
+  against an unoptimised reference implementation of the same rules, and a
+  sweep of all 70 shipped tables (2800 lookups, randomised patients) found zero
+  disagreements.
+
+- **`time` selectors threw for any patient born before 1970 on Windows.** The
+  matcher called `time.timestamp()`, which raises `OSError` for pre-epoch dates
+  there. The COVID-19 modules stratify by epoch-millisecond windows, so every
+  timestep of every such patient was throwing and being swallowed as a module
+  warning.
+
+- **Coverage churned about 65 times per lifetime.** The annual plan-switch
+  check ran on every timestep rather than once a year. Median is now 2 periods
+  per patient.
+
+- **`Claim` and `ExplanationOfBenefit` referenced a `Coverage` that was not in
+  the bundle** when a patient had priced care and no coverage history. A FHIR
+  server would reject the bundle, or accept it with a reference that silently
+  does not resolve. A self-pay `Coverage` is emitted for that case.
+
+- **`Provenance.recorded` used wall-clock time**, which broke export
+  reproducibility: two runs of the same seed produced different bundles. It
+  takes the latest time in the patient's own record.
+
+- **Jinja's `trim_blocks` silently joined list items** that ended in a block
+  tag, so every list in a note rendered as one run-on line.
+
+- **A patient on their first birthday was written up as eleven months old.**
+  `age_at` divides days by 365.25, giving 0.9993 years; the note uses calendar
+  arithmetic.
+
+### Changed
+
+- `generate.clinical_notes` now defaults to `true` (was `false`).
+- `exporter.text.export` is implemented; setting it no longer raises.
+- The wheel grows from 2.0 MB to 5.2 MB with the bundled facility data.
+- Bundles hold substantially more resources per patient, so exported files are
+  larger.
+
+### Known limitations
+
+- **`SupplyDelivery` never appears in a generated run.** No bundled module
+  reaches a `SupplyList` state — instrumented across 20 patients, entered zero
+  times — and its predecessor states are not reached either, which means whole
+  branches of eleven modules never execute. The builder is implemented and
+  tested directly. Tracked as #101; it belongs with the module-coverage work in
+  #44.
+- **`Goal` needs a population of roughly 20 to appear**, because few modules
+  attach goals to a care plan.
+- Insurance eligibility is age and socioeconomic status, not means testing
+  (#55). Adjudication takes a copay then coinsurance; it does not run a
+  deductible down over the plan year or stop at an out-of-pocket maximum.
+- **Mortality is still a fitted parametric hazard, not a published life table**
+  (#55), and **obesity is still under-represented** — mean adult BMI 27.2
+  against a real 29.7, 17% obese against 42% (#55, #56). Unchanged from 1.2.0.
+- No NDJSON bulk export (#41), no CSV exporter (#42), no population statistics
+  or module coverage report (#44).
+- 45 MB of census data is still not bundled; see `RESOURCES.md` and
+  `synthea fetch-data --list`.
+- Generation costs roughly 3.7 s per patient across all modules for ages 0–90,
+  including the expanded export (#71).
+
+### Upgrade notes
+
+- **Output changes again.** A seed does not reproduce a 1.2.0 population, and
+  bundles carry many more resources. Pin an exact version for any dataset you
+  need to regenerate.
+- **Notes are on by default.** Set `generate.clinical_notes = false` if you do
+  not want `DocumentReference` resources in your bundles.
+- No change to the `synthea` command's existing options or the `Generator` /
+  `GeneratorOptions` / `Person` API. `synthea fetch-data` is new.
+  `exporter.csv.export` and `exporter.ccda.export` still raise
+  `NotImplementedError` at start-up.
+
+---
+
 ## [1.2.0] - 2026-09-19
 
 Patients now have an identity, a body that grows and ages, routine care, and a
@@ -304,6 +501,7 @@ Carried forward and tracked; none is a regression. See the
 Initial packaged release: Python-native Synthea engine, 99 bundled modules,
 FHIR R4 and JSON export, published to PyPI as `tietai-synthea`.
 
+[1.3.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/TIET-AI/tietai-synthea/compare/v1.0.0...v1.0.1

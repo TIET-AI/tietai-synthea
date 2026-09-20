@@ -9,10 +9,13 @@ from typing import Dict, Any, Optional, List, Union, TYPE_CHECKING
 from datetime import datetime
 from dataclasses import dataclass, field
 from enum import Enum
+import logging
 import random
 import uuid
 
 from synthea.helpers.rng import derive_seed
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
@@ -54,6 +57,13 @@ class Entry:
     time: datetime
     codes: List[Code] = field(default_factory=list)
     name: Optional[str] = None
+    #: What this cost, and how it was split. Populated for the entry types a
+    #: claim is built from; None for everything else.
+    cost: Optional[float] = None
+    payer_cost: Optional[float] = None
+    patient_cost: Optional[float] = None
+    #: The coverage in force when it happened.
+    coverage: Optional[Any] = None
     
     def __post_init__(self):
         """Generate unique ID after initialization."""
@@ -75,6 +85,8 @@ class Encounter(Entry):
     """Represents a healthcare encounter."""
     encounter_class: EncounterClass = EncounterClass.AMBULATORY
     provider: Optional['Provider'] = None
+    #: The practitioner who saw the patient.
+    clinician: Optional[Any] = None
     reason: Optional[str] = None
     discharge_disposition: Optional[str] = None
     end_time: Optional[datetime] = None
@@ -279,6 +291,16 @@ class HealthRecord:
             derive_seed(getattr(person, 'seed', 0) or 0, 0, 'entry-id')
         )
 
+        # Entries indexed by code, so the logic engine's "is this condition
+        # active?" questions do not scan the whole record. They are asked on
+        # every timestep for every module, so a linear scan makes simulation
+        # cost grow with the square of the record size.
+        self._active_conditions: Dict[str, List[Condition]] = {}
+        self._active_medications: Dict[str, List[Medication]] = {}
+        self._active_careplans: Dict[str, List[CarePlan]] = {}
+        self._active_allergies: Dict[str, List[Allergy]] = {}
+        self._latest_observation: Dict[str, Observation] = {}
+
         # Entries indexed by the module state that created them, so an end
         # state can find what its matching start state produced
         # (``"module.State_Name" -> [entries]``).
@@ -306,6 +328,85 @@ class HealthRecord:
         # Death information
         self.death_date: Optional[datetime] = None
         self.death_cause: Optional[Code] = None
+
+    # ------------------------------------------------------------------
+    # Code indexes
+    #
+    # Every entry that can be "active" is indexed by each of its codes when it
+    # starts and removed when it ends, so the logic engine answers in constant
+    # time instead of scanning.
+    # ------------------------------------------------------------------
+
+    #: Entry class -> the index holding its active entries.
+    def _index_for(self, entry: Entry) -> Optional[Dict[str, List[Entry]]]:
+        return {
+            'Condition': self._active_conditions,
+            'Medication': self._active_medications,
+            'CarePlan': self._active_careplans,
+            'Allergy': self._active_allergies,
+        }.get(type(entry).__name__)
+
+    def _index_active(self, entry: Entry) -> None:
+        """Add an entry to its code index."""
+        index = self._index_for(entry)
+        if index is None:
+            return
+        for code in entry.codes:
+            index.setdefault(str(code.code), []).append(entry)
+
+    def _unindex_active(self, entry: Entry) -> None:
+        """Remove an ended entry from its code index."""
+        index = self._index_for(entry)
+        if index is None:
+            return
+        for code in entry.codes:
+            bucket = index.get(str(code.code))
+            if not bucket:
+                continue
+            try:
+                bucket.remove(entry)
+            except ValueError:
+                pass
+            if not bucket:
+                index.pop(str(code.code), None)
+
+    def reindex(self, entry: Entry) -> None:
+        """Re-index an entry whose codes were replaced after it was created.
+
+        States create an entry with one code and then assign the full list, so
+        the index has to be refreshed once that has happened.
+        """
+        index = self._index_for(entry)
+        if index is None or getattr(entry, 'end_time', None) is not None:
+            return
+        for bucket in list(index.values()):
+            while entry in bucket:
+                bucket.remove(entry)
+        self._index_active(entry)
+
+    def charge(self, entry: Entry, kind: str) -> Entry:
+        """Price an entry and split it between payer and patient.
+
+        Called as entries are created rather than at export time, so the split
+        reflects the coverage in force on the day rather than whatever the
+        patient has at the end of their life.
+        """
+        from synthea.world.costs import cost_of
+        from synthea.world.payer import PayerManager
+
+        person = self.person
+        try:
+            entry.cost = cost_of(kind, entry.codes, person)
+        except Exception:  # pragma: no cover - never fail a run over pricing
+            logger.warning("Could not price a %s entry", kind, exc_info=True)
+            return entry
+
+        coverage = person.attributes.get('current_coverage')
+        entry.coverage = coverage
+        entry.payer_cost, entry.patient_cost = PayerManager.split(
+            coverage, entry.cost)
+
+        return entry
 
     def new_id(self) -> str:
         """Return a fresh, reproducible UUID for a record entry."""
@@ -383,10 +484,22 @@ class HealthRecord:
         encounter.id = self.new_id()
         
         self.encounters.append(encounter)
+        self.charge(encounter, 'encounter')
         self.current_encounter = encounter
-        
+
+        # Every encounter gets a facility and a clinician, with routine
+        # care going to the patient's usual practice. Done here because
+        # encounters are created from several different places.
+        if provider is None:
+            manager = getattr(self.person, 'providers', None)
+            if manager is not None:
+                try:
+                    manager.assign_to_encounter(self.person, encounter)
+                except Exception:  # pragma: no cover - never fail a run
+                    logger.warning('Could not assign a provider', exc_info=True)
+
         return encounter
-    
+
     def encounter_end(self, encounter: Encounter, time: datetime,
                      discharge_disposition: Optional[str] = None):
         """
@@ -457,6 +570,7 @@ class HealthRecord:
             condition.codes = [code]
 
         self.conditions.append(condition)
+        self._index_active(condition)
 
         if attach:
             self.attach(condition, self.current_encounter)
@@ -472,6 +586,7 @@ class HealthRecord:
             time: End time
         """
         condition.end_time = time
+        self._unindex_active(condition)
     
     def allergy_start(self, time: datetime, code: Optional[Code] = None,
                       attach: bool = True) -> Allergy:
@@ -493,6 +608,7 @@ class HealthRecord:
             allergy.codes = [code]
 
         self.allergies.append(allergy)
+        self._index_active(allergy)
 
         if attach:
             self.attach(allergy, self.current_encounter)
@@ -508,6 +624,7 @@ class HealthRecord:
             time: End time
         """
         allergy.end_time = time
+        self._unindex_active(allergy)
     
     def medication_start(self, time: datetime, code: Optional[Code] = None,
                         encounter: Optional[Encounter] = None) -> Medication:
@@ -530,6 +647,8 @@ class HealthRecord:
         medication.encounter = encounter or self.current_encounter
         
         self.medications.append(medication)
+        self._index_active(medication)
+        self.charge(medication, 'medication')
         
         if medication.encounter:
             medication.encounter.medications.append(medication)
@@ -545,6 +664,7 @@ class HealthRecord:
             time: End time
         """
         medication.end_time = time
+        self._unindex_active(medication)
     
     def procedure(self, time: datetime, code: Optional[Code] = None,
                  encounter: Optional[Encounter] = None) -> Procedure:
@@ -567,6 +687,7 @@ class HealthRecord:
         procedure.encounter = encounter or self.current_encounter
         
         self.procedures.append(procedure)
+        self.charge(procedure, 'procedure')
         
         if procedure.encounter:
             procedure.encounter.procedures.append(procedure)
@@ -601,6 +722,8 @@ class HealthRecord:
         observation.encounter = encounter or self.current_encounter
         
         self.observations.append(observation)
+        for entry_code in observation.codes:
+            self._latest_observation[str(entry_code.code)] = observation
         
         if observation.encounter:
             observation.encounter.observations.append(observation)
@@ -626,6 +749,7 @@ class HealthRecord:
         careplan.encounter = self.current_encounter
         
         self.careplans.append(careplan)
+        self._index_active(careplan)
         
         if self.current_encounter:
             self.current_encounter.careplans.append(careplan)
@@ -641,6 +765,7 @@ class HealthRecord:
             time: End time
         """
         careplan.end_time = time
+        self._unindex_active(careplan)
     
     def device_start(self, time: datetime, code: Optional[Code] = None) -> Device:
         """
@@ -731,6 +856,7 @@ class HealthRecord:
             immunization.codes = [code]
 
         self.immunizations.append(immunization)
+        self.charge(immunization, 'immunization')
         self.attach(immunization, encounter or self.current_encounter)
 
         return immunization
@@ -772,69 +898,29 @@ class HealthRecord:
         self.person.attributes['death_date'] = time
     
     def get_latest_observation(self, code: Code) -> Optional[Observation]:
+        """The most recent observation with the given code.
+
+        Served from an index kept as observations are recorded; this used to
+        scan and sort every observation the patient has ever had.
         """
-        Get the most recent observation with the given code.
-        
-        Args:
-            code: The observation code to search for
-            
-        Returns:
-            The most recent matching observation, or None
-        """
-        matching = [
-            obs for obs in self.observations
-            if any(c.code == code.code for c in obs.codes)
-        ]
-        
-        if matching:
-            return max(matching, key=lambda o: o.time)
-        return None
-    
+        return self._latest_observation.get(str(code.code))
+
     def has_active_condition(self, code: Code) -> bool:
-        """
-        Check if a condition is currently active.
-        
-        Args:
-            code: The condition code to check
-            
-        Returns:
-            True if the condition is active
-        """
-        return any(
-            c.is_active and any(cc.code == code.code for cc in c.codes)
-            for c in self.conditions
-        )
-    
+        """Whether a condition with this code is currently active."""
+        return bool(self._active_conditions.get(str(code.code)))
+
     def has_active_medication(self, code: Code) -> bool:
-        """
-        Check if a medication is currently active.
-        
-        Args:
-            code: The medication code to check
-            
-        Returns:
-            True if the medication is active
-        """
-        return any(
-            m.is_active and any(mc.code == code.code for mc in m.codes)
-            for m in self.medications
-        )
-    
+        """Whether a medication with this code is currently active."""
+        return bool(self._active_medications.get(str(code.code)))
+
     def has_active_careplan(self, code: Code) -> bool:
-        """
-        Check if a care plan is currently active.
-        
-        Args:
-            code: The care plan code to check
-            
-        Returns:
-            True if the care plan is active
-        """
-        return any(
-            cp.is_active and any(cpc.code == code.code for cpc in cp.codes)
-            for cp in self.careplans
-        )
-    
+        """Whether a care plan with this code is currently active."""
+        return bool(self._active_careplans.get(str(code.code)))
+
+    def has_active_allergy(self, code: Code) -> bool:
+        """Whether an allergy with this code is currently active."""
+        return bool(self._active_allergies.get(str(code.code)))
+
     def finalize(self, time: datetime):
         """
         Finalize the health record.

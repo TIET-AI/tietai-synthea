@@ -80,8 +80,6 @@ class Exporter:
             'CSV', 'https://github.com/TIET-AI/tietai-synthea/issues/42'),
         'exporter.ccda.export': (
             'C-CDA', 'https://github.com/TIET-AI/tietai-synthea/issues/36'),
-        'exporter.text.export': (
-            'plain text', 'https://github.com/TIET-AI/tietai-synthea/issues/43'),
     }
 
     def _init_exporters(self):
@@ -94,6 +92,9 @@ class Exporter:
 
         if self.config.get_bool('exporter.json.export', False):
             self.patient_exporters.append(JSONExporter(self.config, self.base_dir))
+
+        if self.config.get_bool('exporter.text.export', False):
+            self.patient_exporters.append(TextExporter(self.config, self.base_dir))
 
     def _reject_unimplemented(self):
         """Fail immediately, and clearly, for an exporter that does not exist."""
@@ -184,4 +185,55 @@ class JSONExporter(PatientExporter):
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(patient_data, f, indent=2, default=str)
         
+        return str(filepath)
+
+class TextExporter(PatientExporter):
+    """Writes each patient's clinical notes as a plain text file.
+
+    One file per patient holding every encounter note in order, which is what
+    the upstream text export produces and what a reader wants when they are
+    eyeballing a record rather than loading it.
+    """
+
+    def __init__(self, config: 'Config', base_dir: Path):
+        self.config = config
+        self.base_dir = base_dir
+        self.output_dir = base_dir / 'notes'
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+
+    def export(self, person: 'Person', time: int) -> Optional[str]:
+        from synthea.world.notes import NOTE_ATTRIBUTE
+
+        record = getattr(person, 'record', None)
+        if record is None:
+            return None
+
+        sections = [
+            getattr(encounter, NOTE_ATTRIBUTE)
+            for encounter in record.encounters
+            if getattr(encounter, NOTE_ATTRIBUTE, None)
+        ]
+        if not sections:
+            # Notes are off, or this patient never finished an encounter.
+            return None
+
+        name = ' '.join(filter(None, [
+            person.attributes.get('first_name'),
+            person.attributes.get('last_name'),
+        ])) or person.id
+
+        body = f"{name}\n{'=' * len(name)}\n\n" + (
+            '\n\n--------------------------------------------------\n\n'
+            .join(sections))
+
+        if self.config.get_bool('exporter.use_uuid_filenames', False):
+            filename = f"{person.id}.txt"
+        else:
+            first_name = person.attributes.get('first_name', 'Unknown')
+            last_name = person.attributes.get('last_name', 'Person')
+            filename = f"{first_name}_{last_name}_{person.id[:8]}.txt"
+
+        filepath = self.output_dir / filename
+        filepath.write_text(body, encoding='utf-8')
+
         return str(filepath)

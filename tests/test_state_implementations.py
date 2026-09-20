@@ -366,3 +366,127 @@ class TestLogicConditions:
             Logic.test(condition, person, NOW)
 
         assert sum('Telepathy' in r.message for r in caplog.records) <= 1
+
+
+class TestDeathTiming:
+    """Death states must honour their time unit and not kill on the spot."""
+
+    def _die(self, module, person, **extra):
+        from synthea.engine.state import DeathState
+        definition = {'type': 'Death'}
+        definition.update(extra)
+        DeathState(module, 'Death', definition).run(person, NOW)
+
+    def test_the_time_unit_is_honoured(self, module, person):
+        """Regression: every quantity was read as years.
+
+        29 of the 35 delayed Death states in the bundled modules use months,
+        days, weeks or hours, so almost every timed death was wrong by orders
+        of magnitude.
+        """
+        self._die(module, person, exact={'quantity': 1, 'unit': 'days'})
+        assert person.attributes['death_time'] == NOW + timedelta(days=1)
+
+    def test_months_are_months_not_years(self, module, person):
+        self._die(module, person, exact={'quantity': 6, 'unit': 'months'})
+        scheduled = person.attributes['death_time']
+        assert timedelta(days=170) < scheduled - NOW < timedelta(days=190)
+
+    def test_a_scheduled_death_does_not_kill_immediately(self, module, person):
+        """Regression: 'expected lifespan 4 to 10 years' ended the simulation
+        on the spot, so the intervening years of care were never generated."""
+        self._die(module, person, range={'low': 4, 'high': 10, 'unit': 'years'})
+
+        assert person.alive
+        assert person.record.death_date is None
+        assert person.attributes['death_time'] > NOW + timedelta(days=3 * 365)
+
+    def test_an_immediate_death_is_recorded_now(self, module, person):
+        self._die(module, person, codes=[{'system': 'SNOMED-CT', 'code': '419620001',
+                                          'display': 'Death'}])
+        assert not person.alive
+        assert person.record.death_date == NOW
+
+    def test_the_earliest_scheduled_death_wins(self, module, person):
+        self._die(module, person, exact={'quantity': 10, 'unit': 'years'})
+        self._die(module, person, exact={'quantity': 1, 'unit': 'years'})
+
+        assert person.attributes['death_time'] == NOW + timedelta(days=365)
+
+    def test_a_distribution_is_honoured(self, module, person):
+        self._die(module, person,
+                  distribution={'kind': 'EXACT', 'parameters': {'value': 30}},
+                  unit='days')
+        assert person.attributes['death_time'] == NOW + timedelta(days=30)
+
+
+class TestRecordIndexes:
+    """The code indexes must agree with a full scan of the record."""
+
+    def test_an_active_condition_is_found(self, module, person):
+        from synthea.engine.state import ConditionOnsetState
+        from synthea.world.health_record import Code
+
+        code = Code(system='SNOMED-CT', code='44054006', display='Diabetes')
+        assert not person.record.has_active_condition(code)
+
+        ConditionOnsetState(module, 'Onset', {
+            'type': 'ConditionOnset',
+            'codes': [{'system': 'SNOMED-CT', 'code': '44054006',
+                       'display': 'Diabetes'}],
+        }).run(person, NOW)
+
+        assert person.record.has_active_condition(code)
+
+    def test_ending_a_condition_removes_it_from_the_index(self, module, person):
+        from synthea.engine.state import ConditionEndState, ConditionOnsetState
+        from synthea.world.health_record import Code
+
+        code = Code(system='SNOMED-CT', code='44054006', display='Diabetes')
+        ConditionOnsetState(module, 'Onset', {
+            'type': 'ConditionOnset',
+            'codes': [{'system': 'SNOMED-CT', 'code': '44054006',
+                       'display': 'Diabetes'}],
+        }).run(person, NOW)
+
+        ConditionEndState(module, 'End', {
+            'type': 'ConditionEnd', 'condition_onset': 'Onset',
+        }).run(person, NOW + timedelta(days=30))
+
+        assert not person.record.has_active_condition(code)
+
+    def test_the_index_agrees_with_a_full_scan(self, module, person):
+        """The index is only useful if it answers what scanning would."""
+        from synthea.engine.state import ConditionEndState, ConditionOnsetState
+        from synthea.world.health_record import Code
+
+        codes = ['44054006', '59621000', '195967001']
+        for index, value in enumerate(codes):
+            ConditionOnsetState(module, f'Onset{index}', {
+                'type': 'ConditionOnset',
+                'codes': [{'system': 'SNOMED-CT', 'code': value, 'display': value}],
+            }).run(person, NOW)
+
+        ConditionEndState(module, 'End', {
+            'type': 'ConditionEnd', 'condition_onset': 'Onset1',
+        }).run(person, NOW + timedelta(days=10))
+
+        for value in codes:
+            code = Code(system='SNOMED-CT', code=value, display=value)
+            scanned = any(
+                c.is_active and any(cc.code == value for cc in c.codes)
+                for c in person.record.conditions
+            )
+            assert person.record.has_active_condition(code) is scanned, value
+
+    def test_the_latest_observation_is_the_latest(self, module, person):
+        from synthea.world.health_record import Code
+
+        code = Code(system='http://loinc.org', code='2339-0', display='Glucose')
+        for offset, value in ((0, 90), (10, 110), (20, 130)):
+            person.record.observation(
+                NOW + timedelta(days=offset), code, value, 'mg/dL',
+                person.attributes['current_encounter'],
+            )
+
+        assert person.record.get_latest_observation(code).value == 130

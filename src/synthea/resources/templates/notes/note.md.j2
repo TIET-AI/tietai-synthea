@@ -1,0 +1,84 @@
+{{ date }}
+
+# Chief Complaint
+{% if complaints %}
+{% for complaint in complaints %}
+- {{ complaint }}
+{% endfor %}
+{% else %}
+No complaints.
+{% endif %}
+
+# History of Present Illness
+{{ history_of_present_illness }}
+
+# Social History
+{% for sentence in social_history %}
+{{ sentence }}
+{% endfor %}
+
+# Allergies
+{% if active_allergies %}
+{{ active_allergies | join(', ') }}
+{% else %}
+No Known Allergies.
+{% endif %}
+
+# Medications
+{% if active_medications %}
+{{ active_medications | join('; ') }}
+{% else %}
+No Active Medications.
+{% endif %}
+
+# Vital Signs
+{% if vitals %}
+{% for vital in vitals %}
+- {{ vital }}
+{% endfor %}
+{% else %}
+None recorded at this visit.
+{% endif %}
+
+# Assessment and Plan
+{% if conditions %}
+Patient is presenting with {{ conditions | join(', ') }}.
+{% endif %}
+{% if allergies %}
+Patient is presenting with {{ allergies | join(', ') }}.
+{% endif %}
+{% if not conditions and not allergies %}
+Routine visit; no new diagnoses recorded.
+{% endif %}
+
+## Plan
+{% if immunizations %}
+Patient was given the following immunizations: {{ immunizations | join(', ') }}.
+{% endif %}
+{% if procedures %}
+The following procedures were conducted:
+{% for procedure in procedures %}
+- {{ procedure }}
+{% endfor %}
+{% endif %}
+{% if reports %}
+The following lab reports were completed:
+{% for report in reports %}
+- {{ report }}
+{% endfor %}
+{% endif %}
+{% if medications %}
+The patient was prescribed the following medications:
+{% for medication in medications %}
+- {{ medication }}
+{% endfor %}
+{% endif %}
+{% if careplans %}
+The patient was placed on a careplan:
+{% for careplan in careplans %}
+- {{ careplan }}
+{% endfor %}
+{% endif %}
+{% if not immunizations and not procedures and not reports and not medications and not careplans %}
+No orders placed at this visit.
+{% endif %}

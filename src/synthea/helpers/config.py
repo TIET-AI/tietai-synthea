@@ -77,7 +77,7 @@ class Config:
             'generate.costs.default_immunization_cost': 136.0,
             
             # Clinical note settings
-            'generate.clinical_notes': False,
+            'generate.clinical_notes': True,
         }
     
     def load(self, filepath: Optional[str] = None):

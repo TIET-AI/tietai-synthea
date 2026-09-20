@@ -488,6 +488,7 @@ class ConditionOnsetState(State):
         )
         condition.name = self.name
         condition.codes = codes
+        person.record.reindex(condition)
         person.record.register_state_entry(self.module.name, self.name, condition)
 
         if not diagnose_now:
@@ -585,6 +586,7 @@ class MedicationOrderState(State):
         )
         medication.name = self.name
         medication.codes = codes
+        person.record.reindex(medication)
         person.record.register_state_entry(self.module.name, self.name, medication)
 
         # How the drug is taken, and for how long.
@@ -780,27 +782,51 @@ class SymptomState(State):
 
 
 class DeathState(State):
-    """A state that causes death."""
-    
+    """A state that causes death, now or at a scheduled time.
+
+    Two defects lived here.
+
+    The time unit was ignored: every quantity was multiplied by 365, so
+    ``{"quantity": 1, "unit": "days"}`` scheduled death a year out. 29 of the
+    35 Death states that carry a delay use months, days, weeks or hours, so
+    almost every timed death in the bundled modules was wrong by orders of
+    magnitude.
+
+    And a *scheduled* death killed the patient immediately. A module saying
+    "expected lifespan 4 to 10 years" ended the simulation on the spot, so the
+    intervening years of care were never generated.
+    """
+
     def run(self, person: 'Person', time: datetime) -> bool:
-        """Cause death."""
-        if 'exact' in self.definition:
-            death_time = time + timedelta(days=self.definition['exact']['quantity'] * 365)
-        elif 'range' in self.definition:
-            low = self.definition['range']['low']
-            high = self.definition['range']['high']
-            years = person.random.uniform(low, high)
-            death_time = time + timedelta(days=years * 365)
-        else:
-            death_time = time
-        
-        person.alive = False
-        person.attributes['death_time'] = death_time
-        
-        if 'codes' in self.definition and hasattr(person, 'record'):
-            person.record.death(death_time, self.definition['codes'][0])
+        """Kill the patient, or schedule it for later."""
+        delay = duration_for(self.definition, person)
+        cause = self.definition.get('codes', [None])[0]
+
+        if cause is not None:
+            person.attributes['cause_of_death'] = cause
+
+        if delay <= timedelta(0):
+            self._die_now(person, time, cause)
+            return True
+
+        # Scheduled: the patient keeps living, and being cared for, until then.
+        # The lifecycle module carries out the death when the time comes; if
+        # core modules are off, the generator's own death check does.
+        death_time = time + delay
+        existing = person.attributes.get('death_time')
+        if existing is None or death_time < existing:
+            person.attributes['death_time'] = death_time
 
         return True
+
+    @staticmethod
+    def _die_now(person: 'Person', time: datetime, cause) -> None:
+        person.alive = False
+        person.attributes['death_time'] = time
+        person.attributes['death_date'] = time
+        record = getattr(person, 'record', None)
+        if record is not None and record.death_date is None:
+            record.death(time, cause)
 
 
 class AllergyOnsetState(State):
@@ -826,6 +852,7 @@ class AllergyOnsetState(State):
         )
         allergy.name = self.name
         allergy.codes = codes
+        person.record.reindex(allergy)
         person.record.register_state_entry(self.module.name, self.name, allergy)
 
         if not diagnose_now:
@@ -864,6 +891,7 @@ class CarePlanStartState(State):
                 careplan = person.record.careplan_start(time, codes[0] if codes else None)
                 careplan.name = self.name
                 careplan.codes = codes
+                person.record.reindex(careplan)
                 person.record.register_state_entry(
                     self.module.name, self.name, careplan)
                 if reason:
