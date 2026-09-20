@@ -333,7 +333,7 @@ class Generator:
     
     def _init_exporter(self):
         """Initialize the exporter."""
-        self.exporter = Exporter(self.config)
+        self.exporter = Exporter(self.config, self.locale)
     
     def run(self):
         """Run the generator to create the specified population."""

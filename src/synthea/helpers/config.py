@@ -37,6 +37,7 @@ class Config:
             'exporter.fhir.transaction_bundle': True,
             'exporter.fhir.use_shr_extensions': False,
             'exporter.fhir.use_us_core_ig': True,
+            'exporter.fhir.profile': '',  # us-core | ips | ehds | none
             
             # CSV exporter
             'exporter.csv.export': False,

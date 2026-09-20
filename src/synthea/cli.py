@@ -54,6 +54,10 @@ from synthea.engine.module import Module
               help='Generate Graphviz visualization for specified module')
 @click.option('--locale', type=str, default=None,
               help='Locale pack to generate for (default: us)')
+@click.option('--profile', 'export_profile',
+              type=click.Choice(['us-core', 'ips', 'ehds', 'none']),
+              default=None,
+              help="FHIR export profile (default: the locale pack's)")
 @click.option('--list-locales', is_flag=True,
               help='List the installed locale packs')
 @click.option('--list-modules', is_flag=True,
@@ -63,8 +67,8 @@ from synthea.engine.module import Module
 @click.argument('location', nargs=-1)
 def main(population, seed, clinician_seed, gender, age, module, config, modules_dir,
          output_dir, reference_date, state, city, threads, log_level, only_dead,
-         keep_patients, overflow, graphviz, locale, list_locales, list_modules,
-         version, location):
+         keep_patients, overflow, graphviz, locale, export_profile,
+         list_locales, list_modules, version, location):
     """
     Synthea Patient Generator
     
@@ -152,6 +156,9 @@ def main(population, seed, clinician_seed, gender, age, module, config, modules_
     # Override with command-line settings
     if output_dir:
         config_obj.set('exporter.baseDirectory', output_dir)
+
+    if export_profile:
+        config_obj.set('exporter.fhir.profile', export_profile)
     
     if module:
         # Enable only specified modules
