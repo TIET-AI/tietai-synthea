@@ -411,3 +411,70 @@ class TestGeneratedPopulation:
 
         assert issues == []
         assert nulls == []
+
+
+class TestDeterminism:
+    """Regression: the export is reproducible from a seed, and must stay so."""
+
+    def test_provenance_does_not_use_wall_clock_time(self, exporter, person,
+                                                     encounter):
+        """`datetime.now()` made two runs of the same population differ."""
+        first = exporter.create_bundle(person)
+        second = exporter.create_bundle(person)
+
+        def recorded(bundle):
+            return next(e['resource']['recorded'] for e in bundle['entry']
+                        if e['resource']['resourceType'] == 'Provenance')
+
+        assert recorded(first) == recorded(second)
+
+    def test_provenance_is_dated_from_the_record(self, exporter, person,
+                                                 encounter):
+        resource = next(e['resource'] for e in exporter.create_bundle(person)
+                        ['entry'] if e['resource']['resourceType'] == 'Provenance')
+
+        assert resource['recorded'].startswith(VISIT.date().isoformat())
+
+
+class TestClaimCoverage:
+    """Regression: a Claim must reference a Coverage that is in the bundle."""
+
+    def test_priced_care_without_a_coverage_history_still_resolves(
+            self, exporter, person, encounter):
+        """The insurance module may never have run for this patient."""
+        encounter.cost = 120.0
+        encounter.payer_cost = 0.0
+        encounter.patient_cost = 120.0
+        encounter.coverage = None
+
+        bundle = exporter.create_bundle(person)
+        ids = {e['fullUrl'] for e in bundle['entry']}
+
+        claims = [e['resource'] for e in bundle['entry']
+                  if e['resource']['resourceType'] in
+                  ('Claim', 'ExplanationOfBenefit')]
+        assert claims, "a priced encounter should produce a claim"
+
+        for claim in claims:
+            reference = claim['insurance'][0]['coverage']['reference']
+            assert reference in ids, f"{claim['resourceType']} dangles"
+
+    def test_that_coverage_is_self_pay(self, exporter, person, encounter):
+        encounter.cost = 120.0
+        encounter.payer_cost = 0.0
+        encounter.patient_cost = 120.0
+        encounter.coverage = None
+
+        coverages = [e['resource'] for e in exporter.create_bundle(person)
+                     ['entry'] if e['resource']['resourceType'] == 'Coverage']
+
+        assert len(coverages) == 1
+        assert coverages[0]['payor'][0]['reference'] == f"urn:uuid:{person.uuid}"
+
+    def test_a_record_with_no_care_gets_no_invented_coverage(self, exporter,
+                                                             person):
+        """The self-pay period exists to anchor a claim, not for its own sake."""
+        coverages = [e for e in exporter.create_bundle(person)['entry']
+                     if e['resource']['resourceType'] == 'Coverage']
+
+        assert coverages == []
