@@ -296,11 +296,7 @@ class Logic:
         if not codes:
             return False
 
-        target = _to_code(codes[0])
-        return any(
-            allergy.is_active and any(c.code == target.code for c in allergy.codes)
-            for allergy in person.record.allergies
-        )
+        return person.record.has_active_allergy(_to_code(codes[0]))
 
     @staticmethod
     def _count_true(condition: Dict[str, Any], person: 'Person',
