@@ -7,6 +7,7 @@ This module exports patient data in FHIR R4 format.
 from pathlib import Path
 from typing import Dict, Any, Optional, List, TYPE_CHECKING
 from datetime import datetime, timezone
+import hashlib
 import json
 import uuid
 
@@ -69,6 +70,10 @@ US_CORE_PROFILES = {
     'Procedure': US_CORE + 'us-core-procedure',
     'MedicationRequest': US_CORE + 'us-core-medicationrequest',
     'Immunization': US_CORE + 'us-core-immunization',
+    'Organization': US_CORE + 'us-core-organization',
+    'Practitioner': US_CORE + 'us-core-practitioner',
+    'PractitionerRole': US_CORE + 'us-core-practitionerrole',
+    'Location': US_CORE + 'us-core-location',
 }
 
 US_CORE_VITAL_SIGNS = 'http://hl7.org/fhir/StructureDefinition/vitalsigns'
@@ -149,6 +154,43 @@ def quantity(value, unit) -> Dict[str, Any]:
         result['system'] = 'http://unitsofmeasure.org'
         result['code'] = ucum
     return result
+
+
+def _stable_uuid(namespace: str, value: str) -> str:
+    """A reproducible UUID for a thing that has an id but not a UUID.
+
+    Facilities and clinicians come from CSV rows, so their identifiers are not
+    UUIDs, and FHIR's `urn:uuid:` references need one. Deriving it from the id
+    keeps the same facility the same resource across every patient in a run.
+    """
+    digest = hashlib.sha256(f"{namespace}:{value}".encode('utf-8')).digest()
+    return str(uuid.UUID(bytes=digest[:16], version=4))
+
+
+def _organization_uuid(provider) -> str:
+    return _stable_uuid('organization', provider.id)
+
+
+def _location_uuid(provider) -> str:
+    return _stable_uuid('location', provider.id)
+
+
+def _practitioner_uuid(clinician) -> str:
+    return _stable_uuid('practitioner', clinician.id)
+
+
+def _practitioner_role_uuid(clinician) -> str:
+    return _stable_uuid('practitioner-role', clinician.id)
+
+
+def _facility_address(provider) -> Dict[str, Any]:
+    return {
+        "line": [provider.address] if provider.address else None,
+        "city": provider.city or None,
+        "state": provider.state or None,
+        "postalCode": provider.zip_code or None,
+        "country": "US",
+    }
 
 
 class FHIRExporter(PatientExporter):
@@ -273,6 +315,8 @@ class FHIRExporter(PatientExporter):
         # Add imaging studies
         for study in getattr(person.record, 'imaging_studies', []):
             bundle['entry'].append(self.create_imaging_study_entry(study, person))
+
+        self._add_care_team(bundle, person)
 
         return bundle
     
@@ -423,6 +467,28 @@ class FHIRExporter(PatientExporter):
                 }
             ]
         
+        provider = getattr(encounter, 'provider', None)
+        if provider is not None:
+            encounter_resource['serviceProvider'] = {
+                'reference': f'urn:uuid:{_organization_uuid(provider)}'
+            }
+            encounter_resource['location'] = [{'location': {
+                'reference': f'urn:uuid:{_location_uuid(provider)}'
+            }}]
+
+        clinician = getattr(encounter, 'clinician', None)
+        if clinician is not None:
+            encounter_resource['participant'] = [{
+                'type': [{'coding': [{
+                    'system': 'http://terminology.hl7.org/CodeSystem/v3-ParticipationType',
+                    'code': 'PPRF',
+                    'display': 'primary performer',
+                }]}],
+                'individual': {
+                    'reference': f'urn:uuid:{_practitioner_uuid(clinician)}'
+                },
+            }]
+
         return self._entry("Encounter", encounter.id, encounter_resource)
     
     def create_condition_entry(self, condition: 'Condition', person: 'Person') -> Dict[str, Any]:
@@ -828,6 +894,114 @@ class FHIRExporter(PatientExporter):
             }
 
         return self._entry("Immunization", immunization.id, resource)
+
+    def _add_care_team(self, bundle: Dict[str, Any], person: 'Person') -> None:
+        """Add every facility and practitioner the record references, once.
+
+        A bundle that references an Organization must contain it, or the
+        transaction cannot be loaded.
+        """
+        providers: Dict[str, Any] = {}
+        clinicians: Dict[str, Any] = {}
+
+        for encounter in person.record.encounters:
+            provider = getattr(encounter, 'provider', None)
+            if provider is not None:
+                providers.setdefault(provider.id, provider)
+            clinician = getattr(encounter, 'clinician', None)
+            if clinician is not None:
+                clinicians.setdefault(clinician.id, clinician)
+                if clinician.provider is not None:
+                    providers.setdefault(clinician.provider.id, clinician.provider)
+
+        for provider in providers.values():
+            bundle["entry"].append(self.create_organization_entry(provider))
+            bundle["entry"].append(self.create_location_entry(provider))
+
+        for clinician in clinicians.values():
+            bundle["entry"].append(self.create_practitioner_entry(clinician))
+            bundle["entry"].append(self.create_practitioner_role_entry(clinician))
+
+    def create_organization_entry(self, provider) -> Dict[str, Any]:
+        """Create a FHIR Organization resource entry for a facility."""
+        resource: Dict[str, Any] = {
+            "resourceType": "Organization",
+            "id": _organization_uuid(provider),
+            "active": True,
+            "identifier": [{
+                "system": "https://github.com/synthetichealth/synthea",
+                "value": provider.id,
+            }],
+            "name": provider.name,
+            "type": [{"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+                "code": "prov",
+                "display": "Healthcare Provider",
+            }]}],
+            "address": [_facility_address(provider)],
+        }
+        if provider.phone:
+            resource["telecom"] = [{"system": "phone", "value": provider.phone}]
+
+        return self._entry("Organization", resource["id"], resource)
+
+    def create_location_entry(self, provider) -> Dict[str, Any]:
+        """Create a FHIR Location resource entry for a facility."""
+        resource: Dict[str, Any] = {
+            "resourceType": "Location",
+            "id": _location_uuid(provider),
+            "status": "active",
+            "name": provider.name,
+            "address": _facility_address(provider),
+            "managingOrganization": {
+                "reference": f"urn:uuid:{_organization_uuid(provider)}"
+            },
+        }
+
+        latitude, longitude = provider.coordinates
+        if latitude or longitude:
+            resource["position"] = {"latitude": latitude, "longitude": longitude}
+
+        return self._entry("Location", resource["id"], resource)
+
+    def create_practitioner_entry(self, clinician) -> Dict[str, Any]:
+        """Create a FHIR Practitioner resource entry."""
+        resource: Dict[str, Any] = {
+            "resourceType": "Practitioner",
+            "id": _practitioner_uuid(clinician),
+            "active": True,
+            "name": [{
+                "use": "official",
+                "family": clinician.last_name,
+                "given": [clinician.first_name],
+                "prefix": ["Dr."],
+            }],
+        }
+        if clinician.npi:
+            resource["identifier"] = [{
+                "system": "http://hl7.org/fhir/sid/us-npi",
+                "value": clinician.npi,
+            }]
+
+        return self._entry("Practitioner", resource["id"], resource)
+
+    def create_practitioner_role_entry(self, clinician) -> Dict[str, Any]:
+        """Link a practitioner to the facility they work at."""
+        resource: Dict[str, Any] = {
+            "resourceType": "PractitionerRole",
+            "id": _practitioner_role_uuid(clinician),
+            "active": True,
+            "practitioner": {
+                "reference": f"urn:uuid:{_practitioner_uuid(clinician)}"
+            },
+            "specialty": [{"text": clinician.specialty}],
+        }
+        if clinician.provider is not None:
+            resource["organization"] = {
+                "reference": f"urn:uuid:{_organization_uuid(clinician.provider)}"
+            }
+
+        return self._entry("PractitionerRole", resource["id"], resource)
 
     def _map_race_code(self, race: str) -> str:
         """Map race to OMB category code."""

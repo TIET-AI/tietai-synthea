@@ -309,6 +309,10 @@ class Generator:
         person_seed = resolve_seed(self.options.seed, index, 'person')
 
         person = Person(person_seed)
+        # States and core modules create encounters in several places, so
+        # the provider manager travels with the person rather than being
+        # threaded through every call site.
+        person.providers = self.provider_manager
         
         # Set demographics
         self._set_demographics(person)

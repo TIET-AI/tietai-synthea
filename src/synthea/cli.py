@@ -280,5 +280,102 @@ def generate_module_dot(module: Module) -> str:
     return '\n'.join(lines)
 
 
+@click.command('fetch-data')
+@click.argument('datasets', nargs=-1)
+@click.option('--list', 'show_list', is_flag=True,
+              help='Show the optional datasets and whether they are present')
+@click.option('--revision', default='master',
+              help='Upstream revision to fetch from')
+def fetch_data(datasets, show_list, revision):
+    """Download optional reference data.
+
+    Four upstream datasets are too large to bundle for data most runs never
+    touch. They are downloaded into a local cache on request; loaders look
+    there first and fall back to the bundled resources, so a run works without
+    them and improves with them.
+
+    Nothing is downloaded implicitly: generating patients never reaches the
+    network.
+
+    \b
+    Examples:
+        synthea fetch-data --list
+        synthea fetch-data
+        synthea fetch-data demographics facilities
+    """
+    from synthea.helpers import optional_data
+
+    if show_list:
+        click.echo(f"Cache: {optional_data.cache_dir()}")
+        click.echo("")
+        for name, available, size, purpose in optional_data.status():
+            mark = "present" if available else "not fetched"
+            click.echo(f"  {name:22s} {size/1024/1024:6.1f} MB  [{mark}]")
+            for line in _wrap(purpose, 74):
+                click.echo(f"      {line}")
+            click.echo("")
+        return
+
+    try:
+        written = optional_data.fetch(
+            datasets or None, revision=revision, progress=click.echo)
+    except ValueError as error:
+        click.echo(f"Error: {error}", err=True)
+        sys.exit(1)
+    except Exception as error:
+        click.echo(f"Error: download failed: {error}", err=True)
+        sys.exit(1)
+
+    if written:
+        click.echo(f"\nFetched {len(written)} file(s) into "
+                   f"{optional_data.cache_dir()}")
+    else:
+        click.echo("Everything requested is already present.")
+
+
+def _wrap(text: str, width: int):
+    """Wrap text to a width, for the dataset listing."""
+    import textwrap
+    return textwrap.wrap(text, width)
+
+
+class _GenerateByDefault(click.Group):
+    """A group whose default command is generation.
+
+    `synthea` has always been a single command: `synthea -p 100`,
+    `synthea --version`, `synthea Massachusetts Boston`. Turning it into a
+    plain group would break every one of those, so anything that is not a
+    known sub-command is handed to the generator instead.
+    """
+
+    def parse_args(self, ctx, args):
+        if args and args[0] not in self.commands:
+            args = ['generate'] + list(args)
+        elif not args:
+            args = ['generate']
+        return super().parse_args(ctx, args)
+
+    def format_help(self, ctx, formatter):
+        # Show the generator's own options, since that is what most people
+        # invoke, then list the sub-commands.
+        main.format_help(ctx, formatter)
+        formatter.write_paragraph()
+        with formatter.section('Commands'):
+            formatter.write_dl([
+                (name, (command.get_short_help_str() or ''))
+                for name, command in sorted(self.commands.items())
+                if name != 'generate'
+            ])
+
+
+@click.group(cls=_GenerateByDefault)
+def cli():
+    """Synthea Patient Generator."""
+
+
+cli.add_command(main, name='generate')
+cli.add_command(fetch_data)
+
+
 if __name__ == '__main__':
-    main()
+    cli()
