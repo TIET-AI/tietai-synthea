@@ -320,10 +320,20 @@ class TestReferencePackDeterminism:
     """
 
     #: sha256 of each patient's bundle, seed 42, ages 20-70, 2020-01-01.
+    #:
+    #: Moved once, in 1.5.0, when lab observations gained referenceRange and
+    #: interpretation and the red-cell indices started being derived rather
+    #: than drawn independently (#113). The change was checked before these
+    #: were updated: same 1360 resources with the same UUIDs, only
+    #: Observations altered - 298 gained the two new elements and 15 values
+    #: were recomputed. Nothing else in the record moved.
+    #:
+    #: Update these only when generated output is *meant* to change, and say
+    #: in the changelog that it did.
     EXPECTED = [
-        '4d1029db05b53bfc3b8e42a284d974be5764cb4fd28ab0793436a2b2cd7eb5c7',
-        '640c4ae5204107ab6b73e8ab3178624411737b8f407695777420aa0d1f2003b6',
-        'ae2e5bd929e6dfa4b5a5b1a0b36092b0f8cf74e370d25668be0fe4ac20a09fc1',
+        'e6867cde12b3e1aae5ab5749b48b162f68909394d901a946b67f4d5e1dafec86',
+        '097a468012f4cccccc0989ad7198777c461e1b94a353d200d81c346b8b78b349',
+        'c0758a3d7e0cfdebfe7078a724b4a0df9a82848b7091b848a9aeb85f10d5d056',
     ]
 
     def test_the_us_pack_reproduces_the_pre_refactor_export(self, tmp_path):

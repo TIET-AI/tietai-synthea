@@ -1094,6 +1094,28 @@ class FHIRExporter(PatientExporter):
             "effectiveDateTime": fhir_datetime(observation.time)
         }
         
+        # A value is hard to use without the interval it is read against, and
+        # without a high/low flag (#113). Both are standard R4 elements and
+        # near-universal on a real report.
+        interval = getattr(observation, 'reference_range', None)
+        if interval and (interval.get('low') is not None
+                         or interval.get('high') is not None):
+            entry: Dict[str, Any] = {}
+            if interval.get('low') is not None:
+                entry["low"] = quantity(interval['low'], interval.get('unit'))
+            if interval.get('high') is not None:
+                entry["high"] = quantity(interval['high'], interval.get('unit'))
+            observation_resource["referenceRange"] = [entry]
+
+        flag = getattr(observation, 'interpretation', None)
+        if flag:
+            code, display = flag
+            observation_resource["interpretation"] = [{"coding": [{
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": code,
+                "display": display,
+            }]}]
+
         # Panels (blood pressure) carry their parts as components rather than
         # a single value.
         components = getattr(observation, 'components', None)
