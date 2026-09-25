@@ -14,6 +14,7 @@ import random
 import uuid
 
 from synthea.helpers.rng import derive_seed
+from synthea.world import labs
 
 logger = logging.getLogger(__name__)
 
@@ -193,6 +194,11 @@ class Observation(Entry):
     #: Observation with systolic and diastolic components rather than two
     #: separate Observations, which is what US Core expects.
     components: List[Any] = field(default_factory=list)
+    #: Reference interval this value should be read against, as
+    #: ``{low, high, unit}``. Absent when no interval is known for the code.
+    reference_range: Optional[Dict[str, Any]] = None
+    #: ``(code, display)`` from v3-ObservationInterpretation: H, L or N.
+    interpretation: Optional[Any] = None
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
@@ -512,6 +518,14 @@ class HealthRecord:
         """
         encounter.end_time = time
         encounter.discharge_disposition = discharge_disposition
+
+        # Panel members are defined in terms of each other, and the modules
+        # draw each independently, so they disagree until reconciled. Done at
+        # encounter end because the panel is only complete now (#113).
+        if encounter.observations:
+            labs.make_coherent(encounter.observations)
+            for observation in encounter.observations:
+                labs.annotate(observation, self.person)
         
         if self.current_encounter == encounter:
             self.current_encounter = None
@@ -721,6 +735,10 @@ class HealthRecord:
         
         observation.encounter = encounter or self.current_encounter
         
+        # A value without the range it is compared against, and without a
+        # high/low flag, is hard to use downstream (#113).
+        labs.annotate(observation, self.person)
+
         self.observations.append(observation)
         for entry_code in observation.codes:
             self._latest_observation[str(entry_code.code)] = observation
