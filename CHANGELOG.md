@@ -13,6 +13,114 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ---
 
+## [1.4.1] - 2026-09-25
+
+Lab results now carry the interval they are read against, and the members of a
+panel agree with each other. Both were reported from outside the project
+([#113](https://github.com/TIET-AI/tietai-synthea/issues/113)) with
+measurements, and both reproduced exactly.
+
+**Generated output changes**, which a patch release is allowed to do: semantic
+versioning here covers the public API — the `synthea` package, the command and
+`synthea.properties` — and none of those changed. Generated data is explicitly
+outside the version contract, as the header of this file says. A 1.4.0 seed
+will not reproduce; the change is bounded and measured, see the upgrade notes.
+
+### Added
+
+- **Reference ranges on lab observations.** 0 of 2,529 Observations in a
+  seeded run carried a `referenceRange`, and 0 carried an `interpretation`.
+  Both are standard FHIR R4 elements and near-universal on a real report, so
+  anything rendering a report — or scoring whether a system spotted an abnormal
+  result — had to invent the interval, and its guess would not match what the
+  module author had in mind when they picked the value.
+
+  Intervals ship as `reference_ranges.json`, keyed by LOINC, with sex and age
+  variants where those are clinically standard. Codes not in the file get
+  nothing, which is the previous behaviour.
+
+  These are **conventional adult intervals**. Real ranges are established per
+  laboratory, per analyser and per method; nothing here is authoritative for
+  interpreting a real result.
+
+- **`interpretation` flags**, derived from the range rather than stored
+  separately, so the flag and the interval printed beside it cannot disagree.
+  Only `H`, `L` and `N` — never `HH`/`LL`, because a critical threshold is not
+  the top of a reference interval and inventing one would put a panic flag on a
+  result nobody decided was panic-worthy.
+
+### Fixed
+
+- **Red-cell indices contradicted each other.** MCV, MCH and MCHC are
+  *definitions*, not independent measurements:
+
+  ```
+  MCV = HCT x 10 / RBC    MCH = HGB x 10 / RBC    MCHC = HGB x 100 / HCT
+  ```
+
+  The modules draw each from its own uniform range, so they disagreed: **6 of 8
+  complete red-cell panels** had an MCV more than 3 fL from what their own HCT
+  and RBC imply, and **7 of 8** had an MCHC more than 1.5 g/dL out. Inherited
+  from upstream Java Synthea, which shares the module JSON, rather than a port
+  defect.
+
+  Fixed by deriving rather than editing 256 module files. Independent: HGB,
+  MCV, MCHC. Derived: HCT, RBC, MCH. HGB and MCV are the two a module author
+  actually reaches for — severity and classification of an anaemia — so
+  preserving them keeps the clinical picture the module drew.
+
+- **Globulin now equals total protein minus albumin**, and the albumin/globulin
+  ratio follows from both.
+
+- **A white-cell differential now sums to 100%**, scaled rather than clamped so
+  a neutrophilia still reads as one afterwards.
+
+- **A patient with no recorded gender lost the reference range entirely** for
+  haemoglobin, haematocrit, red cell count and creatinine — the four sex-split
+  codes. They now fall back to the union of both intervals, which cannot flag a
+  value abnormal that either sex's interval would call normal.
+
+### Measured, on the reporter's seed
+
+| | 1.4.0 | 1.4.1 |
+|---|---|---|
+| with `referenceRange` | 0 / 2529 | 1218 |
+| with `interpretation` | 0 / 2529 | 1218 |
+| MCV inconsistent (>3 fL) | 6 / 8 | **0 / 8** |
+| MCHC inconsistent (>1.5 g/dL) | 7 / 8 | **0 / 8** |
+| flag/range disagreements | — | 0 of 1815 |
+
+### Known limitations
+
+Unchanged from 1.4.0 except where noted.
+
+- **Protein fractions and the white-cell differential do not fire** in a small
+  generated population. Both are correct and directly tested, but not exercised
+  end to end by a generated run.
+- Reference intervals cover the common CBC, metabolic, lipid and vital-sign
+  codes. Of the 174 distinct LOINC observation codes the modules use, the less
+  common ones have no interval and so carry no flag.
+- There is still **no clinical plausibility validator** as a CLI command or CI
+  gate ([#49](https://github.com/TIET-AI/tietai-synthea/issues/49)). A checker
+  of that shape would have caught this class of problem before a user had to.
+- The United States is still the only locale pack; `SupplyDelivery` still never
+  appears ([#101](https://github.com/TIET-AI/tietai-synthea/issues/101)); the
+  population is still plausible rather than calibrated (#55, #56).
+
+### Upgrade notes
+
+- **Output changes.** A 1.4.0 seed does not reproduce. The change is bounded
+  and was measured before it was accepted: same resource count, same UUIDs,
+  only Observations altered — 298 gained the two new elements and 15 values
+  were recomputed per three patients. Nothing else in the record moved.
+- If you are storing lab values and comparing them across versions, the
+  red-cell indices, globulin and differential percentages will differ. They
+  differ because they were wrong.
+- No change to the `synthea` command, its options, or the `Generator` /
+  `GeneratorOptions` / `Person` API.
+
+---
+
 ## [1.4.0] - 2026-09-20
 
 The generator stops being American by construction. Localisation is a pluggable
@@ -635,6 +743,7 @@ Carried forward and tracked; none is a regression. See the
 Initial packaged release: Python-native Synthea engine, 99 bundled modules,
 FHIR R4 and JSON export, published to PyPI as `tietai-synthea`.
 
+[1.4.1]: https://github.com/TIET-AI/tietai-synthea/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/TIET-AI/tietai-synthea/compare/v1.1.0...v1.2.0
