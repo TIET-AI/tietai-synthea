@@ -1,0 +1,96 @@
+{
+  "_comment": [
+    "Reference intervals for common laboratory and vital-sign observations,",
+    "keyed by LOINC code.",
+    "",
+    "These are CONVENTIONAL ADULT INTERVALS. Real reference ranges are",
+    "established per laboratory, per analyser and per method, and a real report",
+    "carries the issuing laboratory's own. Nothing here is authoritative for",
+    "interpreting a real result.",
+    "",
+    "They exist so a generated Observation carries the range its value was meant",
+    "to be compared against — which is what a downstream consumer needs in order",
+    "to render a report, or to score whether a system spotted an abnormal result,",
+    "without having to invent a range whose guess would not match the one the",
+    "module author had in mind.",
+    "",
+    "A code maps to a list of variants, tried in order; the first whose selectors",
+    "match the patient wins. Selectors: 'sex' (M/F) and 'min_age' in years. A",
+    "variant with no selectors matches anyone, so it belongs last.",
+    "",
+    "Codes absent from this file get no referenceRange and no interpretation,",
+    "which is the previous behaviour."
+  ],
+
+  "ranges": {
+    "718-7": [
+      {"sex": "M", "low": 13.5, "high": 17.5, "unit": "g/dL"},
+      {"sex": "F", "low": 12.0, "high": 15.5, "unit": "g/dL"}
+    ],
+    "4544-3": [
+      {"sex": "M", "low": 41.0, "high": 50.0, "unit": "%"},
+      {"sex": "F", "low": 36.0, "high": 44.0, "unit": "%"}
+    ],
+    "789-8": [
+      {"sex": "M", "low": 4.5, "high": 5.9, "unit": "10*6/uL"},
+      {"sex": "F", "low": 4.1, "high": 5.1, "unit": "10*6/uL"}
+    ],
+    "2160-0": [
+      {"sex": "M", "low": 0.74, "high": 1.35, "unit": "mg/dL"},
+      {"sex": "F", "low": 0.59, "high": 1.04, "unit": "mg/dL"}
+    ],
+
+    "787-2": [{"low": 80.0, "high": 100.0, "unit": "fL"}],
+    "785-6": [{"low": 27.0, "high": 33.0, "unit": "pg"}],
+    "786-4": [{"low": 32.0, "high": 36.0, "unit": "g/dL"}],
+    "788-0": [{"low": 11.5, "high": 14.5, "unit": "%"}],
+    "6690-2": [{"low": 4.5, "high": 11.0, "unit": "10*3/uL"}],
+    "777-3": [{"low": 150.0, "high": 400.0, "unit": "10*3/uL"}],
+    "32207-3": [{"low": 7.5, "high": 11.5, "unit": "fL"}],
+
+    "770-8": [{"low": 40.0, "high": 70.0, "unit": "%"}],
+    "736-9": [{"low": 20.0, "high": 45.0, "unit": "%"}],
+    "5905-5": [{"low": 2.0, "high": 10.0, "unit": "%"}],
+    "713-8": [{"low": 0.0, "high": 6.0, "unit": "%"}],
+    "706-2": [{"low": 0.0, "high": 2.0, "unit": "%"}],
+
+    "2345-7": [{"low": 70.0, "high": 99.0, "unit": "mg/dL"}],
+    "3094-0": [{"low": 7.0, "high": 20.0, "unit": "mg/dL"}],
+    "2951-2": [{"low": 135.0, "high": 145.0, "unit": "mmol/L"}],
+    "2823-3": [{"low": 3.5, "high": 5.1, "unit": "mmol/L"}],
+    "2075-0": [{"low": 98.0, "high": 107.0, "unit": "mmol/L"}],
+    "1963-8": [{"low": 22.0, "high": 29.0, "unit": "mmol/L"}],
+    "17861-6": [{"low": 8.6, "high": 10.3, "unit": "mg/dL"}],
+    "19123-9": [{"low": 1.7, "high": 2.2, "unit": "mg/dL"}],
+    "2777-1": [{"low": 2.5, "high": 4.5, "unit": "mg/dL"}],
+    "33914-3": [{"low": 60.0, "high": 200.0, "unit": "mL/min/{1.73_m2}"}],
+
+    "2885-2": [{"low": 6.0, "high": 8.3, "unit": "g/dL"}],
+    "1751-7": [{"low": 3.5, "high": 5.0, "unit": "g/dL"}],
+    "10834-0": [{"low": 2.0, "high": 3.5, "unit": "g/dL"}],
+    "1759-0": [{"low": 1.1, "high": 2.5, "unit": "{ratio}"}],
+    "1975-2": [{"low": 0.2, "high": 1.2, "unit": "mg/dL"}],
+    "6768-6": [{"low": 40.0, "high": 129.0, "unit": "U/L"}],
+    "1742-6": [{"low": 7.0, "high": 56.0, "unit": "U/L"}],
+    "1920-8": [{"low": 10.0, "high": 40.0, "unit": "U/L"}],
+
+    "2093-3": [{"low": 0.0, "high": 200.0, "unit": "mg/dL"}],
+    "2571-8": [{"low": 0.0, "high": 150.0, "unit": "mg/dL"}],
+    "18262-6": [{"low": 0.0, "high": 100.0, "unit": "mg/dL"}],
+    "2085-9": [{"low": 40.0, "high": 200.0, "unit": "mg/dL"}],
+
+    "4548-4": [{"low": 4.0, "high": 5.6, "unit": "%"}],
+    "3016-3": [{"low": 0.45, "high": 4.5, "unit": "u[IU]/mL"}],
+
+    "8867-4": [{"low": 60.0, "high": 100.0, "unit": "/min"}],
+    "9279-1": [{"low": 12.0, "high": 20.0, "unit": "/min"}],
+    "8310-5": [{"low": 36.1, "high": 37.8, "unit": "Cel"}],
+    "8331-1": [{"low": 36.1, "high": 37.8, "unit": "Cel"}],
+    "2708-6": [{"low": 95.0, "high": 100.0, "unit": "%"}],
+    "59408-5": [{"low": 95.0, "high": 100.0, "unit": "%"}],
+
+    "8480-6": [{"min_age": 18, "low": 90.0, "high": 120.0, "unit": "mm[Hg]"}],
+    "8462-4": [{"min_age": 18, "low": 60.0, "high": 80.0, "unit": "mm[Hg]"}],
+    "39156-5": [{"min_age": 20, "low": 18.5, "high": 24.9, "unit": "kg/m2"}]
+  }
+}
