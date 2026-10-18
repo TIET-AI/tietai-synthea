@@ -1,0 +1,161 @@
+{
+  "document_sha256": "dcb3cce8e1d03f4a09cdd805bb85c0846811d8b7826e36cd383826f59601785e",
+  "entities": [
+    {
+      "accession": "AP-2018-001506",
+      "assertion": "present",
+      "char_end": 364,
+      "char_start": 294,
+      "collection_date": "2018-04-15",
+      "entity_id": "ent_0001",
+      "kind": "specimen",
+      "quote": "Muestra AP-2018-001506: Prostatectomía radical, recibida el 2018-04-15",
+      "quote_sha256": "b633517fba4bf43a427ac7ee86c6e2ba2e0d331338225902681cb64625d820bf",
+      "type_text": "prostatectomía radical"
+    },
+    {
+      "assertion": "present",
+      "char_end": 430,
+      "char_start": 365,
+      "entity_id": "ent_0002",
+      "kind": "procedure",
+      "quote": "Procedimiento: Prostatectomía radical con linfadenectomía pélvica",
+      "quote_sha256": "e6eebb8d34136b360b5d500949126730e8805aacad5b35aa4e71bf90499b6222",
+      "text": "Prostatectomía radical con linfadenectomía pélvica"
+    },
+    {
+      "assertion": "present",
+      "char_end": 471,
+      "char_start": 431,
+      "code": "C61.9",
+      "entity_id": "ent_0003",
+      "kind": "tumour_site",
+      "quote": "Localización del tumor: Próstata (C61.9)",
+      "quote_sha256": "d633d97fe9160e13a9cc3c80192cc4618ca633db4017e467b1017cfd1c9b97d6"
+    },
+    {
+      "assertion": "present",
+      "behaviour": "3",
+      "char_end": 513,
+      "char_start": 472,
+      "code": "8140",
+      "entity_id": "ent_0004",
+      "kind": "histology",
+      "quote": "Tipo histológico: Adenocarcinoma (8140/3)",
+      "quote_sha256": "f941b3e2af00b1db618edd25b0998c27c17e9d34a4fed1e3173e7e3289c5891e"
+    },
+    {
+      "assertion": "present",
+      "char_end": 565,
+      "char_start": 514,
+      "entity_id": "ent_0005",
+      "kind": "grade",
+      "quote": "Grado histológico: Gleason 4+3=7 (grupo de grado 3)",
+      "quote_sha256": "a075d24bfed1e5745fd6e7598012dbb035f84787a04843a0b1674de03bb2e4b3",
+      "system": "gleason",
+      "value_text": "Gleason 4+3=7"
+    },
+    {
+      "assertion": "present",
+      "char_end": 609,
+      "char_start": 566,
+      "dimension": "greatest",
+      "entity_id": "ent_0006",
+      "kind": "size_mm",
+      "quote": "Tamaño tumoral: 19 mm en su mayor dimensión",
+      "quote_sha256": "ef023cb3cf99eda086359ac6ca771a3139882237f300c8f43be2b8cb15e5c1c2",
+      "source_unit": "mm",
+      "source_value": "19",
+      "unit": "mm",
+      "value": 19
+    },
+    {
+      "assertion": "present",
+      "char_end": 668,
+      "char_start": 610,
+      "distance_mm": 6,
+      "entity_id": "ent_0007",
+      "kind": "margins",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
+      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
+      "status": "negative"
+    },
+    {
+      "assertion": "present",
+      "char_end": 700,
+      "char_start": 669,
+      "entity_id": "ent_0008",
+      "kind": "lymphovascular_invasion",
+      "quote": "Invasión linfovascular: ausente",
+      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
+      "status": "absent"
+    },
+    {
+      "assertion": "present",
+      "char_end": 729,
+      "char_start": 701,
+      "entity_id": "ent_0009",
+      "kind": "perineural_invasion",
+      "quote": "Invasión perineural: ausente",
+      "quote_sha256": "e8d3e88161195121a3255994e6955fa29fa71ead8ec898a15328b7680a8129f9",
+      "status": "absent"
+    },
+    {
+      "assertion": "present",
+      "char_end": 782,
+      "char_start": 730,
+      "entity_id": "ent_0010",
+      "examined": 14,
+      "kind": "nodes",
+      "positive": 0,
+      "quote": "Ganglios linfáticos: 0 de 14 ganglios con metástasis",
+      "quote_sha256": "178992cd5062fd7d240fb7289779b960a9c67758c093c2a892334df23d1ccbaa"
+    },
+    {
+      "assertion": "present",
+      "char_end": 812,
+      "char_start": 783,
+      "code": "2857-1",
+      "entity_id": "ent_0011",
+      "kind": "biomarker",
+      "method_text": "suero",
+      "name_text": "PSA",
+      "quote": "PSA preoperatorio: 17,5 ng/mL",
+      "quote_sha256": "b3fea3f383f9e5b6ec3b5c032bfec32259e133464003f0a235b19753efa4c3d2",
+      "value": {
+        "unit": "ng/mL",
+        "value": 17.5
+      }
+    },
+    {
+      "assertion": "present",
+      "char_end": 876,
+      "char_start": 813,
+      "edition": "8",
+      "entity_id": "ent_0012",
+      "kind": "ptnm",
+      "m": "cM0",
+      "n": "pN0",
+      "prefix": "p",
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIC",
+      "quote_sha256": "e15d0e97754504b3ca0478ea297d0ae6d4aadc047176f0d8fd784cfdf4b9bbe0",
+      "stage_group": "IIC",
+      "t": "pT2"
+    },
+    {
+      "assertion": "present",
+      "char_end": 926,
+      "char_start": 877,
+      "entity_id": "ent_0013",
+      "kind": "comment",
+      "quote": "Comentario: Sin hallazgos adicionales de interés.",
+      "quote_sha256": "11e9843a2d02a194a5ec2d8957eb89a420b5b3b5ebea4c1641addd81f70c636e",
+      "text": "Sin hallazgos adicionales de interés."
+    }
+  ],
+  "extractor_version": "go-61-gold/1",
+  "needs_review": true,
+  "schema": "tietai.synoptic-pathology/v1",
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Malik Fadel   Sexo: varón   Fecha de nacimiento: 1957-04-25\nCaso sintético oc_0038. Diagnóstico de referencia: adenocarcinoma de próstata.\nMuestra AP-2018-001506: Prostatectomía radical, recibida el 2018-04-15\nProcedimiento: Prostatectomía radical con linfadenectomía pélvica\nLocalización del tumor: Próstata (C61.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Gleason 4+3=7 (grupo de grado 3)\nTamaño tumoral: 19 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 14 ganglios con metástasis\nPSA preoperatorio: 17,5 ng/mL\nEstadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIC\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "5a4fa62c6d0a60ac81dd9d5e9c983e1bdb3ce2bbb60e4cec036ce3f2c6bdd2d8"
+}

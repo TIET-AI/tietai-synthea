@@ -1,0 +1,19 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Lindsay Yundt   Sexo: varón   Fecha de nacimiento: 1951-09-20
+Caso sintético oc_0072. Diagnóstico de referencia: adenocarcinoma de próstata.
+Muestra AP-2018-002764: Prostatectomía radical, recibida el 2018-07-22
+Procedimiento: Prostatectomía radical con linfadenectomía pélvica
+Localización del tumor: Próstata (C61.9)
+Tipo histológico: Adenocarcinoma (8140/3)
+Grado histológico: Gleason 3+4=7 (grupo de grado 2)
+Tamaño tumoral: 22 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 6 mm
+Invasión linfovascular: ausente
+Invasión perineural: ausente
+Ganglios linfáticos: 0 de 16 ganglios con metástasis
+PSA preoperatorio: 17,6 ng/mL
+Estadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIB
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

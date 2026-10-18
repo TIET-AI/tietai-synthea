@@ -36,6 +36,8 @@ class Config:
             'exporter.years_of_history': 10,
             
             # FHIR exporter
+            'exporter.genomics.export': False,
+            'exporter.genomics.seed': 20261017,
             'exporter.fhir.export': True,
             'exporter.fhir.bulk_data': False,
             'exporter.fhir.transaction_bundle': True,

@@ -27,6 +27,21 @@ The modules were right; the engine that runs them was not. The same was true of
 **Generated output changes substantially**, which is the point of this release.
 A seed from any earlier version will not reproduce.
 
+### Added - synthetic genomics and oncology pack (GO-61, #118)
+
+- **Synthetic genomics and oncology pack** (GO-61, `--genomics`, off by default): per cancer case a
+  `tietai-genomic-report` bundle, an mCODE oncology bundle, a BGZF VCF, Spanish genetic and pathology reports as PDF
+  plus text twin plus C5 expected entities, an HL7 ORU message, and 16 negative fixtures; a manifest with per-file
+  hashes; a Spanish-identifier PHI scan; a committed reference pack under `examples/genomics-oncology-pack/`.
+  See [docs/genomics-pack.md](docs/genomics-pack.md). New modules: `export/genomics*.py`, `bgzf.py`, `vcf.py`,
+  `pdfmini.py`. `--output` is now an alias of `--output-dir`.
+- `--genomics-cohort` and `generate.module_patches` (opt-in): cohort enrichment of the four cancer modules.
+- `jsonschema>=4.18` and `referencing` are now declared (the locked version already satisfied them).
+
+GO-61 shipped the `EncounterEnd` fix (#119) behind an opt-in switch,
+`generate.encounter_end_completes`. It is now always on - see below - and
+the switch is gone; the committed reference pack was regenerated.
+
 ### Fixed - engine semantics (each now matches upstream Synthea)
 
 - **A module stopped for good at its first `EncounterEnd`.** The state yielded

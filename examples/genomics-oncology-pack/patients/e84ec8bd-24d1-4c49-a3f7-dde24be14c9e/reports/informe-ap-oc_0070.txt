@@ -1,0 +1,18 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Devin Barrows   Sexo: varón   Fecha de nacimiento: 1949-06-04
+Caso sintético oc_0070. Diagnóstico de referencia: adenocarcinoma de colon.
+Muestra AP-2018-002690: Hemicolectomía derecha, recibida el 2018-11-02
+Procedimiento: Hemicolectomía derecha con linfadenectomía
+Localización del tumor: Colon (C18.9)
+Tipo histológico: Adenocarcinoma (8140/3)
+Grado histológico: Grado 2 (moderadamente diferenciado)
+Tamaño tumoral: 15 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 4 mm
+Invasión linfovascular: ausente
+Invasión perineural: ausente
+Ganglios linfáticos: 3 de 22 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

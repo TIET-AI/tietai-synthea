@@ -1,0 +1,20 @@
+{
+  "expected": [
+    {
+      "code": "required",
+      "detailCode": "STRUCT_SLICE_REQUIRED",
+      "severity": "error"
+    },
+    {
+      "code": "invariant",
+      "detailCode": "INV-ICDO-1",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-ICDO-1",
+  "layer": "fhir-validate",
+  "note": "cancer condition without ICD-O-3 morphology",
+  "seed": [],
+  "variant": "no-morphology"
+}

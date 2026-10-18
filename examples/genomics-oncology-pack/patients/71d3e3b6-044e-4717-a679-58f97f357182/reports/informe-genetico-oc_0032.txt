@@ -1,0 +1,21 @@
+LABORATORIO DE GENÉTICA MOLECULAR (sintético)
+INFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Caron Breitenberg   Sexo: mujer   Fecha de nacimiento: 1959-09-20
+Caso sintético oc_0032. Diagnóstico de referencia: carcinoma de mama.
+Panel NGS de tumor sólido OncoMama v2
+Muestra: tejido tumoral FFPE, biopsia de mama   ID de muestra SYN-0032
+Genoma de referencia GRCh38
+Fecha del informe: 2026-09-05
+
+Variantes detectadas:
+PIK3CA NM_006218.4:c.3140A>G (p.His1047Arg) VAF 27,0%. Heterocigosis. Variante somática. Tier I (AMP).
+TP53 NM_000546.6:c.524G>A (p.Arg175His) VAF 46,4%. Heterocigosis. Variante somática. Tier II (AMP).
+
+Implicaciones:
+Clasificación alternativa de PIK3CA NM_006218.4:c.3140A>G (laboratorio): Tier II (AMP).
+Implicación terapéutica: alpelisib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de mama.
+
+Fuente de conocimiento: ClinVar versión 2026-09-01
+Recomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.
+Este informe es un documento sintético generado para pruebas de la plataforma.

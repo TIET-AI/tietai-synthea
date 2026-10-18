@@ -1,0 +1,15 @@
+{
+  "expected": [
+    {
+      "code": "invariant",
+      "detailCode": "INV-HGVS-1",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-HGVS-1",
+  "layer": "fhir-validate",
+  "note": "KNOWN GAP (GO-10 follow-up): a gene fusion has no HGVS expression, but tietai-variant requires at least one HGVS component, so the platform rejects the structural form the GO-61 spec asks for. Not one of the 16 negatives; kept so the gap stays visible.",
+  "seed": [],
+  "variant": "structural-fusion"
+}

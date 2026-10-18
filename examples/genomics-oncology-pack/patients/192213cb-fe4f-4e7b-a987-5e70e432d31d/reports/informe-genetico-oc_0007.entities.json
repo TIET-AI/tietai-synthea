@@ -1,0 +1,153 @@
+{
+  "document_sha256": "14cf040ede85d7ea83ed38e656d95a5b8577e39b6b50ee5fce37f729a9e728c2",
+  "entities": [
+    {
+      "assertion": "present",
+      "char_end": 45,
+      "char_start": 0,
+      "entity_id": "ent_0001",
+      "kind": "assay",
+      "lab": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)",
+      "quote": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)",
+      "quote_sha256": "19c8dbdc66cbf3e90c8b5294aed89c878b37ec3645ddba2f9d7260ab8247c700"
+    },
+    {
+      "assertion": "present",
+      "char_end": 340,
+      "char_start": 301,
+      "entity_id": "ent_0002",
+      "kind": "assay",
+      "panel_name": "OncoPulmon",
+      "panel_version": "v4",
+      "quote": "Panel NGS de tumor sólido OncoPulmon v4",
+      "quote_sha256": "806ee302cf309eb2b0fe7fc223929b4f43e77af00fe7005d6d1383d773168e6d"
+    },
+    {
+      "assertion": "present",
+      "char_end": 412,
+      "char_start": 341,
+      "collected_on": "2018-10-02",
+      "entity_id": "ent_0003",
+      "kind": "specimen",
+      "quote": "Muestra: tejido tumoral FFPE, biopsia pulmonar   ID de muestra SYN-0007",
+      "quote_sha256": "d2043f8e382af593a85780c83c74b1f80c6077de5bdbce46842a796e4fc99542",
+      "specimen_identifier": "SYN-0007",
+      "specimen_type": "tejido tumoral FFPE"
+    },
+    {
+      "assertion": "present",
+      "build": "GRCh38",
+      "char_end": 440,
+      "char_start": 413,
+      "entity_id": "ent_0004",
+      "kind": "assay",
+      "quote": "Genoma de referencia GRCh38",
+      "quote_sha256": "689a9714bea10b3ee01aad54315bf7c05189695b00a5e4467c2e80984ac44d92"
+    },
+    {
+      "assertion": "present",
+      "char_end": 593,
+      "char_start": 494,
+      "classification": "tier_i",
+      "classification_system": "AMP",
+      "entity_id": "ent_0005",
+      "gene": "EGFR",
+      "hgvs_c": "NM_005228.5:c.2573T>G",
+      "hgvs_p": "p.Leu858Arg",
+      "kind": "variant",
+      "quote": "EGFR NM_005228.5:c.2573T>G (p.Leu858Arg) VAF 40,9%. Heterocigosis. Variante somática. Tier I (AMP).",
+      "quote_sha256": "9bacf19d55aa20330832351585aa8cf407e96d64cc6d65bf533f0cc41243886f",
+      "source_class": "somatic",
+      "vaf": "40,9%",
+      "zygosity": "heterozygous"
+    },
+    {
+      "assertion": "present",
+      "char_end": 705,
+      "char_start": 594,
+      "classification": "tier_i",
+      "classification_system": "AMP",
+      "entity_id": "ent_0006",
+      "gene": "EGFR",
+      "hgvs_c": "NM_005228.5:c.2235_2249del",
+      "hgvs_p": "p.Glu746_Ala750del",
+      "kind": "variant",
+      "quote": "EGFR NM_005228.5:c.2235_2249del (p.Glu746_Ala750del) VAF 29,4%. Heterocigosis. Variante somática. Tier I (AMP).",
+      "quote_sha256": "bfb8c30bd83648699f785498bf3fa11b526b5d521a84bd154d5dcf10b0b2b227",
+      "source_class": "somatic",
+      "vaf": "29,4%",
+      "zygosity": "heterozygous"
+    },
+    {
+      "assertion": "present",
+      "char_end": 821,
+      "char_start": 722,
+      "entity_id": "ent_0007",
+      "evidence_level": "Tier I - Level A",
+      "implication_kind": "therapeutic",
+      "kind": "implication",
+      "linked_variant_ids": [
+        "ent_0005"
+      ],
+      "phenotype": "carcinoma de pulmón",
+      "quote": "Implicación terapéutica: osimertinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulmón.",
+      "quote_sha256": "ca7e7c85fef3e18223bab035a5620c2baca4e774c1edda8be1c087a7385da712",
+      "therapy": "osimertinib"
+    },
+    {
+      "assertion": "present",
+      "char_end": 912,
+      "char_start": 822,
+      "entity_id": "ent_0008",
+      "implication_kind": "diagnostic",
+      "kind": "implication",
+      "linked_variant_ids": [
+        "ent_0006"
+      ],
+      "quote": "Clasificación alternativa de EGFR NM_005228.5:c.2235_2249del (laboratorio): Tier II (AMP).",
+      "quote_sha256": "edd12c1d05d9163bc19e34ad21ae83081570a21f4df26efa769d60b8f46c7adc"
+    },
+    {
+      "assertion": "present",
+      "char_end": 1012,
+      "char_start": 913,
+      "entity_id": "ent_0009",
+      "evidence_level": "Tier I - Level A",
+      "implication_kind": "therapeutic",
+      "kind": "implication",
+      "linked_variant_ids": [
+        "ent_0006"
+      ],
+      "phenotype": "carcinoma de pulmón",
+      "quote": "Implicación terapéutica: osimertinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulmón.",
+      "quote_sha256": "ca7e7c85fef3e18223bab035a5620c2baca4e774c1edda8be1c087a7385da712",
+      "therapy": "osimertinib"
+    },
+    {
+      "assertion": "present",
+      "char_end": 1064,
+      "char_start": 1014,
+      "entity_id": "ent_0010",
+      "kind": "knowledge_release",
+      "name": "clinvar",
+      "quote": "Fuente de conocimiento: ClinVar versión 2026-09-01",
+      "quote_sha256": "03d25a2aaabf11389ace9a510fd59f717f8c106e9a394267978397499910f850",
+      "version": "2026-09-01"
+    },
+    {
+      "assertion": "present",
+      "char_end": 1154,
+      "char_start": 1065,
+      "entity_id": "ent_0011",
+      "kind": "recommendation",
+      "quote": "Recomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.",
+      "quote_sha256": "9f27ab33587e8091d9e87e69401eff55a659ff638fb03e3319f36e37eab1643d",
+      "text": "Se recomienda discutir el resultado en comité multidisciplinar de tumores."
+    }
+  ],
+  "extractor_version": "go-61-gold/1",
+  "needs_review": true,
+  "schema": "tietai.genomic-extraction/v1",
+  "source_text": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)\nINFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Freeman Heidenreich   Sexo: varón   Fecha de nacimiento: 1941-07-15\nCaso sintético oc_0007. Diagnóstico de referencia: carcinoma de pulmón.\nPanel NGS de tumor sólido OncoPulmon v4\nMuestra: tejido tumoral FFPE, biopsia pulmonar   ID de muestra SYN-0007\nGenoma de referencia GRCh38\nFecha del informe: 2026-09-02\n\nVariantes detectadas:\nEGFR NM_005228.5:c.2573T>G (p.Leu858Arg) VAF 40,9%. Heterocigosis. Variante somática. Tier I (AMP).\nEGFR NM_005228.5:c.2235_2249del (p.Glu746_Ala750del) VAF 29,4%. Heterocigosis. Variante somática. Tier I (AMP).\n\nImplicaciones:\nImplicación terapéutica: osimertinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulmón.\nClasificación alternativa de EGFR NM_005228.5:c.2235_2249del (laboratorio): Tier II (AMP).\nImplicación terapéutica: osimertinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulmón.\n\nFuente de conocimiento: ClinVar versión 2026-09-01\nRecomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "25d20835a3ac267ca250447b24b2891a5829623643a87ba4bc2d16ee9a86dae0"
+}
