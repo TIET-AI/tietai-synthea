@@ -125,7 +125,23 @@
     },
     "Sexually_Active": {
       "type": "Simple",
-      "direct_transition": "Contraceptive_Incidence"
+      "remarks": [
+        "calibration.reproduction.exposure: the share of cycles in which a sexually active woman is exposed to pregnancy at her method's failure rate.",
+        "Upstream has no such gate (1.0). With a method redrawn every year and typical-use failure rates, that gave ~7 pregnancies per woman by 45; see synthea.properties for the calibrated value."
+      ],
+      "distributed_transition": [
+        {
+          "distribution": {
+            "attribute": "calibration.reproduction.exposure",
+            "default": 0.3
+          },
+          "transition": "Contraceptive_Incidence"
+        },
+        {
+          "distribution": 1,
+          "transition": "Next_Reproductive_Cycle"
+        }
+      ]
     },
     "Contraceptive_Incidence": {
       "type": "Simple",

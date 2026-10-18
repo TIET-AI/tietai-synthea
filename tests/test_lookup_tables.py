@@ -62,7 +62,8 @@ def _reference_matches(column, value, person, time):
     key = column.strip().lower()
 
     if key == 'age':
-        return _reference_range(value, person.age_at(time))
+        # Completed years, as upstream matches: "65" is the whole 66th year.
+        return _reference_range(value, person.age_in_years(time))
 
     if key == 'time':
         return _reference_range(value, (time - EPOCH).total_seconds() * 1000.0)

@@ -13,6 +13,131 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ---
 
+## [Unreleased]
+
+Patients now develop the chronic diseases their modules describe, and the
+population rates that differ from the real world can be set in configuration.
+
+Before this, a 500-patient lifetime run held **no** type 2 diabetes, chronic
+kidney disease, atrial fibrillation, coronary disease, stroke, cancer or
+COVID-19, while **92%** of patients had pulmonic or tricuspid valve stenosis.
+The modules were right; the engine that runs them was not. The same was true of
+1.2.0, 1.3.0 and 1.4.x.
+
+**Generated output changes substantially**, which is the point of this release.
+A seed from any earlier version will not reproduce.
+
+### Fixed - engine semantics (each now matches upstream Synthea)
+
+- **A module stopped for good at its first `EncounterEnd`.** The state yielded
+  on every run instead of once, so every check-up after the first was skipped
+  and so was every diagnosis made at one.
+- **`is nil` / `is not nil` were always false** - all 333 such conditions took
+  the wrong branch.
+- **`CallSubmodule` ran a submodule once per lifetime** and did not wait for it.
+  A submodule paused at a Delay was abandoned (COVID-19 was never tested or
+  diagnosed), and a finished one never ran again (kidney checks, contraception).
+- **`conditional_transition` and `complex_transition`** returned nothing when no
+  option matched - ending the module - and `complex_transition` pooled every
+  matching option instead of taking the first. Both now fall back to the last
+  option, as upstream.
+- **`PriorState` without a `module`** was always false (82 conditions in 39
+  modules), and `since` was ignored.
+- **States after an expired Delay ran at the step time**, not the Delay's
+  expiry, so short self-loops ran at half speed or less.
+- **Lookup tables were matched on fractional age**, so for part of every year a
+  patient fell between two bands, matched no row and got `default_probability`
+  for every target: 1.0 in `vhd_ps.csv`, hence the valve stenosis.
+- **`Counter` ignored `amount`**, putting diabetes onset ~17 years late.
+- **`distributed_transition` rescaled probabilities to sum to 1.** They are now
+  taken at face value with the remainder going to the last option, as
+  upstream; an attribute-valued probability is therefore exact.
+- **`virtual` was not an `EncounterClass`**, so telehealth encounters raised.
+- A module leaving a routine check-up closed it for every module after it, and
+  lab panels are now reconciled per draw (each weekly CBC in a long stay).
+- An EHDS category document could reference its author Organization without
+  containing it.
+
+### Fixed - physiology the modules read
+
+- **Laboratory values now follow the patient's disease state**: a port of
+  upstream `LifecycleModule.calculateVitalSigns` - HbA1c, glucose, lipid panel,
+  basic metabolic panel, eGFR/creatinine/microalbumin from CKD stage, and blood
+  pressure from `hypertension`. HbA1c used to be recorded with no value, which
+  diagnosed every patient with prediabetes as diabetic.
+- **Cardiovascular risk**: a port of upstream `CardiovascularDiseaseModule` and
+  its ASCVD and Framingham calculators, setting the `mi_risk`, `ihd_risk`,
+  `atrial_fibrillation_risk` and `stroke_risk` the heart modules wait on.
+- **Smoking**: upstream `startSmoking` / `quitSmoking`. Nothing set `smoker`,
+  so every patient was a lifelong non-smoker.
+- Modules reading the vital sign `BMI` now find `Body Mass Index`.
+- A treated HbA1c is held at 6.0% (diabetes) / 5.0% (prediabetes) at least.
+  **This deviates from upstream**, whose fixed drug effects put a lean diabetic
+  on basal insulin at 3.6% for life.
+
+### Added
+
+- **Calibration in configuration.** Every `calibration.*` key in
+  `synthea.properties` is copied onto each patient, where JSON modules read it
+  as an attribute-valued probability and core modules through
+  `synthea.world.calibration`. Calibrated, with sources in the file:
+
+  | Key | Upstream | Now |
+  |---|---|---|
+  | `cardiovascular.ihd_risk_multiplier` | 5 | 1.5 |
+  | `cardiovascular.af_risk_period_days` | 7 (timestep) | 30 |
+  | `cardiovascular.stroke_risk_period_days` | 7 (timestep) | 15 |
+  | `pregnancy.preeclampsia` | 0.08 | 0.038 |
+  | `pregnancy.eclampsia_given_preeclampsia` / `_de_novo` | 0.08 overall | 0.0044 / 0.0001 |
+  | `reproduction.exposure` | 1.0 (no gate) | 0.3 |
+
+- `Person.age_in_years(time)`: completed years, for whole-year bands.
+
+### Changed
+
+- **`-c FILE` overlays the bundled `synthea.properties`** instead of replacing
+  it, as the README describes. A file holding a few keys used to drop every
+  other setting - including all calibration - and run on hard-coded minimums.
+
+### Measured: 1,000 patients, seed 20261018, full lifetime, living adults
+
+| | 1.4.1 | now | US reference |
+|---|---|---|---|
+| hypertension | 9% | 22% | ~30% diagnosed |
+| type 2 diabetes | 0% | 7.6% | ~10% diagnosed |
+| prediabetes | 0% | 40% | ~38% |
+| chronic kidney disease | 0% | 6.1% | ~14%, mostly undiagnosed |
+| ischemic heart disease | 0% | 5.7% | ~5-6% |
+| atrial fibrillation | 0% | 2.1% | ~2-3% |
+| stroke | 0% | 1.7% | ~3% |
+| COVID-19 | 0% | 10.6% | - |
+| obesity (BMI >= 30) | 0% | 20% | ~40% |
+| valve stenosis | 92% | <1% | <1% |
+| pregnancies per woman by 45 | - | 3.3 | ~3 |
+
+1.4.1 figures are from the 500-patient run that found the problem.
+
+### Known limitations
+
+- Heart failure (0.3%) and stroke remain below survey prevalence, and obesity
+  is half the US rate; these are left uncalibrated rather than tuned without a
+  source.
+- Pregnancy complication rates are per delivery in the literature and per
+  pregnancy here, so measured pre-eclampsia per pregnancy (2%) is below the
+  configured 3.8%.
+- Upstream's antihypertensive effects (`htn_drugs.csv`) are not bundled, so a
+  treated patient keeps an untreated blood pressure.
+
+### Upgrade notes
+
+- **Output changes everywhere.** Do not compare populations across this release.
+- A properties file passed with `-c` now inherits every setting it omits. If you
+  relied on the old behaviour, set the keys you need explicitly.
+- No change to the `synthea` command options or to `Generator` /
+  `GeneratorOptions`; `Person` gains `age_in_years`.
+
+---
+
 ## [1.4.1] - 2026-09-25
 
 Lab results now carry the interval they are read against, and the members of a

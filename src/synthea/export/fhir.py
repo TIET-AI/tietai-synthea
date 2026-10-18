@@ -496,6 +496,14 @@ class FHIRExporter(PatientExporter):
         }]}
         bundle['entry'].insert(0, composition)
 
+        # The Composition's own author must travel with it too. Closing over
+        # the clinical entries alone left it out whenever no entry in the
+        # category happened to reference the same Organization.
+        present = {entry['fullUrl'] for entry in bundle['entry']}
+        bundle['entry'].extend(
+            entry for entry in _close_references([composition], full['entry'])
+            if entry['fullUrl'] not in present)
+
         return bundle
 
     def _filename(self, person: 'Person', suffix: str = '') -> str:

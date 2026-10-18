@@ -954,13 +954,19 @@
         "quantity": 4,
         "unit": "weeks"
       },
+      "remarks": [
+        "Pre-eclampsia in 3.8% of pregnancies: US rate in 2010, Ananth CV et al., BMJ 2013;347:f6564. Upstream used 8%, the top of the worldwide 2-8% range."
+      ],
       "distributed_transition": [
         {
-          "distribution": 0.08,
+          "distribution": {
+            "attribute": "calibration.pregnancy.preeclampsia",
+            "default": 0.038
+          },
           "transition": "Develop_Pre_Eclampsia"
         },
         {
-          "distribution": 0.92,
+          "distribution": 1,
           "transition": "Week_32_Visit"
         }
       ]
@@ -1025,37 +1031,60 @@
         "quantity": 4,
         "unit": "weeks"
       },
-      "distributed_transition": [
-        {
-          "distribution": 0.08,
-          "transition": "Pre_Eclampsia_Check"
-        },
-        {
-          "distribution": 0.8518,
-          "transition": "Week_36_Visit"
-        },
-        {
-          "distribution": 0.0682,
-          "transition": "Premature_Birth"
-        }
-      ]
-    },
-    "Pre_Eclampsia_Check": {
-      "type": "Simple",
       "remarks": [
+        "Eclampsia in about 2.7 per 10,000 births, mostly in women who already have pre-eclampsia: UK national rate in 2005, Knight M (UKOSS), BJOG 2007;114:1072-8.",
+        "With pre-eclampsia at 3.8%, 0.44% of pre-eclampsia progressing plus 0.01% de novo gives ~2.7 per 10,000. Upstream sent 8% of all pregnancies to eclampsia, about 300 times that.",
         "If the patient already has pre-eclampsia we need to end it before giving them eclampsia."
       ],
-      "conditional_transition": [
+      "complex_transition": [
         {
           "condition": {
             "condition_type": "Attribute",
             "attribute": "pregnancy_complication",
             "operator": "is not nil"
           },
-          "transition": "Pre_Eclampsia_Becomes_Eclampsia"
+          "distributions": [
+            {
+              "distribution": {
+                "attribute": "calibration.pregnancy.eclampsia_given_preeclampsia",
+                "default": 0.0044
+              },
+              "transition": "Pre_Eclampsia_Becomes_Eclampsia"
+            },
+            {
+              "distribution": {
+                "attribute": "calibration.pregnancy.premature_birth",
+                "default": 0.0682
+              },
+              "transition": "Premature_Birth"
+            },
+            {
+              "distribution": 1,
+              "transition": "Week_36_Visit"
+            }
+          ]
         },
         {
-          "transition": "Develop_Eclampsia"
+          "distributions": [
+            {
+              "distribution": {
+                "attribute": "calibration.pregnancy.eclampsia_de_novo",
+                "default": 0.0001
+              },
+              "transition": "Develop_Eclampsia"
+            },
+            {
+              "distribution": {
+                "attribute": "calibration.pregnancy.premature_birth",
+                "default": 0.0682
+              },
+              "transition": "Premature_Birth"
+            },
+            {
+              "distribution": 1,
+              "transition": "Week_36_Visit"
+            }
+          ]
         }
       ]
     },

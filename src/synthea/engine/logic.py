@@ -18,6 +18,9 @@ logger = logging.getLogger(__name__)
 #: Condition types already reported as unsupported, so each is logged once.
 _WARNED_CONDITIONS = set()
 
+#: GMF existence operators: true when the left side is (or is not) absent.
+_NIL_OPERATORS = ('is nil', 'is not nil')
+
 if TYPE_CHECKING:
     from synthea.world.person import Person
 
@@ -240,10 +243,12 @@ class Logic:
         operator_str = condition.get('operator', '>=')
         value = condition.get('value', 0)
         
-        if not hasattr(person, 'vital_signs') or vital_sign not in person.vital_signs:
+        if not hasattr(person, 'vital_signs') or not vital_sign:
             return False
-        
-        vital_value = person.vital_signs[vital_sign].get('value', 0)
+
+        vital_value = person.get_vital_sign(vital_sign)
+        if vital_value is None:
+            return False
         return Logic._compare(vital_value, operator_str, value)
     
     @staticmethod
@@ -336,6 +341,14 @@ class Logic:
         if not state_name:
             return False
 
+        if not module_name:
+            # GMF names no module: upstream searches the history of the module
+            # being processed. Visits are only recorded qualified by module,
+            # so without this the condition was false for every state.
+            stack = getattr(person, '_module_stack', None)
+            if stack:
+                module_name = stack[-1]
+
         if module_name:
             key = f'{module_name}.{state_name}_visited'
             time_key = f'{module_name}.{state_name}_visited_at'
@@ -345,6 +358,18 @@ class Logic:
 
         if not person.attributes.get(key, False):
             return False
+
+        # `since` bounds the search like upstream's history walk: the
+        # condition is false when that state was visited after `name` was.
+        # It used to be ignored, so "ever" was answered instead.
+        since = condition.get('since')
+        if since:
+            prefix = f'{module_name}.' if module_name else ''
+            if person.attributes.get(f'{prefix}{since}_visited', False):
+                name_seq = person.attributes.get(f'{prefix}{state_name}_visited_seq', 0)
+                since_seq = person.attributes.get(f'{prefix}{since}_visited_seq', 0)
+                if since_seq > name_seq:
+                    return False
 
         window = condition.get('within')
         if not window or time is None:
@@ -374,7 +399,15 @@ class Logic:
             return person_value is not None
         
         operator_str = condition.get('operator', '==')
-        
+
+        # Existence tests carry no value. They used to fall through to the
+        # "no target value" branch below and evaluate False whatever the
+        # attribute held, so all 333 such conditions in the module set took
+        # the wrong branch - e.g. metabolic_syndrome_care never tested the
+        # HbA1c of a patient with diabetes, and never diagnosed it.
+        if operator_str in _NIL_OPERATORS:
+            return Logic._compare(person_value, operator_str, None)
+
         # Handle different value types
         if 'value' in condition:
             target_value = condition['value']
@@ -408,6 +441,9 @@ class Logic:
     @staticmethod
     def _compare(left: Any, operator_str: str, right: Any) -> bool:
         """Perform a comparison operation."""
+        if operator_str in _NIL_OPERATORS:
+            return (left is None) == (operator_str == 'is nil')
+
         ops = {
             '<': operator.lt,
             '<=': operator.le,

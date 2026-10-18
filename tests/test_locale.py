@@ -328,12 +328,20 @@ class TestReferencePackDeterminism:
     #: Observations altered - 298 gained the two new elements and 15 values
     #: were recomputed. Nothing else in the record moved.
     #:
+    #: Moved again when the engine was brought in line with upstream Synthea
+    #: (EncounterEnd, CallSubmodule, transitions, PriorState, nil operators,
+    #: whole-year lookup ages, Delay timing, face-value distributions), the
+    #: upstream vital signs, cardiovascular risk and smoking were ported, and
+    #: population rates became calibration.* settings. Patients now develop
+    #: and are diagnosed with the diseases their modules describe; see the
+    #: CHANGELOG. Checked by two runs agreeing.
+    #:
     #: Update these only when generated output is *meant* to change, and say
     #: in the changelog that it did.
     EXPECTED = [
-        'e6867cde12b3e1aae5ab5749b48b162f68909394d901a946b67f4d5e1dafec86',
-        '097a468012f4cccccc0989ad7198777c461e1b94a353d200d81c346b8b78b349',
-        'c0758a3d7e0cfdebfe7078a724b4a0df9a82848b7091b848a9aeb85f10d5d056',
+        '624166a9b5d44599571163c442d2994d22a184fc0a09a635d9fdaf2ea92b3d7a',
+        '0ba4b347f9416a309c3f9a13a753ab62c2ccad38cfc9b8be0273afc68eaf0271',
+        '9630fbbcc531268a3aea9024d6193eaa21c7f78eee42a7696e0a8b8df60ac0fa',
     ]
 
     def test_the_us_pack_reproduces_the_pre_refactor_export(self, tmp_path):

@@ -97,12 +97,20 @@ class Config:
                 Path('resources/synthea.properties'),
                 Path('../synthea.properties'),
             ]
-            
+
             for path in search_paths:
                 if path.exists():
                     filepath = str(path)
                     break
-        
+        else:
+            # A user's file overrides the bundled defaults rather than
+            # replacing them, as the README describes. Loading it alone dropped
+            # every setting it did not repeat - including the calibration.*
+            # rates - and fell back to the hard-coded minimum.
+            bundled = resource_path('synthea.properties')
+            if bundled.exists() and Path(filepath).resolve() != bundled.resolve():
+                self._load_properties_file(str(bundled))
+
         if filepath and Path(filepath).exists():
             self._load_properties_file(filepath)
     
