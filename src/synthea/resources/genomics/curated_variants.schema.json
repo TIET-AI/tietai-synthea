@@ -15,7 +15,7 @@
       "properties": {
         "system": {"enum": ["ACMG", "AMP", "ClinGen"]},
         "value": {"enum": ["pathogenic", "likely-pathogenic", "uncertain-significance", "likely-benign", "benign", "tier-i", "tier-ii", "tier-iii", "tier-iv", "oncogenic", "likely-oncogenic"]},
-        "source": {"type": "string", "pattern": "^(clinvar|hgnc|icdo3|so|loinc|custom|lab)@[0-9]{4}-[0-9]{2}-[0-9]{2}$"}
+        "source": {"type": "string", "pattern": "^(clinvar|hgnc|icdo3|so|loinc|custom)@[0-9]{4}-[0-9]{2}-[0-9]{2}$"}
       }
     },
     "entry": {

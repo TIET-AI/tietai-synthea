@@ -22,7 +22,7 @@ variants:
     zygosity: heterozygous
     vaf: 0.31
     classification: { system: AMP, value: tier-i, source: "clinvar@2026-09-01" }
-    second_classification: { system: AMP, value: tier-ii, source: "lab@2026-09-01" }
+    second_classification: { system: AMP, value: tier-ii, source: "custom@2026-09-01" }
     clinvar: VCV000013652
     consequence: "SO:0001583"
     structural: false
@@ -88,7 +88,7 @@ variants:
     zygosity: heterozygous
     vaf: 0.28
     classification: { system: AMP, value: tier-i, source: "clinvar@2026-09-01" }
-    second_classification: { system: AMP, value: tier-ii, source: "lab@2026-09-01" }
+    second_classification: { system: AMP, value: tier-ii, source: "custom@2026-09-01" }
     clinvar: VCV000013961
     consequence: "SO:0001583"
     structural: false
@@ -130,7 +130,7 @@ variants:
     zygosity: heterozygous
     vaf: 0.33
     classification: { system: AMP, value: tier-i, source: "clinvar@2026-09-01" }
-    second_classification: { system: AMP, value: tier-ii, source: "lab@2026-09-01" }
+    second_classification: { system: AMP, value: tier-ii, source: "custom@2026-09-01" }
     clinvar: VCV000163343
     consequence: "SO:0001826"
     structural: false
@@ -146,7 +146,7 @@ variants:
     source_class: somatic
     zygosity: unknown
     vaf: 0.22
-    classification: { system: AMP, value: tier-i, source: "lab@2026-09-01" }
+    classification: { system: AMP, value: tier-i, source: "custom@2026-09-01" }
     consequence: "SO:0001565"
     structural: true
     therapies:
@@ -164,7 +164,7 @@ variants:
     zygosity: heterozygous
     vaf: 0.5
     classification: { system: ACMG, value: pathogenic, source: "clinvar@2026-09-01" }
-    second_classification: { system: ACMG, value: likely-pathogenic, source: "lab@2026-09-01" }
+    second_classification: { system: ACMG, value: likely-pathogenic, source: "custom@2026-09-01" }
     clinvar: VCV000009325
     consequence: "SO:0001589"
     structural: false

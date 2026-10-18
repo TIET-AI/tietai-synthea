@@ -26,8 +26,16 @@ families:
     snomed_display: "Malignant neoplasm of lung (disorder)"
     primary_codes: ["254637007", "254632001"]
     histology_by_snomed:
-      "254637007": { morphology: "8046", behaviour: "3", morphology_es: "Carcinoma de pulmón no microcítico" }
-      "254632001": { morphology: "8041", behaviour: "3", morphology_es: "Carcinoma microcítico de pulmón" }
+      "254637007": &nsclc { morphology: "8046", behaviour: "3", morphology_es: "Carcinoma de pulmón no microcítico", primary: "254637007" }
+      "254632001": &sclc { morphology: "8041", behaviour: "3", morphology_es: "Carcinoma microcítico de pulmón", primary: "254632001" }
+      "424132000": *nsclc
+      "425048006": *nsclc
+      "422968005": *nsclc
+      "423121009": *nsclc
+      "67811000119102": *sclc
+      "67821000119109": *sclc
+      "67831000119107": *sclc
+      "67841000119103": *sclc
     stage_by_snomed:
       "424132000": I
       "425048006": II
