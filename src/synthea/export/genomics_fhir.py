@@ -457,3 +457,36 @@ def build_oncology_bundle(ctx: CaseContext) -> Dict[str, Any]:
             "reasonReference": [ref(cond)],
         }))
     return {"resourceType": "Bundle", "type": "transaction", "entry": entries}
+
+
+def build_structural_gap_bundle(ctx: CaseContext, v: CuratedVariant) -> Dict[str, Any]:
+    """The structural (fusion) form the GO-61 spec asks for: no HGVS component.
+
+    The platform's INV-HGVS-1 rejects it today (a known gap, see known-gaps/).
+    """
+    pat = _patient_id(ctx)
+    org = ctx.i("lab")
+    spec = ctx.i("specimen", "tumour")
+    fam = ctx.family
+    comps = [
+        _component("48018-6", cc(HGNC, v.hgnc_id, v.gene_symbol), "Gene studied [ID]"),
+        {"code": cc(LOINC, "48019-4", "DNA change type"),
+         "valueCodeableConcept": cc("http://www.sequenceontology.org", v.consequence, "gene_fusion")},
+        _component("62374-4", cc(LOINC, "LA26806-2", GENOME_BUILD), "Human reference sequence assembly version"),
+        _component("48002-0", cc(LOINC, "LA6684-0", "Somatic"), "Genomic source class"),
+        _component("81258-6", {"value": ctx.vafs.get(v.label, v.vaf), "system": "http://unitsofmeasure.org",
+                               "code": "1"}, "Sample VAF"),
+    ]
+    obs = {
+        "meta": {"profile": [SD + "tietai-variant"]}, "status": "final", "category": _categories(),
+        "code": cc(LOINC, "69548-6", "Genetic variant assessment"), "subject": ref(pat),
+        "effectiveDateTime": iso(ctx.collected), "performer": [ref(org)], "specimen": ref(spec),
+        "component": comps}
+    return {"resourceType": "Bundle", "type": "transaction", "entry": [
+        entry("Organization", org, {"name": ctx.lab_name}),
+        patient_entry(ctx),
+        entry("Specimen", spec, {"status": "available", "type": cc(SNOMED, "119376003", "Tissue specimen"),
+                                 "subject": ref(pat),
+                                 "collection": {"collectedDateTime": iso(ctx.collected),
+                                                "bodySite": cc(SNOMED, fam["specimen"]["snomed"], fam["specimen"]["display"])}}),
+        entry("Observation", ctx.i("variant", v.label), obs)]}

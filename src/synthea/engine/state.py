@@ -438,6 +438,15 @@ class EncounterState(State):
 class EncounterEndState(State):
     """A state that ends a healthcare encounter."""
 
+    #: Known defect (found by GO-61): with the default ``False`` the state ends
+    #: the encounter and yields on every step, and never lets the module move on,
+    #: so any module path that crosses an EncounterEnd stalls for good (for
+    #: example lung cancer never reaches a diagnosis). ``True`` completes the
+    #: state on the step after it yielded. It stays off by default so existing
+    #: populations do not change; ``--genomics-cohort`` turns it on
+    #: (``generate.encounter_end_completes``).
+    completes: bool = False
+
     def run(self, person: 'Person', time: datetime) -> bool:
         """End the current encounter and yield to the next time step.
 
@@ -449,7 +458,12 @@ class EncounterEndState(State):
         end_key = f'{self.module.name}.{self.name}_ended_at'
         last_ended = person.attributes.get(end_key)
 
-        if last_ended == time:
+        if self.completes:
+            if last_ended is not None and last_ended != time:
+                # Yielded on an earlier step: the encounter is over, move on.
+                del person.attributes[end_key]
+                return True
+        elif last_ended == time:
             # Already ended this encounter at this time step; yield again.
             return False
 

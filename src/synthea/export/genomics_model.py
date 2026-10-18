@@ -28,8 +28,7 @@ KNOWLEDGE_RELEASE = "clinvar@2026-09-01"
 GENOME_BUILD = "GRCh38"
 
 
-class GenomicsPackError(RuntimeError):
-    """A pack-level failure that must not be swallowed by the exporter loop."""
+from synthea.export.exporter import GenomicsPackError  # noqa: E402  (shared type, see exporter.py)
 
 
 def genomics_resource(name: str) -> Path:

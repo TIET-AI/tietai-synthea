@@ -32,7 +32,7 @@ from synthea.engine.module import Module
               help='Path to configuration file')
 @click.option('-d', '--modules-dir', type=click.Path(exists=True),
               help='Path to modules directory')
-@click.option('-o', '--output-dir', type=click.Path(),
+@click.option('-o', '--output-dir', '--output', type=click.Path(),
               help='Output directory for generated files')
 @click.option('-r', '--reference-date', type=str,
               help='Reference date (YYYYMMDD format)')
@@ -58,6 +58,14 @@ from synthea.engine.module import Module
               type=click.Choice(['us-core', 'ips', 'ehds', 'none']),
               default=None,
               help="FHIR export profile (default: the locale pack's)")
+@click.option('--genomics', is_flag=True,
+              help='Also write the synthetic genomics/oncology pack (GO-61) to '
+                   '<output>/genomics-oncology-pack/')
+@click.option('--genomics-cohort', is_flag=True,
+              help='Implies --genomics, and enriches lung and colorectal cancer incidence '
+                   'so the pack covers all four families (opt-in; see cohort_patches.yaml)')
+@click.option('--regenerate-reference', is_flag=True,
+              help='Accept a changed curated variant table when regenerating the reference pack')
 @click.option('--list-locales', is_flag=True,
               help='List the installed locale packs')
 @click.option('--list-modules', is_flag=True,
@@ -68,7 +76,7 @@ from synthea.engine.module import Module
 def main(population, seed, clinician_seed, gender, age, module, config, modules_dir,
          output_dir, reference_date, state, city, threads, log_level, only_dead,
          keep_patients, overflow, graphviz, locale, export_profile,
-         list_locales, list_modules, version, location):
+         genomics, genomics_cohort, regenerate_reference, list_locales, list_modules, version, location):
     """
     Synthea Patient Generator
     
@@ -159,6 +167,16 @@ def main(population, seed, clinician_seed, gender, age, module, config, modules_
 
     if export_profile:
         config_obj.set('exporter.fhir.profile', export_profile)
+
+    if genomics or genomics_cohort:
+        config_obj.set('exporter.genomics.export', True)
+    if genomics_cohort:
+        from synthea.helpers.resources import resource_path
+        config_obj.set('generate.encounter_end_completes', True)
+        config_obj.set('generate.module_patches',
+                       str(resource_path('genomics') / 'cohort_patches.yaml'))
+    if regenerate_reference:
+        config_obj.set('exporter.genomics.regenerate_reference', True)
     
     if module:
         # Enable only specified modules
