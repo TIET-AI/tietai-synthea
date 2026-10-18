@@ -11,6 +11,8 @@ from enum import Enum
 import logging
 import copy
 
+from synthea import compat
+
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
@@ -297,6 +299,7 @@ class DelayState(State):
             delays[self.name] = time + self._calculate_delay(person)
 
         if time >= delays[self.name]:
+            person.attributes[f'{self.module.name}.__delay_due'] = delays[self.name]
             del delays[self.name]
             return True
         return False
@@ -390,7 +393,19 @@ class EncounterState(State):
 
         # Create encounter in person's health record
         if getattr(person, 'record', None) is not None:
+            if not compat.legacy:
+                current = person.attributes.get('current_encounter')
+                if current is not None and getattr(current, 'end_time', None) is not None:
+                    person.attributes.pop('current_encounter', None)      # already over
+                elif current is not None:
+                    if getattr(current, 'owner', None) == self.module.name:
+                        # this module never ended its previous encounter: end it now
+                        person.record.encounter_end(current, time)
+                        del person.attributes['current_encounter']
+                    else:
+                        return False        # block until the other holder lets go (Java)
             encounter = person.record.encounter_start(time, encounter_class)
+            encounter.owner = self.module.name
             encounter.name = self.name
             encounter.codes.extend(codes)
             if reason:
@@ -424,7 +439,7 @@ class EncounterState(State):
         # that loops back to a wellness Encounter after its EncounterEnd would join
         # the same visit again and again within one step.
         consumed_key = f'{self.module.name}_wellness_joined_at'
-        if not EncounterEndState.legacy_stall:
+        if not compat.legacy:
             if person.attributes.get(consumed_key) == time:
                 return False
             person.attributes[consumed_key] = time
@@ -445,33 +460,47 @@ class EncounterState(State):
         return True
 
 
+#: Owner recorded on the routine (wellness) encounter by the core encounter module.
+WELLNESS_OWNER = 'encounter'
+
+
 class EncounterEndState(State):
     """A state that ends a healthcare encounter.
 
-    Ends the encounter in progress (if any) and completes, so the module moves on to
-    the next state in the same step, as in the Java reference engine. Cycles that run
-    Encounter -> EncounterEnd -> Encounter with no Delay are still stopped by the
-    module's iteration cap.
+    Follows the Java reference engine (State.EncounterEnd): it ends the encounter in progress
+    only when this module owns it; on the routine (wellness) visit it just lets go of it (the
+    check-up belongs to the core encounter module, which closes it); if another module holds the
+    encounter it waits; with no encounter in progress it completes. The module moves on to the
+    next state in the same step. Cycles Encounter -> EncounterEnd -> Encounter with no Delay are
+    stopped by the same-step revisit guard and the module's iteration cap.
 
-    Until 1.4.2 this state ended the encounter and returned ``False`` on every call.
-    The module executor reads ``False`` as "needs more time", so the module stayed on
-    this state for ever and no state after an EncounterEnd was ever reached (issue
-    #119). ``legacy_stall`` (config ``generate.encounter_end_legacy_stall``) restores
-    that behaviour, only so an old population can be reproduced.
+    Until 1.4.2 this state ended the encounter and returned ``False`` on every call. The module
+    executor reads ``False`` as "needs more time", so the module stayed on this state for ever
+    and no state after an EncounterEnd was ever reached (issue #119).
+    ``generate.encounter_end_legacy_stall`` (see ``synthea.compat``) restores that behaviour,
+    only so an old population can be reproduced.
     """
 
-    legacy_stall: bool = False
-
     def run(self, person: 'Person', time: datetime) -> bool:
-        """End the current encounter and let the module continue."""
-        if self.legacy_stall:
+        """End the encounter this module owns and let the module continue."""
+        if compat.legacy:
             return self._run_legacy(person, time)
 
-        if hasattr(person, 'record') and 'current_encounter' in person.attributes:
-            encounter = person.attributes['current_encounter']
-            person.record.encounter_end(encounter, time)
+        encounter = person.attributes.get('current_encounter')
+        if encounter is None or getattr(encounter, 'end_time', None) is not None:
+            person.attributes.pop('current_encounter', None)
+            return True                                # no encounter in progress
+        owner = getattr(encounter, 'owner', None)
+        if owner is None or owner == self.module.name:
+            if hasattr(person, 'record'):
+                person.record.encounter_end(encounter, time)
             del person.attributes['current_encounter']
-        return True
+            return True
+        if owner == WELLNESS_OWNER:
+            # the routine visit is not this module's to end; it stays open for the others and
+            # the core encounter module closes it
+            return True
+        return False                                   # another module holds the encounter
 
     def _run_legacy(self, person: 'Person', time: datetime) -> bool:
         end_key = f'{self.module.name}.{self.name}_ended_at'

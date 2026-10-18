@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import operator
 import re
 
+from synthea import compat
 from synthea.world.health_record import Code
 
 logger = logging.getLogger(__name__)
@@ -40,9 +41,6 @@ class Logic:
     #: module of a ``PriorState`` condition. ``None`` outside a module (and in legacy mode).
     current_module: Optional[str] = None
 
-    #: Reproduce the pre-1.4.2 evaluation of "is nil" / "is not nil" (always false).
-    #: Set from ``generate.encounter_end_legacy_stall`` with the other #119 behaviours.
-    legacy: bool = False
     
     @staticmethod
     def test(condition: Dict[str, Any], person: 'Person', time: datetime) -> bool:
@@ -359,6 +357,25 @@ class Logic:
         if not person.attributes.get(key, False):
             return False
 
+        if not compat.legacy:
+            # Java Person.hadPriorState(name, since, within): the state must have been visited
+            # after the `since` state (when that was visited at all) and must have exited
+            # within the window (strictly after time - within).
+            since = condition.get('since')
+            if since:
+                since_seq = person.attributes.get(f'{module_name}.{since}_seq') if module_name else None
+                name_seq = person.attributes.get(f'{module_name}.{state_name}_seq') if module_name else None
+                if since_seq is not None and (name_seq is None or since_seq > name_seq):
+                    return False
+            window = condition.get('within')
+            if not window or time is None:
+                return True
+            visited_at = person.attributes.get(time_key)
+            if visited_at is None:
+                return True
+            from synthea.engine.values import to_timedelta
+            return visited_at > time - to_timedelta(window.get('quantity'), window.get('unit', 'years'))
+
         window = condition.get('within')
         if not window or time is None:
             return True
@@ -391,9 +408,9 @@ class Logic:
         # GMF spells the existence tests "is nil" / "is not nil" and gives no value.
         # They used to fall through to "target is None -> False", so every module
         # condition written that way (333 uses) was always false.
-        if not Logic.legacy and operator_str == 'is nil':
+        if not compat.legacy and operator_str == 'is nil':
             return person_value is None
-        if not Logic.legacy and operator_str == 'is not nil':
+        if not compat.legacy and operator_str == 'is not nil':
             return person_value is not None
         
         # Handle different value types

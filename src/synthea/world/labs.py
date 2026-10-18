@@ -48,6 +48,7 @@ import json
 import logging
 from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
 
+from synthea import compat
 from synthea.helpers.resources import resource_path
 
 logger = logging.getLogger(__name__)
@@ -187,8 +188,9 @@ def annotate(observation, person: Optional['Person'] = None) -> None:
 
     # A range beside no value (a vital sign the person does not have yet) is noise, and it
     # has no flag to go with it; EncounterEnd completing made such observations reachable.
+    # (Not in legacy mode, which reproduces 1.4.1 exactly.)
     value = observation.value
-    if value is None or isinstance(value, bool):
+    if not compat.legacy and (value is None or isinstance(value, bool)):
         return
 
     code = str(observation.codes[0].code)

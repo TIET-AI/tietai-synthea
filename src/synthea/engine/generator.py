@@ -251,9 +251,8 @@ class Generator:
         print("Loading modules...")
         
         from synthea.engine.state import EncounterEndState
-        EncounterEndState.legacy_stall = self.config.get_bool('generate.encounter_end_legacy_stall', False)
-        from synthea.engine.logic import Logic
-        Logic.legacy = EncounterEndState.legacy_stall
+        from synthea import compat
+        compat.legacy = self.config.get_bool('generate.encounter_end_legacy_stall', False)
 
         # Load modules from default location
         self.modules = Module.load_modules()

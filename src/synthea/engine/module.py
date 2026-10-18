@@ -14,14 +14,16 @@ from pathlib import Path
 import importlib
 import inspect
 
+from synthea import compat
 from synthea.engine.logic import Logic
-from synthea.engine.state import EncounterEndState, State
+from synthea.engine.state import DelayState, EncounterEndState, State
 from synthea.engine.transition import Transition
 from synthea.helpers.resources import resource_path
 
 logger = logging.getLogger(__name__)
 
 _MAX_MODULE_ITERATIONS = 500
+_MAX_REWIND_DEPTH = 200
 
 if TYPE_CHECKING:
     from synthea.world.person import Person
@@ -50,13 +52,13 @@ class Module:
     
     def process(self, person: 'Person', time: datetime) -> bool:
         previous = Logic.current_module
-        Logic.current_module = None if EncounterEndState.legacy_stall else self.name
+        Logic.current_module = None if compat.legacy else self.name
         try:
             return self._process(person, time)
         finally:
             Logic.current_module = previous
 
-    def _process(self, person: 'Person', time: datetime) -> bool:
+    def _process(self, person: 'Person', time: datetime, _depth: int = 0) -> bool:
         """
         Process this module for a person at a given time.
         
@@ -89,17 +91,23 @@ class Module:
             # example Encounter -> EncounterEnd -> Encounter with a Guard that lets it
             # through) waits for the next step instead of spinning, as the
             # EncounterEnd yield used to (issue #119). Not applied in legacy mode.
-            if not EncounterEndState.legacy_stall:
-                if current_state_name in _ran_this_step:
-                    person.attributes[current_state_key] = current_state_name
-                    return False
-                _ran_this_step.add(current_state_name)
+            if not compat.legacy:
+                if not isinstance(state, DelayState):      # a Delay is the way out of a cycle
+                    if current_state_name in _ran_this_step:
+                        person.attributes[current_state_key] = current_state_name
+                        return False
+                    _ran_this_step.add(current_state_name)
 
             # Mark state as visited (for PriorState conditions)
             # Record when, not just whether: a PriorState condition with a
             # `within` window needs the timestamp to answer 'recently?'.
             person.attributes[f'{self.name}.{current_state_name}_visited'] = True
             person.attributes[f'{self.name}.{current_state_name}_visited_at'] = time
+            if not compat.legacy:
+                # order of visits, for PriorState "since" (Java walks the state history)
+                seq = person.attributes.get(f'{self.name}.__seq', 0) + 1
+                person.attributes[f'{self.name}.__seq'] = seq
+                person.attributes[f'{self.name}.{current_state_name}_seq'] = seq
             
             # Run the state
             completed = state.run(person, time)
@@ -111,6 +119,22 @@ class Module:
             
             # Get next state from transition
             next_state = self._get_next_state(state, person, time)
+
+            # A Delay that expired between two steps ended at its due time, not now: carry on
+            # from there so loop intervals are exact (Java Module.process rewinds time the
+            # same way). The states after it run at the due time; this call then resumes.
+            due = person.attributes.pop(f'{self.name}.__delay_due', None) if isinstance(state, DelayState) else None
+            if due is not None and not compat.legacy:
+                # a Delay exits at its due time, which is what "within" measures
+                person.attributes[f'{self.name}.{current_state_name}_visited_at'] = min(due, time)
+            if (due is not None and due < time and next_state and not compat.legacy
+                    and _depth < _MAX_REWIND_DEPTH):
+                person.attributes[current_state_key] = next_state
+                self._process(person, due, _depth + 1)
+                current_state_name = person.attributes.get(current_state_key)
+                if not current_state_name:
+                    return True
+                continue
             
             if next_state == current_state_name:
                 # Prevent direct self-loop

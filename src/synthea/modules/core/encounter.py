@@ -92,6 +92,7 @@ class EncounterModule(Module):
     def _open_wellness(self, person: 'Person', time: datetime) -> None:
         encounter = person.record.encounter_start(time, 'wellness')
         encounter.name = 'Wellness Encounter'
+        encounter.owner = 'encounter'      # the routine visit belongs to this core module
         encounter.codes = [_wellness_code()]
 
         person.attributes[CURRENT_WELLNESS] = encounter

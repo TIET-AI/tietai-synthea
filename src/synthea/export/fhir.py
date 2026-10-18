@@ -1993,23 +1993,30 @@ class FHIRExporter(PatientExporter):
             "section": built,
         }
 
-        author = self._composition_author(person)
+        author = self._composition_author(person, bundle)
         if author is not None:
             resource["author"] = [author]
 
         return self._entry("Composition", resource["id"], resource)
 
-    def _composition_author(self, person: 'Person') -> Optional[Dict[str, Any]]:
+    def _composition_author(self, person: 'Person',
+                            bundle: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
         """Who authored the summary.
 
         The most recent encounter's organization, because a summary is
         attributed to the institution that holds the record rather than to
-        whichever clinician happened to be last.
+        whichever clinician happened to be last. When the document is a category
+        extract, only an organization that is in the document can be the author:
+        the document must not refer out of itself.
         """
+        present = ({e.get('fullUrl') for e in bundle.get('entry', [])}
+                   if bundle is not None else None)
         for encounter in reversed(person.record.encounters):
             provider = getattr(encounter, 'provider', None)
             if provider is not None:
-                return {"reference": f"urn:uuid:{_organization_uuid(provider)}"}
+                url = f"urn:uuid:{_organization_uuid(provider)}"
+                if present is None or url in present:
+                    return {"reference": url}
         return None
 
     def _map_race_code(self, race: str) -> str:
