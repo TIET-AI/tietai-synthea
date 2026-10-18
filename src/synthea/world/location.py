@@ -7,12 +7,16 @@ zip codes, and coordinates.
 
 import json
 import csv
+import logging
+import math
 from pathlib import Path
-from typing import Dict, Any, Optional, List, Tuple
+from typing import Dict, Any, Iterable, Optional, List, Sequence, Tuple
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from synthea.helpers.resources import resource_path
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -248,6 +252,15 @@ class Location:
             # Set default city to first city in state
             if self.current_state.cities:
                 self.set_city(self.current_state.cities[0].name)
+        else:
+            # Not silently: an unrecognised state used to leave every patient
+            # in the default, which looks like a successful run.
+            logger.warning(
+                "Unknown state %r: the built-in geography knows %s. Patients "
+                "keep the default location (%s).", state,
+                ', '.join(sorted({s.name for s in self.states.values()})),
+                self.state,
+            )
     
     def set_city(self, city: str):
         """
@@ -262,6 +275,13 @@ class Location:
                     self.current_city = c
                     self.city = c.name
                     break
+            else:
+                logger.warning(
+                    "Unknown city %r in %s: known cities are %s. Patients keep "
+                    "%s.", city, self.current_state.name,
+                    ', '.join(c.name for c in self.current_state.cities),
+                    self.city,
+                )
     
     def random_city(self, rand: random.Random) -> City:
         """
@@ -350,3 +370,189 @@ class Location:
         c = 2 * math.asin(math.sqrt(a))
         
         return R * c
+
+
+# ----------------------------------------------------------------------
+# Locale-pack geography
+# ----------------------------------------------------------------------
+
+#: Default radius, in kilometres, around a municipality's reference point
+#: within which a home is placed when the file gives none.
+DEFAULT_RADIUS_KM = 2.0
+
+
+@dataclass
+class Municipality:
+    """One row of a locale pack's geography file."""
+    region: str
+    region_code: str
+    city: str
+    name: str
+    code: str
+    postal_codes: List[str]
+    coordinates: Tuple[float, float]
+    population: int
+    catchment: str = ''
+    radius_km: float = DEFAULT_RADIUS_KM
+
+
+class PackGeography:
+    """Where patients live, from a locale pack's geography file.
+
+    The built-in :class:`Location` knows a handful of US cities and, unless a
+    state is chosen, places everyone at latitude 0, longitude 0 with ZIP code
+    `00000`. A pack geography instead gives every patient a real municipality,
+    drawn in proportion to its population, with one of its postal codes and a
+    home near it.
+
+    The file format is documented on
+    :attr:`synthea.locale.base.LocalePack.geography_file`. Selection works for
+    any pack: `restrict(regions=..., cities=...)` keeps the matching rows, and
+    an unknown name is a warning naming what is known rather than a silent
+    fall back to everywhere.
+    """
+
+    def __init__(self, municipalities: Sequence[Municipality]):
+        self.municipalities: List[Municipality] = list(municipalities)
+        self.selected: List[Municipality] = list(self.municipalities)
+        self._weights = [m.population for m in self.selected]
+        #: Kept for interfaces written against :class:`Location`. A pack
+        #: geography has no single state or city, so both are None and
+        #: nothing downstream narrows by them.
+        self.state: Optional[str] = None
+        self.city: Optional[str] = None
+
+    # ------------------------------------------------------------------
+
+    @classmethod
+    def from_csv(cls, path) -> 'PackGeography':
+        rows: List[Municipality] = []
+        with open(path, 'r', encoding='utf-8-sig', newline='') as handle:
+            for number, row in enumerate(csv.DictReader(handle), start=2):
+                try:
+                    rows.append(_municipality(row))
+                except (KeyError, TypeError, ValueError) as error:
+                    logger.warning("Skipping %s line %d: %s", path, number, error)
+        if not rows:
+            raise ValueError(f"No usable rows in geography file {path}")
+        return cls(rows)
+
+    # ------------------------------------------------------------------
+
+    def regions(self) -> List[str]:
+        return sorted({m.region for m in self.municipalities})
+
+    def cities(self) -> List[str]:
+        return sorted({m.city for m in self.municipalities})
+
+    def restrict(self, regions: Iterable[str] = (), cities: Iterable[str] = ()
+                 ) -> List[str]:
+        """Keep only the named regions and/or cities. Returns unknown names.
+
+        A region matches its name or code; a city matches the urban area
+        (`city` column) or a single municipality. Matching ignores case and
+        accents. When nothing requested is known the selection is left as it
+        was, with a warning, rather than emptied.
+        """
+        regions = [r for r in (str(r).strip() for r in regions) if r]
+        cities = [c for c in (str(c).strip() for c in cities) if c]
+        if not regions and not cities:
+            return []
+
+        unknown: List[str] = []
+        selected = self.municipalities
+
+        if regions:
+            wanted = {_fold(r) for r in regions}
+            known = {_fold(m.region) for m in selected} | {
+                _fold(m.region_code) for m in selected}
+            unknown += [r for r in regions if _fold(r) not in known]
+            selected = [m for m in selected
+                        if _fold(m.region) in wanted
+                        or _fold(m.region_code) in wanted]
+
+        if cities:
+            wanted = {_fold(c) for c in cities}
+            known = {_fold(m.city) for m in selected} | {
+                _fold(m.name) for m in selected}
+            unknown += [c for c in cities if _fold(c) not in known]
+            selected = [m for m in selected
+                        if _fold(m.city) in wanted or _fold(m.name) in wanted]
+
+        if unknown:
+            logger.warning(
+                "Unknown geography %s. Known regions: %s. Known cities: %s.",
+                ', '.join(repr(u) for u in unknown),
+                ', '.join(self.regions()), ', '.join(self.cities()),
+            )
+
+        if not selected:
+            logger.warning(
+                "The geography selection matched nothing, so patients are "
+                "drawn from every place in the file.")
+            return unknown
+
+        self.selected = selected
+        self._weights = [m.population for m in selected]
+        return unknown
+
+    # ------------------------------------------------------------------
+
+    def random_place(self, rand: random.Random) -> Dict[str, Any]:
+        """A home for one patient: municipality, postal code and coordinates.
+
+        Three draws, always in this order: the municipality (weighted by
+        population), the postal code, then the point (two draws).
+        """
+        place = rand.choices(self.selected, weights=self._weights)[0]
+        postal = rand.choice(place.postal_codes) if place.postal_codes else None
+        latitude, longitude = _point_near(place.coordinates, place.radius_km,
+                                          rand)
+        return {
+            'state': place.region,
+            'region_code': place.region_code,
+            'city': place.name,
+            'municipality_code': place.code,
+            'urban_area': place.city,
+            'catchment_area': place.catchment or place.city,
+            'zip_code': postal,
+            'latitude': latitude,
+            'longitude': longitude,
+        }
+
+
+def _municipality(row: Dict[str, str]) -> Municipality:
+    radius = (row.get('radius_km') or '').strip()
+    return Municipality(
+        region=row['region'].strip(),
+        region_code=row['region_code'].strip(),
+        city=row['city'].strip(),
+        name=row['municipality'].strip(),
+        code=(row.get('municipality_code') or '').strip(),
+        postal_codes=[code.strip() for code in
+                      (row.get('postal_codes') or '').split('|')
+                      if code.strip()],
+        coordinates=(float(row['lat']), float(row['lon'])),
+        population=int(float(row['population'])),
+        catchment=(row.get('catchment') or '').strip(),
+        radius_km=float(radius) if radius else DEFAULT_RADIUS_KM,
+    )
+
+
+def _point_near(centre: Tuple[float, float], radius_km: float,
+                rand: random.Random) -> Tuple[float, float]:
+    """A point uniformly distributed within a disc around `centre`."""
+    distance = radius_km * math.sqrt(rand.random())
+    bearing = rand.uniform(0.0, 2.0 * math.pi)
+    latitude = centre[0] + (distance / 111.32) * math.cos(bearing)
+    scale = 111.32 * max(0.01, math.cos(math.radians(centre[0])))
+    longitude = centre[1] + (distance / scale) * math.sin(bearing)
+    return round(latitude, 6), round(longitude, 6)
+
+
+def _fold(text: str) -> str:
+    """Lower case without accents, so `Malaga` finds `Málaga`."""
+    import unicodedata
+
+    decomposed = unicodedata.normalize('NFKD', str(text).strip().lower())
+    return ''.join(ch for ch in decomposed if not unicodedata.combining(ch))

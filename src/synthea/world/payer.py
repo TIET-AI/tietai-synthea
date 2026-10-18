@@ -97,30 +97,149 @@ NO_INSURANCE = Payer(id='no-insurance', name='NO_INSURANCE',
                      ownership='NO_INSURANCE', states_covered=['*'])
 
 
+class CoveragePolicy:
+    """Who is covered by what. Locale packs supply one; see `coverage_policy`.
+
+    Two questions, kept apart so a patient can keep the same plan while their
+    eligibility is unchanged:
+
+    - `kind_for` - which kind of cover the patient qualifies for at an age
+      (`medicare`, `public`, `private`, `none`, ...);
+    - `coverage_for` - the concrete :class:`Coverage` for that kind.
+
+    Every random draw must come from `person.random`.
+    """
+
+    def kind_for(self, manager: 'PayerManager', person: 'Person',
+                 age: float) -> str:  # pragma: no cover - interface
+        raise NotImplementedError
+
+    def coverage_for(self, manager: 'PayerManager', person: 'Person',
+                     age: float, time: datetime,
+                     kind: str) -> Coverage:  # pragma: no cover - interface
+        raise NotImplementedError
+
+
+class UnitedStatesCoverage(CoveragePolicy):
+    """The engine default: simplified United States eligibility.
+
+    65 or over -> Medicare; low income -> Medicaid where taken up, otherwise
+    uninsured; everyone else -> a private plan available in their state. The
+    order of random draws is part of the contract (seeded runs depend on it).
+    """
+
+    def kind_for(self, manager, person, age):
+        if age >= MEDICARE_AGE:
+            return 'medicare'
+
+        status = str(person.attributes.get('socioeconomic_status', 'middle')).lower()
+        if status != 'low':
+            return 'private'
+
+        # Low income: Medicaid where it is taken up, otherwise the coverage
+        # gap, which is a real feature of the population rather than an
+        # omission. Decided once per patient, not per year, because churning
+        # in and out of Medicaid annually is not what happens.
+        settled = person.attributes.get('medicaid_enrolled')
+        if settled is None:
+            settled = person.random.random() < MEDICAID_TAKEUP
+            person.attributes['medicaid_enrolled'] = settled
+
+        return 'medicaid' if settled else 'none'
+
+    def coverage_for(self, manager, person, age, time, kind):
+        state = person.attributes.get('state')
+
+        if kind == 'medicare':
+            plans = manager._plans_for('MedicareEligible')
+            if plans:
+                return Coverage(plan=person.random.choice(plans), start=time,
+                                kind='medicare')
+
+        if kind == 'medicaid':
+            plans = manager._plans_for('MedicaidEligible')
+            if plans:
+                return Coverage(plan=person.random.choice(plans), start=time,
+                                kind='medicaid')
+
+        if kind == 'private':
+            plans = manager._private_plans(state)
+            if plans:
+                return Coverage(
+                    plan=person.random.choice(plans),
+                    start=time,
+                    kind='private',
+                    via_employer=person.random.random() < EMPLOYER_SHARE,
+                )
+
+        return Coverage(plan=None, start=time, kind='none')
+
+
+class UniversalCoverage(CoveragePolicy):
+    """Everyone is covered, from birth, by the plans of one eligibility policy.
+
+    The shape of a tax-funded national health system: cover is a right of
+    residence, not of age, income or employment. `eligibility` selects plans
+    by their `Eligibility Policy` column; with several, one is drawn per
+    patient (the draw is made once and kept).
+    """
+
+    def __init__(self, eligibility: str, kind: str = 'public'):
+        self.eligibility = eligibility
+        self.kind = kind
+
+    def kind_for(self, manager, person, age):
+        return self.kind
+
+    def coverage_for(self, manager, person, age, time, kind):
+        plans = manager._plans_for(self.eligibility)
+        if not plans:
+            return Coverage(plan=None, start=time, kind='none')
+        plan = plans[0] if len(plans) == 1 else person.random.choice(plans)
+        return Coverage(plan=plan, start=time, kind=kind)
+
+
 class PayerManager:
     """Loads payers and plans, and decides who covers a patient."""
 
-    def __init__(self, seed: Optional[int] = None):
+    def __init__(self, seed: Optional[int] = None,
+                 policy: Optional[CoveragePolicy] = None):
         self.payers: Dict[str, Payer] = {}
         self.plans: Dict[str, Plan] = {}
         self.plans_by_eligibility: Dict[str, List[Plan]] = {}
         self._seed = seed if seed is not None else random_seed()
+        self.policy: CoveragePolicy = policy or UnitedStatesCoverage()
 
     # ------------------------------------------------------------------
     # Loading
     # ------------------------------------------------------------------
 
-    def load(self):
-        """Load payers and their plans."""
-        self._load_payers()
-        self._load_plans()
+    def load(self, pack=None):
+        """Load payers and their plans: the pack's files, else the bundled.
+
+        A pack's coverage policy, if it has one, replaces the default.
+        """
+        payers_path = resource_path('payers', 'insurance_companies.csv')
+        plans_path = resource_path('payers', 'insurance_plans.csv')
+        if pack is not None:
+            if getattr(pack, 'coverage_policy', None) is not None:
+                self.policy = pack.coverage_policy
+            if getattr(pack, 'payers_file', None):
+                payers_path = pack.data_path(pack.payers_file)
+            if getattr(pack, 'plans_file', None):
+                plans_path = pack.data_path(pack.plans_file)
+
+        if payers_path is not None:
+            self._load_payers(payers_path)
+        if plans_path is not None:
+            self._load_plans(plans_path)
 
         if not self.plans:
             logger.warning(
                 "No insurance plans found; every patient will be uninsured.")
 
-    def _load_payers(self):
-        path = resource_path('payers', 'insurance_companies.csv')
+    def _load_payers(self, path=None):
+        path = path or resource_path('payers', 'insurance_companies.csv')
         if not path.exists():
             return
         try:
@@ -140,8 +259,8 @@ class PayerManager:
         except Exception as error:  # pragma: no cover - defensive
             logger.warning("Could not read payers from %s: %s", path, error)
 
-    def _load_plans(self):
-        path = resource_path('payers', 'insurance_plans.csv')
+    def _load_plans(self, path=None):
+        path = path or resource_path('payers', 'insurance_plans.csv')
         if not path.exists():
             return
         try:
@@ -194,55 +313,15 @@ class PayerManager:
         """Which kind of cover a patient qualifies for at this age.
 
         Separate from plan selection so a patient can keep the same plan while
-        their eligibility is unchanged.
+        their eligibility is unchanged. Decided by the coverage policy.
         """
-        if age >= MEDICARE_AGE:
-            return 'medicare'
-
-        status = str(person.attributes.get('socioeconomic_status', 'middle')).lower()
-        if status != 'low':
-            return 'private'
-
-        # Low income: Medicaid where it is taken up, otherwise the coverage
-        # gap, which is a real feature of the population rather than an
-        # omission. Decided once per patient, not per year, because churning
-        # in and out of Medicaid annually is not what happens.
-        settled = person.attributes.get('medicaid_enrolled')
-        if settled is None:
-            settled = person.random.random() < MEDICAID_TAKEUP
-            person.attributes['medicaid_enrolled'] = settled
-
-        return 'medicaid' if settled else 'none'
+        return self.policy.kind_for(self, person, age)
 
     def coverage_for(self, person: 'Person', age: float, time: datetime,
                      kind: Optional[str] = None) -> Coverage:
         """The coverage a patient should have at this age."""
         kind = kind or self.kind_for(person, age)
-        state = person.attributes.get('state')
-
-        if kind == 'medicare':
-            plans = self._plans_for('MedicareEligible')
-            if plans:
-                return Coverage(plan=person.random.choice(plans), start=time,
-                                kind='medicare')
-
-        if kind == 'medicaid':
-            plans = self._plans_for('MedicaidEligible')
-            if plans:
-                return Coverage(plan=person.random.choice(plans), start=time,
-                                kind='medicaid')
-
-        if kind == 'private':
-            plans = self._private_plans(state)
-            if plans:
-                return Coverage(
-                    plan=person.random.choice(plans),
-                    start=time,
-                    kind='private',
-                    via_employer=person.random.random() < EMPLOYER_SHARE,
-                )
-
-        return Coverage(plan=None, start=time, kind='none')
+        return self.policy.coverage_for(self, person, age, time, kind)
 
     # ------------------------------------------------------------------
     # Paying

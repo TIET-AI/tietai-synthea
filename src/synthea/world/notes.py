@@ -58,23 +58,33 @@ def set_post_processor(
     _post_processor = processor
 
 
-def _environment():
-    """The Jinja environment, built once."""
-    global _env
-    if _env is None:
+def _environment(pack=None):
+    """The Jinja environment for a pack's template search path, built once.
+
+    A pack's own `templates/notes/` directory is searched before the bundled
+    one, so a pack ships a template only when it needs a different one.
+    """
+    if pack is not None and hasattr(pack, 'templates_dirs'):
+        directories = tuple(str(path) for path in pack.templates_dirs('notes'))
+    else:
+        directories = (str(resource_path('templates', 'notes')),)
+
+    env = _envs.get(directories)
+    if env is None:
         from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-        _env = Environment(
-            loader=FileSystemLoader(str(resource_path('templates', 'notes'))),
+        env = Environment(
+            loader=FileSystemLoader(list(directories)),
             autoescape=select_autoescape(enabled_extensions=(), default=False),
             trim_blocks=True,
             lstrip_blocks=False,
             keep_trailing_newline=True,
         )
-    return _env
+        _envs[directories] = env
+    return env
 
 
-_env = None
+_envs: Dict[tuple, Any] = {}
 
 
 # ----------------------------------------------------------------------
@@ -96,8 +106,10 @@ def write_notes(person: 'Person') -> int:
 
 def note_for(person: 'Person', encounter: 'Encounter') -> Optional[str]:
     """Render one encounter's note, or None if it could not be rendered."""
+    pack = getattr(person, 'locale', None)
+    name = getattr(pack, 'note_template', None) or _TEMPLATE_NAME
     try:
-        template = _environment().get_template(_TEMPLATE_NAME)
+        template = _environment(pack).get_template(name)
         text = template.render(**context_for(person, encounter))
     except Exception:  # pragma: no cover - never fail a run over a note
         logger.warning("Could not render a clinical note", exc_info=True)
@@ -136,6 +148,9 @@ def context_for(person: 'Person', encounter: 'Encounter') -> Dict[str, Any]:
     age = person.age_at(time)
 
     return {
+        # Facts, for a template in another language to phrase itself. The
+        # sentences below are English and are what the bundled template uses.
+        'patient': _patient_facts(person, time, age),
         'date': time.strftime('%Y-%m-%d'),
         'history_of_present_illness': history_of_present_illness(person, time),
         'social_history': social_history(person, age),
@@ -155,11 +170,65 @@ def context_for(person: 'Person', encounter: 'Encounter') -> Dict[str, Any]:
     }
 
 
+def _patient_facts(person: 'Person', time: datetime, age: float) -> Dict[str, Any]:
+    """The facts behind the sentences, without any language in them."""
+    marital = person.attributes.get('marital_status')
+    if isinstance(marital, dict):
+        marital = marital.get('code')
+    coverage = person.attributes.get('current_coverage')
+    plan = getattr(coverage, 'plan', None)
+    records_race = _records_race(person)
+    years, months = _age_parts(person, time)
+    return {
+        'first_name': person.attributes.get('first_name'),
+        'sex': _gender(person),
+        'age_years': years,
+        'age_months': months,
+        'race': person.attributes.get('race') if records_race else None,
+        'ethnicity': person.attributes.get('ethnicity') if records_race else None,
+        'active_conditions': _active_displays(person.record.conditions, time),
+        'marital_status': marital if age > 18 else None,
+        'smoker': bool(person.attributes.get('smoker')) if age > 16 else None,
+        'quit_smoking_age': person.attributes.get('quit_smoking_age'),
+        'alcoholic': bool(person.attributes.get('alcoholic')),
+        'socioeconomic_status': person.attributes.get('socioeconomic_status'),
+        'education': person.attributes.get('education') if age >= 18 else None,
+        'insurer': plan.payer.name if plan is not None else None,
+    }
+
+
+def _records_race(person: 'Person') -> bool:
+    """Whether the patient's locale records race at all (most do not)."""
+    pack = getattr(person, 'locale', None)
+    if pack is None:
+        return True
+    return bool(getattr(pack, 'race_categories', ()))
+
+
+def _age_parts(person: 'Person', time: datetime):
+    """Whole years and, under a year, whole months; None if unknown."""
+    born = person.attributes.get('birth_date')
+    if born is None:
+        return None, None
+    if isinstance(born, str):
+        born = datetime.fromisoformat(born)
+    years = time.year - born.year - (
+        (time.month, time.day) < (born.month, born.day))
+    months = (time.year - born.year) * 12 + time.month - born.month
+    if time.day < born.day:
+        months -= 1
+    return years, months
+
+
 def history_of_present_illness(person: 'Person', time: datetime) -> str:
     """The opening sentence, and the problem list behind it."""
     who = person.attributes.get('first_name') or 'The patient'
-    ethnicity = _humanise(person.attributes.get('ethnicity', ''))
-    race = _humanise(person.attributes.get('race', ''))
+    if _records_race(person):
+        ethnicity = _humanise(person.attributes.get('ethnicity', ''))
+        race = _humanise(person.attributes.get('race', ''))
+    else:
+        # A locale that does not record race has none to report.
+        ethnicity = race = ''
     sex = 'female' if _gender(person) == 'F' else 'male'
 
     descriptors = ' '.join(filter(None, [ethnicity, race, sex]))

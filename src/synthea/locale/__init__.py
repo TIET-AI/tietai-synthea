@@ -22,7 +22,8 @@ from __future__ import annotations
 import logging
 from typing import Dict, List, Optional, Tuple
 
-from synthea.locale.base import CodingPreferences, IdentifierScheme, LocalePack
+from synthea.locale.base import (CodingPreferences, IdentifierScheme,
+                                  LocalePack, PractitionerIdentifierScheme)
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ __all__ = [
     'CodingPreferences',
     'IdentifierScheme',
     'LocalePack',
+    'PractitionerIdentifierScheme',
     'available',
     'get',
     'register',

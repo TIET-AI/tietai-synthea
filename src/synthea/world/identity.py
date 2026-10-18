@@ -101,6 +101,15 @@ class LanguageCodes:
     def get(cls, language: str) -> Optional[Dict[str, str]]:
         return cls.load().get(language)
 
+    @classmethod
+    def for_code(cls, code: str) -> Dict[str, str]:
+        """The entry for a BCP-47 code, or a bare coding if none is listed."""
+        for entry in cls.load().values():
+            if isinstance(entry, dict) and str(entry.get('code', '')).lower() == \
+                    str(code).lower():
+                return entry
+        return {'code': code, 'system': 'urn:ietf:bcp:47'}
+
 
 def assign_identity(person: 'Person', pack=None) -> None:
     """Give a person a name, address, contact details and identifiers.
@@ -124,7 +133,7 @@ def assign_identity(person: 'Person', pack=None) -> None:
         pack.assign_contact(person)
 
     _assign_identifiers(person, pack)
-    _assign_social(person)
+    _assign_social(person, pack)
 
 
 def _default_pack():
@@ -145,8 +154,11 @@ def _assign_identifiers(person: 'Person', pack) -> None:
             person.attributes[scheme.key] = value
 
 
-def _assign_social(person: 'Person') -> None:
+def _assign_social(person: 'Person', pack=None) -> None:
+    """The patient's language: from their name's language, else the locale's."""
     language = LanguageCodes.get(person.attributes.get('name_language', 'english'))
+    if not language and pack is not None and getattr(pack, 'language', None):
+        language = LanguageCodes.for_code(pack.language)
     if language:
         person.attributes['language_code'] = language
 
