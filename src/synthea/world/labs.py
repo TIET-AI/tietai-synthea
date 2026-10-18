@@ -185,6 +185,12 @@ def annotate(observation, person: Optional['Person'] = None) -> None:
     if not observation.codes:
         return
 
+    # A range beside no value (a vital sign the person does not have yet) is noise, and it
+    # has no flag to go with it; EncounterEnd completing made such observations reachable.
+    value = observation.value
+    if value is None or isinstance(value, bool):
+        return
+
     code = str(observation.codes[0].code)
     variant = reference_range_for(code, person, observation.time)
     if variant is None:

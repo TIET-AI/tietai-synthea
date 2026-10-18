@@ -14,7 +14,8 @@ from pathlib import Path
 import importlib
 import inspect
 
-from synthea.engine.state import State
+from synthea.engine.logic import Logic
+from synthea.engine.state import EncounterEndState, State
 from synthea.engine.transition import Transition
 from synthea.helpers.resources import resource_path
 
@@ -48,6 +49,14 @@ class Module:
         self.gmf_version: Optional[float] = None
     
     def process(self, person: 'Person', time: datetime) -> bool:
+        previous = Logic.current_module
+        Logic.current_module = None if EncounterEndState.legacy_stall else self.name
+        try:
+            return self._process(person, time)
+        finally:
+            Logic.current_module = previous
+
+    def _process(self, person: 'Person', time: datetime) -> bool:
         """
         Process this module for a person at a given time.
         
@@ -68,13 +77,24 @@ class Module:
         # Process states until we hit a delay or terminal state
         # Cap iterations to detect multi-state cycles (e.g. A→B→C→A without a Delay)
         _iterations = 0
+        _ran_this_step: Set[str] = set()
         while current_state_name:
             if current_state_name not in self.states:
                 logger.warning("State '%s' not found in module '%s'", current_state_name, self.name)
                 return True
             
             state = self.states[current_state_name]
-            
+
+            # A cycle that comes back to a state it already ran in this very step (for
+            # example Encounter -> EncounterEnd -> Encounter with a Guard that lets it
+            # through) waits for the next step instead of spinning, as the
+            # EncounterEnd yield used to (issue #119). Not applied in legacy mode.
+            if not EncounterEndState.legacy_stall:
+                if current_state_name in _ran_this_step:
+                    person.attributes[current_state_key] = current_state_name
+                    return False
+                _ran_this_step.add(current_state_name)
+
             # Mark state as visited (for PriorState conditions)
             # Record when, not just whether: a PriorState condition with a
             # `within` window needs the timestamp to answer 'recently?'.

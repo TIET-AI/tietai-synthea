@@ -419,6 +419,16 @@ class EncounterState(State):
         if encounter is None or encounter.time != time:
             return False  # no visit today; come back next step
 
+        # A routine visit is joined once per module, as in the Java engine (where the
+        # visit's marker is removed when a module takes it). Without this, a module
+        # that loops back to a wellness Encounter after its EncounterEnd would join
+        # the same visit again and again within one step.
+        consumed_key = f'{self.module.name}_wellness_joined_at'
+        if not EncounterEndState.legacy_stall:
+            if person.attributes.get(consumed_key) == time:
+                return False
+            person.attributes[consumed_key] = time
+
         # The module joins the existing visit rather than opening its own, so
         # its codes and reason describe what the visit found.
         for code in self.definition.get('codes', []):
@@ -436,28 +446,41 @@ class EncounterState(State):
 
 
 class EncounterEndState(State):
-    """A state that ends a healthcare encounter."""
+    """A state that ends a healthcare encounter.
+
+    Ends the encounter in progress (if any) and completes, so the module moves on to
+    the next state in the same step, as in the Java reference engine. Cycles that run
+    Encounter -> EncounterEnd -> Encounter with no Delay are still stopped by the
+    module's iteration cap.
+
+    Until 1.4.2 this state ended the encounter and returned ``False`` on every call.
+    The module executor reads ``False`` as "needs more time", so the module stayed on
+    this state for ever and no state after an EncounterEnd was ever reached (issue
+    #119). ``legacy_stall`` (config ``generate.encounter_end_legacy_stall``) restores
+    that behaviour, only so an old population can be reproduced.
+    """
+
+    legacy_stall: bool = False
 
     def run(self, person: 'Person', time: datetime) -> bool:
-        """End the current encounter and yield to the next time step.
-
-        Returning False (yield) prevents modules that loop back to an Encounter
-        state immediately after EncounterEnd from cycling indefinitely within a
-        single time step — matching the Java Synthea engine's behaviour where
-        ending an encounter naturally breaks the within-step loop.
-        """
-        end_key = f'{self.module.name}.{self.name}_ended_at'
-        last_ended = person.attributes.get(end_key)
-
-        if last_ended == time:
-            # Already ended this encounter at this time step; yield again.
-            return False
+        """End the current encounter and let the module continue."""
+        if self.legacy_stall:
+            return self._run_legacy(person, time)
 
         if hasattr(person, 'record') and 'current_encounter' in person.attributes:
             encounter = person.attributes['current_encounter']
             person.record.encounter_end(encounter, time)
             del person.attributes['current_encounter']
+        return True
 
+    def _run_legacy(self, person: 'Person', time: datetime) -> bool:
+        end_key = f'{self.module.name}.{self.name}_ended_at'
+        if person.attributes.get(end_key) == time:
+            return False
+        if hasattr(person, 'record') and 'current_encounter' in person.attributes:
+            encounter = person.attributes['current_encounter']
+            person.record.encounter_end(encounter, time)
+            del person.attributes['current_encounter']
         person.attributes[end_key] = time
         return False
 

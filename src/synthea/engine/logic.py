@@ -35,6 +35,14 @@ def _to_code(raw: Any) -> Code:
 
 class Logic:
     """Static class for evaluating logical conditions."""
+
+    #: Name of the module being processed (set by ``Module.process``), the default
+    #: module of a ``PriorState`` condition. ``None`` outside a module (and in legacy mode).
+    current_module: Optional[str] = None
+
+    #: Reproduce the pre-1.4.2 evaluation of "is nil" / "is not nil" (always false).
+    #: Set from ``generate.encounter_end_legacy_stall`` with the other #119 behaviours.
+    legacy: bool = False
     
     @staticmethod
     def test(condition: Dict[str, Any], person: 'Person', time: datetime) -> bool:
@@ -336,6 +344,11 @@ class Logic:
         if not state_name:
             return False
 
+        # Without a `module`, PriorState means a state of the module being processed.
+        # The lookup used the bare state name, which nothing ever wrote, so every such
+        # condition was false (found while fixing #119: a Guard "not within 5 years of
+        # its own last run" then always let the module through).
+        module_name = module_name or Logic.current_module
         if module_name:
             key = f'{module_name}.{state_name}_visited'
             time_key = f'{module_name}.{state_name}_visited_at'
@@ -374,6 +387,14 @@ class Logic:
             return person_value is not None
         
         operator_str = condition.get('operator', '==')
+
+        # GMF spells the existence tests "is nil" / "is not nil" and gives no value.
+        # They used to fall through to "target is None -> False", so every module
+        # condition written that way (333 uses) was always false.
+        if not Logic.legacy and operator_str == 'is nil':
+            return person_value is None
+        if not Logic.legacy and operator_str == 'is not nil':
+            return person_value is not None
         
         # Handle different value types
         if 'value' in condition:

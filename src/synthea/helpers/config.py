@@ -32,6 +32,7 @@ class Config:
             'exporter.years_of_history': 10,
             
             # FHIR exporter
+            'generate.encounter_end_legacy_stall': False,
             'exporter.fhir.export': True,
             'exporter.fhir.bulk_data': False,
             'exporter.fhir.transaction_bundle': True,

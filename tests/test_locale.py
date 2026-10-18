@@ -321,22 +321,30 @@ class TestReferencePackDeterminism:
 
     #: sha256 of each patient's bundle, seed 42, ages 20-70, 2020-01-01.
     #:
-    #: Moved once, in 1.5.0, when lab observations gained referenceRange and
-    #: interpretation and the red-cell indices started being derived rather
-    #: than drawn independently (#113). The change was checked before these
-    #: were updated: same 1360 resources with the same UUIDs, only
-    #: Observations altered - 298 gained the two new elements and 15 values
-    #: were recomputed. Nothing else in the record moved.
+    #: Moved in 1.5.0, when lab observations gained referenceRange and interpretation and
+    #: the red-cell indices started being derived (#113): same 1360 resources, only
+    #: Observations altered.
+    #:
+    #: Moved again in 1.4.2 (#119): EncounterEnd now completes, so modules proceed past it
+    #: (more encounters, conditions, procedures and medications per patient), PriorState and
+    #: "is nil" conditions evaluate, and a routine visit is joined once per module. The
+    #: previous digests are kept in LEGACY_EXPECTED and are reproduced with
+    #: ``generate.encounter_end_legacy_stall = true``.
     #:
     #: Update these only when generated output is *meant* to change, and say
     #: in the changelog that it did.
     EXPECTED = [
+        '5e402c7e5a69477e5802864749fffffe3c92647637e676bf395ff213757946d1',
+        'e5e405ec3c795608a877426571203621809219defc7d61fbcd7ed702da5ee630',
+        'ee736fe0c224235623f4454ce01965ac2721ff31a29a7c68c22a131c4f6941b3',
+    ]
+    LEGACY_EXPECTED = [
         'e6867cde12b3e1aae5ab5749b48b162f68909394d901a946b67f4d5e1dafec86',
         '097a468012f4cccccc0989ad7198777c461e1b94a353d200d81c346b8b78b349',
         'c0758a3d7e0cfdebfe7078a724b4a0df9a82848b7091b848a9aeb85f10d5d056',
     ]
 
-    def test_the_us_pack_reproduces_the_pre_refactor_export(self, tmp_path):
+    def _digests(self, tmp_path, legacy=False):
         import hashlib
         import json
 
@@ -345,6 +353,7 @@ class TestReferencePackDeterminism:
         config.set('exporter.baseDirectory', str(tmp_path))
         config.set('exporter.fhir.export', True)
         config.set('exporter.use_uuid_filenames', True)
+        config.set('generate.encounter_end_legacy_stall', legacy)
 
         options = GeneratorOptions()
         options.population_size = 3
@@ -355,12 +364,18 @@ class TestReferencePackDeterminism:
 
         Generator(options, config=config).run()
 
-        digests = [
+        return [
             hashlib.sha256(
                 json.dumps(json.loads(path.read_text(encoding='utf-8')),
                            sort_keys=True).encode('utf-8')).hexdigest()
             for path in sorted((tmp_path / 'fhir').glob('*.json'))
         ]
+
+    def test_the_legacy_setting_reproduces_the_previous_population(self, tmp_path):
+        assert self._digests(tmp_path, legacy=True) == self.LEGACY_EXPECTED
+
+    def test_the_us_pack_reproduces_the_pre_refactor_export(self, tmp_path):
+        digests = self._digests(tmp_path)
 
         assert digests == self.EXPECTED, (
             "The US locale pack changed generated output. Either the draw "

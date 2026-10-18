@@ -13,6 +13,63 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ---
 
+## [1.4.2] - 2026-10-18
+
+> **BEHAVIOUR CHANGE: every population generated from a seed changes.** Modules now
+> proceed past `EncounterEnd`, as in the Java reference engine. A population generated with
+> 1.4.1 or earlier will **not** reproduce. To reproduce one, set
+> `generate.encounter_end_legacy_stall = true` (it restores the old stall and the three
+> related behaviours below, and is checked against the 1.4.1 digests in the test suite).
+> Pin `tietai-synthea==1.4.1` if you need a dataset to stay byte-identical.
+
+Fixes [#119](https://github.com/TIET-AI/tietai-synthea/issues/119): `EncounterEnd` ended the
+encounter and returned "needs more time" on every call, so a module that reached one stayed
+there for good and nothing after it ever ran. 98 of the 256 module files contain an
+`EncounterEnd`: lung cancer never reached a diagnosis, breast-cancer treatment never started,
+and most multi-visit pathways stopped after their first visit.
+
+Making it complete exposed three smaller defects, which are fixed in the same release
+because the first fix is not usable without them:
+
+- **Routine visit joined once per module.** A `wellness` Encounter state re-joined the same
+  check-up every time a module looped back to it. It is now joined once per module per visit.
+- **`PriorState` without a `module`** looked up a key nothing ever wrote, so it was always
+  false (a Guard of the form "not within 5 years of its own last run" always let the module
+  through). It now means a state of the module being processed.
+- **`is nil` / `is not nil`** attribute conditions (333 uses in the modules) were always false.
+- A state is not run twice within one step: a cycle that returns to a state it already ran in
+  that step waits for the next step (what the old yield was for).
+- Observations with no value (a vital sign the person does not have yet) no longer get a
+  reference range.
+
+**Measured effect**, 200 persons, seed 20261017, reference date 2026-10-01, default settings
+(no FHIR export, so the figures are record counts):
+
+| | 1.4.1 | 1.4.2 |
+|---|---|---|
+| encounters | 8,127 | 17,564 |
+| conditions | 1,937 | 12,989 |
+| medications | 534 | 4,928 |
+| procedures | 1,761 | 29,867 |
+| observations | 51,539 | 155,149 |
+| care plans | 485 | 1,765 |
+| deaths | 32 | 41 |
+| persons with a cancer diagnosis (breast, lung, colorectal or prostate) | 4 | 13 |
+| generation time | 66.6 s | 89.6 s |
+
+Records are much fuller (about 88 encounters and 65 conditions per person, up from 41 and 10);
+about 36 conditions per person are the yearly "medication review due" of the `med_rec` module.
+Lung cancer still does not occur without enrichment, because its incidence gate is low; it can
+now complete when it occurs.
+
+**Changed generated output in this repository's tests:** the `test_locale.py` reference digests
+(`TestReferencePackDeterminism`) moved; the 1.4.1 digests are kept as `LEGACY_EXPECTED` and
+reproduced with the legacy setting. No generated example files are committed.
+
+Added: `generate.encounter_end_legacy_stall` (default `false`) in `synthea.properties`.
+
+---
+
 ## [1.4.1] - 2026-09-25
 
 Lab results now carry the interval they are read against, and the members of a
