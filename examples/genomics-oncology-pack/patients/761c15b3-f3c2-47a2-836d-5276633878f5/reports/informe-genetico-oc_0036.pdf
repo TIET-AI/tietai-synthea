@@ -1,0 +1,59 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Title (informe-genetico oc_0036 \(sint\351tico\)) /Producer (tietai-synthea genomics pack) >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 1446 >>
+stream
+BT /F1 9 Tf 12 TL 40 800 Td
+(LABORATORIO DE GEN\311TICA MOLECULAR \(sint\351tico\)) Tj T*
+(INFORME DE AN\301LISIS GEN\311TICO DE TUMOR S\323LIDO) Tj T*
+(Documento sint\351tico: no corresponde a ning\372n paciente real.) Tj T*
+(Paciente: Dorcas Harvey   Sexo: mujer   Fecha de nacimiento: 1961-01-01) Tj T*
+(Caso sint\351tico oc_0036. Diagn\363stico de referencia: adenocarcinoma de colon.) Tj T*
+(Panel NGS de tumor s\363lido OncoColon v3) Tj T*
+(Muestra: tejido tumoral FFPE, biopsia de colon   ID de muestra SYN-0036) Tj T*
+(Genoma de referencia GRCh38) Tj T*
+(Fecha del informe: 2026-09-04) Tj T*
+() Tj T*
+(Variantes detectadas:) Tj T*
+(KRAS NM_004985.5:c.35G>A \(p.Gly12Asp\) VAF 32,7%. Heterocigosis. Variante som\341tica. Tier II \(AMP\).) Tj T*
+(BRAF NM_004333.6:c.1799T>A \(p.Val600Glu\) VAF 26,5%. Heterocigosis. Variante som\341tica. Tier I \(AMP\).) Tj T*
+(Estado de inestabilidad de microsat\351lites: MSI-H.) Tj T*
+() Tj T*
+(Implicaciones:) Tj T*
+(Clasificaci\363n alternativa de BRAF NM_004333.6:c.1799T>A \(laboratorio\): Tier II \(AMP\).) Tj T*
+(Implicaci\363n terap\351utica: encorafenib. Evidencia: Tier I - Level A. Enfermedad: adenocarcinoma de colon.) Tj T*
+() Tj T*
+(Fuente de conocimiento: ClinVar versi\363n 2026-09-01) Tj T*
+(Recomendaci\363n: Se recomienda discutir el resultado en comit\351 multidisciplinar de tumores.) Tj T*
+(Este informe es un documento sint\351tico generado para pruebas de la plataforma.) Tj T*
+ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000212 00000 n 
+0000000325 00000 n 
+0000000451 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R /Info 4 0 R >>
+startxref
+1949
+%%EOF

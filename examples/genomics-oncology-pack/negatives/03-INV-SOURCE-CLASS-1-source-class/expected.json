@@ -1,0 +1,20 @@
+{
+  "expected": [
+    {
+      "code": "code-invalid",
+      "detailCode": "BIND_REQUIRED",
+      "severity": "error"
+    },
+    {
+      "code": "invariant",
+      "detailCode": "INV-SOURCE-CLASS-1",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-SOURCE-CLASS-1",
+  "layer": "fhir-validate",
+  "note": "source class outside the platform set (likely germline)",
+  "seed": [],
+  "variant": "outside-set"
+}

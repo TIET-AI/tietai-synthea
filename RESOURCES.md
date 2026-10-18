@@ -32,6 +32,7 @@ clause 8).
 | `physiology/` | 7 | ~100 KB | SBML circulation models |
 | `keep_modules/` | 9 | small | Priority module sets |
 | Root files | 12 | ~600 KB | Growth charts, biometrics, names, schedules |
+| `genomics/` | 12 | ~80 KB | Curated variant and cancer-code tables, report templates, C5 schemas, cohort patches (GO-61 genomics pack) |
 
 ---
 
@@ -106,6 +107,15 @@ Clinical note (`notes/note.ftl`) and C-CDA templates.
 > Templates are bundled but **not yet rendered**. Note generation is tracked in
 > [#43](https://github.com/TIET-AI/tietai-synthea/issues/43); the C-CDA
 > exporter does not exist.
+
+## Genomics pack — `genomics/`
+
+Inputs of the synthetic genomics/oncology pack (`--genomics`): `curated_variants.yaml` (+ schema),
+`cancer_codes.yaml`, `templates/*.j2` (Spanish reports), `c5/*.schema.json` (copies of the Hydra C5 extraction
+schemas) and `cohort_patches.yaml` (opt-in incidence-gate patches for the four cancer modules).
+
+> Synthetic test data; the curated tables are **pending clinical geneticist / terminology owner review**. See
+> [docs/genomics-pack.md](docs/genomics-pack.md).
 
 ## Physiology — `physiology/`
 

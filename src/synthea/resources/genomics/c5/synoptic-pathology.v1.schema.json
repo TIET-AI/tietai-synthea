@@ -1,0 +1,580 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiet.ai/schemas/extraction/synoptic-pathology/v1",
+  "type": "object",
+  "required": [
+    "schema",
+    "document_sha256",
+    "source_text",
+    "source_text_sha256",
+    "entities",
+    "needs_review",
+    "extractor_version"
+  ],
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]{2,63}$"
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "needs_review",
+            "info"
+          ]
+        },
+        "field": {
+          "type": "string",
+          "maxLength": 64
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "schema": {
+      "const": "tietai.synoptic-pathology/v1"
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "https://tiet.ai/schemas/extraction/clinical/v1#/$defs/entity"
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "quote"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "specimen",
+                  "procedure",
+                  "tumour_site",
+                  "histology",
+                  "grade",
+                  "size_mm",
+                  "margins",
+                  "lymphovascular_invasion",
+                  "perineural_invasion",
+                  "nodes",
+                  "ptnm",
+                  "biomarker",
+                  "comment"
+                ]
+              },
+              "rejected": {
+                "type": "boolean"
+              },
+              "reviewer_rejected": {
+                "type": "boolean"
+              },
+              "review_flags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Z][A-Z0-9_]{2,63}$"
+                }
+              },
+              "gate_status": {
+                "enum": [
+                  "passed",
+                  "needs_review",
+                  "rejected"
+                ]
+              },
+              "gate_findings": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/finding"
+                }
+              },
+              "unsupported_fields": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "status",
+                    "system",
+                    "value",
+                    "laterality"
+                  ]
+                }
+              },
+              "tnm_canonical": {
+                "type": "string"
+              },
+              "code_display": {
+                "type": "string"
+              },
+              "accession": {
+                "type": "string"
+              },
+              "type_text": {
+                "type": "string"
+              },
+              "laterality": {
+                "enum": [
+                  "left",
+                  "right",
+                  "bilateral",
+                  "midline",
+                  "unknown"
+                ]
+              },
+              "collection_date": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "procedure_text": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "snomed": {
+                "type": "string",
+                "pattern": "^\\d{6,18}$"
+              },
+              "code": {
+                "type": "string"
+              },
+              "behaviour": {
+                "type": "string",
+                "pattern": "^[0-9]$"
+              },
+              "system": {
+                "enum": [
+                  "nottingham",
+                  "gleason",
+                  "who",
+                  "fnclcc",
+                  "other"
+                ]
+              },
+              "value_text": {
+                "type": "string"
+              },
+              "numeric": {
+                "type": "number"
+              },
+              "dimension": {
+                "enum": [
+                  "greatest",
+                  "second",
+                  "third"
+                ]
+              },
+              "unit": {
+                "const": "mm"
+              },
+              "source_value": {
+                "type": "string"
+              },
+              "source_unit": {
+                "enum": [
+                  "mm",
+                  "cm"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "negative",
+                  "positive",
+                  "close",
+                  "not_assessable",
+                  "present",
+                  "absent",
+                  "indeterminate"
+                ]
+              },
+              "distance_mm": {
+                "type": "number",
+                "minimum": 0
+              },
+              "site_text": {
+                "type": "string"
+              },
+              "examined": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "positive": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "extranodal_extension": {
+                "enum": [
+                  "present",
+                  "absent",
+                  "indeterminate"
+                ]
+              },
+              "prefix": {
+                "enum": [
+                  "p",
+                  "yp",
+                  "r"
+                ]
+              },
+              "t": {
+                "type": "string"
+              },
+              "n": {
+                "type": "string"
+              },
+              "m": {
+                "type": "string"
+              },
+              "stage_group": {
+                "type": "string"
+              },
+              "edition": {
+                "type": "string"
+              },
+              "name_text": {
+                "type": "string"
+              },
+              "method_text": {
+                "type": "string"
+              },
+              "value": {
+                "oneOf": [
+                  {
+                    "enum": [
+                      "positive",
+                      "negative",
+                      "equivocal",
+                      "high",
+                      "low",
+                      "stable",
+                      "unstable"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "value",
+                      "unit"
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": "number"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  }
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "specimen"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "accession"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "procedure"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "text"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "tumour_site",
+                        "histology"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "code"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "histology"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "behaviour"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "grade"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "system",
+                    "value_text"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "size_mm"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "value"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "margins"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "status"
+                  ],
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "negative",
+                        "positive",
+                        "close",
+                        "not_assessable"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "lymphovascular_invasion",
+                        "perineural_invasion"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "status"
+                  ],
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "present",
+                        "absent",
+                        "indeterminate"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "nodes"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "examined",
+                    "positive"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "ptnm"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "edition"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "biomarker"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "code",
+                    "value"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "pattern": "^[0-9]{1,5}-[0-9]$"
+                    },
+                    "value": {
+                      "oneOf": [
+                        {
+                          "enum": [
+                            "positive",
+                            "negative",
+                            "equivocal",
+                            "high",
+                            "low",
+                            "stable",
+                            "unstable"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "required": [
+                            "value",
+                            "unit"
+                          ],
+                          "properties": {
+                            "value": {
+                              "type": "number"
+                            },
+                            "unit": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "additionalProperties": false
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "comment"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "text"
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "unevaluatedProperties": false
+      }
+    },
+    "rejected": {
+      "type": "array"
+    },
+    "review_flags": {
+      "type": "array"
+    },
+    "needs_review": {
+      "const": true
+    }
+  },
+  "$comment": "Copied from TIET-AI/tietai-hydra-platform pkg/clinicalextract/schemas/synoptic_pathology_v1.yaml at origin/feat/GO-22 91e8fbff59c676d0e2c766ca375e290758166c2c (GO-13 PR #1399 @ 39fc621b8be06a6ea70bc0135e3fa0f740e7c3ce, GO-22 PR #1401). Contract C5; owners GO-13/GO-22. Re-sync after those PRs merge."
+}

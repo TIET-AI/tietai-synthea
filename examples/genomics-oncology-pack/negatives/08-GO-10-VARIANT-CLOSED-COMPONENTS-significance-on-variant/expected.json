@@ -1,0 +1,15 @@
+{
+  "expected": [
+    {
+      "code": "structure",
+      "detailCode": "STRUCT",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "GO-10-VARIANT-CLOSED-COMPONENTS",
+  "layer": "fhir-validate",
+  "note": "clinical significance 53037-8 carried by the variant",
+  "seed": [],
+  "variant": "53037-8-on-variant"
+}

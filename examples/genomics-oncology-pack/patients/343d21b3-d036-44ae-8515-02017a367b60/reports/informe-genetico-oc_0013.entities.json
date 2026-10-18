@@ -1,0 +1,170 @@
+{
+  "document_sha256": "858407816f8b4f5638b50005a953b877777d9dad2e061a5900827ce44667032d",
+  "entities": [
+    {
+      "assertion": "present",
+      "char_end": 45,
+      "char_start": 0,
+      "entity_id": "ent_0001",
+      "kind": "assay",
+      "lab": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)",
+      "quote": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)",
+      "quote_sha256": "19c8dbdc66cbf3e90c8b5294aed89c878b37ec3645ddba2f9d7260ab8247c700"
+    },
+    {
+      "assertion": "present",
+      "char_end": 329,
+      "char_start": 292,
+      "entity_id": "ent_0002",
+      "kind": "assay",
+      "panel_name": "OncoMama",
+      "panel_version": "v2",
+      "quote": "Panel NGS de tumor sólido OncoMama v2",
+      "quote_sha256": "70e8c4fe1ba4afbd304f8ab7fb39912a3ec31d5a36fc9f1d20e7c60cb73159a9"
+    },
+    {
+      "assertion": "present",
+      "char_end": 400,
+      "char_start": 330,
+      "collected_on": "2018-08-31",
+      "entity_id": "ent_0003",
+      "kind": "specimen",
+      "quote": "Muestra: tejido tumoral FFPE, biopsia de mama   ID de muestra SYN-0013",
+      "quote_sha256": "3546da9dab482699725347f103be941ee31bf7dd10ddfbd78609a451f2135204",
+      "specimen_identifier": "SYN-0013",
+      "specimen_type": "tejido tumoral FFPE"
+    },
+    {
+      "assertion": "present",
+      "build": "GRCh38",
+      "char_end": 428,
+      "char_start": 401,
+      "entity_id": "ent_0004",
+      "kind": "assay",
+      "quote": "Genoma de referencia GRCh38",
+      "quote_sha256": "689a9714bea10b3ee01aad54315bf7c05189695b00a5e4467c2e80984ac44d92"
+    },
+    {
+      "assertion": "present",
+      "char_end": 584,
+      "char_start": 482,
+      "classification": "tier_i",
+      "classification_system": "AMP",
+      "entity_id": "ent_0005",
+      "gene": "PIK3CA",
+      "hgvs_c": "NM_006218.4:c.3140A>G",
+      "hgvs_p": "p.His1047Arg",
+      "kind": "variant",
+      "quote": "PIK3CA NM_006218.4:c.3140A>G (p.His1047Arg) VAF 29,2%. Heterocigosis. Variante somática. Tier I (AMP).",
+      "quote_sha256": "ef1eade6ca4931e1ed0f36f0d16b8562797bd63b609766b1e40c59102242b674",
+      "source_class": "somatic",
+      "vaf": "29,2%",
+      "zygosity": "heterozygous"
+    },
+    {
+      "assertion": "present",
+      "char_end": 684,
+      "char_start": 585,
+      "classification": "tier_ii",
+      "classification_system": "AMP",
+      "entity_id": "ent_0006",
+      "gene": "TP53",
+      "hgvs_c": "NM_000546.6:c.524G>A",
+      "hgvs_p": "p.Arg175His",
+      "kind": "variant",
+      "quote": "TP53 NM_000546.6:c.524G>A (p.Arg175His) VAF 41,6%. Heterocigosis. Variante somática. Tier II (AMP).",
+      "quote_sha256": "797f98cfc729b5c5bac6e4e588f1439ba0128fd6561d32ba0639fcf8b516e321",
+      "source_class": "somatic",
+      "vaf": "41,6%",
+      "zygosity": "heterozygous"
+    },
+    {
+      "assertion": "present",
+      "char_end": 798,
+      "char_start": 685,
+      "classification": "pathogenic",
+      "classification_system": "ACMG",
+      "entity_id": "ent_0007",
+      "gene": "BRCA1",
+      "hgvs_c": "NM_007294.4:c.5266dup",
+      "hgvs_p": "p.Gln1756ProfsTer74",
+      "kind": "variant",
+      "quote": "BRCA1 NM_007294.4:c.5266dup (p.Gln1756ProfsTer74) VAF 50,0%. Heterocigosis. Variante germinal. Patogénica (ACMG).",
+      "quote_sha256": "3c57d551a96e6c1696016b6521ae01b0f7091eb9d1e6e653137aadc441527ad2",
+      "source_class": "germline",
+      "vaf": "50,0%",
+      "zygosity": "heterozygous"
+    },
+    {
+      "assertion": "present",
+      "char_end": 902,
+      "char_start": 815,
+      "entity_id": "ent_0008",
+      "implication_kind": "diagnostic",
+      "kind": "implication",
+      "linked_variant_ids": [
+        "ent_0005"
+      ],
+      "quote": "Clasificación alternativa de PIK3CA NM_006218.4:c.3140A>G (laboratorio): Tier II (AMP).",
+      "quote_sha256": "3e32a399cb290de4a61e9012731d84eb8a72231f6a4800fc71b16afbec0afa21"
+    },
+    {
+      "assertion": "present",
+      "char_end": 998,
+      "char_start": 903,
+      "entity_id": "ent_0009",
+      "evidence_level": "Tier I - Level A",
+      "implication_kind": "therapeutic",
+      "kind": "implication",
+      "linked_variant_ids": [
+        "ent_0005"
+      ],
+      "phenotype": "carcinoma de mama",
+      "quote": "Implicación terapéutica: alpelisib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de mama.",
+      "quote_sha256": "c4f9eb6e0e46be42b383f16a90d578d455cf7458198cab10a0b46913681f6ca2",
+      "therapy": "alpelisib"
+    },
+    {
+      "assertion": "present",
+      "char_end": 1093,
+      "char_start": 999,
+      "entity_id": "ent_0010",
+      "evidence_level": "Tier I - Level A",
+      "implication_kind": "therapeutic",
+      "kind": "implication",
+      "linked_variant_ids": [
+        "ent_0007"
+      ],
+      "phenotype": "carcinoma de mama",
+      "quote": "Implicación terapéutica: olaparib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de mama.",
+      "quote_sha256": "fb08f9c5495f482cbeda138bfa7158eb909b9b0b06f0b207f10278327557971c",
+      "therapy": "olaparib"
+    },
+    {
+      "assertion": "present",
+      "char_end": 1145,
+      "char_start": 1095,
+      "entity_id": "ent_0011",
+      "kind": "knowledge_release",
+      "name": "clinvar",
+      "quote": "Fuente de conocimiento: ClinVar versión 2026-09-01",
+      "quote_sha256": "03d25a2aaabf11389ace9a510fd59f717f8c106e9a394267978397499910f850",
+      "version": "2026-09-01"
+    },
+    {
+      "assertion": "present",
+      "char_end": 1219,
+      "char_start": 1146,
+      "entity_id": "ent_0012",
+      "kind": "recommendation",
+      "quote": "Recomendación: Se recomienda valorar consejo genético y estudio familiar.",
+      "quote_sha256": "1c55239a12e6bd0bc33085455a36efcfc17058712b1b6c4f7fb937d04ecaf77a",
+      "text": "Se recomienda valorar consejo genético y estudio familiar."
+    }
+  ],
+  "extractor_version": "go-61-gold/1",
+  "needs_review": true,
+  "schema": "tietai.genomic-extraction/v1",
+  "source_text": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)\nINFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Lilia Puente   Sexo: mujer   Fecha de nacimiento: 1950-10-31\nCaso sintético oc_0013. Diagnóstico de referencia: carcinoma de mama.\nPanel NGS de tumor sólido OncoMama v2\nMuestra: tejido tumoral FFPE, biopsia de mama   ID de muestra SYN-0013\nGenoma de referencia GRCh38\nFecha del informe: 2026-09-18\n\nVariantes detectadas:\nPIK3CA NM_006218.4:c.3140A>G (p.His1047Arg) VAF 29,2%. Heterocigosis. Variante somática. Tier I (AMP).\nTP53 NM_000546.6:c.524G>A (p.Arg175His) VAF 41,6%. Heterocigosis. Variante somática. Tier II (AMP).\nBRCA1 NM_007294.4:c.5266dup (p.Gln1756ProfsTer74) VAF 50,0%. Heterocigosis. Variante germinal. Patogénica (ACMG).\n\nImplicaciones:\nClasificación alternativa de PIK3CA NM_006218.4:c.3140A>G (laboratorio): Tier II (AMP).\nImplicación terapéutica: alpelisib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de mama.\nImplicación terapéutica: olaparib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de mama.\n\nFuente de conocimiento: ClinVar versión 2026-09-01\nRecomendación: Se recomienda valorar consejo genético y estudio familiar.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "0c6a9baa73e747a8360080f10304ac9db487c80944b68858d3a622955e8fd184"
+}

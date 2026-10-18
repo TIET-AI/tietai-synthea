@@ -1,0 +1,9 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: {{ name }}   Sexo: {{ sex_es }}   Fecha de nacimiento: {{ dob }}
+Caso sintético {{ case_id }}. Diagnóstico de referencia: {{ dx_es }}.
+{% for e in lines %}
+{{ ent(e.kind, e.line, fields=e.fields) }}
+{% endfor %}
+Este informe es un documento sintético generado para pruebas de la plataforma.

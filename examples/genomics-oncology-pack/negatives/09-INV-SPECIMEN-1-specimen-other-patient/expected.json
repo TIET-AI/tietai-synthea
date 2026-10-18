@@ -1,0 +1,20 @@
+{
+  "expected": [
+    {
+      "code": "invariant",
+      "detailCode": "INV-SPECIMEN-1",
+      "severity": "error"
+    },
+    {
+      "code": "invariant",
+      "detailCode": "INV-SUBJECT-1",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-SPECIMEN-1",
+  "layer": "fhir-validate",
+  "note": "variant specimen belongs to another patient",
+  "seed": [],
+  "variant": "foreign-specimen"
+}

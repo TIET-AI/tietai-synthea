@@ -1,0 +1,15 @@
+{
+  "expected": [
+    {
+      "code": "required",
+      "detailCode": "INV-CLASSIFICATION-1",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-CLASSIFICATION-1",
+  "layer": "fhir-validate",
+  "note": "diagnostic implication with 53037-8 and no classification-source",
+  "seed": [],
+  "variant": "no-source"
+}
