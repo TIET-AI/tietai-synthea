@@ -1,0 +1,35 @@
+{
+  "expected": [
+    {
+      "code": "invariant",
+      "detailCode": "INV-SPECIMEN-1",
+      "severity": "error"
+    },
+    {
+      "code": "invariant",
+      "detailCode": "INV-SUBJECT-1",
+      "severity": "error"
+    },
+    {
+      "code": "not-found",
+      "detailCode": "SLICE_UNRESOLVED",
+      "severity": "error"
+    },
+    {
+      "code": "invariant",
+      "detailCode": "INV-DERIVED-1",
+      "severity": "error"
+    },
+    {
+      "code": "invariant",
+      "detailCode": "INV-RESULT-1",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-SUBJECT-1",
+  "layer": "fhir-validate",
+  "note": "variant subject differs from the report subject",
+  "seed": [],
+  "variant": "variant-other-subject"
+}

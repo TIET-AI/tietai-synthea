@@ -254,3 +254,18 @@ def test_generation_time_budget(tmp_path):
                    check=True, capture_output=True)
     assert time.time() - t <= 300
     assert (tmp_path / "genomics-oncology-pack" / "MANIFEST.json").is_file()
+
+
+@pytest.mark.slow
+def test_pack_identical_across_thread_counts(tmp_path):
+    """REQ-GO-61-02 / AC-02: same seed, 1 and 4 workers, byte-identical pack."""
+    import subprocess, sys
+    outs = []
+    for threads in (1, 4):
+        out = tmp_path / f"t{threads}"
+        subprocess.run([sys.executable, "-m", "synthea.cli", "--population", "40", "--seed", "20261017",
+                        "--age", "55-85", "--reference-date", "20261001", "--genomics-cohort",
+                        "--threads", str(threads), "-c", "examples/genomics-oncology-pack-recipe.properties",
+                        "--output-dir", str(out)], check=True, capture_output=True)
+        outs.append(_tree(out / "genomics-oncology-pack"))
+    assert outs[0] == outs[1] and len(outs[0]) > 50

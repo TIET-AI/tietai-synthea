@@ -1,0 +1,145 @@
+{
+  "document_sha256": "df60ab6668e54f209e0aa0d1bd37ec4cbabd5433b4f5ec4c13133ee3bc6edb08",
+  "entities": [
+    {
+      "accession": "AP-2007-002135",
+      "assertion": "present",
+      "char_end": 368,
+      "char_start": 298,
+      "collection_date": "2007-02-24",
+      "entity_id": "ent_0001",
+      "kind": "specimen",
+      "quote": "Muestra AP-2007-002135: Prostatectomía radical, recibida el 2007-02-24",
+      "quote_sha256": "aa50caeb3b8464c583e46f03a45f723d31500ef3023512d5a4f3add9009a3d86",
+      "type_text": "prostatectomía radical"
+    },
+    {
+      "assertion": "present",
+      "char_end": 434,
+      "char_start": 369,
+      "entity_id": "ent_0002",
+      "kind": "procedure",
+      "quote": "Procedimiento: Prostatectomía radical con linfadenectomía pélvica",
+      "quote_sha256": "e6eebb8d34136b360b5d500949126730e8805aacad5b35aa4e71bf90499b6222",
+      "text": "Prostatectomía radical con linfadenectomía pélvica"
+    },
+    {
+      "assertion": "present",
+      "char_end": 475,
+      "char_start": 435,
+      "code": "C61.9",
+      "entity_id": "ent_0003",
+      "kind": "tumour_site",
+      "quote": "Localización del tumor: Próstata (C61.9)",
+      "quote_sha256": "d633d97fe9160e13a9cc3c80192cc4618ca633db4017e467b1017cfd1c9b97d6"
+    },
+    {
+      "assertion": "present",
+      "behaviour": "3",
+      "char_end": 517,
+      "char_start": 476,
+      "code": "8140",
+      "entity_id": "ent_0004",
+      "kind": "histology",
+      "quote": "Tipo histológico: Adenocarcinoma (8140/3)",
+      "quote_sha256": "f941b3e2af00b1db618edd25b0998c27c17e9d34a4fed1e3173e7e3289c5891e"
+    },
+    {
+      "assertion": "present",
+      "char_end": 569,
+      "char_start": 518,
+      "entity_id": "ent_0005",
+      "kind": "grade",
+      "quote": "Grado histológico: Gleason 3+4=7 (grupo de grado 2)",
+      "quote_sha256": "ebb3a1465cfb7eef66b7608ce4e6c903e7bfd223e74daa14fbf4497871bf8e36",
+      "system": "gleason",
+      "value_text": "Gleason 3+4=7"
+    },
+    {
+      "assertion": "present",
+      "char_end": 613,
+      "char_start": 570,
+      "dimension": "greatest",
+      "entity_id": "ent_0006",
+      "kind": "size_mm",
+      "quote": "Tamaño tumoral: 30 mm en su mayor dimensión",
+      "quote_sha256": "21f7bb29d2ab8eb0901e8a8fa925b0aa9a2674a1ec9f034b59a8fe4e8a150d48",
+      "source_unit": "mm",
+      "source_value": "30",
+      "unit": "mm",
+      "value": 30
+    },
+    {
+      "assertion": "present",
+      "char_end": 672,
+      "char_start": 614,
+      "distance_mm": 4,
+      "entity_id": "ent_0007",
+      "kind": "margins",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
+      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
+      "status": "negative"
+    },
+    {
+      "assertion": "present",
+      "char_end": 704,
+      "char_start": 673,
+      "entity_id": "ent_0008",
+      "kind": "lymphovascular_invasion",
+      "quote": "Invasión linfovascular: ausente",
+      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
+      "status": "absent"
+    },
+    {
+      "assertion": "present",
+      "char_end": 733,
+      "char_start": 705,
+      "entity_id": "ent_0009",
+      "kind": "perineural_invasion",
+      "quote": "Invasión perineural: ausente",
+      "quote_sha256": "e8d3e88161195121a3255994e6955fa29fa71ead8ec898a15328b7680a8129f9",
+      "status": "absent"
+    },
+    {
+      "assertion": "present",
+      "char_end": 785,
+      "char_start": 734,
+      "entity_id": "ent_0010",
+      "examined": 8,
+      "kind": "nodes",
+      "positive": 0,
+      "quote": "Ganglios linfáticos: 0 de 8 ganglios con metástasis",
+      "quote_sha256": "d4d6af4cfa9cb9666353759a3899b60aa3aab75e25acdf3a389db5985dbdaed1"
+    },
+    {
+      "assertion": "present",
+      "char_end": 847,
+      "char_start": 786,
+      "edition": "8",
+      "entity_id": "ent_0011",
+      "kind": "ptnm",
+      "m": "cM0",
+      "n": "pN0",
+      "prefix": "p",
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
+      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
+      "stage_group": "I",
+      "t": "pT1"
+    },
+    {
+      "assertion": "present",
+      "char_end": 897,
+      "char_start": 848,
+      "entity_id": "ent_0012",
+      "kind": "comment",
+      "quote": "Comentario: Sin hallazgos adicionales de interés.",
+      "quote_sha256": "11e9843a2d02a194a5ec2d8957eb89a420b5b3b5ebea4c1641addd81f70c636e",
+      "text": "Sin hallazgos adicionales de interés."
+    }
+  ],
+  "extractor_version": "go-61-gold/1",
+  "needs_review": true,
+  "schema": "tietai.synoptic-pathology/v1",
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Edgar Marquardt   Sexo: varón   Fecha de nacimiento: 1943-02-26\nCaso sintético oc_0055. Diagnóstico de referencia: adenocarcinoma de próstata.\nMuestra AP-2007-002135: Prostatectomía radical, recibida el 2007-02-24\nProcedimiento: Prostatectomía radical con linfadenectomía pélvica\nLocalización del tumor: Próstata (C61.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Gleason 3+4=7 (grupo de grado 2)\nTamaño tumoral: 30 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 8 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "2f7e5579ac63321ecace631738d907d8bc27b2ae581369c618f2a16145bd35d4"
+}

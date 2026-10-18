@@ -1,0 +1,56 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Title (informe-genetico oc_0025 \(sint\351tico\)) /Producer (tietai-synthea genomics pack) >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 1174 >>
+stream
+BT /F1 9 Tf 12 TL 40 800 Td
+(LABORATORIO DE GEN\311TICA MOLECULAR \(sint\351tico\)) Tj T*
+(INFORME DE AN\301LISIS GEN\311TICO DE TUMOR S\323LIDO) Tj T*
+(Documento sint\351tico: no corresponde a ning\372n paciente real.) Tj T*
+(Paciente: Caron Breitenberg   Sexo: mujer   Fecha de nacimiento: 1959-09-20) Tj T*
+(Caso sint\351tico oc_0025. Diagn\363stico de referencia: carcinoma de pulm\363n.) Tj T*
+(Panel NGS de tumor s\363lido OncoPulmon v4) Tj T*
+(Muestra: tejido tumoral FFPE, biopsia pulmonar   ID de muestra SYN-0025) Tj T*
+(Genoma de referencia GRCh38) Tj T*
+(Fecha del informe: 2022-10-09) Tj T*
+() Tj T*
+(Variantes detectadas:) Tj T*
+(EGFR NM_005228.5:c.2573T>G \(p.Leu858Arg\) VAF 42,6%. Heterocigosis. Variante som\341tica. Tier I \(AMP\).) Tj T*
+() Tj T*
+(Implicaciones:) Tj T*
+(Implicaci\363n terap\351utica: osimertinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulm\363n.) Tj T*
+() Tj T*
+(Fuente de conocimiento: ClinVar versi\363n 2026-09-01) Tj T*
+(Recomendaci\363n: Se recomienda discutir el resultado en comit\351 multidisciplinar de tumores.) Tj T*
+(Este informe es un documento sint\351tico generado para pruebas de la plataforma.) Tj T*
+ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000212 00000 n 
+0000000325 00000 n 
+0000000451 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R /Info 4 0 R >>
+startxref
+1677
+%%EOF

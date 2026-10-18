@@ -1,0 +1,120 @@
+{
+  "document_sha256": "85430d2fa7fa61cd32ed1428ef4d443fe127a82e7e94f0a23a58f8f724234d0f",
+  "entities": [
+    {
+      "assertion": "present",
+      "char_end": 45,
+      "char_start": 0,
+      "entity_id": "ent_0001",
+      "kind": "assay",
+      "lab": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)",
+      "quote": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)",
+      "quote_sha256": "19c8dbdc66cbf3e90c8b5294aed89c878b37ec3645ddba2f9d7260ab8247c700"
+    },
+    {
+      "assertion": "present",
+      "char_end": 343,
+      "char_start": 302,
+      "entity_id": "ent_0002",
+      "kind": "assay",
+      "panel_name": "OncoProstata",
+      "panel_version": "v1",
+      "quote": "Panel NGS de tumor sólido OncoProstata v1",
+      "quote_sha256": "9a402ae5ef10474d842f2cee2ac95a11b0a5c90bca9b21cbc89aca98adc08843"
+    },
+    {
+      "assertion": "present",
+      "char_end": 418,
+      "char_start": 344,
+      "collected_on": "2022-08-26",
+      "entity_id": "ent_0003",
+      "kind": "specimen",
+      "quote": "Muestra: tejido tumoral FFPE, biopsia de próstata   ID de muestra SYN-0016",
+      "quote_sha256": "1c97897ea8ed4f2e25bac7cd1d410f544606f9ecb694cbe63000d6678025d76b",
+      "specimen_identifier": "SYN-0016",
+      "specimen_type": "tejido tumoral FFPE"
+    },
+    {
+      "assertion": "present",
+      "build": "GRCh38",
+      "char_end": 446,
+      "char_start": 419,
+      "entity_id": "ent_0004",
+      "kind": "assay",
+      "quote": "Genoma de referencia GRCh38",
+      "quote_sha256": "689a9714bea10b3ee01aad54315bf7c05189695b00a5e4467c2e80984ac44d92"
+    },
+    {
+      "assertion": "present",
+      "char_end": 613,
+      "char_start": 500,
+      "classification": "pathogenic",
+      "classification_system": "ACMG",
+      "entity_id": "ent_0005",
+      "gene": "BRCA2",
+      "hgvs_c": "NM_000059.4:c.5946del",
+      "hgvs_p": "p.Ser1982ArgfsTer22",
+      "kind": "variant",
+      "quote": "BRCA2 NM_000059.4:c.5946del (p.Ser1982ArgfsTer22) VAF 49,9%. Heterocigosis. Variante germinal. Patogénica (ACMG).",
+      "quote_sha256": "70e38aabc2f2942f86fb6ade030bab1c8d53a6488ba7a22fab8a1e7218bdd526",
+      "source_class": "germline",
+      "vaf": "49,9%",
+      "zygosity": "heterozygous"
+    },
+    {
+      "assertion": "present",
+      "char_end": 712,
+      "char_start": 630,
+      "entity_id": "ent_0006",
+      "implication_kind": "diagnostic",
+      "kind": "implication",
+      "linked_variant_ids": [
+        "ent_0005"
+      ],
+      "quote": "Clasificación alternativa de BRCA2 (laboratorio): Probablemente patogénica (ACMG).",
+      "quote_sha256": "c58b9fb300625f8cd45daa5ead27bb54ffae79fb1bde8f004489414841d9909f"
+    },
+    {
+      "assertion": "present",
+      "char_end": 816,
+      "char_start": 713,
+      "entity_id": "ent_0007",
+      "evidence_level": "Tier I - Level A",
+      "implication_kind": "therapeutic",
+      "kind": "implication",
+      "linked_variant_ids": [
+        "ent_0005"
+      ],
+      "phenotype": "adenocarcinoma de próstata",
+      "quote": "Implicación terapéutica: olaparib. Evidencia: Tier I - Level A. Enfermedad: adenocarcinoma de próstata.",
+      "quote_sha256": "e6410b0008111dc200a2f3e03a51eaa92ae006cd3b246333249427e356d0d608",
+      "therapy": "olaparib"
+    },
+    {
+      "assertion": "present",
+      "char_end": 868,
+      "char_start": 818,
+      "entity_id": "ent_0008",
+      "kind": "knowledge_release",
+      "name": "clinvar",
+      "quote": "Fuente de conocimiento: ClinVar versión 2026-09-01",
+      "quote_sha256": "03d25a2aaabf11389ace9a510fd59f717f8c106e9a394267978397499910f850",
+      "version": "2026-09-01"
+    },
+    {
+      "assertion": "present",
+      "char_end": 942,
+      "char_start": 869,
+      "entity_id": "ent_0009",
+      "kind": "recommendation",
+      "quote": "Recomendación: Se recomienda valorar consejo genético y estudio familiar.",
+      "quote_sha256": "1c55239a12e6bd0bc33085455a36efcfc17058712b1b6c4f7fb937d04ecaf77a",
+      "text": "Se recomienda valorar consejo genético y estudio familiar."
+    }
+  ],
+  "extractor_version": "go-61-gold/1",
+  "needs_review": true,
+  "schema": "tietai.genomic-extraction/v1",
+  "source_text": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)\nINFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Jarred Bednar   Sexo: varón   Fecha de nacimiento: 1962-02-11\nCaso sintético oc_0016. Diagnóstico de referencia: adenocarcinoma de próstata.\nPanel NGS de tumor sólido OncoProstata v1\nMuestra: tejido tumoral FFPE, biopsia de próstata   ID de muestra SYN-0016\nGenoma de referencia GRCh38\nFecha del informe: 2022-09-23\n\nVariantes detectadas:\nBRCA2 NM_000059.4:c.5946del (p.Ser1982ArgfsTer22) VAF 49,9%. Heterocigosis. Variante germinal. Patogénica (ACMG).\n\nImplicaciones:\nClasificación alternativa de BRCA2 (laboratorio): Probablemente patogénica (ACMG).\nImplicación terapéutica: olaparib. Evidencia: Tier I - Level A. Enfermedad: adenocarcinoma de próstata.\n\nFuente de conocimiento: ClinVar versión 2026-09-01\nRecomendación: Se recomienda valorar consejo genético y estudio familiar.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "c6b0d824fb7c99f86eb9828608a89cb97fa09bafbf461e3c6edf124a403c7d37"
+}

@@ -1,0 +1,15 @@
+{
+  "expected": [
+    {
+      "code": "invariant",
+      "detailCode": "INV-HGVS-1",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-HGVS-1",
+  "layer": "fhir-validate",
+  "note": "NM_000546.6:c.524G>X is not an HGVS expression",
+  "seed": [],
+  "variant": "invalid-base"
+}

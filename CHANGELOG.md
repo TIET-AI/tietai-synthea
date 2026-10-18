@@ -13,6 +13,27 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- **Synthetic genomics and oncology pack** (GO-61, `--genomics`, off by default): per cancer case a
+  `tietai-genomic-report` bundle, an mCODE oncology bundle, a BGZF VCF, Spanish genetic and pathology reports as PDF
+  plus text twin plus C5 expected entities, an HL7 ORU message, and 16 negative fixtures; a manifest with per-file
+  hashes; a Spanish-identifier PHI scan; a committed reference pack under `examples/genomics-oncology-pack/`.
+  See [docs/genomics-pack.md](docs/genomics-pack.md). New modules: `export/genomics*.py`, `bgzf.py`, `vcf.py`,
+  `pdfmini.py`. `--output` is now an alias of `--output-dir`.
+- `--genomics-cohort`, `generate.module_patches` and `generate.encounter_end_completes` (all opt-in): cohort
+  enrichment of the four cancer modules, and a switch for the defect below.
+- `jsonschema>=4.18` and `referencing` are now declared (the locked version already satisfied them).
+
+### Known defect (not fixed by default)
+
+- `EncounterEnd` never lets a module move on: it ends the encounter and yields on every step, so every module path
+  that crosses an EncounterEnd stalls for good (lung cancer never reaches a diagnosis; breast treatment never
+  starts). Fixing it changes the populations generated from a seed, so the fix ships behind
+  `generate.encounter_end_completes` (default `false`) and needs its own release decision.
+
 ## [1.4.1] - 2026-09-25
 
 Lab results now carry the interval they are read against, and the members of a

@@ -49,6 +49,28 @@ def _text(code_value: Any) -> str:
     return str(getattr(code_value, "display", None) or (code_value.get("display") if isinstance(code_value, dict) else "") or "")
 
 
+def _thin(items: List[Dict[str, str]], key: str, gap_days: int = 21, cap: int = 6) -> List[Dict[str, str]]:
+    """Keep at most ``cap`` entries per code, at least ``gap_days`` apart.
+
+    The modules record every chemotherapy day and every radiotherapy fraction;
+    the pack keeps the treatment course, not each session, so bundles stay small.
+    """
+    kept: List[Dict[str, str]] = []
+    last: Dict[str, date] = {}
+    count: Dict[str, int] = {}
+    for it in items:
+        d0 = date.fromisoformat(it["date"])
+        k = it[key]
+        if count.get(k, 0) >= cap:
+            continue
+        if k in last and (d0 - last[k]).days < gap_days:
+            continue
+        last[k] = d0
+        count[k] = count.get(k, 0) + 1
+        kept.append(it)
+    return kept
+
+
 class GenomicsExporter(PatientExporter):
     """Stage one descriptor per cancer case of a person (REQ-GO-61-01)."""
 
@@ -150,8 +172,8 @@ class GenomicsExporter(PatientExporter):
                 if str(c.code) in kinds:
                     desc.procs.append({"snomed": str(c.code), "display": str(c.display), "date": _d(pr.time)})
                     break
-        desc.meds.sort(key=lambda m: (m["date"], m["rxnorm"]))
-        desc.procs.sort(key=lambda p: (p["date"], p["snomed"]))
+        desc.meds = _thin(sorted(desc.meds, key=lambda m: (m["date"], m["rxnorm"])), "rxnorm")
+        desc.procs = _thin(sorted(desc.procs, key=lambda p: (p["date"], p["snomed"])), "snomed")
         desc.markers = [m for m in desc.markers if m]
         # one marker per LOINC, first occurrence
         uniq, seen_m = [], set()
@@ -226,6 +248,9 @@ def _assign_variants(cases: List[CaseDescriptor], curated: List[CuratedVariant],
         germ = [v for v in table if v.source_class == "germline"]
         if germ and k % 5 == 1 and not any(v.source_class == "germline" for v in chosen):
             chosen[0] = rng.choice(germ)
+        if all(v.structural or v.kind != "variant" for v in chosen):
+            # a report needs at least one reportable (HGVS-bearing) variant
+            chosen[0] = next(v for v in table if v.kind == "variant" and not v.structural)
         order = {id(v): i for i, v in enumerate(table)}
         out[(d.person_uuid, d.family)] = sorted(chosen, key=lambda v: order[id(v)])
     return out

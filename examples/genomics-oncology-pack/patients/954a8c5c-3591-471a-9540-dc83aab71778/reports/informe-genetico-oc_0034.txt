@@ -1,0 +1,20 @@
+LABORATORIO DE GENÉTICA MOLECULAR (sintético)
+INFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Samatha Mills   Sexo: mujer   Fecha de nacimiento: 1962-10-20
+Caso sintético oc_0034. Diagnóstico de referencia: carcinoma de pulmón.
+Panel NGS de tumor sólido OncoPulmon v4
+Muestra: tejido tumoral FFPE, biopsia pulmonar   ID de muestra SYN-0034
+Genoma de referencia GRCh38
+Fecha del informe: 2013-07-08
+
+Variantes detectadas:
+EGFR NM_005228.5:c.2235_2249del (p.Glu746_Ala750del) VAF 33,1%. Heterocigosis. Variante somática. Tier I (AMP).
+
+Implicaciones:
+Clasificación alternativa de EGFR (laboratorio): Tier II (AMP).
+Implicación terapéutica: osimertinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulmón.
+
+Fuente de conocimiento: ClinVar versión 2026-09-01
+Recomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.
+Este informe es un documento sintético generado para pruebas de la plataforma.

@@ -1,0 +1,20 @@
+{
+  "expected": [
+    {
+      "code": "code-invalid",
+      "detailCode": "BIND_REQUIRED",
+      "severity": "error"
+    },
+    {
+      "code": "invariant",
+      "detailCode": "INV-BUILD-1",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-BUILD-1",
+  "layer": "fhir-validate",
+  "note": "build given as the alias hg19 in text only",
+  "seed": [],
+  "variant": "hg19"
+}

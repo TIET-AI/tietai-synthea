@@ -1,0 +1,9 @@
+{
+  "expected": [],
+  "fhirVersion": "R4",
+  "invariant": "GO-05-LABEL-ON-WRITE",
+  "layer": "write-labelling",
+  "note": "germline variant carrying no GERMLINE security label; GO-05 labels on write",
+  "seed": [],
+  "variant": "no-germline-label"
+}

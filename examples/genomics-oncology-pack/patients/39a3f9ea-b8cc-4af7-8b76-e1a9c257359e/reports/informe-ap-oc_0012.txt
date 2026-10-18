@@ -1,0 +1,21 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Sarai Hudson   Sexo: mujer   Fecha de nacimiento: 1942-12-02
+Caso sintético oc_0012. Diagnóstico de referencia: carcinoma de mama.
+Muestra AP-2016-000544: Tumorectomía de mama izquierda, recibida el 2016-09-12
+Procedimiento: Tumorectomía con biopsia selectiva de ganglio centinela
+Localización del tumor: Mama (C50.9)
+Tipo histológico: Carcinoma ductal infiltrante (8500/3)
+Grado histológico: Grado 2 de Nottingham (puntuación 3+2+1)
+Tamaño tumoral: 20 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 4 mm
+Invasión linfovascular: presente
+Invasión perineural: ausente
+Ganglios linfáticos: 0 de 8 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio IA
+Receptor de estrógenos (RE): positivo, inmunohistoquímica
+Receptor de progesterona (RP): negativo, inmunohistoquímica
+HER2: positivo, inmunohistoquímica
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.
