@@ -2,18 +2,18 @@
   "schema": "tietai.oncology-case-golden/v1",
   "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
   "patient": "523448c4-d201-4402-bd51-3796dadb22e2",
-  "summary_sha256": "6bb50f0953add8b9bfaad182743bbd6802e0c57aaea46b0ace2d9b89a2707422",
+  "summary_sha256": "d8ea649825c4915a9eee973de3d4b04d8b01bf5678ae62ea62b3075faa8ec2db",
   "case": {
     "cases": [
       {
         "biomarkers": [
           {
             "code": "LOINC 2857-1",
-            "date": "2015-07-23",
+            "date": "2018-07-23",
             "display": "PSA",
             "quantity": {
               "unit": "ng/mL",
-              "value": 12.91
+              "value": 9.8
             }
           }
         ],
@@ -21,7 +21,7 @@
         "diagnosis": {
           "cie10es": "C61",
           "clinical_status": "active",
-          "date": "2015-07-10",
+          "date": "2018-07-10",
           "display": "Malignant tumor of prostate (disorder)",
           "icdo3_morphology": "8140/3",
           "icdo3_topography": "C61.9",
@@ -43,24 +43,24 @@
         "primary_condition_ref": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104",
         "staging": [
           {
-            "date": "2015-07-17",
+            "date": "2018-07-17",
             "edition": "8",
             "kind": "clinical",
             "m": "cM0",
             "n": "cN0",
             "stage_group": "I",
             "system": "TNM",
-            "t": "cT1"
+            "t": "cT2"
           },
           {
-            "date": "2015-07-23",
+            "date": "2018-07-23",
             "edition": "8",
             "kind": "pathological",
             "m": "cM0",
             "n": "pN0",
             "stage_group": "I",
             "system": "TNM",
-            "t": "pT1"
+            "t": "pT2"
           }
         ],
         "treatments": [

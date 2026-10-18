@@ -2,14 +2,14 @@
   "schema": "tietai.oncology-case-golden/v1",
   "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
   "patient": "0897fc6f-689d-4e37-a4cc-ca10c6ee94f0",
-  "summary_sha256": "c7f1e63e7802073b89e9cbedd530b7d5ab7fe3cf5f8064ec94307626e8206e27",
+  "summary_sha256": "3b558829dfe1d339c288081ac39114458d553c8029e1d49dced9b3e8b72d389c",
   "case": {
     "cases": [
       {
         "biomarkers": [
           {
             "code": "LOINC 81695-9",
-            "date": "2004-03-25",
+            "date": "2018-03-25",
             "display": "MSI",
             "value": "MSI-H"
           }
@@ -18,7 +18,7 @@
         "diagnosis": {
           "cie10es": "C18.9",
           "clinical_status": "active",
-          "date": "2004-03-12",
+          "date": "2018-03-12",
           "display": "Malignant neoplasm of colon (disorder)",
           "icdo3_morphology": "8140/3",
           "icdo3_topography": "C18.9",
@@ -48,24 +48,24 @@
         "primary_condition_ref": "Condition/19553387-133a-4b7a-a76d-f305f0ea2068",
         "staging": [
           {
-            "date": "2004-03-19",
+            "date": "2018-03-19",
             "edition": "8",
             "kind": "clinical",
-            "m": "cM1",
-            "n": "cN2",
-            "stage_group": "IV",
+            "m": "cM1a",
+            "n": "cN1b",
+            "stage_group": "IVA",
             "system": "TNM",
-            "t": "cT4"
+            "t": "cT3"
           },
           {
-            "date": "2004-03-28",
+            "date": "2018-03-28",
             "edition": "8",
             "kind": "pathological",
-            "m": "cM1",
-            "n": "pN2",
-            "stage_group": "IV",
+            "m": "cM1a",
+            "n": "pN1b",
+            "stage_group": "IVA",
             "system": "TNM",
-            "t": "pT4"
+            "t": "pT3"
           }
         ],
         "treatments": [
@@ -74,42 +74,42 @@
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2004-04-09"
+            "start": "2018-04-09"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2004-05-21"
+            "start": "2018-05-21"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2004-07-02"
+            "start": "2018-07-02"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2004-08-13"
+            "start": "2018-08-13"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2004-09-24"
+            "start": "2018-09-24"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2004-11-05"
+            "start": "2018-11-05"
           },
           {
             "code": "ATC L01XA03",

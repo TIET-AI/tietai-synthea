@@ -2,14 +2,14 @@
   "schema": "tietai.oncology-case-golden/v1",
   "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
   "patient": "a6377767-26a7-4237-b2b9-1db8c4769931",
-  "summary_sha256": "5f1d73aca6548adb86c435e0009dd2c9757aada8a08c557f90fab87e843d3015",
+  "summary_sha256": "9a10d96f8a2bbfefba5ae690e733756b02791cd805e483eabcc38347073b9f26",
   "case": {
     "cases": [
       {
         "biomarkers": [
           {
             "code": "LOINC 81695-9",
-            "date": "1997-05-13",
+            "date": "2018-05-13",
             "display": "MSI",
             "value": "MSI-H"
           }
@@ -18,7 +18,7 @@
         "diagnosis": {
           "cie10es": "C18.9",
           "clinical_status": "active",
-          "date": "1997-04-25",
+          "date": "2018-04-25",
           "display": "Malignant neoplasm of colon (disorder)",
           "icdo3_morphology": "8140/3",
           "icdo3_topography": "C18.9",
@@ -48,24 +48,24 @@
         "primary_condition_ref": "Condition/725e76c6-81fd-4cd0-ac86-056888fe2be8",
         "staging": [
           {
-            "date": "1997-05-02",
+            "date": "2018-05-02",
             "edition": "8",
             "kind": "clinical",
-            "m": "cM1",
-            "n": "cN2",
-            "stage_group": "IV",
+            "m": "cM1a",
+            "n": "cN1b",
+            "stage_group": "IVA",
             "system": "TNM",
-            "t": "cT4"
+            "t": "cT3"
           },
           {
-            "date": "1997-05-16",
+            "date": "2018-05-16",
             "edition": "8",
             "kind": "pathological",
-            "m": "cM1",
-            "n": "pN2",
-            "stage_group": "IV",
+            "m": "cM1a",
+            "n": "pN1b",
+            "stage_group": "IVA",
             "system": "TNM",
-            "t": "pT4"
+            "t": "pT3"
           }
         ],
         "treatments": [
@@ -74,49 +74,49 @@
             "display": "Loop colostomy (procedure)",
             "fhir_status": "completed",
             "kind": "surgical",
-            "start": "1997-05-23"
+            "start": "2018-05-23"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "1997-07-04"
+            "start": "2018-07-04"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "1997-08-15"
+            "start": "2018-08-15"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "1997-09-26"
+            "start": "2018-09-26"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "1997-11-07"
+            "start": "2018-11-07"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "1997-12-19"
+            "start": "2018-12-19"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "1998-01-30"
+            "start": "2019-01-30"
           },
           {
             "code": "ATC L01XA03",

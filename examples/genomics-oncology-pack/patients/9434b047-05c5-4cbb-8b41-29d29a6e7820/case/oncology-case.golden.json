@@ -2,18 +2,18 @@
   "schema": "tietai.oncology-case-golden/v1",
   "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
   "patient": "9434b047-05c5-4cbb-8b41-29d29a6e7820",
-  "summary_sha256": "cddfa822269014358573e26ccc66a5a399c0d546ac8c311a9400d892baaac956",
+  "summary_sha256": "657000cc0ffa7fa0fff3a5b4a20438af240b5c524003a43e9ec3ee2cc61407bc",
   "case": {
     "cases": [
       {
         "biomarkers": [
           {
             "code": "LOINC 2857-1",
-            "date": "2007-11-13",
+            "date": "2018-11-13",
             "display": "PSA",
             "quantity": {
               "unit": "ng/mL",
-              "value": 10.84
+              "value": 31.9
             }
           }
         ],
@@ -21,7 +21,7 @@
         "diagnosis": {
           "cie10es": "C61",
           "clinical_status": "active",
-          "date": "2007-10-30",
+          "date": "2018-10-30",
           "display": "Malignant tumor of prostate (disorder)",
           "icdo3_morphology": "8140/3",
           "icdo3_topography": "C61.9",
@@ -43,24 +43,24 @@
         "primary_condition_ref": "Condition/01567a9b-9fbf-4d39-ae0b-1b858d6d45a8",
         "staging": [
           {
-            "date": "2007-11-06",
+            "date": "2018-11-06",
             "edition": "8",
             "kind": "clinical",
             "m": "cM0",
             "n": "cN0",
-            "stage_group": "I",
+            "stage_group": "IIIA",
             "system": "TNM",
-            "t": "cT1"
+            "t": "cT2"
           },
           {
-            "date": "2007-11-13",
+            "date": "2018-11-13",
             "edition": "8",
             "kind": "pathological",
             "m": "cM0",
             "n": "pN0",
-            "stage_group": "I",
+            "stage_group": "IIIA",
             "system": "TNM",
-            "t": "pT1"
+            "t": "pT2"
           }
         ],
         "treatments": [

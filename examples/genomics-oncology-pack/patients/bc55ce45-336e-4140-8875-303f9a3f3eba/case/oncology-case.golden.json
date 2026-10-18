@@ -2,7 +2,7 @@
   "schema": "tietai.oncology-case-golden/v1",
   "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
   "patient": "bc55ce45-336e-4140-8875-303f9a3f3eba",
-  "summary_sha256": "31f7fe4c55a064772de110377797807f1aaae23013d06568f56393707dd27978",
+  "summary_sha256": "974e89a20a6164aa21ce45f6158a306e6f46b2e62eb3188e1ce4cb4c03eaa278",
   "case": {
     "cases": [
       {
@@ -10,7 +10,7 @@
         "diagnosis": {
           "cie10es": "C18.9",
           "clinical_status": "active",
-          "date": "1994-02-06",
+          "date": "2018-02-06",
           "display": "Malignant neoplasm of colon (disorder)",
           "icdo3_morphology": "8140/3",
           "icdo3_topography": "C18.9",
@@ -29,24 +29,24 @@
         "primary_condition_ref": "Condition/1035c62d-b1d0-435c-9418-ba39d779a294",
         "staging": [
           {
-            "date": "1994-02-13",
+            "date": "2018-02-13",
             "edition": "8",
             "kind": "clinical",
             "m": "cM0",
-            "n": "cN1",
-            "stage_group": "III",
+            "n": "cN1a",
+            "stage_group": "IIIA",
             "system": "TNM",
-            "t": "cT3"
+            "t": "cT2"
           },
           {
-            "date": "1994-02-21",
+            "date": "2018-02-21",
             "edition": "8",
             "kind": "pathological",
             "m": "cM0",
-            "n": "pN1",
-            "stage_group": "III",
+            "n": "pN1a",
+            "stage_group": "IIIA",
             "system": "TNM",
-            "t": "pT3"
+            "t": "pT2"
           }
         ],
         "treatments": [
@@ -55,7 +55,7 @@
             "display": "Partial resection of colon (procedure)",
             "fhir_status": "completed",
             "kind": "surgical",
-            "start": "1994-03-06"
+            "start": "2018-03-06"
           }
         ]
       }

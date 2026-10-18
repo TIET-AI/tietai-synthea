@@ -2,41 +2,62 @@
   "schema": "tietai.oncology-case-golden/v1",
   "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
   "patient": "71d3e3b6-044e-4717-a679-58f97f357182",
-  "summary_sha256": "2f7fe15e75673c6110bc3e3cccd7710252efe46939a5aca6743d8aa50e6da0bf",
+  "summary_sha256": "66f29ce8c79a5ceb9c991ae8bb4ac80907b65ee87fc1adf1a287e41593fc1aaf",
   "case": {
     "cases": [
       {
+        "biomarkers": [
+          {
+            "code": "LOINC 81695-9",
+            "date": "2018-08-01",
+            "display": "MSI",
+            "value": "MSI-H"
+          }
+        ],
         "case_id": "oc_0001",
         "diagnosis": {
           "cie10es": "C18.9",
           "clinical_status": "active",
-          "date": "2003-07-13",
+          "date": "2018-07-13",
           "display": "Malignant neoplasm of colon (disorder)",
           "icdo3_morphology": "8140/3",
           "icdo3_topography": "C18.9",
           "snomed": "94260004"
         },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Tier i",
+            "conflicting_significance": [
+              "Tier ii"
+            ],
+            "gene": "BRAF",
+            "hgvs_c": "NM_004333.6:c.1799T>A",
+            "hgvs_p": "NP_004324.2:p.Val600Glu",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/4fb42e01-1927-4555-8d6b-429780f0202b"
+          }
+        ],
         "primary_condition_ref": "Condition/5564aa5f-24c6-4a21-8212-c91ac4ac13d2",
         "staging": [
           {
-            "date": "2003-07-20",
+            "date": "2018-07-20",
             "edition": "8",
             "kind": "clinical",
-            "m": "cM1",
-            "n": "cN2",
-            "stage_group": "IV",
+            "m": "cM1a",
+            "n": "cN1b",
+            "stage_group": "IVA",
             "system": "TNM",
-            "t": "cT4"
+            "t": "cT3"
           },
           {
-            "date": "2003-08-04",
+            "date": "2018-08-04",
             "edition": "8",
             "kind": "pathological",
-            "m": "cM1",
-            "n": "pN2",
-            "stage_group": "IV",
+            "m": "cM1a",
+            "n": "pN1b",
+            "stage_group": "IVA",
             "system": "TNM",
-            "t": "pT4"
+            "t": "pT3"
           }
         ],
         "treatments": [
@@ -45,42 +66,42 @@
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2003-08-10"
+            "start": "2018-08-10"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2003-09-21"
+            "start": "2018-09-21"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2003-11-02"
+            "start": "2018-11-02"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2003-12-14"
+            "start": "2018-12-14"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2004-01-25"
+            "start": "2019-01-25"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2004-03-07"
+            "start": "2019-03-07"
           },
           {
             "code": "ATC L01CD01",
@@ -203,6 +224,16 @@
           "icdo3_topography": "C34.9",
           "snomed": "254637007"
         },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Tier i",
+            "gene": "EGFR",
+            "hgvs_c": "NM_005228.5:c.2573T>G",
+            "hgvs_p": "NP_005219.2:p.Leu858Arg",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/6f4577e3-dfa5-4527-9971-4da598033a79"
+          }
+        ],
         "primary_condition_ref": "Condition/798f33c6-75ac-4095-b5d3-816d1d341855",
         "staging": [
           {
@@ -211,9 +242,9 @@
             "kind": "clinical",
             "m": "cM0",
             "n": "cN0",
-            "stage_group": "I",
+            "stage_group": "IA",
             "system": "TNM",
-            "t": "cT1"
+            "t": "cT1c"
           },
           {
             "date": "2022-09-18",
@@ -221,9 +252,9 @@
             "kind": "pathological",
             "m": "cM0",
             "n": "pN0",
-            "stage_group": "I",
+            "stage_group": "IA",
             "system": "TNM",
-            "t": "pT1"
+            "t": "pT1c"
           }
         ],
         "treatments": [
@@ -342,16 +373,6 @@
             "regimen": "paclitaxel"
           }
         ]
-      }
-    ],
-    "omissions": [
-      {
-        "code": "biomarker_not_shown",
-        "message": "One or more biomarker results in the record could not be shown."
-      },
-      {
-        "code": "unattributed_elements",
-        "message": "One or more elements could not be attributed to a cancer case and are not shown."
       }
     ],
     "patient_ref": "Patient/f61bc84a-b598-42a0-88c2-06b0559ab520",

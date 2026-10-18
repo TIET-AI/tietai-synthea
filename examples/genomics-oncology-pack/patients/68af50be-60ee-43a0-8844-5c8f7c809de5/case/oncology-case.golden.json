@@ -2,7 +2,7 @@
   "schema": "tietai.oncology-case-golden/v1",
   "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
   "patient": "68af50be-60ee-43a0-8844-5c8f7c809de5",
-  "summary_sha256": "3dc78abe50ea5070b5ab6bb0d21cf6775af5c363e3858f97e8f44836454c9b74",
+  "summary_sha256": "f78034ed44f26d0e157e311e388ed50d95bda088d0a76eaffdc9e49b0ced8de6",
   "case": {
     "cases": [
       {
@@ -10,7 +10,7 @@
         "diagnosis": {
           "cie10es": "C18.9",
           "clinical_status": "active",
-          "date": "2009-12-09",
+          "date": "2018-12-09",
           "display": "Malignant neoplasm of colon (disorder)",
           "icdo3_morphology": "8140/3",
           "icdo3_topography": "C18.9",
@@ -40,24 +40,24 @@
         "primary_condition_ref": "Condition/05f317d9-8564-4b25-9d57-f9a77f2eb0b0",
         "staging": [
           {
-            "date": "2009-12-16",
+            "date": "2018-12-16",
             "edition": "8",
             "kind": "clinical",
             "m": "cM0",
-            "n": "cN1",
-            "stage_group": "III",
+            "n": "cN1a",
+            "stage_group": "IIIA",
             "system": "TNM",
-            "t": "cT3"
+            "t": "cT2"
           },
           {
-            "date": "2009-12-19",
+            "date": "2018-12-19",
             "edition": "8",
             "kind": "pathological",
             "m": "cM0",
-            "n": "pN1",
-            "stage_group": "III",
+            "n": "pN1a",
+            "stage_group": "IIIA",
             "system": "TNM",
-            "t": "pT3"
+            "t": "pT2"
           }
         ],
         "treatments": [
@@ -66,49 +66,49 @@
             "display": "Partial resection of colon (procedure)",
             "fhir_status": "completed",
             "kind": "surgical",
-            "start": "2010-01-06"
+            "start": "2019-01-06"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2010-02-10"
+            "start": "2019-02-10"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2010-03-24"
+            "start": "2019-03-24"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2010-05-05"
+            "start": "2019-05-05"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2010-06-16"
+            "start": "2019-06-16"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2010-07-28"
+            "start": "2019-07-28"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2010-09-08"
+            "start": "2019-09-08"
           },
           {
             "code": "ATC L01XA03",

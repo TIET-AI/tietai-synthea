@@ -2,7 +2,7 @@
   "schema": "tietai.oncology-case-golden/v1",
   "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
   "patient": "4f1170fb-55d0-4345-a035-b3d377038a0c",
-  "summary_sha256": "ddc8c8ca922e49195157b503faed722b743da61b9f4f00a8c7be69a238d134e5",
+  "summary_sha256": "20b998e714a8715e89564c5c4bbcbd4478b48af651b3d77e1948ab305b6e86b0",
   "case": {
     "cases": [
       {
@@ -10,7 +10,7 @@
         "diagnosis": {
           "cie10es": "C34.90",
           "clinical_status": "active",
-          "date": "2017-03-20",
+          "date": "2018-03-20",
           "display": "Malignant neoplasm of lung (disorder)",
           "icdo3_morphology": "8041/3",
           "icdo3_topography": "C34.9",
@@ -32,24 +32,24 @@
         "primary_condition_ref": "Condition/5c451801-85e6-4bc6-91ac-e69b2e81d0ad",
         "staging": [
           {
-            "date": "2017-03-27",
+            "date": "2018-03-27",
             "edition": "8",
             "kind": "clinical",
             "m": "cM0",
             "n": "cN0",
-            "stage_group": "I",
+            "stage_group": "IA",
             "system": "TNM",
-            "t": "cT1"
+            "t": "cT1b"
           },
           {
-            "date": "2017-04-11",
+            "date": "2018-04-11",
             "edition": "8",
             "kind": "pathological",
             "m": "cM0",
             "n": "pN0",
-            "stage_group": "I",
+            "stage_group": "IA",
             "system": "TNM",
-            "t": "pT1"
+            "t": "pT1b"
           }
         ],
         "treatments": [
@@ -58,42 +58,42 @@
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2017-04-10"
+            "start": "2018-04-10"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2017-06-05"
+            "start": "2018-06-05"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2017-07-24"
+            "start": "2018-07-24"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2017-09-11"
+            "start": "2018-09-11"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2017-10-02"
+            "start": "2018-10-02"
           },
           {
             "code": "SNOMED 703423002",
             "display": "Combined chemotherapy and radiation therapy (procedure)",
             "fhir_status": "completed",
             "kind": "radiotherapy",
-            "start": "2017-11-13"
+            "start": "2018-11-13"
           },
           {
             "code": "ATC L01XA01",

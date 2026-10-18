@@ -2,7 +2,7 @@
   "schema": "tietai.oncology-case-golden/v1",
   "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
   "patient": "562ed880-0ebe-4f3d-bb70-a5ba4b93b891",
-  "summary_sha256": "453d8a50d92c86b0a1aebd98851e5bacf1c0a2fdaebccb29733139a2e2f829d0",
+  "summary_sha256": "a8e7b7c0ca0b9d84a017bdf1507c172da4bf09dff2f9eb2ab4902309fc657877",
   "case": {
     "cases": [
       {
@@ -37,9 +37,9 @@
             "kind": "clinical",
             "m": "cM0",
             "n": "cN0",
-            "stage_group": "I",
+            "stage_group": "IB",
             "system": "TNM",
-            "t": "cT1"
+            "t": "cT2a"
           },
           {
             "date": "2018-10-31",
@@ -47,9 +47,9 @@
             "kind": "pathological",
             "m": "cM0",
             "n": "pN0",
-            "stage_group": "I",
+            "stage_group": "IB",
             "system": "TNM",
-            "t": "pT1"
+            "t": "pT2a"
           }
         ],
         "treatments": [

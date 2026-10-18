@@ -2,7 +2,7 @@
   "schema": "tietai.oncology-case-golden/v1",
   "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
   "patient": "b5ae0abe-d892-4465-9bc9-cd338d6d5d15",
-  "summary_sha256": "b6b3bf18caf0173b13cbdf5a3db5fb4e74bc14cef5798a1b085868e671a1afa2",
+  "summary_sha256": "3dea51926918c8d1b375d42a17201fba1b26504069b4204eb7abe4fe9ca94780",
   "case": {
     "cases": [
       {
@@ -10,7 +10,7 @@
         "diagnosis": {
           "cie10es": "C18.9",
           "clinical_status": "active",
-          "date": "1996-06-29",
+          "date": "2018-06-29",
           "display": "Malignant neoplasm of colon (disorder)",
           "icdo3_morphology": "8140/3",
           "icdo3_topography": "C18.9",
@@ -29,24 +29,24 @@
         "primary_condition_ref": "Condition/a67556fe-a70c-4657-ba36-231d5db49d60",
         "staging": [
           {
-            "date": "1996-07-06",
+            "date": "2018-07-06",
             "edition": "8",
             "kind": "clinical",
             "m": "cM0",
-            "n": "cN1",
-            "stage_group": "III",
+            "n": "cN1a",
+            "stage_group": "IIIA",
             "system": "TNM",
-            "t": "cT3"
+            "t": "cT2"
           },
           {
-            "date": "1996-07-14",
+            "date": "2018-07-14",
             "edition": "8",
             "kind": "pathological",
             "m": "cM0",
-            "n": "pN1",
-            "stage_group": "III",
+            "n": "pN1a",
+            "stage_group": "IIIA",
             "system": "TNM",
-            "t": "pT3"
+            "t": "pT2"
           }
         ],
         "treatments": [
@@ -55,7 +55,7 @@
             "display": "Partial resection of colon (procedure)",
             "fhir_status": "completed",
             "kind": "surgical",
-            "start": "1996-07-27"
+            "start": "2018-07-27"
           }
         ]
       }
