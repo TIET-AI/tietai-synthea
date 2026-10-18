@@ -92,9 +92,20 @@ FIRST_NAMES = ["John", "Jane", "Michael", "Sarah", "David", "Emily",
 LAST_NAMES = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Davis",
               "Miller", "Wilson", "Garcia", "Okafor", "Nguyen", "Rossi"]
 
-#: Clinicians generated per facility. Real counts vary hugely; this is enough
-#: for continuity to be meaningful without inventing a staffing model.
+#: Clinicians generated per facility, unless the facility file says otherwise
+#: (a `clinicians` column) or `generate.providers.clinicians_per_facility` is
+#: set. Real counts vary hugely; this is enough for continuity to be
+#: meaningful at a small practice without inventing a staffing model, and too
+#: few for a hospital that is a whole city's only facility.
 CLINICIANS_PER_FACILITY = 4
+
+#: NPI system, used when the locale pack does not name another scheme.
+NPI_SYSTEM = 'http://hl7.org/fhir/sid/us-npi'
+
+
+def _default_practitioner_identifier(rand: random.Random) -> str:
+    # 9999 prefix: the NPI registry has never issued one.
+    return f"9999{rand.randint(100000, 999999)}"
 
 #: Chance a routine visit is with the patient's usual clinician rather than a
 #: colleague at the same practice.
@@ -115,6 +126,11 @@ class Provider:
     phone: str
     capacity: int = 100
     utilization: float = 0.0
+    #: Areas this facility serves (`catchment` column). A patient whose
+    #: `catchment_area` is listed is sent here in preference to anywhere else.
+    catchment: Tuple[str, ...] = ()
+    #: How many clinicians to staff it with; None means the manager default.
+    clinicians: Optional[int] = None
 
     def has_capacity(self) -> bool:
         """Whether the facility can take another patient."""
@@ -129,7 +145,18 @@ class Clinician:
     last_name: str
     specialty: str
     provider: Optional[Provider] = None
-    npi: Optional[str] = None
+    #: The practitioner identifier (an NPI unless the locale says otherwise).
+    identifier: Optional[str] = None
+    identifier_system: Optional[str] = None
+    identifier_type: Optional[Tuple[str, str, str]] = None
+    """`(system, code, display)` of the identifier type, when the scheme has one."""
+
+    @property
+    def npi(self) -> Optional[str]:
+        """The identifier, when it is an NPI."""
+        if self.identifier_system in (None, NPI_SYSTEM):
+            return self.identifier
+        return None
 
     @property
     def full_name(self) -> str:
@@ -139,12 +166,20 @@ class Clinician:
 class ProviderManager:
     """Loads facilities and assigns them, with continuity, to patients."""
 
-    def __init__(self, seed: Optional[int] = None):
+    def __init__(self, seed: Optional[int] = None, pack=None,
+                 clinicians_per_facility: int = CLINICIANS_PER_FACILITY):
         """
         Args:
             seed: Seed for clinician generation, kept separate from the patient
                 stream so staffing changes do not perturb patients.
+            pack: The locale pack, for its facility files, clinician names,
+                specialties and practitioner identifier. None is the engine
+                defaults (the bundled US directory).
+            clinicians_per_facility: Staff per facility when the facility
+                file does not say.
         """
+        self.pack = pack
+        self.clinicians_per_facility = max(1, int(clinicians_per_facility))
         self.providers: Dict[str, Provider] = {}
         self.clinicians: Dict[str, Clinician] = {}
         self.providers_by_type: Dict[str, List[Provider]] = {}
@@ -173,10 +208,37 @@ class ProviderManager:
 
         self._index_providers()
 
+    def _facility_files(self) -> List[Tuple[object, Optional[str]]]:
+        """`(path, default type)` for every facility file to load, in order.
+
+        A pack's files replace the bundled directory entirely; without a pack
+        (or with a pack that lists none) the bundled US files are used, with
+        anything fetched by `synthea fetch-data facilities` taking precedence.
+        """
+        declared = getattr(self.pack, 'providers_files', None) or ()
+        if not declared:
+            files = []
+            for filename, provider_type in FACILITY_FILES.items():
+                path = cached_path(f'providers/{filename}') or resource_path(
+                    'providers', filename)
+                files.append((path, provider_type))
+            return files
+
+        if isinstance(declared, dict):
+            items = list(declared.items())
+        else:
+            items = [(relative, None) for relative in declared]
+
+        files = []
+        for relative, provider_type in items:
+            if provider_type is None:
+                # A file named like a bundled one has that file's type.
+                provider_type = FACILITY_FILES.get(str(relative).rsplit('/', 1)[-1])
+            files.append((self.pack.data_path(relative), provider_type))
+        return files
+
     def _load_facilities(self) -> None:
-        for filename, provider_type in FACILITY_FILES.items():
-            path = cached_path(f'providers/{filename}') or resource_path(
-                'providers', filename)
+        for path, provider_type in self._facility_files():
             if not path or not path.exists():
                 continue
             try:
@@ -184,10 +246,16 @@ class ProviderManager:
             except Exception as error:  # pragma: no cover - defensive
                 logger.warning("Could not read facilities from %s: %s", path, error)
 
-    def _load_file(self, path, provider_type: str) -> None:
+    def _load_file(self, path, provider_type: Optional[str]) -> None:
         with open(path, 'r', encoding='utf-8-sig', newline='') as handle:
             for row in csv.DictReader(handle):
-                provider = self._parse_row(row, provider_type)
+                row_type = (row.get('facility_type') or '').strip() or provider_type
+                if not row_type:
+                    logger.warning(
+                        "A facility in %s has no type (no facility_type column "
+                        "and no type for the file); skipped.", path)
+                    continue
+                provider = self._parse_row(row, row_type)
                 if provider is None:
                     continue
                 if self._state_filter and provider.state and \
@@ -222,6 +290,10 @@ class ProviderManager:
             coordinates=(latitude, longitude),
             phone=(_first(row, 'phone', 'PHONE') or '').strip(),
             capacity=int(_as_float(_first(row, 'bed_count', 'beds')) or 50),
+            catchment=tuple(
+                area.strip() for area in (row.get('catchment') or '').split('|')
+                if area.strip()),
+            clinicians=_as_int(row.get('clinicians')),
         )
 
     def _create_default_providers(self, location: Optional['Location'] = None):
@@ -266,19 +338,34 @@ class ProviderManager:
             return existing
 
         rand = random.Random(derive_seed(self._clinician_seed, 0, provider.id))
-        specialties = [name for name, _ in SPECIALTIES]
-        weights = [share for _, share in SPECIALTIES]
+        pack = self.pack
+        table = getattr(pack, 'clinician_specialties', None) or SPECIALTIES
+        specialties = [name for name, _ in table]
+        weights = [share for _, share in table]
+        names = getattr(pack, 'clinician_names', None) or _default_names
+        scheme = getattr(pack, 'practitioner_identifier', None)
+        identify = scheme.format if scheme is not None else \
+            _default_practitioner_identifier
+        system = scheme.system if scheme is not None else NPI_SYSTEM
+        identifier_type = (
+            (scheme.type_system, scheme.type_code, scheme.type_display)
+            if scheme is not None and scheme.type_code else None)
+
+        count = provider.clinicians or self.clinicians_per_facility
 
         staff: List[Clinician] = []
-        for index in range(CLINICIANS_PER_FACILITY):
+        for index in range(count):
+            # Draw order, per clinician: name, specialty, identifier.
+            first_name, last_name = names(rand)
             clinician = Clinician(
                 id=f"{provider.id}-clinician-{index + 1}",
-                first_name=rand.choice(FIRST_NAMES),
-                last_name=rand.choice(LAST_NAMES),
+                first_name=first_name,
+                last_name=last_name,
                 specialty=rand.choices(specialties, weights=weights)[0],
                 provider=provider,
-                # 9999 prefix: the NPI registry has never issued one.
-                npi=f"9999{rand.randint(100000, 999999)}",
+                identifier=identify(rand),
+                identifier_system=system,
+                identifier_type=identifier_type,
             )
             self.clinicians[clinician.id] = clinician
             staff.append(clinician)
@@ -301,16 +388,24 @@ class ProviderManager:
 
     def find_provider(self, encounter_class: str,
                       location: Optional[Tuple[float, float]] = None,
-                      rand: Optional[random.Random] = None) -> Optional[Provider]:
-        """The nearest suitable facility for an encounter of this class."""
+                      rand: Optional[random.Random] = None,
+                      area: Optional[str] = None) -> Optional[Provider]:
+        """The nearest suitable facility for an encounter of this class.
+
+        `area` is the patient's catchment area. Facilities that declare they
+        serve it are preferred over any others of the same type; with no area,
+        or no facility declaring one, selection is by distance alone.
+        """
         for provider_type in ENCOUNTER_PROVIDER_TYPES.get(
                 encounter_class, ('primary_care', 'hospital')):
             candidates = self.providers_by_type.get(provider_type)
             if candidates:
-                return self._nearest(candidates, location, rand)
+                return self._nearest(_serving(candidates, area), location, rand)
 
         any_provider = list(self.providers.values())
-        return self._nearest(any_provider, location, rand) if any_provider else None
+        if not any_provider:
+            return None
+        return self._nearest(_serving(any_provider, area), location, rand)
 
     def _nearest(self, candidates: List[Provider],
                  location: Optional[Tuple[float, float]],
@@ -337,7 +432,9 @@ class ProviderManager:
         if location[0] is None or location[1] is None:
             location = None
 
-        provider = self.find_provider('wellness', location, person.random)
+        provider = self.find_provider(
+            'wellness', location, person.random,
+            area=person.attributes.get('catchment_area'))
         if provider is None:
             return None
 
@@ -375,7 +472,9 @@ class ProviderManager:
         if location[0] is None or location[1] is None:
             location = None
 
-        provider = self.find_provider(encounter_class, location, person.random)
+        provider = self.find_provider(
+            encounter_class, location, person.random,
+            area=person.attributes.get('catchment_area'))
         if provider is None:
             return
 
@@ -408,6 +507,24 @@ def _as_float(value) -> Optional[float]:
         return float(value)
     except (TypeError, ValueError):
         return None
+
+
+def _as_int(value) -> Optional[int]:
+    number = _as_float(value)
+    return int(number) if number is not None and number > 0 else None
+
+
+def _default_names(rand: random.Random) -> Tuple[str, str]:
+    """A clinician's name from the engine's list (two draws)."""
+    return rand.choice(FIRST_NAMES), rand.choice(LAST_NAMES)
+
+
+def _serving(candidates: List[Provider], area: Optional[str]) -> List[Provider]:
+    """The candidates that serve this area, or all of them if none declare it."""
+    if not area:
+        return candidates
+    serving = [p for p in candidates if p.catchment and area in p.catchment]
+    return serving or candidates
 
 
 def _distance(a: Tuple[float, float], b: Tuple[float, float]) -> float:

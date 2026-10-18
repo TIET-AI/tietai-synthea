@@ -108,11 +108,89 @@ the switch is gone; the committed reference pack was regenerated.
 
 - `Person.age_in_years(time)`: completed years, for whole-year bands.
 
+### Added - Spain locale pack
+
+- **`--locale es`**: patients live in the Madrid, Barcelona, Valencia, Bilbao,
+  Sevilla, Málaga and Santiago de Compostela urban areas (132 municipalities,
+  MIVAU urban-area delimitation). They are drawn by INE municipal population
+  (Padrón, 1 Jan 2025), and each gets a GeoNames postal code and a home near
+  the IGN municipal point. Age and sex follow their province (INE ECP,
+  1 Jan 2025).
+- **Identity:** INE given names by sex and two surnames by frequency, Spanish
+  addresses, and phone numbers in the unattributed `+34 30X` segment. DNI and
+  NIE numbers carry a deliberately wrong check letter, NUSS numbers wrong
+  control digits, and health-card codes a `ZZSYN` prefix. A DNI or NIE is
+  assigned by the INE foreign-national share of the province. Marital status
+  follows INE Censo 2024 shares. No race or ethnicity is recorded.
+- **Care:** one fictional "TietAI Hospital <city>" per city treats every
+  encounter of every class for that city's patients. Clinicians have
+  INE-derived names and a synthetic collegiate number.
+- **Coverage:** the Sistema Nacional de Salud gives universal public cover
+  from birth. No Claim or ExplanationOfBenefit is produced.
+- **Export:** EHDS export, `Address.country` `ES`, EUR, `Patient.communication`
+  `es`, and a Spanish clinical-note template.
+- **Calibration:** `calibration.reproduction.exposure = 0.22`, measured at 1.41
+  births per woman aged 46-60, against 1.36-1.58 completed cohort fertility
+  derived from INE.
+- Provenance of every file is in `resources/locale/es/RESOURCES.md`.
+
+### Added - generic locale-pack interface (any pack benefits)
+
+- **Pack data files are read.** `LocalePack.data_path()` resolves a file
+  against the pack's `resource_root`, and never falls back to the bundled US
+  file of the same name. Loaders that read pack files:
+  - geography (`geography_file`, a municipality CSV); `generate.geography.cities`
+    and `.regions` narrow it for any pack;
+  - demographics (`demographics_file`, population by region, sex and age band);
+  - facilities (`providers_files`), which replace the US directory and support
+    optional `facility_type`, `catchment` and `clinicians` columns;
+  - payers and plans;
+  - cost tables;
+  - the note template (pack directory first, then bundled).
+- **Clinicians:** `clinician_names`, `clinician_specialties` and
+  `practitioner_identifier` (a `PractitionerIdentifierScheme` replacing the
+  NPI). `generate.providers.clinicians_per_facility` sets staff per facility
+  (default 4).
+- **Coverage:** `coverage_policy` takes a
+  `synthea.world.payer.CoveragePolicy`. `UnitedStatesCoverage` is the default
+  and is unchanged; `UniversalCoverage` serves national systems.
+  `produces_claims=False` drops Claim and ExplanationOfBenefit and keeps
+  Coverage.
+- **Identifiers:** pack identifiers are exported (`identifier_export_order`
+  sets the order), and a scheme's `format` may return None. Practitioner
+  identifiers come from the pack.
+- **Calibration:** `LocalePack.calibration` applies with precedence bundled
+  `synthea.properties` < pack < the user's `-c` file or `Config.set`.
+  `Config.explicit_keys` and `Config.apply_defaults()` support this.
+- **Race:** a pack with empty `race_categories` draws no race or ethnicity,
+  and notes and exports mention none.
+- **Export:**
+  - `Address.country` comes from `country_code`, and Money uses `currency`.
+  - `Patient.communication` falls back to the pack `language`.
+  - The US Core DocumentReference category is written only under US Core.
+  - IPS and EHDS patient summaries gain the optional Payers section
+    (Coverage).
+- **Notes:** templates receive `patient`, the facts behind the English
+  sentences, so other languages can phrase them.
+
 ### Changed
 
 - **`-c FILE` overlays the bundled `synthea.properties`** instead of replacing
   it, as the README describes. A file holding a few keys used to drop every
   other setting - including all calibration - and run on hard-coded minimums.
+- **`--locale` is applied.** The option was accepted and ignored; only
+  `generate.locale` worked.
+- **An unknown `--state` or `--city` warns** instead of silently keeping the
+  default location.
+- **The US pack declares what it uses.**
+  - Its facility files are the bundled directory, in the old load order.
+  - The passport identifier system is the one the exporter always wrote.
+  - Its geography and demographics files are now `None`. The upstream-format
+    `zipcodes.csv` and census `demographics.csv` were never read, and adopting
+    them would change seeded US output.
+
+  US output is byte-identical (the golden digests in `tests/test_locale.py`
+  are unchanged).
 
 ### Measured: 1,000 patients, seed 20261018, full lifetime, living adults
 

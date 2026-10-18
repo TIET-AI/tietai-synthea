@@ -374,3 +374,225 @@ class TestReferencePackDeterminism:
             "The US locale pack changed generated output. Either the draw "
             "order moved, or the export changed for an unrelated reason."
         )
+
+
+class TestCalibrationPrecedence:
+    """bundled synthea.properties < locale pack < the user's own settings."""
+
+    KEY = 'calibration.reproduction.exposure'
+
+    @pytest.fixture
+    def calibrated_pack(self):
+        import dataclasses
+
+        pack = dataclasses.replace(TEST_PACK, code='calibrated',
+                                   calibration={self.KEY: 0.123})
+        locale_registry.register(pack)
+        yield pack
+        locale_registry._registry.pop('calibrated', None)
+
+    def _generator(self, config, locale):
+        options = GeneratorOptions()
+        options.population_size = 1
+        options.seed = 1
+        options.reference_date = REFERENCE_DATE
+        options.locale = locale
+        config.set('exporter.fhir.export', False)
+        config.set('exporter.json.export', False)
+        return Generator(options, config=config)
+
+    def test_the_bundled_value_applies_without_a_pack_value(self):
+        config = Config()
+        config.load()
+        self._generator(config, 'us')
+
+        assert config.get(self.KEY) == 0.3
+
+    def test_the_pack_overrides_the_bundled_value(self, calibrated_pack):
+        config = Config()
+        config.load()
+        generator = self._generator(config, 'calibrated')
+
+        assert config.get(self.KEY) == 0.123
+        person = generator.generate_person(0)
+        assert person.attributes[self.KEY] == 0.123
+
+    def test_the_users_file_overrides_the_pack(self, calibrated_pack, tmp_path):
+        user = tmp_path / 'mine.properties'
+        user.write_text(f'{self.KEY} = 0.456\n', encoding='utf-8')
+        config = Config()
+        config.load(str(user))
+        self._generator(config, 'calibrated')
+
+        assert config.get(self.KEY) == 0.456
+
+    def test_a_value_set_in_code_overrides_the_pack(self, calibrated_pack):
+        config = Config()
+        config.load()
+        config.set(self.KEY, 0.789)
+        self._generator(config, 'calibrated')
+
+        assert config.get(self.KEY) == 0.789
+
+
+class TestPackData:
+    """A pack's data replaces the bundled US data; it never falls back to it."""
+
+    def test_a_missing_pack_file_is_absent_not_american(self, tmp_path, caplog):
+        pack = LocalePack(code='rooted', name='Rooted', country_code='RT',
+                          resource_root=str(tmp_path))
+        with caplog.at_level('WARNING'):
+            assert pack.data_path('payers/insurance_companies.csv') is None
+        assert any('not in' in r.message for r in caplog.records)
+
+    def test_without_a_root_the_bundled_file_is_found(self):
+        pack = LocalePack(code='bare', name='Bare', country_code='BR')
+        assert pack.data_path('payers/insurance_companies.csv').exists()
+
+    def test_pack_facilities_replace_the_bundled_directory(self, tmp_path):
+        from synthea.world.provider import ProviderManager
+
+        (tmp_path / 'clinics.csv').write_text(
+            'id,name,lat,lon,facility_type,catchment,clinicians\n'
+            'a,Clinic A,10.0,10.0,primary_care,North,7\n'
+            'b,Hospital B,10.5,10.5,hospital,North|South,\n',
+            encoding='utf-8')
+        pack = LocalePack(code='fac', name='Fac', country_code='FC',
+                          resource_root=str(tmp_path),
+                          providers_files=('clinics.csv',))
+        manager = ProviderManager(seed=1, pack=pack, clinicians_per_facility=3)
+        manager.load()
+
+        assert set(manager.providers) == {'primary_care-a', 'hospital-b'}
+        clinic = manager.providers['primary_care-a']
+        hospital = manager.providers['hospital-b']
+        assert len(manager._staff(clinic)) == 7
+        assert len(manager._staff(hospital)) == 3
+        assert hospital.catchment == ('North', 'South')
+
+        # A skilled nursing stay has no nursing home or long-term facility
+        # here, so it falls back along its preferences to the hospital.
+        assert manager.find_provider('snf', (10.0, 10.0), None,
+                                     area='South') is hospital
+
+    def test_a_pack_practitioner_identifier_replaces_the_npi(self, tmp_path):
+        from synthea.locale.base import PractitionerIdentifierScheme
+        from synthea.world.provider import ProviderManager
+
+        (tmp_path / 'h.csv').write_text(
+            'id,name,lat,lon\nh,Hospital H,1.0,1.0\n', encoding='utf-8')
+        pack = LocalePack(
+            code='prn', name='Prn', country_code='PR',
+            resource_root=str(tmp_path),
+            providers_files={'h.csv': 'hospital'},
+            clinician_names=lambda rand: ('Ana', 'Prueba'),
+            practitioner_identifier=PractitionerIdentifierScheme(
+                system='urn:test:prn', format=lambda rand: 'P-1'))
+        manager = ProviderManager(seed=1, pack=pack)
+        manager.load()
+        staff = manager._staff(manager.providers['hospital-h'])
+
+        assert {(c.first_name, c.last_name) for c in staff} == {('Ana', 'Prueba')}
+        assert {(c.identifier_system, c.identifier) for c in staff} == {
+            ('urn:test:prn', 'P-1')}
+        assert staff[0].npi is None
+
+
+class TestPackGeography:
+    def _geography(self, tmp_path):
+        from synthea.world.location import PackGeography
+
+        path = tmp_path / 'geo.csv'
+        path.write_text(
+            'region,region_code,city,municipality,municipality_code,'
+            'postal_codes,lat,lon,population\n'
+            'Norte,01,Alfa,Alfa,01001,01001|01002,40.0,-3.0,1000\n'
+            'Norte,01,Alfa,Beta,01002,01010,40.1,-3.1,500\n'
+            'Sur,02,Gamma,Gamma,02001,02001,37.0,-5.0,2000\n',
+            encoding='utf-8')
+        return PackGeography.from_csv(path)
+
+    def test_a_place_has_a_postal_code_and_coordinates_near_it(self, tmp_path):
+        import random
+
+        geography = self._geography(tmp_path)
+        rand = random.Random(3)
+        for _ in range(50):
+            place = geography.random_place(rand)
+            assert place['zip_code'].startswith(place['region_code'])
+            assert abs(place['latitude'] - 40) < 0.2 or \
+                abs(place['latitude'] - 37) < 0.2
+
+    def test_cities_and_regions_narrow_the_selection(self, tmp_path):
+        import random
+
+        geography = self._geography(tmp_path)
+        geography.restrict(cities=['alfa'])
+        rand = random.Random(1)
+        assert {geography.random_place(rand)['urban_area']
+                for _ in range(30)} == {'Alfa'}
+
+        geography = self._geography(tmp_path)
+        geography.restrict(regions=['02'])
+        assert {geography.random_place(rand)['state']
+                for _ in range(10)} == {'Sur'}
+
+    def test_an_unknown_name_warns_and_keeps_everything(self, tmp_path, caplog):
+        geography = self._geography(tmp_path)
+        with caplog.at_level('WARNING'):
+            unknown = geography.restrict(cities=['Atlantis'])
+
+        assert unknown == ['Atlantis']
+        assert len(geography.selected) == 3
+        assert any('Atlantis' in r.message for r in caplog.records)
+
+    def test_an_unknown_us_state_warns(self, caplog):
+        from synthea.world.location import Location
+
+        with caplog.at_level('WARNING'):
+            Location().set_state('Atlantis')
+        assert any('Atlantis' in r.message for r in caplog.records)
+
+
+class TestCoveragePolicy:
+    def test_universal_coverage_covers_everyone_from_birth(self, tmp_path):
+        from synthea.world.payer import PayerManager, UniversalCoverage
+
+        (tmp_path / 'payers.csv').write_text(
+            'Id,Name,Ownership,States Covered\nN,National Service,Government,*\n',
+            encoding='utf-8')
+        (tmp_path / 'plans.csv').write_text(
+            'Payer Id,Plan Id,Name,Eligibility Policy,Default Coinsurance\n'
+            'N,N1,Public cover,NATIONAL,1.0\n', encoding='utf-8')
+        pack = LocalePack(code='nhs', name='NHS', country_code='NH',
+                          resource_root=str(tmp_path),
+                          payers_file='payers.csv', plans_file='plans.csv',
+                          coverage_policy=UniversalCoverage('NATIONAL'))
+        manager = PayerManager(seed=1)
+        manager.load(pack)
+
+        for age in (0, 30, 70):
+            person = _person(socioeconomic_status='low')
+            coverage = manager.coverage_for(person, age, REFERENCE_DATE)
+            assert coverage.kind == 'public'
+            assert coverage.plan.payer.name == 'National Service'
+
+    def test_the_default_policy_is_the_united_states(self):
+        from synthea.world.payer import PayerManager, UnitedStatesCoverage
+
+        assert isinstance(PayerManager().policy, UnitedStatesCoverage)
+
+
+class TestCommandLineLocale:
+    def test_the_locale_option_reaches_the_generator(self, tmp_path):
+        """`--locale` was accepted and never applied."""
+        from click.testing import CliRunner
+
+        from synthea.cli import cli
+
+        with mock.patch('synthea.cli.Generator') as generator:
+            CliRunner().invoke(cli, ['-p', '1', '--locale', 'es',
+                                     '-o', str(tmp_path)])
+
+        options = generator.call_args[0][0]
+        assert options.locale == 'es'

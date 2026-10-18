@@ -139,12 +139,36 @@ IDENTIFIERS = (
         key='identifier_passport',
         type_code='PPN',
         type_display='Passport Number',
-        system='http://hl7.org/fhir/sid/passport-USA',
+        # What the exporter has always written. (Before the exporter read the
+        # pack, this field said `http://hl7.org/fhir/sid/passport-USA` and
+        # was never used.)
+        system='http://standardhealthrecord.org/fhir/StructureDefinition/passportNumber',
         format=_passport,
         probability=0.42,
     ),
 )
 
+
+#: The bundled (and `synthea fetch-data facilities`) US facility directory,
+#: and the facility type of each file. Order matters: it is the order the
+#: facilities are indexed in, which a seeded run depends on.
+US_FACILITY_FILES = {
+    'providers/hospitals.csv': 'hospital',
+    'providers/primary_care_facilities.csv': 'primary_care',
+    'providers/primary_care_facilities_children.csv': 'primary_care',
+    'providers/primary_care_facilities_women.csv': 'primary_care',
+    'providers/urgent_care_facilities.csv': 'urgent_care',
+    'providers/va_facilities.csv': 'hospital',
+    'providers/ihs_facilities.csv': 'primary_care',
+    'providers/ihs_centers.csv': 'primary_care',
+    'providers/longterm.csv': 'longterm',
+    'providers/nursing.csv': 'nursing',
+    'providers/rehab.csv': 'rehab',
+    'providers/hospice.csv': 'hospice',
+    'providers/dialysis.csv': 'dialysis',
+    'providers/home_health_agencies.csv': 'home_health',
+    'providers/ambulatory_surgical_center.csv': 'surgical',
+}
 
 #: Rough adult shares, HL7 v3 MaritalStatus codes.
 MARITAL_STATUS = (
@@ -170,14 +194,24 @@ PACK = LocalePack(
     assign_address=assign_address,
     assign_contact=assign_contact,
     identifiers=IDENTIFIERS,
+    # Drawn SSN first, but exported with the record number first, as every
+    # earlier release did.
+    identifier_export_order=('identifier_mrn', 'identifier_ssn',
+                             'identifier_drivers', 'identifier_passport'),
     marital_statuses=MARITAL_STATUS,
 
     race_categories=RACE_CATEGORIES,
     ethnicity_categories=ETHNICITY_CATEGORIES,
 
-    demographics_file='geography/demographics.csv',
-    geography_file='geography/zipcodes.csv',
-    providers_files=('providers/providers.csv',),
+    # The United States keeps the engine's built-in geography and national
+    # age distribution. The bundled `geography/zipcodes.csv` and the
+    # fetchable census `geography/demographics.csv` are in upstream Synthea's
+    # formats, not the pack formats, and switching to them would change every
+    # seeded US population; that is a deliberate future change, not a side
+    # effect of wiring the interface.
+    demographics_file=None,
+    geography_file=None,
+    providers_files=US_FACILITY_FILES,
     payers_file='payers/insurance_companies.csv',
     plans_file='payers/insurance_plans.csv',
     cost_files={

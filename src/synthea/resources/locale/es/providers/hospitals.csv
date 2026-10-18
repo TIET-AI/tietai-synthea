@@ -1,0 +1,8 @@
+id,name,facility_type,address,city,state,zip,lat,lon,phone,bed_count,emergency,catchment,clinicians
+es-tietai-28079,TietAI Hospital Madrid,hospital,"Calle Ficticia TietAI, 1",Madrid,Madrid,28001,40.42203,-3.68898,+34 300 000 001,1200,true,Madrid,300
+es-tietai-08019,TietAI Hospital Barcelona,hospital,"Calle Ficticia TietAI, 1",Barcelona,Barcelona,08001,41.39771,2.15765,+34 300 000 002,1100,true,Barcelona,280
+es-tietai-46250,TietAI Hospital Valencia,hospital,"Calle Ficticia TietAI, 1",València,Valencia/València,46001,39.47290,-0.37439,+34 300 000 003,900,true,Valencia,220
+es-tietai-48020,TietAI Hospital Bilbao,hospital,"Calle Ficticia TietAI, 1",Bilbao,Bizkaia,48001,43.26722,-2.92046,+34 300 000 004,700,true,Bilbao,180
+es-tietai-41091,TietAI Hospital Sevilla,hospital,"Calle Ficticia TietAI, 1",Sevilla,Sevilla,41001,37.39164,-5.99148,+34 300 000 005,850,true,Sevilla,210
+es-tietai-29067,TietAI Hospital Málaga,hospital,"Calle Ficticia TietAI, 1",Málaga,Málaga,29001,36.72326,-4.41198,+34 300 000 006,800,true,Málaga,200
+es-tietai-15078,TietAI Hospital Santiago de Compostela,hospital,"Calle Ficticia TietAI, 1",Santiago de Compostela,A Coruña,15701,42.88314,-8.54328,+34 300 000 007,600,true,Santiago de Compostela,150

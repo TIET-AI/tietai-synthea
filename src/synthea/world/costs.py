@@ -62,19 +62,34 @@ DEFAULT_COSTS = {
 class CostTables:
     """Cost ranges by code, loaded once per process."""
 
-    _tables: Dict[str, Dict[str, tuple]] = {}
+    _tables: Dict[object, Dict[str, tuple]] = {}
     _adjustments: Dict[str, Dict[str, float]] = {}
+    _pack_paths: Dict[tuple, object] = {}
 
     @classmethod
-    def _load_table(cls, kind: str) -> Dict[str, tuple]:
-        if kind in cls._tables:
-            return cls._tables[kind]
+    def _table_path(cls, kind: str, pack=None):
+        """The cost table for a kind: the pack's, if it lists one, else bundled."""
+        declared = (getattr(pack, 'cost_files', None) or {}).get(kind)
+        if declared:
+            key = (getattr(pack, 'code', None), getattr(pack, 'resource_root', None),
+                   kind, declared)
+            if key not in cls._pack_paths:
+                cls._pack_paths[key] = pack.data_path(declared)
+            return cls._pack_paths[key]
 
         filename = COST_TABLES.get(kind, (None, None))[0]
+        return resource_path('costs', filename) if filename else None
+
+    @classmethod
+    def _load_table(cls, kind: str, pack=None) -> Dict[str, tuple]:
+        path = cls._table_path(kind, pack)
+        cache_key = (kind, str(path) if path is not None else None)
+        if cache_key in cls._tables:
+            return cls._tables[cache_key]
+
         table: Dict[str, tuple] = {}
 
-        if filename:
-            path = resource_path('costs', filename)
+        if path is not None:
             if path.exists():
                 try:
                     with open(path, 'r', encoding='utf-8-sig', newline='') as handle:
@@ -91,7 +106,7 @@ class CostTables:
                 except Exception as error:  # pragma: no cover - defensive
                     logger.warning("Could not read costs from %s: %s", path, error)
 
-        cls._tables[kind] = table
+        cls._tables[cache_key] = table
         return table
 
     @classmethod
@@ -128,7 +143,7 @@ class CostTables:
         Drawn from the code's triangular distribution using the person's own
         generator, so costs are reproducible and vary between instances.
         """
-        table = cls._load_table(kind)
+        table = cls._load_table(kind, getattr(person, 'locale', None))
         bounds = table.get(str(code)) if code is not None else None
 
         if bounds is None:

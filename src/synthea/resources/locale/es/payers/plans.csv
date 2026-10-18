@@ -1,0 +1,2 @@
+Payer Id,Plan Id,Name,Services Covered,Deductible,Default Coinsurance,Default Copay,Monthly Premium,Max Out of Pocket,Medicare Supplement,Is ACA Plan,Income Based Premium,Eligibility Policy,Start Year,End Year,Priority Level,Notes
+SNS,SNS-ASP,Asistencia sanitaria pública del SNS,*,0,1.0,0,0,0,false,false,false,SNS,0,,1,Universal public cover (Ley 16/2003 art. 3 as amended by Real Decreto-ley 7/2018). Pharmacy co-payment is not modelled.

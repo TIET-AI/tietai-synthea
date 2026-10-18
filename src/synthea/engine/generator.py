@@ -21,8 +21,9 @@ from synthea.engine.module import Module
 from synthea.world.calibration import apply_calibration
 from synthea.world.person import Person
 from synthea.world.demographics import Demographics
-from synthea.world.location import Location
-from synthea.world.provider import Provider, ProviderManager
+from synthea.world.location import Location, PackGeography
+from synthea.world.provider import (CLINICIANS_PER_FACILITY, Provider,
+                                    ProviderManager)
 from synthea.world.payer import PayerManager
 from synthea.helpers.config import Config
 from synthea.helpers.rng import resolve_seed
@@ -39,6 +40,15 @@ def _name_set(value) -> set:
     else:
         parts = str(value).replace(',', ' ').split()
     return {str(part).strip().lower() for part in parts if str(part).strip()}
+
+
+def _name_list(value) -> List[str]:
+    """Names from a comma separated list, keeping spaces inside a name."""
+    if value in (None, '', False):
+        return []
+    parts = list(value) if isinstance(value, (list, tuple, set)) else \
+        str(value).split(',')
+    return [str(part).strip() for part in parts if str(part).strip()]
 
 
 class GeneratorOptions:
@@ -194,6 +204,10 @@ class Generator:
         # preserved and reach the exporter built below.
         if not self._config_provided:
             self.config.load()
+
+        # The locale pack's population rates sit over the bundled defaults
+        # and under anything the user set (bundled < pack < user).
+        self._apply_pack_calibration()
         
         # Initialize location and demographics
         self._init_location()
@@ -211,16 +225,51 @@ class Generator:
         # Initialize exporter
         self._init_exporter()
     
+    def _apply_pack_calibration(self):
+        """Overlay the locale pack's calibration.* defaults."""
+        calibration = dict(getattr(self.locale, 'calibration', None) or {})
+        if not calibration:
+            return
+        stray = [key for key in calibration
+                 if not str(key).startswith('calibration.')]
+        for key in stray:
+            logger.warning(
+                "Locale pack %r sets %r, which is not a calibration.* key; "
+                "ignored.", self.locale.code, key)
+            calibration.pop(key)
+        self.config.apply_defaults(calibration)
+
     def _init_location(self):
         """Initialize location data.
 
         The CLI wins over the configuration file, so `--state` overrides
         `generate.geography.state` rather than the other way round.
-        """
-        self.location = Location()
 
+        A locale pack with a geography file places every patient in one of its
+        municipalities; `generate.geography.cities` and `.regions` (comma
+        lists) narrow it, as do `--state`/`--city`, which select a region and a
+        city there. Without one, the built-in US geography is used.
+        """
         state = self.options.state or self.config.get('generate.geography.state')
         city = self.options.city or self.config.get('generate.geography.city')
+        cities = sorted(_name_list(self.config.get('generate.geography.cities')))
+        regions = sorted(_name_list(self.config.get('generate.geography.regions')))
+
+        path = self.locale.data_path(getattr(self.locale, 'geography_file', None))
+        if path is not None:
+            self.location = PackGeography.from_csv(path)
+            self.location.restrict(
+                regions=regions + ([str(state)] if state else []),
+                cities=cities + ([str(city)] if city else []))
+            return
+
+        self.location = Location()
+
+        if cities or regions:
+            logger.warning(
+                "generate.geography.cities/.regions need a locale pack with a "
+                "geography file; locale %r has none, so they are ignored. Use "
+                "generate.geography.state and .city instead.", self.locale.code)
 
         if state:
             self.location.set_state(str(state))
@@ -242,10 +291,18 @@ class Generator:
         """
         self.demographics = Demographics()
 
-        if self.config.get_bool('generate.geography.use_demographics', True):
-            self.demographics.load(self.location)
+        use = self.config.get_bool('generate.geography.use_demographics', True)
+        if use:
+            self.demographics.load(
+                self.location if isinstance(self.location, Location) else None)
         else:
             self.demographics.load(None)
+
+        # A pack's population table shapes sex and age by region.
+        table = self.locale.data_path(
+            getattr(self.locale, 'demographics_file', None))
+        if use and table is not None:
+            self.demographics.load_age_sex(table)
 
     def _load_modules(self):
         """Load all modules."""
@@ -336,7 +393,13 @@ class Generator:
             # Derive it from the population seed so a seeded run is fully
             # reproducible without the caller having to set both.
             clinician_seed = resolve_seed(self.options.seed, 0, 'clinician')
-        self.provider_manager = ProviderManager(seed=clinician_seed)
+        self.provider_manager = ProviderManager(
+            seed=clinician_seed,
+            pack=self.locale,
+            clinicians_per_facility=self.config.get_int(
+                'generate.providers.clinicians_per_facility',
+                CLINICIANS_PER_FACILITY),
+        )
         self.provider_manager.load(self.location)
     
     def _init_payers(self):
@@ -346,7 +409,7 @@ class Generator:
         payer_seed = (resolve_seed(self.options.seed, 0, 'payer')
                       if self.options.seed is not None else None)
         self.payer_manager = PayerManager(seed=payer_seed)
-        self.payer_manager.load()
+        self.payer_manager.load(self.locale)
     
     def _init_exporter(self):
         """Initialize the exporter."""
@@ -447,11 +510,14 @@ class Generator:
         # Configured population rates (calibration.*), read by modules.
         apply_calibration(person, self.config.settings)
 
-        # Set demographics
-        self._set_demographics(person)
-        
-        # Set location
-        self._set_location(person)
+        if isinstance(self.location, PackGeography):
+            # Where someone lives shapes their age and sex (the population
+            # table is by region), so the home is drawn first.
+            self._set_location(person)
+            self._set_demographics(person)
+        else:
+            self._set_demographics(person)
+            self._set_location(person)
         
         # Check if person meets criteria
         if not self._meets_criteria(person):
@@ -474,17 +540,22 @@ class Generator:
         """Set demographic attributes for a person."""
         if self.demographics:
             # Set gender
+            region = person.attributes.get('region_code')
             if self.options.gender:
                 person.attributes['gender'] = self.options.gender.upper()
             else:
-                person.attributes['gender'] = self.demographics.random_gender(person.random)
+                person.attributes['gender'] = self.demographics.random_gender(
+                    person.random, region)
             
-            # Set race/ethnicity
-            person.attributes['race'] = self.demographics.random_race(person.random)
-            person.attributes['ethnicity'] = self.demographics.random_ethnicity(
-                person.attributes['race'], 
-                person.random
-            )
+            # Race and ethnicity only where the locale records them. Most
+            # countries do not, and drawing an American category for a patient
+            # there would be inventing data.
+            if getattr(self.locale, 'race_categories', ()):
+                person.attributes['race'] = self.demographics.random_race(person.random)
+                person.attributes['ethnicity'] = self.demographics.random_ethnicity(
+                    person.attributes['race'], 
+                    person.random
+                )
             
             # Set birth date. Ages follow the demographic age distribution
             # rather than being uniform between the bounds: a uniform draw over
@@ -505,6 +576,9 @@ class Generator:
     
     def _set_location(self, person: Person):
         """Set location attributes for a person."""
+        if isinstance(self.location, PackGeography):
+            person.attributes.update(self.location.random_place(person.random))
+            return
         if self.location:
             person.attributes['state'] = self.location.state
             person.attributes['city'] = self.location.city
@@ -523,8 +597,10 @@ class Generator:
             return low
 
         if self.demographics is not None:
+            region = person.attributes.get('region_code')
+            sex = person.attributes.get('gender')
             for _ in range(50):
-                candidate = self.demographics.random_age(person.random)
+                candidate = self.demographics.random_age(person.random, region, sex)
                 if low <= candidate <= high:
                     return candidate
 

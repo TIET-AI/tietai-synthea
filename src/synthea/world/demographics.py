@@ -7,12 +7,19 @@ population statistics.
 
 import json
 import csv
+import logging
 from pathlib import Path
 from typing import Dict, Any, Optional, List, Tuple
 import random
 from dataclasses import dataclass
 
 from synthea.helpers.resources import resource_path
+
+logger = logging.getLogger(__name__)
+
+#: Upper bound used for an open-ended top age band (e.g. "100 and over"), so a
+#: draw from it stays within plausible human lifespans.
+OPEN_BAND_SPAN = 5
 
 
 @dataclass
@@ -58,6 +65,11 @@ class Demographics:
         # Age distribution (simplified)
         self.age_distribution = self._create_age_distribution()
         
+        #: Population by region, sex and age band, from a locale pack. When
+        #: present it replaces the national gender and age distributions for
+        #: patients whose region it covers.
+        self.age_sex: Optional['AgeSexTable'] = None
+
         # Name lists
         self.first_names_male: List[str] = []
         self.first_names_female: List[str] = []
@@ -199,16 +211,25 @@ class Demographics:
                 probabilities=list(data['socioeconomic'].values())
             )
     
-    def random_gender(self, rand: random.Random) -> str:
+    def load_age_sex(self, path) -> None:
+        """Use a locale pack's population table for sex and age."""
+        self.age_sex = AgeSexTable.from_csv(path)
+
+    def random_gender(self, rand: random.Random,
+                      region: Optional[str] = None) -> str:
         """
         Select a random gender.
         
         Args:
             rand: Random generator
+            region: The patient's region code, when a population table is
+                loaded; the national distribution otherwise
             
         Returns:
             Gender code ('M' or 'F')
         """
+        if self.age_sex is not None:
+            return self.age_sex.random_sex(rand, region)
         return self.gender_distribution.random_choice(rand)
     
     def random_race(self, rand: random.Random) -> str:
@@ -249,16 +270,21 @@ class Demographics:
         """
         return self.ses_distribution.random_choice(rand)
     
-    def random_age(self, rand: random.Random) -> int:
+    def random_age(self, rand: random.Random, region: Optional[str] = None,
+                   sex: Optional[str] = None) -> int:
         """
         Select a random age.
         
         Args:
             rand: Random generator
+            region: The patient's region code (population table only)
+            sex: The patient's sex (population table only)
             
         Returns:
             Age in years
         """
+        if self.age_sex is not None:
+            return self.age_sex.random_age(rand, region, sex)
         age_str = self.age_distribution.random_choice(rand)
         return int(age_str)
     
@@ -304,3 +330,81 @@ class Demographics:
         first = self.random_first_name(gender, rand)
         last = self.random_last_name(rand)
         return first, last
+
+
+class AgeSexTable:
+    """Population counts by region, sex and age band.
+
+    The format is documented on
+    :attr:`synthea.locale.base.LocalePack.demographics_file`. Sex is drawn
+    from the region's sex totals, then an age band from that sex's band
+    counts, then a whole year uniformly within the band.
+    """
+
+    def __init__(self, rows: List[Tuple[str, str, int, int, float]]):
+        # region -> sex -> [(low, high, count)]
+        self.bands: Dict[str, Dict[str, List[Tuple[int, int, float]]]] = {}
+        for region, sex, low, high, count in rows:
+            self.bands.setdefault(region, {}).setdefault(sex, []).append(
+                (low, high, count))
+        # Everything pooled, for a patient whose region the table lacks.
+        pooled: Dict[str, Dict[Tuple[int, int], float]] = {}
+        for by_sex in self.bands.values():
+            for sex, bands in by_sex.items():
+                for low, high, count in bands:
+                    key = (low, high)
+                    pooled.setdefault(sex, {})[key] = (
+                        pooled.setdefault(sex, {}).get(key, 0.0) + count)
+        self.pooled = {sex: [(low, high, count)
+                             for (low, high), count in sorted(bands.items())]
+                       for sex, bands in pooled.items()}
+        self._warned: set = set()
+
+    @classmethod
+    def from_csv(cls, path) -> 'AgeSexTable':
+        rows = []
+        with open(path, 'r', encoding='utf-8-sig', newline='') as handle:
+            for row in csv.DictReader(handle):
+                try:
+                    low = int(row['age_low'])
+                    high_text = (row.get('age_high') or '').strip()
+                    high = int(high_text) if high_text else low + OPEN_BAND_SPAN - 1
+                    rows.append((row['region_code'].strip(),
+                                 row['sex'].strip().upper()[:1],
+                                 low, high, float(row['population'])))
+                except (KeyError, TypeError, ValueError) as error:
+                    logger.warning("Skipping a row of %s: %s", path, error)
+        if not rows:
+            raise ValueError(f"No usable rows in demographics file {path}")
+        return cls(rows)
+
+    def _for(self, region: Optional[str]) -> Dict[str, List[Tuple[int, int, float]]]:
+        if region is not None and str(region) in self.bands:
+            return self.bands[str(region)]
+        if region not in self._warned:
+            self._warned.add(region)
+            logger.warning(
+                "No age and sex table for region %r; using every region "
+                "pooled.", region)
+        return self.pooled
+
+    def random_sex(self, rand: random.Random, region: Optional[str]) -> str:
+        by_sex = self._for(region)
+        sexes = sorted(by_sex)
+        weights = [sum(count for _, _, count in by_sex[sex]) for sex in sexes]
+        return rand.choices(sexes, weights=weights)[0]
+
+    def random_age(self, rand: random.Random, region: Optional[str],
+                   sex: Optional[str]) -> int:
+        by_sex = self._for(region)
+        if sex in by_sex:
+            bands = by_sex[sex]
+        else:
+            merged: Dict[Tuple[int, int], float] = {}
+            for rows in by_sex.values():
+                for low, high, count in rows:
+                    merged[(low, high)] = merged.get((low, high), 0.0) + count
+            bands = [(low, high, count)
+                     for (low, high), count in sorted(merged.items())]
+        low, high, _ = rand.choices(bands, weights=[c for _, _, c in bands])[0]
+        return rand.randint(low, high)

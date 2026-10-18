@@ -132,6 +132,8 @@ def main(population, seed, clinician_seed, gender, age, module, config, modules_
     options.threads = threads
     options.only_dead_patients = only_dead
     options.overflow_population = overflow
+    # Accepted since 1.5 and never applied: only `generate.locale` worked.
+    options.locale = locale
     
     # Parse age range
     if age:
