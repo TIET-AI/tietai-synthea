@@ -126,6 +126,15 @@ class Module:
             return transition.follow(person, time)
         return None
     
+    #: ``{module path key: {state name: replacement state definition}}``.
+    #: Empty by default, so stock behaviour is unchanged. Set from the
+    #: ``generate.module_patches`` file (see ``resources/genomics/cohort_patches.yaml``).
+    _state_patches: Dict[str, Dict[str, Dict[str, Any]]] = {}
+
+    @classmethod
+    def set_state_patches(cls, patches: Optional[Dict[str, Dict[str, Dict[str, Any]]]]) -> None:
+        cls._state_patches = dict(patches or {})
+
     @classmethod
     def load_modules(cls, path: Optional[str] = None) -> Dict[str, 'Module']:
         """
@@ -233,6 +242,15 @@ class Module:
             definition = json.load(f)
 
         json_name = definition.get('name', filepath.stem)
+
+        patch_key = str(filepath.relative_to(base_path).with_suffix('')).replace(os.sep, '/')
+        patches = cls._state_patches.get(patch_key)
+        if patches:
+            for state_name, replacement in patches.items():
+                if state_name not in definition.get('states', {}):
+                    raise ValueError(
+                        f"module patch for {patch_key}: no state named {state_name!r}")
+                definition['states'][state_name] = replacement
 
         # Use relative path as the canonical module identity, matching Java
         # Synthea. This ensures unique state-tracking keys even when multiple

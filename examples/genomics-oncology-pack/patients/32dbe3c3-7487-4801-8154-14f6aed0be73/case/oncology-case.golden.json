@@ -1,0 +1,380 @@
+{
+  "schema": "tietai.oncology-case-golden/v1",
+  "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
+  "patient": "32dbe3c3-7487-4801-8154-14f6aed0be73",
+  "summary_sha256": "55c0459b2fc4d55a43ec171a8772fdbd59c522490a208414eec8df787242103a",
+  "case": {
+    "cases": [
+      {
+        "case_id": "oc_0001",
+        "diagnosis": {
+          "cie10es": "C18.9",
+          "clinical_status": "active",
+          "date": "2018-07-01",
+          "display": "Malignant neoplasm of colon (disorder)",
+          "icdo3_morphology": "8140/3",
+          "icdo3_topography": "C18.9",
+          "snomed": "363406005"
+        },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Tier ii",
+            "gene": "KRAS",
+            "hgvs_c": "NM_004985.5:c.35G>A",
+            "hgvs_p": "NP_004976.2:p.Gly12Asp",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/7e8b218e-c257-4ac4-b01d-c1aedd096344"
+          }
+        ],
+        "primary_condition_ref": "Condition/a8f0fd5f-db00-480b-92b2-ad359b7cf80d",
+        "staging": [
+          {
+            "date": "2018-07-08",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN1b",
+            "stage_group": "IIIB",
+            "system": "TNM",
+            "t": "cT3"
+          },
+          {
+            "date": "2018-07-17",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN1b",
+            "stage_group": "IIIB",
+            "system": "TNM",
+            "t": "pT3"
+          }
+        ],
+        "treatments": [
+          {
+            "code": "SNOMED 43075005",
+            "display": "Partial resection of colon (procedure)",
+            "fhir_status": "completed",
+            "kind": "surgical",
+            "start": "2018-07-29"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2018-09-09"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2018-10-21"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2018-12-02"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2019-01-13"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2019-02-24"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2019-04-07"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          }
+        ]
+      },
+      {
+        "case_id": "oc_0002",
+        "diagnosis": {
+          "cie10es": "C34.90",
+          "clinical_status": "active",
+          "date": "2025-06-30",
+          "display": "Malignant neoplasm of lung (disorder)",
+          "icdo3_morphology": "8046/3",
+          "icdo3_topography": "C34.9",
+          "snomed": "254637007"
+        },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Tier i",
+            "conflicting_significance": [
+              "Tier ii"
+            ],
+            "gene": "EGFR",
+            "hgvs_c": "NM_005228.5:c.2235_2249del",
+            "hgvs_p": "NP_005219.2:p.Glu746_Ala750del",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/5cb3ca14-c9ab-4629-b202-9ab4e291c613"
+          }
+        ],
+        "primary_condition_ref": "Condition/8aa9fa20-b83f-4323-965c-eb0ef3953b65",
+        "staging": [
+          {
+            "date": "2025-07-07",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN0",
+            "stage_group": "IA",
+            "system": "TNM",
+            "t": "cT1c"
+          },
+          {
+            "date": "2025-07-17",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN0",
+            "stage_group": "IA",
+            "system": "TNM",
+            "t": "pT1c"
+          }
+        ],
+        "treatments": [
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2025-07-21"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2025-09-22"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2025-11-24"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2026-01-12"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2026-03-02"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2026-05-04"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          },
+          {
+            "code": "ATC L01XA01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "cisplatin"
+          },
+          {
+            "code": "ATC L01CD01",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "paclitaxel"
+          }
+        ]
+      }
+    ],
+    "patient_ref": "Patient/25ac5e1e-3c70-4861-ac14-64e06d5b11c0",
+    "schema": "tietai.oncology-case/v1"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "document_sha256": "ab130d5cb6292bad7a5df4f74d0ceb9038024a38bc252c2f70fc3c9fa7d84a31",
+  "entities": [
+    {
+      "accession": "AP-2018-001691",
+      "assertion": "present",
+      "char_end": 362,
+      "char_start": 292,
+      "collection_date": "2018-05-09",
+      "entity_id": "ent_0001",
+      "kind": "specimen",
+      "quote": "Muestra AP-2018-001691: Hemicolectomía derecha, recibida el 2018-05-09",
+      "quote_sha256": "0f5f048572ce6c22be5df1a47b9708095294dca14f86d08b16c1c55b532a1aa0",
+      "type_text": "hemicolectomía derecha"
+    },
+    {
+      "assertion": "present",
+      "char_end": 420,
+      "char_start": 363,
+      "entity_id": "ent_0002",
+      "kind": "procedure",
+      "quote": "Procedimiento: Hemicolectomía derecha con linfadenectomía",
+      "quote_sha256": "090a59da224a4106f8f49eb4af1f00918eecebb513849f6525040b8c27f04e32",
+      "text": "Hemicolectomía derecha con linfadenectomía"
+    },
+    {
+      "assertion": "present",
+      "char_end": 458,
+      "char_start": 421,
+      "code": "C18.9",
+      "entity_id": "ent_0003",
+      "kind": "tumour_site",
+      "quote": "Localización del tumor: Colon (C18.9)",
+      "quote_sha256": "4264fdd44d2432a636f53b023eae73fd3c577168a0ddb843432fa83929393de2"
+    },
+    {
+      "assertion": "present",
+      "behaviour": "3",
+      "char_end": 500,
+      "char_start": 459,
+      "code": "8140",
+      "entity_id": "ent_0004",
+      "kind": "histology",
+      "quote": "Tipo histológico: Adenocarcinoma (8140/3)",
+      "quote_sha256": "f941b3e2af00b1db618edd25b0998c27c17e9d34a4fed1e3173e7e3289c5891e"
+    },
+    {
+      "assertion": "present",
+      "char_end": 556,
+      "char_start": 501,
+      "entity_id": "ent_0005",
+      "kind": "grade",
+      "quote": "Grado histológico: Grado 2 (moderadamente diferenciado)",
+      "quote_sha256": "e9c9ad3dce03b5bb784cd05067b0eefa895fb32b03f66d095390628c08184eea",
+      "system": "who",
+      "value_text": "Grado 2"
+    },
+    {
+      "assertion": "present",
+      "char_end": 600,
+      "char_start": 557,
+      "dimension": "greatest",
+      "entity_id": "ent_0006",
+      "kind": "size_mm",
+      "quote": "Tamaño tumoral: 20 mm en su mayor dimensión",
+      "quote_sha256": "e24ba5a7453c694daaf99ebd6c48ac0974601cb592ce733d6a112d37314a7fe9",
+      "source_unit": "mm",
+      "source_value": "20",
+      "unit": "mm",
+      "value": 20
+    },
+    {
+      "assertion": "present",
+      "char_end": 659,
+      "char_start": 601,
+      "distance_mm": 6,
+      "entity_id": "ent_0007",
+      "kind": "margins",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
+      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
+      "status": "negative"
+    },
+    {
+      "assertion": "present",
+      "char_end": 692,
+      "char_start": 660,
+      "entity_id": "ent_0008",
+      "kind": "lymphovascular_invasion",
+      "quote": "Invasión linfovascular: presente",
+      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
+      "status": "present"
+    },
+    {
+      "assertion": "present",
+      "char_end": 721,
+      "char_start": 693,
+      "entity_id": "ent_0009",
+      "kind": "perineural_invasion",
+      "quote": "Invasión perineural: ausente",
+      "quote_sha256": "e8d3e88161195121a3255994e6955fa29fa71ead8ec898a15328b7680a8129f9",
+      "status": "absent"
+    },
+    {
+      "assertion": "present",
+      "char_end": 774,
+      "char_start": 722,
+      "entity_id": "ent_0010",
+      "examined": 20,
+      "kind": "nodes",
+      "positive": 2,
+      "quote": "Ganglios linfáticos: 2 de 20 ganglios con metástasis",
+      "quote_sha256": "3c4af9a9b9129d938246b30bf7ba28694fc037b99f9242bd7281db58a95e2dc2"
+    },
+    {
+      "assertion": "present",
+      "char_end": 840,
+      "char_start": 775,
+      "edition": "8",
+      "entity_id": "ent_0011",
+      "kind": "ptnm",
+      "m": "cM1a",
+      "n": "pN1b",
+      "prefix": "p",
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA",
+      "quote_sha256": "08dd9b7e32dc8cf40834ee1647888d0d08d93701b688509b97a19e02ff7de971",
+      "stage_group": "IVA",
+      "t": "pT3"
+    },
+    {
+      "assertion": "present",
+      "char_end": 890,
+      "char_start": 841,
+      "entity_id": "ent_0012",
+      "kind": "comment",
+      "quote": "Comentario: Sin hallazgos adicionales de interés.",
+      "quote_sha256": "11e9843a2d02a194a5ec2d8957eb89a420b5b3b5ebea4c1641addd81f70c636e",
+      "text": "Sin hallazgos adicionales de interés."
+    }
+  ],
+  "extractor_version": "go-61-gold/1",
+  "needs_review": true,
+  "schema": "tietai.synoptic-pathology/v1",
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Kisha Hirthe   Sexo: mujer   Fecha de nacimiento: 1970-12-31\nCaso sintético oc_0043. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2018-001691: Hemicolectomía derecha, recibida el 2018-05-09\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 20 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 2 de 20 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "43fbd17604bb2aa9a70388469be84f46917b717e8863ed6ca4fc0642a8a06e66"
+}

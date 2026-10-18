@@ -1,0 +1,20 @@
+LABORATORIO DE GENÉTICA MOLECULAR (sintético)
+INFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Freddie Labadie   Sexo: mujer   Fecha de nacimiento: 1958-03-20
+Caso sintético oc_0020. Diagnóstico de referencia: carcinoma de pulmón.
+Panel NGS de tumor sólido OncoPulmon v4
+Muestra: tejido tumoral FFPE, biopsia pulmonar   ID de muestra SYN-0020
+Genoma de referencia GRCh38
+Fecha del informe: 2026-09-17
+
+Variantes detectadas:
+EGFR NM_005228.5:c.2235_2249del (p.Glu746_Ala750del) VAF 37,8%. Heterocigosis. Variante somática. Tier I (AMP).
+
+Implicaciones:
+Clasificación alternativa de EGFR NM_005228.5:c.2235_2249del (laboratorio): Tier II (AMP).
+Implicación terapéutica: osimertinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulmón.
+
+Fuente de conocimiento: ClinVar versión 2026-09-01
+Recomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.
+Este informe es un documento sintético generado para pruebas de la plataforma.

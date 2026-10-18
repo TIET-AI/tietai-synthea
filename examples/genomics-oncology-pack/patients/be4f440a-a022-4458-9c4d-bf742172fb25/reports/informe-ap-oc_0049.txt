@@ -1,0 +1,18 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: January Haley   Sexo: mujer   Fecha de nacimiento: 1959-12-22
+Caso sintético oc_0049. Diagnóstico de referencia: carcinoma de pulmón.
+Muestra AP-2018-001913: Lobectomía pulmonar derecha, recibida el 2018-12-31
+Procedimiento: Lobectomía pulmonar con linfadenectomía
+Localización del tumor: Pulmón (C34.9)
+Tipo histológico: Carcinoma de pulmón no microcítico (8046/3)
+Grado histológico: Grado 2 (moderadamente diferenciado)
+Tamaño tumoral: 22 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 6 mm
+Invasión linfovascular: presente
+Invasión perineural: ausente
+Ganglios linfáticos: 0 de 13 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

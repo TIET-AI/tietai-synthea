@@ -1,0 +1,77 @@
+{
+  "schema": "tietai.oncology-case-golden/v1",
+  "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
+  "patient": "b8614593-2b69-4bae-9697-de1d2f54f128",
+  "summary_sha256": "63071369f8d730008168c2cb4388d35f20a47788e586fcc60937d7a012ed5816",
+  "case": {
+    "cases": [
+      {
+        "biomarkers": [
+          {
+            "code": "LOINC 16112-5",
+            "date": "2018-10-15",
+            "display": "ER",
+            "value": "Negative (qualifier value)"
+          },
+          {
+            "code": "LOINC 16113-3",
+            "date": "2018-10-15",
+            "display": "PR",
+            "value": "Positive (qualifier value)"
+          },
+          {
+            "code": "LOINC 48676-1",
+            "date": "2018-10-15",
+            "display": "HER2",
+            "value": "Positive (qualifier value)"
+          }
+        ],
+        "case_id": "oc_0001",
+        "diagnosis": {
+          "cie10es": "C50.919",
+          "clinical_status": "active",
+          "date": "2018-09-24",
+          "display": "Malignant neoplasm of breast (disorder)",
+          "icdo3_morphology": "8500/3",
+          "icdo3_topography": "C50.9",
+          "snomed": "254837009"
+        },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Tier ii",
+            "gene": "TP53",
+            "hgvs_c": "NM_000546.6:c.524G>A",
+            "hgvs_p": "NP_000537.3:p.Arg175His",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/ca134c85-37fc-4038-8383-5e22d7347282"
+          }
+        ],
+        "primary_condition_ref": "Condition/a7441314-20db-4793-914a-f8484aa3615c",
+        "staging": [
+          {
+            "date": "2018-10-01",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN0",
+            "stage_group": "IIA",
+            "system": "TNM",
+            "t": "cT2"
+          },
+          {
+            "date": "2018-10-15",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN0",
+            "stage_group": "IIA",
+            "system": "TNM",
+            "t": "pT2"
+          }
+        ]
+      }
+    ],
+    "patient_ref": "Patient/86f229cf-5873-41c3-8ead-40cc82782f14",
+    "schema": "tietai.oncology-case/v1"
+  }
+}

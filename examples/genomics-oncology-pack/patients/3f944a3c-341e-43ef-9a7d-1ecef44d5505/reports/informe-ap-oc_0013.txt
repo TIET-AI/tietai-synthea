@@ -1,0 +1,21 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Marilu Vázquez   Sexo: mujer   Fecha de nacimiento: 1955-12-23
+Caso sintético oc_0013. Diagnóstico de referencia: carcinoma de mama.
+Muestra AP-2022-000581: Tumorectomía de mama izquierda, recibida el 2022-07-20
+Procedimiento: Tumorectomía con biopsia selectiva de ganglio centinela
+Localización del tumor: Mama (C50.9)
+Tipo histológico: Carcinoma ductal infiltrante (8500/3)
+Grado histológico: Grado 2 de Nottingham (puntuación 3+2+1)
+Tamaño tumoral: 38 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 2 mm
+Invasión linfovascular: ausente
+Invasión perineural: ausente
+Ganglios linfáticos: 3 de 8 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT2 pN1a cM0, estadio IIB
+Receptor de estrógenos (RE): negativo, inmunohistoquímica
+Receptor de progesterona (RP): positivo, inmunohistoquímica
+HER2: negativo, inmunohistoquímica
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

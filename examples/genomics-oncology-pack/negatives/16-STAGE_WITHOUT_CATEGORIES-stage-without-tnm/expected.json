@@ -1,0 +1,9 @@
+{
+  "expected": [],
+  "fhirVersion": "R4",
+  "invariant": "STAGE_WITHOUT_CATEGORIES",
+  "layer": "hydra-tool",
+  "note": "stage group observations without T, N and M; flagged by Hydra validate_tnm (needs_review)",
+  "seed": [],
+  "variant": "group-only"
+}

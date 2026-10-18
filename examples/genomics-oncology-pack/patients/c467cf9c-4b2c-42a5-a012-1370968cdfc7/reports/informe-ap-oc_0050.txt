@@ -1,0 +1,21 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Cleo Barton   Sexo: mujer   Fecha de nacimiento: 1951-11-19
+Caso sintético oc_0050. Diagnóstico de referencia: carcinoma de mama.
+Muestra AP-2018-001950: Tumorectomía de mama izquierda, recibida el 2018-10-21
+Procedimiento: Tumorectomía con biopsia selectiva de ganglio centinela
+Localización del tumor: Mama (C50.9)
+Tipo histológico: Carcinoma ductal infiltrante (8500/3)
+Grado histológico: Grado 2 de Nottingham (puntuación 3+2+1)
+Tamaño tumoral: 76 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 2 mm
+Invasión linfovascular: presente
+Invasión perineural: ausente
+Ganglios linfáticos: 1 de 13 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT3 pN1a cM0, estadio IIIA
+Receptor de estrógenos (RE): positivo, inmunohistoquímica
+Receptor de progesterona (RP): positivo, inmunohistoquímica
+HER2: negativo, inmunohistoquímica
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

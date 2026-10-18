@@ -250,6 +250,12 @@ class Generator:
         """Load all modules."""
         print("Loading modules...")
         
+        from synthea.engine.state import EncounterEndState
+        EncounterEndState.completes = self.config.get_bool('generate.encounter_end_completes', False)
+
+        # Optional state-level patches (cohort enrichment); none by default.
+        Module.set_state_patches(self._load_module_patches())
+
         # Load modules from default location
         self.modules = Module.load_modules()
 
@@ -260,6 +266,19 @@ class Generator:
         # rather than the materialized dict (which is empty at this point).
         print(f"Loaded {len(Module.get_all_modules())} modules")
     
+    def _load_module_patches(self):
+        """State patches named by ``generate.module_patches`` (a YAML file)."""
+        path = str(self.config.get('generate.module_patches', '') or '').strip()
+        if not path:
+            return {}
+        import yaml
+        with open(path, 'r', encoding='utf-8') as handle:
+            doc = yaml.safe_load(handle)
+        out = {}
+        for patch in doc.get('patches', []):
+            out.setdefault(patch['module'], {})[patch['state']] = patch['replace']
+        return out
+
     def _get_module_list(self) -> List[str]:
         """The modules to process for each patient, in execution order.
 
@@ -338,6 +357,8 @@ class Generator:
     def run(self):
         """Run the generator to create the specified population."""
         print(f"Generating {self.options.population_size} patients...")
+        if self.exporter:
+            self.exporter.begin_run()
         
         start_time = time_module.time()
         

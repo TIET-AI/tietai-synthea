@@ -1,0 +1,155 @@
+{
+  "schema": "tietai.oncology-case-golden/v1",
+  "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
+  "patient": "68af50be-60ee-43a0-8844-5c8f7c809de5",
+  "summary_sha256": "f78034ed44f26d0e157e311e388ed50d95bda088d0a76eaffdc9e49b0ced8de6",
+  "case": {
+    "cases": [
+      {
+        "case_id": "oc_0001",
+        "diagnosis": {
+          "cie10es": "C18.9",
+          "clinical_status": "active",
+          "date": "2018-12-09",
+          "display": "Malignant neoplasm of colon (disorder)",
+          "icdo3_morphology": "8140/3",
+          "icdo3_topography": "C18.9",
+          "snomed": "363406005"
+        },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Tier i",
+            "conflicting_significance": [
+              "Tier ii"
+            ],
+            "gene": "BRAF",
+            "hgvs_c": "NM_004333.6:c.1799T>A",
+            "hgvs_p": "NP_004324.2:p.Val600Glu",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/5144ee86-3d60-4389-b0b1-6a41a29891e3"
+          },
+          {
+            "clinical_significance": "Tier ii",
+            "gene": "KRAS",
+            "hgvs_c": "NM_004985.5:c.35G>A",
+            "hgvs_p": "NP_004976.2:p.Gly12Asp",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/a8f41d04-d9dc-4fb9-be58-ac764c2eec59"
+          }
+        ],
+        "primary_condition_ref": "Condition/05f317d9-8564-4b25-9d57-f9a77f2eb0b0",
+        "staging": [
+          {
+            "date": "2018-12-16",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN1a",
+            "stage_group": "IIIA",
+            "system": "TNM",
+            "t": "cT2"
+          },
+          {
+            "date": "2018-12-19",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN1a",
+            "stage_group": "IIIA",
+            "system": "TNM",
+            "t": "pT2"
+          }
+        ],
+        "treatments": [
+          {
+            "code": "SNOMED 43075005",
+            "display": "Partial resection of colon (procedure)",
+            "fhir_status": "completed",
+            "kind": "surgical",
+            "start": "2019-01-06"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2019-02-10"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2019-03-24"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2019-05-05"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2019-06-16"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2019-07-28"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "2019-09-08"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          }
+        ]
+      }
+    ],
+    "patient_ref": "Patient/248a9595-221a-44e2-a4fc-d1987eab7add",
+    "schema": "tietai.oncology-case/v1"
+  }
+}

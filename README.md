@@ -157,7 +157,8 @@ Options:
   -m, --module TEXT             Specific modules to run (repeatable)
   -c, --config PATH             Path to configuration file
   -d, --modules-dir PATH        Path to modules directory
-  -o, --output-dir PATH         Output directory for generated files
+  -o, --output-dir, --output PATH
+                                Output directory for generated files
   -r, --reference-date TEXT     Reference date (YYYYMMDD format)
   --state TEXT                  State to generate patients for
   --city TEXT                   City to generate patients for
@@ -166,6 +167,9 @@ Options:
   --only-dead                   Only generate deceased patients
   --keep-patients PATH          Path to file with patient IDs to keep
   --overflow INTEGER            Overflow population
+  --genomics                    Also write the synthetic genomics/oncology pack
+  --genomics-cohort             --genomics, with lung/colorectal/breast/prostate cohort enrichment
+  --regenerate-reference        Accept a changed curated variant table (reference pack)
   --graphviz TEXT               Generate Graphviz for specified module
   --list-modules                List all available modules
   --version                     Show version information
@@ -177,6 +181,14 @@ Examples:
   synthea -s 12345 -p 50 --state California
   synthea -p 100 -g F -a 25-35 --threads 4
 ```
+
+## Synthetic genomics and oncology pack
+
+`--genomics` writes, next to the normal output, a deterministic pack for testing genomic and oncology features:
+FHIR bundles that validate against the TietAI platform profiles, single-sample VCFs (BGZF), Spanish genetic and
+synoptic pathology reports as PDF with exact text twins and C5 expected-entity files, HL7 ORU messages, and 16
+negative fixtures. A reference pack is committed under `examples/genomics-oncology-pack/`. Everything is
+synthetic. See [docs/genomics-pack.md](docs/genomics-pack.md).
 
 ## Project Structure
 

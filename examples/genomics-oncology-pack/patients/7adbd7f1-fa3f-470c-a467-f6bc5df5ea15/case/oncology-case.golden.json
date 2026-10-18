@@ -1,0 +1,179 @@
+{
+  "schema": "tietai.oncology-case-golden/v1",
+  "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
+  "patient": "7adbd7f1-fa3f-470c-a467-f6bc5df5ea15",
+  "summary_sha256": "e7e0aa53011b539d8c72485a023959009d21e4fd7a5421fd0a027dfeb465db25",
+  "case": {
+    "cases": [
+      {
+        "biomarkers": [
+          {
+            "code": "LOINC 81695-9",
+            "date": "2018-02-14",
+            "display": "MSI",
+            "value": "MSI-H"
+          },
+          {
+            "code": "LOINC 16112-5",
+            "date": "2018-02-17",
+            "display": "ER",
+            "value": "Positive (qualifier value)"
+          },
+          {
+            "code": "LOINC 16113-3",
+            "date": "2018-02-17",
+            "display": "PR",
+            "value": "Positive (qualifier value)"
+          },
+          {
+            "code": "LOINC 48676-1",
+            "date": "2018-02-17",
+            "display": "HER2",
+            "value": "Negative (qualifier value)"
+          }
+        ],
+        "case_id": "oc_0001",
+        "diagnosis": {
+          "cie10es": "C18.9",
+          "clinical_status": "active",
+          "date": "2018-02-01",
+          "display": "Malignant neoplasm of colon (disorder)",
+          "icdo3_morphology": "8140/3",
+          "icdo3_topography": "C18.9",
+          "snomed": "363406005"
+        },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Tier ii",
+            "gene": "KRAS",
+            "hgvs_c": "NM_004985.5:c.35G>A",
+            "hgvs_p": "NP_004976.2:p.Gly12Asp",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/40094e2c-5f26-492c-a036-e58b6bddb36b"
+          },
+          {
+            "clinical_significance": "Tier i",
+            "conflicting_significance": [
+              "Tier ii"
+            ],
+            "gene": "BRAF",
+            "hgvs_c": "NM_004333.6:c.1799T>A",
+            "hgvs_p": "NP_004324.2:p.Val600Glu",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/82b5c929-9146-4109-beaf-ab5751c51227"
+          }
+        ],
+        "primary_condition_ref": "Condition/761efc3e-3426-46c5-9ed2-d48418b46913",
+        "staging": [
+          {
+            "date": "2018-02-08",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN0",
+            "stage_group": "IIB",
+            "system": "TNM",
+            "t": "cT4a"
+          },
+          {
+            "date": "2018-02-17",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN0",
+            "stage_group": "IIB",
+            "system": "TNM",
+            "t": "pT4a"
+          }
+        ],
+        "treatments": [
+          {
+            "code": "SNOMED 43075005",
+            "display": "Partial resection of colon (procedure)",
+            "fhir_status": "completed",
+            "kind": "surgical",
+            "start": "2018-03-01"
+          }
+        ]
+      },
+      {
+        "biomarkers": [
+          {
+            "code": "LOINC 16112-5",
+            "date": "2018-05-15",
+            "display": "ER",
+            "value": "Positive (qualifier value)"
+          },
+          {
+            "code": "LOINC 16113-3",
+            "date": "2018-05-15",
+            "display": "PR",
+            "value": "Positive (qualifier value)"
+          },
+          {
+            "code": "LOINC 48676-1",
+            "date": "2018-05-15",
+            "display": "HER2",
+            "value": "Negative (qualifier value)"
+          }
+        ],
+        "case_id": "oc_0002",
+        "diagnosis": {
+          "cie10es": "C50.919",
+          "clinical_status": "active",
+          "date": "2018-05-03",
+          "display": "Malignant neoplasm of breast (disorder)",
+          "icdo3_morphology": "8500/3",
+          "icdo3_topography": "C50.9",
+          "snomed": "254837009"
+        },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Tier ii",
+            "gene": "TP53",
+            "hgvs_c": "NM_000546.6:c.524G>A",
+            "hgvs_p": "NP_000537.3:p.Arg175His",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/58b00428-d1dc-46c7-990d-2741bd74f72a"
+          },
+          {
+            "clinical_significance": "Tier i",
+            "conflicting_significance": [
+              "Tier ii"
+            ],
+            "gene": "PIK3CA",
+            "hgvs_c": "NM_006218.4:c.3140A>G",
+            "hgvs_p": "NP_006209.2:p.His1047Arg",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/c3bde359-e260-4add-a4a8-aa2b1c3f8650"
+          }
+        ],
+        "primary_condition_ref": "Condition/6f1bac36-9b8c-4a88-bfb2-eaa8db31fc54",
+        "staging": [
+          {
+            "date": "2018-05-10",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN0",
+            "stage_group": "IA",
+            "system": "TNM",
+            "t": "cT1c"
+          },
+          {
+            "date": "2018-05-15",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN0",
+            "stage_group": "IA",
+            "system": "TNM",
+            "t": "pT1c"
+          }
+        ]
+      }
+    ],
+    "patient_ref": "Patient/ed82ea14-fb51-4e7a-bc82-5387c788c878",
+    "schema": "tietai.oncology-case/v1"
+  }
+}

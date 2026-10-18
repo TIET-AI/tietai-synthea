@@ -1,0 +1,22 @@
+LABORATORIO DE GENÉTICA MOLECULAR (sintético)
+INFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Jacobo Alaniz   Sexo: varón   Fecha de nacimiento: 1949-10-31
+Caso sintético oc_0062. Diagnóstico de referencia: adenocarcinoma de colon.
+Panel NGS de tumor sólido OncoColon v3
+Muestra: tejido tumoral FFPE, biopsia de colon   ID de muestra SYN-0062
+Genoma de referencia GRCh38
+Fecha del informe: 2026-09-15
+
+Variantes detectadas:
+KRAS NM_004985.5:c.35G>A (p.Gly12Asp) VAF 37,1%. Heterocigosis. Variante somática. Tier II (AMP).
+BRAF NM_004333.6:c.1799T>A (p.Val600Glu) VAF 31,4%. Heterocigosis. Variante somática. Tier I (AMP).
+Estado de inestabilidad de microsatélites: MSI-H.
+
+Implicaciones:
+Clasificación alternativa de BRAF NM_004333.6:c.1799T>A (laboratorio): Tier II (AMP).
+Implicación terapéutica: encorafenib. Evidencia: Tier I - Level A. Enfermedad: adenocarcinoma de colon.
+
+Fuente de conocimiento: ClinVar versión 2026-09-01
+Recomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.
+Este informe es un documento sintético generado para pruebas de la plataforma.

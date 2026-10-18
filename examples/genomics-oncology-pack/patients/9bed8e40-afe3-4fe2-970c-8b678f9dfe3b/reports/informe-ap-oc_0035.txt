@@ -1,0 +1,18 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Anna Torp   Sexo: mujer   Fecha de nacimiento: 1962-10-30
+Caso sintético oc_0035. Diagnóstico de referencia: carcinoma de pulmón.
+Muestra AP-2021-001395: Lobectomía pulmonar derecha, recibida el 2021-01-25
+Procedimiento: Lobectomía pulmonar con linfadenectomía
+Localización del tumor: Pulmón (C34.9)
+Tipo histológico: Carcinoma microcítico de pulmón (8041/3)
+Grado histológico: Grado 2 (moderadamente diferenciado)
+Tamaño tumoral: 22 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 2 mm
+Invasión linfovascular: ausente
+Invasión perineural: ausente
+Ganglios linfáticos: 0 de 16 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

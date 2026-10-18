@@ -1,0 +1,20 @@
+{
+  "expected": [
+    {
+      "code": "invariant",
+      "detailCode": "INV-BUILD-1",
+      "severity": "error"
+    },
+    {
+      "code": "required",
+      "detailCode": "STRUCT_SLICE_REQUIRED",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-BUILD-1",
+  "layer": "fhir-validate",
+  "note": "variant without the genome build component",
+  "seed": [],
+  "variant": "no-build"
+}

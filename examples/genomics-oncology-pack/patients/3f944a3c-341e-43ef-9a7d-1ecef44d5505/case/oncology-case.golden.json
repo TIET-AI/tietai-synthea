@@ -1,0 +1,96 @@
+{
+  "schema": "tietai.oncology-case-golden/v1",
+  "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
+  "patient": "3f944a3c-341e-43ef-9a7d-1ecef44d5505",
+  "summary_sha256": "29563953e17bb74cdad2294e16750a84492224fa2b4840e6417923fdf1a01c46",
+  "case": {
+    "cases": [
+      {
+        "biomarkers": [
+          {
+            "code": "LOINC 16112-5",
+            "date": "2022-07-23",
+            "display": "ER",
+            "value": "Negative (qualifier value)"
+          },
+          {
+            "code": "LOINC 16113-3",
+            "date": "2022-07-23",
+            "display": "PR",
+            "value": "Positive (qualifier value)"
+          },
+          {
+            "code": "LOINC 48676-1",
+            "date": "2022-07-23",
+            "display": "HER2",
+            "value": "Negative (qualifier value)"
+          }
+        ],
+        "case_id": "oc_0001",
+        "diagnosis": {
+          "cie10es": "C50.919",
+          "clinical_status": "active",
+          "date": "2022-07-01",
+          "display": "Malignant neoplasm of breast (disorder)",
+          "icdo3_morphology": "8500/3",
+          "icdo3_topography": "C50.9",
+          "snomed": "254837009"
+        },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Tier i",
+            "conflicting_significance": [
+              "Tier ii"
+            ],
+            "gene": "PIK3CA",
+            "hgvs_c": "NM_006218.4:c.3140A>G",
+            "hgvs_p": "NP_006209.2:p.His1047Arg",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/27a96638-c1f4-44d3-adfd-9e04867603ed"
+          },
+          {
+            "clinical_significance": "Tier ii",
+            "gene": "TP53",
+            "hgvs_c": "NM_000546.6:c.524G>A",
+            "hgvs_p": "NP_000537.3:p.Arg175His",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/91ef8f1c-fed7-4313-927c-75289334fc89"
+          },
+          {
+            "clinical_significance": "Pathogenic",
+            "gene": "BRCA1",
+            "hgvs_c": "NM_007294.4:c.5266dup",
+            "hgvs_p": "NP_009225.1:p.Gln1756ProfsTer74",
+            "source_class": "germline",
+            "variant_observation_ref": "Observation/ed11b373-7383-40a4-8ed6-ac1a872ed15a"
+          }
+        ],
+        "primary_condition_ref": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b",
+        "staging": [
+          {
+            "date": "2022-07-08",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN1a",
+            "stage_group": "IIB",
+            "system": "TNM",
+            "t": "cT2"
+          },
+          {
+            "date": "2022-07-23",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN1a",
+            "stage_group": "IIB",
+            "system": "TNM",
+            "t": "pT2"
+          }
+        ]
+      }
+    ],
+    "patient_ref": "Patient/5b7b215b-ad5f-406d-9d8f-738692ae5a59",
+    "schema": "tietai.oncology-case/v1"
+  }
+}

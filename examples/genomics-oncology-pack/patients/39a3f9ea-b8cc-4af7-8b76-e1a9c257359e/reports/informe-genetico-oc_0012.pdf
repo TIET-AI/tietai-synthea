@@ -1,0 +1,60 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Title (informe-genetico oc_0012 \(sint\351tico\)) /Producer (tietai-synthea genomics pack) >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 1597 >>
+stream
+BT /F1 9 Tf 12 TL 40 800 Td
+(LABORATORIO DE GEN\311TICA MOLECULAR \(sint\351tico\)) Tj T*
+(INFORME DE AN\301LISIS GEN\311TICO DE TUMOR S\323LIDO) Tj T*
+(Documento sint\351tico: no corresponde a ning\372n paciente real.) Tj T*
+(Paciente: Sarai Hudson   Sexo: mujer   Fecha de nacimiento: 1942-12-02) Tj T*
+(Caso sint\351tico oc_0012. Diagn\363stico de referencia: carcinoma de mama.) Tj T*
+(Panel NGS de tumor s\363lido OncoMama v2) Tj T*
+(Muestra: tejido tumoral FFPE, biopsia de mama   ID de muestra SYN-0012) Tj T*
+(Genoma de referencia GRCh38) Tj T*
+(Fecha del informe: 2026-09-07) Tj T*
+() Tj T*
+(Variantes detectadas:) Tj T*
+(PIK3CA NM_006218.4:c.3140A>G \(p.His1047Arg\) VAF 27,2%. Heterocigosis. Variante som\341tica. Tier I \(AMP\).) Tj T*
+(TP53 NM_000546.6:c.524G>A \(p.Arg175His\) VAF 38,5%. Heterocigosis. Variante som\341tica. Tier II \(AMP\).) Tj T*
+(BRCA1 NM_007294.4:c.5266dup \(p.Gln1756ProfsTer74\) VAF 50,0%. Heterocigosis. Variante germinal. Patog\351nica \(ACMG\).) Tj T*
+() Tj T*
+(Implicaciones:) Tj T*
+(Clasificaci\363n alternativa de PIK3CA NM_006218.4:c.3140A>G \(laboratorio\): Tier II \(AMP\).) Tj T*
+(Implicaci\363n terap\351utica: alpelisib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de mama.) Tj T*
+(Implicaci\363n terap\351utica: olaparib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de mama.) Tj T*
+() Tj T*
+(Fuente de conocimiento: ClinVar versi\363n 2026-09-01) Tj T*
+(Recomendaci\363n: Se recomienda valorar consejo gen\351tico y estudio familiar.) Tj T*
+(Este informe es un documento sint\351tico generado para pruebas de la plataforma.) Tj T*
+ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000212 00000 n 
+0000000325 00000 n 
+0000000451 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R /Info 4 0 R >>
+startxref
+2100
+%%EOF

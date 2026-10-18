@@ -1,0 +1,66 @@
+{
+  "schema": "tietai.oncology-case-golden/v1",
+  "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
+  "patient": "bc55ce45-336e-4140-8875-303f9a3f3eba",
+  "summary_sha256": "974e89a20a6164aa21ce45f6158a306e6f46b2e62eb3188e1ce4cb4c03eaa278",
+  "case": {
+    "cases": [
+      {
+        "case_id": "oc_0001",
+        "diagnosis": {
+          "cie10es": "C18.9",
+          "clinical_status": "active",
+          "date": "2018-02-06",
+          "display": "Malignant neoplasm of colon (disorder)",
+          "icdo3_morphology": "8140/3",
+          "icdo3_topography": "C18.9",
+          "snomed": "363406005"
+        },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Tier ii",
+            "gene": "KRAS",
+            "hgvs_c": "NM_004985.5:c.35G>A",
+            "hgvs_p": "NP_004976.2:p.Gly12Asp",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/5a83c266-8343-469e-b075-2f41850f70b6"
+          }
+        ],
+        "primary_condition_ref": "Condition/1035c62d-b1d0-435c-9418-ba39d779a294",
+        "staging": [
+          {
+            "date": "2018-02-13",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN1a",
+            "stage_group": "IIIA",
+            "system": "TNM",
+            "t": "cT2"
+          },
+          {
+            "date": "2018-02-21",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN1a",
+            "stage_group": "IIIA",
+            "system": "TNM",
+            "t": "pT2"
+          }
+        ],
+        "treatments": [
+          {
+            "code": "SNOMED 43075005",
+            "display": "Partial resection of colon (procedure)",
+            "fhir_status": "completed",
+            "kind": "surgical",
+            "start": "2018-03-06"
+          }
+        ]
+      }
+    ],
+    "patient_ref": "Patient/8fd916d0-8561-4487-84dd-52fd8c6f55df",
+    "schema": "tietai.oncology-case/v1"
+  }
+}
