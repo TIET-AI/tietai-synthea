@@ -264,6 +264,8 @@ def _diff(a: Any, b: Any, path: str) -> List[str]:
         for k in sorted(set(a) | set(b)):
             if k not in a or k not in b:
                 out.append(f"{path}.{k}")
+            elif k.startswith("value") and a[k] != b[k]:
+                out.append(f"{path}.{k}")      # a value[x] element is one path
             else:
                 out += _diff(a[k], b[k], f"{path}.{k}")
         return out

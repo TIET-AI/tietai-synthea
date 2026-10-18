@@ -117,11 +117,8 @@ class PackWriter:
         modules_dir = resource_path("modules")
         modules = {f"{n}.json": file_sha256(modules_dir / f"{n}.json")
                    for n in ("breast_cancer", "lung_cancer", "colorectal_cancer", "prostate_cancer")}
-        try:
-            from importlib.metadata import version
-            gen = f"tietai-synthea {version('tietai-synthea')}"
-        except Exception:  # pragma: no cover
-            gen = "tietai-synthea"
+        # Pack-format version, not the package version: a release must not change a regenerated pack.
+        gen = "tietai-synthea genomics-pack/1"
         manifest = {"generator": gen, "modules": modules}
         manifest.update(meta)
         manifest["files"] = dict(sorted(self.hashes.items()))

@@ -44,3 +44,33 @@ def make_person(seed, fam=None, onset=datetime(2020, 3, 2, 9, 0), first="Íñigo
         if proc:
             r.procedure(datetime(2020, 3, 25), Code(SN, *proc))
     return p
+
+
+FAMS = ["breast", "lung", "colorectal", "prostate", "breast", "breast", "lung", "prostate", "colorectal", "breast"]
+
+
+def family_of(i):
+    return FAMS[i % len(FAMS)] if i % 6 != 5 else None
+
+
+def population(n=12):
+    return [make_person(100 + i, family_of(i), first=f"Nombre{i}", last="Prueba") for i in range(n)]
+
+
+def build_pack(tmp_path, persons=None, **cfg):
+    from pathlib import Path
+    from synthea.export.exporter import Exporter
+    from synthea.helpers.config import Config
+    c = Config()
+    c.load()
+    c.set("exporter.baseDirectory", str(tmp_path))
+    c.set("exporter.fhir.export", False)
+    c.set("exporter.genomics.export", True)
+    for k, v in cfg.items():
+        c.set(k.replace("__", "."), v)
+    ex = Exporter(c)
+    ex.begin_run()
+    for p in (persons if persons is not None else population()):
+        ex.export(p)
+    ex.run_post_completion({})
+    return Path(tmp_path) / "genomics-oncology-pack"

@@ -3,7 +3,7 @@
 # Stock Synthea modules produce roughly 9 cancer cases per 200 persons, almost
 # all breast and prostate; lung and colorectal cancer essentially never occur.
 # The reference pack needs all four families, so --genomics-cohort replaces the
-# *incidence gates* of the lung and colorectal modules with a fixed onset
+# *incidence gates* of the four cancer modules with a fixed onset
 # probability. Nothing downstream of the gate is changed. Never enabled by
 # default; the pack manifest records the patch file hash when it was used.
 patches:
@@ -12,13 +12,30 @@ patches:
     replace:
       type: Simple
       distributed_transition:
-        - { distribution: 0.35, transition: Onset_Lung_Cancer }
-        - { distribution: 0.65, transition: Terminal }
+        - { distribution: 0.15, transition: Onset_Lung_Cancer }
+        - { distribution: 0.85, transition: Terminal }
   - module: colorectal_cancer
     state: Delay_For_Smoking_History
     replace:
       type: Delay
       exact: { quantity: 30, unit: years }
       distributed_transition:
-        - { distribution: 0.35, transition: Delay_Until_Symptoms_Start }
-        - { distribution: 0.65, transition: Terminal }
+        - { distribution: 0.15, transition: Delay_Until_Symptoms_Start }
+        - { distribution: 0.85, transition: Terminal }
+  # Breast and prostate occur naturally but rarely in a short window; raise the gate.
+  - module: breast_cancer
+    state: Female
+    replace:
+      type: Simple
+      distributed_transition:
+        - { distribution: 0.30, transition: Pre_breastCancer }
+        - { distribution: 0.70, transition: Terminal }
+  - module: prostate_cancer
+    state: Initial
+    replace:
+      type: Initial
+      distributed_transition:
+        - { distribution: 0.10, transition: Onset_Age_50_60 }
+        - { distribution: 0.12, transition: Onset_Age_60_70 }
+        - { distribution: 0.12, transition: Onset_Age_70_85 }
+        - { distribution: 0.66, transition: Terminal }

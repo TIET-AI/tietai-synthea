@@ -79,12 +79,7 @@ def _config(tmp_path, **kw):
     return c
 
 
-FAMS = ["breast", "lung", "colorectal", "prostate", "breast", "breast", "lung", "prostate", "colorectal", "breast"]
-
-
-def _population(n=None):
-    return [make_person(100 + i, FAMS[i % len(FAMS)] if i % 4 != 3 else None, first=f"Nombre{i}", last="Prueba")
-            for i in range(n or 12)]
+from tests.genomics_helpers import family_of, population as _population
 
 
 def _run(tmp_path, persons, **kw):
@@ -105,9 +100,9 @@ def _tree(root):
 def test_exporter_registered_and_only_cancer_persons_exported(tmp_path):
     persons = _population()
     pack = _run(tmp_path, persons)
-    with_cancer = {p.uuid for p, f in zip(persons, [FAMS[i % len(FAMS)] if i % 4 != 3 else None for i in range(12)]) if f}
+    with_cancer = {p.uuid for i, p in enumerate(persons) if family_of(i)}
     dirs = {d.name for d in (pack / "patients").iterdir()}
-    assert dirs == with_cancer and len(dirs) == 9
+    assert dirs == with_cancer and len(dirs) == 10
     assert not (Path(tmp_path) / STAGING_DIRNAME).exists()
     # off by default
     ex = Exporter(Config())
@@ -134,3 +129,128 @@ def test_phi_abort_propagates_past_exporter_swallowing(tmp_path, monkeypatch):
     with pytest.raises(GenomicsPackError) as e:
         _run(tmp_path, _population())
     assert "dni" in str(e.value) and "Prueba" not in str(e.value)
+
+
+def _bundle(pack, kind, family_codes):
+    """First bundle of ``kind`` whose Condition / variants match ``family_codes``."""
+    for f in sorted(pack.glob(f"patients/*/fhir/{kind}-*.bundle.json")):
+        b = json.loads(f.read_text("utf-8"))
+        text = f.read_text("utf-8")
+        if any(c in text for c in family_codes):
+            return b
+    raise AssertionError(family_codes)
+
+
+def _res(b, rtype, profile=None):
+    out = [e["resource"] for e in b["entry"] if e["resource"]["resourceType"] == rtype]
+    if profile:
+        out = [r for r in out if any(p.endswith("/" + profile) for p in r.get("meta", {}).get("profile", []))]
+    return out
+
+
+def _codes(res):
+    return {c["code"]["coding"][0]["code"]: c for c in res["component"]}
+
+
+# REQ-GO-61-04 / AC-04 / T-GO-61-04
+def test_breast_report_bundle_shape_and_alk_structural(genomics_pack):
+    b = _bundle(genomics_pack, "report", ["PIK3CA"])
+    assert b["type"] == "transaction"
+    assert len(_res(b, "DiagnosticReport")) == 1 and len(_res(b, "Provenance")) == 1
+    rep = _res(b, "DiagnosticReport")[0]
+    assert rep["extension"][0]["valueString"] == "clinvar@2026-09-01"
+    assert rep["code"]["coding"][0]["code"] == "51969-4"
+    assert len(_res(b, "Specimen")) == 2           # tumour + blood for the germline variant
+    variants = _res(b, "Observation", "tietai-variant")
+    assert len(variants) == 3
+    for v in variants:
+        cats = [c["coding"][0]["code"] for c in v["category"]]
+        assert cats == ["laboratory", "GE"]
+        comps = _codes(v)
+        assert set(comps) == {"48018-6", "48004-6", "48005-3", "81290-9", "62374-4", "48002-0", "53034-5", "81258-6"}
+        assert "53037-8" not in comps
+        for k in ("48004-6", "48005-3", "81290-9"):
+            assert comps[k]["valueCodeableConcept"]["coding"][0]["system"] == "http://varnomen.hgvs.org"
+        gene = comps["48018-6"]["valueCodeableConcept"]["coding"][0]
+        assert gene["system"] == "http://www.genenames.org" and gene["code"].startswith("HGNC:") and gene["display"]
+    germ = [v for v in variants if _codes(v)["48002-0"]["valueCodeableConcept"]["coding"][0]["code"] == "LA6683-2"]
+    assert len(germ) == 1 and _codes(germ[0])["48018-6"]["valueCodeableConcept"]["coding"][0]["display"] == "BRCA1"
+    sec = lambda r: [s["code"] for s in r.get("meta", {}).get("security", [])]
+    assert sec(germ[0]) == ["GERMLINE"] and all(sec(v) == [] for v in variants if v is not germ[0])
+    dx = _res(b, "Observation", "tietai-diagnostic-implication")
+    th = _res(b, "Observation", "tietai-therapeutic-implication")
+    assert len(dx) >= 4 and len(th) >= 1
+    ids = {e["fullUrl"]: e["resource"] for e in b["entry"]}
+    per_variant = {}
+    for i in dx:
+        assert any(x["url"].endswith("classification-source") for x in i["extension"])
+        assert "53037-8" in _codes(i)
+        tgt = i["derivedFrom"][0]["reference"]
+        assert ids[tgt]["meta"]["profile"][0].endswith("tietai-variant")
+        per_variant.setdefault(tgt, []).append(_codes(i)["53037-8"]["valueCodeableConcept"]["coding"][0]["code"])
+        if sec(ids[tgt]):
+            assert sec(i) == ["GERMLINE"]
+    assert any(len(set(v)) == 2 for v in per_variant.values())      # two different significances
+    for i in th:
+        assert set(_codes(i)) >= {"51963-7", "81259-4", "93044-6"}
+    assert all(sec(i) == ["GERMLINE"] for i in th if sec(ids[i["derivedFrom"][0]["reference"]]))
+
+    # lung: the ALK fusion is structural; it is not a tietai-variant (known gap), but it is reported
+    lung = _bundle(genomics_pack, "report", ["EGFR"])
+    assert all("ALK" not in json.dumps(v) for v in _res(lung, "Observation", "tietai-variant"))
+    gap = next(genomics_pack.glob("known-gaps/*/bundle.json"))
+    fusion = _res(json.loads(gap.read_text()), "Observation", "tietai-variant")[0]
+    comps = _codes(fusion)
+    assert comps["48019-4"]["valueCodeableConcept"]["coding"][0]["code"] == "SO:0001565"
+    assert not ({"48004-6", "48005-3", "81290-9"} & set(comps))
+    assert json.loads(next(genomics_pack.glob("known-gaps/*/expected.json")).read_text())["invariant"] == "INV-HGVS-1"
+    # the ALK fusion is in the Spanish report text
+    txt = next(genomics_pack.glob("patients/*/reports/informe-genetico-*.txt"))
+    assert any("ALK::EML4" in p.read_text("utf-8") for p in genomics_pack.glob("patients/*/reports/informe-genetico-*.txt"))
+    assert any(e["resource"]["resourceType"] == "Observation" and "81695-9" in json.dumps(e)
+               for e in _bundle(genomics_pack, "report", ["BRAF"])["entry"])
+
+
+# REQ-GO-61-07 / AC-07 / T-GO-61-07
+def test_prostate_mcode_resources_consistent_with_module(genomics_pack):
+    b = _bundle(genomics_pack, "oncology", ["399068003"])
+    cond = _res(b, "Condition")[0]
+    assert cond["meta"]["profile"][0].endswith("tietai-cancer-condition")
+    assert {c["system"] + "|" + c["code"] for c in cond["code"]["coding"]} >= {"http://snomed.info/sct|399068003"}
+    morph = cond["extension"][0]["valueCodeableConcept"]["coding"][0]
+    assert morph["code"] == "8140/3"
+    assert cond["bodySite"][0]["coding"][0]["code"] == "C61.9"
+    tnm = _res(b, "Observation", "tietai-tnm-observation")
+    assert len(tnm) == 8
+    for o in tnm:
+        assert o["method"]["coding"][0]["code"] == "TNM"
+        assert o["extension"][0]["valueString"] == "8"          # edition
+        assert o["focus"][0]["reference"].startswith("urn:uuid:")
+    codes = {o["code"]["coding"][0]["code"] for o in tnm}
+    assert {"21908-9", "21902-2"} <= codes                      # clinical and pathological stage group
+    psa = [o for o in _res(b, "Observation") if o["code"]["coding"][0]["code"] == "2857-1"]
+    assert psa and psa[0]["valueQuantity"]["code"] == "ng/mL"
+    onset = cond["onsetDateTime"]
+    meds = _res(b, "MedicationRequest")
+    assert meds and all(m["authoredOn"] >= onset for m in meds)
+    assert meds[0]["medicationCodeableConcept"]["coding"][0]["code"].startswith("L02")
+    # the 2019 medication (before onset) was not exported
+    assert len(meds) == 1
+    # breast: ER/PR/HER2 under the platform LOINCs, lumpectomy as a Procedure
+    bb = _bundle(genomics_pack, "oncology", ["254837009"])
+    marker_codes = {o["code"]["coding"][0]["code"] for o in _res(bb, "Observation")}
+    assert {"16112-5", "16113-3", "48676-1"} <= marker_codes
+    assert any(p["code"]["coding"][0]["code"] == "392021009" for p in _res(bb, "Procedure"))
+
+
+@pytest.mark.slow
+def test_generation_time_budget(tmp_path):
+    """REQ-GO-61-18: the reference population in <= 5 minutes, single thread."""
+    import subprocess, sys, time
+    t = time.time()
+    subprocess.run([sys.executable, "-m", "synthea.cli", "--population", "200", "--seed", "20261017",
+                    "--age", "55-85", "--reference-date", "20261001", "--genomics-cohort",
+                    "-c", "examples/genomics-oncology-pack-recipe.properties", "--output-dir", str(tmp_path)],
+                   check=True, capture_output=True)
+    assert time.time() - t <= 300
+    assert (tmp_path / "genomics-oncology-pack" / "MANIFEST.json").is_file()
