@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GO-61 curated variant table",
+  "type": "object",
+  "required": ["review_status", "variants"],
+  "additionalProperties": false,
+  "properties": {
+    "review_status": {"type": "string"},
+    "variants": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/entry"}}
+  },
+  "$defs": {
+    "classification": {
+      "type": "object", "additionalProperties": false,
+      "required": ["system", "value", "source"],
+      "properties": {
+        "system": {"enum": ["ACMG", "AMP", "ClinGen"]},
+        "value": {"enum": ["pathogenic", "likely-pathogenic", "uncertain-significance", "likely-benign", "benign", "tier-i", "tier-ii", "tier-iii", "tier-iv", "oncogenic", "likely-oncogenic"]},
+        "source": {"type": "string", "pattern": "^(clinvar|hgnc|icdo3|so|loinc|custom|lab)@[0-9]{4}-[0-9]{2}-[0-9]{2}$"}
+      }
+    },
+    "entry": {
+      "type": "object",
+      "required": ["family", "kind", "source_class"],
+      "additionalProperties": false,
+      "properties": {
+        "family": {"enum": ["breast", "colorectal", "lung", "prostate"]},
+        "kind": {"enum": ["variant", "msi", "tmb"]},
+        "gene_symbol": {"type": ["string", "null"]},
+        "hgnc_id": {"type": "string", "pattern": "^HGNC:[0-9]+$"},
+        "partner_gene": {"type": "string"},
+        "partner_hgnc_id": {"type": "string", "pattern": "^HGNC:[0-9]+$"},
+        "hgvs_c": {"type": "string", "pattern": "^(NM|NC|NG|NR|NP|LRG)_\\d+(\\.\\d+)?:[gcnp]\\."},
+        "hgvs_p": {"type": "string", "pattern": "^(NM|NC|NG|NR|NP|LRG)_\\d+(\\.\\d+)?:[gcnp]\\."},
+        "hgvs_g": {"type": "string", "pattern": "^(NM|NC|NG|NR|NP|LRG)_\\d+(\\.\\d+)?:[gcnp]\\."},
+        "grch38": {
+          "type": "object", "additionalProperties": false,
+          "required": ["chrom", "pos", "ref", "alt"],
+          "properties": {"chrom": {"type": "string"}, "pos": {"type": "integer", "minimum": 1},
+                         "ref": {"type": "string", "pattern": "^[ACGT]+$"}, "alt": {"type": "string", "pattern": "^[ACGT]+$"}}
+        },
+        "source_class": {"enum": ["germline", "somatic"]},
+        "zygosity": {"enum": ["heterozygous", "homozygous", "hemizygous", "unknown"]},
+        "vaf": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "classification": {"$ref": "#/$defs/classification"},
+        "second_classification": {"$ref": "#/$defs/classification"},
+        "clinvar": {"type": "string", "pattern": "^VCV[0-9]{9}$"},
+        "consequence": {"type": "string", "pattern": "^SO:[0-9]{7}$"},
+        "structural": {"type": "boolean"},
+        "exon_19_deletion": {"type": "boolean"},
+        "msi": {"type": "string"},
+        "therapies": {
+          "type": "array",
+          "items": {"type": "object", "additionalProperties": false, "required": ["atc", "display", "evidence"],
+                    "properties": {"atc": {"type": "string", "pattern": "^L0[12][A-Z]{2}[0-9]{2}$"}, "display": {"type": "string"}, "evidence": {"type": "string"}}}
+        }
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"const": "variant"}}, "required": ["kind"]},
+         "then": {"required": ["gene_symbol", "hgnc_id", "consequence", "structural", "classification"]}},
+        {"if": {"properties": {"kind": {"const": "variant"}, "structural": {"const": false}}, "required": ["kind", "structural"]},
+         "then": {"required": ["hgvs_c", "hgvs_p", "hgvs_g", "grch38", "zygosity", "vaf"]}},
+        {"if": {"properties": {"kind": {"const": "msi"}}, "required": ["kind"]},
+         "then": {"required": ["msi"]}}
+      ]
+    }
+  }
+}

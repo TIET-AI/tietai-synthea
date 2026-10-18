@@ -1,0 +1,172 @@
+# Curated variant table of the synthetic genomics/oncology pack (GO-61 REQ-03).
+#
+# SYNTHETIC TEST DATA. Review status: PENDING clinical geneticist sign-off
+# (spec 9 Q1 / section 6). Coordinates, HGVS strings and protein accessions
+# were cross-checked on 2026-10-18 against VariantValidator (GRCh38, MANE),
+# gene ids against HGNC and ClinVar accessions against NCBI ClinVar; the
+# classifications are illustrative test values, not clinical statements.
+# The generator uses every value as asserted (the platform records, never
+# derives). Schema: curated_variants.schema.json (enforced at load).
+review_status: pending-clinical-geneticist-signoff
+variants:
+  # ---- breast ----------------------------------------------------------
+  - family: breast
+    kind: variant
+    gene_symbol: PIK3CA
+    hgnc_id: "HGNC:8975"
+    hgvs_c: "NM_006218.4:c.3140A>G"
+    hgvs_p: "NP_006209.2:p.His1047Arg"
+    hgvs_g: "NC_000003.12:g.179234297A>G"
+    grch38: { chrom: "3", pos: 179234297, ref: A, alt: G }
+    source_class: somatic
+    zygosity: heterozygous
+    vaf: 0.31
+    classification: { system: AMP, value: tier-i, source: "clinvar@2026-09-01" }
+    second_classification: { system: AMP, value: tier-ii, source: "lab@2026-09-01" }
+    clinvar: VCV000013652
+    consequence: "SO:0001583"
+    structural: false
+    therapies:
+      - { atc: L01EM03, display: alpelisib, evidence: "Tier I - Level A" }
+  - family: breast
+    kind: variant
+    gene_symbol: TP53
+    hgnc_id: "HGNC:11998"
+    hgvs_c: "NM_000546.6:c.524G>A"
+    hgvs_p: "NP_000537.3:p.Arg175His"
+    hgvs_g: "NC_000017.11:g.7675088C>T"
+    grch38: { chrom: "17", pos: 7675088, ref: C, alt: T }
+    source_class: somatic
+    zygosity: heterozygous
+    vaf: 0.42
+    classification: { system: AMP, value: tier-ii, source: "clinvar@2026-09-01" }
+    clinvar: VCV000012374
+    consequence: "SO:0001583"
+    structural: false
+  - family: breast
+    kind: variant
+    gene_symbol: BRCA1
+    hgnc_id: "HGNC:1100"
+    hgvs_c: "NM_007294.4:c.5266dup"
+    hgvs_p: "NP_009225.1:p.Gln1756ProfsTer74"
+    hgvs_g: "NC_000017.11:g.43057065dup"
+    grch38: { chrom: "17", pos: 43057062, ref: T, alt: TG }
+    source_class: germline
+    zygosity: heterozygous
+    vaf: 0.5
+    classification: { system: ACMG, value: pathogenic, source: "clinvar@2026-09-01" }
+    clinvar: VCV000017677
+    consequence: "SO:0001589"
+    structural: false
+    therapies:
+      - { atc: L01XK01, display: olaparib, evidence: "Tier I - Level A" }
+  # ---- colorectal --------------------------------------------------------
+  - family: colorectal
+    kind: variant
+    gene_symbol: KRAS
+    hgnc_id: "HGNC:6407"
+    hgvs_c: "NM_004985.5:c.35G>A"
+    hgvs_p: "NP_004976.2:p.Gly12Asp"
+    hgvs_g: "NC_000012.12:g.25245350C>T"
+    grch38: { chrom: "12", pos: 25245350, ref: C, alt: T }
+    source_class: somatic
+    zygosity: heterozygous
+    vaf: 0.36
+    classification: { system: AMP, value: tier-ii, source: "clinvar@2026-09-01" }
+    clinvar: VCV000012582
+    consequence: "SO:0001583"
+    structural: false
+  - family: colorectal
+    kind: variant
+    gene_symbol: BRAF
+    hgnc_id: "HGNC:1097"
+    hgvs_c: "NM_004333.6:c.1799T>A"
+    hgvs_p: "NP_004324.2:p.Val600Glu"
+    hgvs_g: "NC_000007.14:g.140753336A>T"
+    grch38: { chrom: "7", pos: 140753336, ref: A, alt: T }
+    source_class: somatic
+    zygosity: heterozygous
+    vaf: 0.28
+    classification: { system: AMP, value: tier-i, source: "clinvar@2026-09-01" }
+    second_classification: { system: AMP, value: tier-ii, source: "lab@2026-09-01" }
+    clinvar: VCV000013961
+    consequence: "SO:0001583"
+    structural: false
+    therapies:
+      - { atc: L01EC03, display: encorafenib, evidence: "Tier I - Level A" }
+  - family: colorectal
+    kind: msi
+    gene_symbol: null
+    msi: MSI-H
+    source_class: somatic
+    structural: false
+  # ---- lung ----------------------------------------------------------------
+  - family: lung
+    kind: variant
+    gene_symbol: EGFR
+    hgnc_id: "HGNC:3236"
+    hgvs_c: "NM_005228.5:c.2573T>G"
+    hgvs_p: "NP_005219.2:p.Leu858Arg"
+    hgvs_g: "NC_000007.14:g.55191822T>G"
+    grch38: { chrom: "7", pos: 55191822, ref: T, alt: G }
+    source_class: somatic
+    zygosity: heterozygous
+    vaf: 0.41
+    classification: { system: AMP, value: tier-i, source: "clinvar@2026-09-01" }
+    clinvar: VCV000016609
+    consequence: "SO:0001583"
+    structural: false
+    therapies:
+      - { atc: L01EB04, display: osimertinib, evidence: "Tier I - Level A" }
+  - family: lung
+    kind: variant
+    gene_symbol: EGFR
+    hgnc_id: "HGNC:3236"
+    hgvs_c: "NM_005228.5:c.2235_2249del"
+    hgvs_p: "NP_005219.2:p.Glu746_Ala750del"
+    hgvs_g: "NC_000007.14:g.55174772_55174786del"
+    grch38: { chrom: "7", pos: 55174771, ref: AGGAATTAAGAGAAGC, alt: A }
+    source_class: somatic
+    zygosity: heterozygous
+    vaf: 0.33
+    classification: { system: AMP, value: tier-i, source: "clinvar@2026-09-01" }
+    second_classification: { system: AMP, value: tier-ii, source: "lab@2026-09-01" }
+    clinvar: VCV000163343
+    consequence: "SO:0001826"
+    structural: false
+    exon_19_deletion: true
+    therapies:
+      - { atc: L01EB04, display: osimertinib, evidence: "Tier I - Level A" }
+  - family: lung
+    kind: variant
+    gene_symbol: ALK
+    hgnc_id: "HGNC:427"
+    partner_gene: EML4
+    partner_hgnc_id: "HGNC:1316"
+    source_class: somatic
+    zygosity: unknown
+    vaf: 0.22
+    classification: { system: AMP, value: tier-i, source: "lab@2026-09-01" }
+    consequence: "SO:0001565"
+    structural: true
+    therapies:
+      - { atc: L01ED03, display: alectinib, evidence: "Tier I - Level A" }
+  # ---- prostate ------------------------------------------------------------
+  - family: prostate
+    kind: variant
+    gene_symbol: BRCA2
+    hgnc_id: "HGNC:1101"
+    hgvs_c: "NM_000059.4:c.5946del"
+    hgvs_p: "NP_000050.3:p.Ser1982ArgfsTer22"
+    hgvs_g: "NC_000013.11:g.32340301del"
+    grch38: { chrom: "13", pos: 32340300, ref: GT, alt: G }
+    source_class: germline
+    zygosity: heterozygous
+    vaf: 0.5
+    classification: { system: ACMG, value: pathogenic, source: "clinvar@2026-09-01" }
+    second_classification: { system: ACMG, value: likely-pathogenic, source: "lab@2026-09-01" }
+    clinvar: VCV000009325
+    consequence: "SO:0001589"
+    structural: false
+    therapies:
+      - { atc: L01XK01, display: olaparib, evidence: "Tier I - Level A" }
