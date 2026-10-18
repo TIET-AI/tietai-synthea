@@ -1,0 +1,104 @@
+{#- Nota clínica en español. Las frases se construyen aquí a partir de los
+    hechos de `patient`; las descripciones clínicas (SNOMED CT, RxNorm, LOINC)
+    se muestran tal como vienen en el registro, en inglés. -#}
+{%- set p = patient -%}
+{%- macro edad() -%}
+{%- if p.age_years is none -%}de edad desconocida
+{%- elif p.age_years >= 1 -%}de {{ p.age_years }} {{ 'año' if p.age_years == 1 else 'años' }}
+{%- elif p.age_months and p.age_months >= 1 -%}de {{ p.age_months }} {{ 'mes' if p.age_months == 1 else 'meses' }}
+{%- else -%}recién nacid{{ 'a' if p.sex == 'F' else 'o' }}
+{%- endif -%}
+{%- endmacro -%}
+{{ date }}
+
+# Motivo de consulta
+{% if complaints %}
+{% for complaint in complaints %}
+- {{ complaint }}
+{% endfor %}
+{% else %}
+Sin motivo de consulta registrado.
+{% endif %}
+
+# Enfermedad actual
+{{ p.first_name or 'El paciente' }} es {{ 'una mujer' if p.sex == 'F' else 'un varón' }} {{ edad() }}.{% if p.active_conditions %} Antecedentes: {{ p.active_conditions | join(', ') }}.{% endif %}
+
+
+# Antecedentes sociales
+{% if p.marital_status %}
+{{ 'Casado/a.' if p.marital_status == 'M' else ('Viudo/a.' if p.marital_status == 'W' else ('Divorciado/a o separado/a.' if p.marital_status in ('D', 'L') else 'Soltero/a.')) }}
+{% endif %}
+{% if p.smoker is not none %}
+{% if p.smoker %}Fumador/a activo/a{% elif p.quit_smoking_age is not none %}Exfumador/a desde los {{ p.quit_smoking_age }} años{% else %}No ha fumado nunca{% endif %}{% if p.alcoholic %}; consumo perjudicial de alcohol{% endif %}.
+{% endif %}
+{% if p.insurer %}
+Cobertura sanitaria: {{ p.insurer }}.
+{% else %}
+Sin cobertura sanitaria registrada.
+{% endif %}
+
+# Alergias
+{% if active_allergies %}
+{{ active_allergies | join(', ') }}
+{% else %}
+No se conocen alergias.
+{% endif %}
+
+# Medicación activa
+{% if active_medications %}
+{{ active_medications | join('; ') }}
+{% else %}
+Sin medicación activa.
+{% endif %}
+
+# Constantes vitales
+{% if vitals %}
+{% for vital in vitals %}
+- {{ vital }}
+{% endfor %}
+{% else %}
+No se registraron en esta visita.
+{% endif %}
+
+# Juicio clínico y plan
+{% if conditions %}
+Diagnósticos: {{ conditions | join(', ') }}.
+{% endif %}
+{% if allergies %}
+Alergias diagnosticadas: {{ allergies | join(', ') }}.
+{% endif %}
+{% if not conditions and not allergies %}
+Visita de seguimiento; sin diagnósticos nuevos.
+{% endif %}
+
+## Plan
+{% if immunizations %}
+Vacunas administradas: {{ immunizations | join(', ') }}.
+{% endif %}
+{% if procedures %}
+Procedimientos realizados:
+{% for procedure in procedures %}
+- {{ procedure }}
+{% endfor %}
+{% endif %}
+{% if reports %}
+Pruebas de laboratorio realizadas:
+{% for report in reports %}
+- {{ report }}
+{% endfor %}
+{% endif %}
+{% if medications %}
+Tratamiento prescrito:
+{% for medication in medications %}
+- {{ medication }}
+{% endfor %}
+{% endif %}
+{% if careplans %}
+Plan de cuidados:
+{% for careplan in careplans %}
+- {{ careplan }}
+{% endfor %}
+{% endif %}
+{% if not immunizations and not procedures and not reports and not medications and not careplans %}
+Sin órdenes en esta visita.
+{% endif %}

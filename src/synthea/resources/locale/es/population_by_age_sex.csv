@@ -1,0 +1,295 @@
+region_code,region,sex,age_low,age_high,population
+28,Madrid,M,0,4,133758
+28,Madrid,M,5,9,163446
+28,Madrid,M,10,14,187177
+28,Madrid,M,15,19,200263
+28,Madrid,M,20,24,207679
+28,Madrid,M,25,29,218046
+28,Madrid,M,30,34,229076
+28,Madrid,M,35,39,230077
+28,Madrid,M,40,44,255349
+28,Madrid,M,45,49,292560
+28,Madrid,M,50,54,278770
+28,Madrid,M,55,59,243915
+28,Madrid,M,60,64,207433
+28,Madrid,M,65,69,165844
+28,Madrid,M,70,74,131186
+28,Madrid,M,75,79,113823
+28,Madrid,M,80,84,80327
+28,Madrid,M,85,89,42216
+28,Madrid,M,90,94,21278
+28,Madrid,M,95,99,4771
+28,Madrid,M,100,,416
+28,Madrid,F,0,4,126552
+28,Madrid,F,5,9,155373
+28,Madrid,F,10,14,177670
+28,Madrid,F,15,19,190537
+28,Madrid,F,20,24,204418
+28,Madrid,F,25,29,222797
+28,Madrid,F,30,34,234260
+28,Madrid,F,35,39,238560
+28,Madrid,F,40,44,268289
+28,Madrid,F,45,49,306562
+28,Madrid,F,50,54,295162
+28,Madrid,F,55,59,266936
+28,Madrid,F,60,64,236573
+28,Madrid,F,65,69,200807
+28,Madrid,F,70,74,167897
+28,Madrid,F,75,79,154040
+28,Madrid,F,80,84,117508
+28,Madrid,F,85,89,76411
+28,Madrid,F,90,94,48579
+28,Madrid,F,95,99,15369
+28,Madrid,F,100,,2176
+08,Barcelona,M,0,4,107914
+08,Barcelona,M,5,9,134700
+08,Barcelona,M,10,14,157689
+08,Barcelona,M,15,19,173928
+08,Barcelona,M,20,24,178899
+08,Barcelona,M,25,29,186155
+08,Barcelona,M,30,34,196672
+08,Barcelona,M,35,39,196487
+08,Barcelona,M,40,44,215619
+08,Barcelona,M,45,49,251531
+08,Barcelona,M,50,54,238696
+08,Barcelona,M,55,59,206232
+08,Barcelona,M,60,64,174194
+08,Barcelona,M,65,69,145039
+08,Barcelona,M,70,74,118106
+08,Barcelona,M,75,79,103160
+08,Barcelona,M,80,84,71206
+08,Barcelona,M,85,89,38066
+08,Barcelona,M,90,94,18376
+08,Barcelona,M,95,99,3677
+08,Barcelona,M,100,,318
+08,Barcelona,F,0,4,102222
+08,Barcelona,F,5,9,127752
+08,Barcelona,F,10,14,147507
+08,Barcelona,F,15,19,160743
+08,Barcelona,F,20,24,165726
+08,Barcelona,F,25,29,177570
+08,Barcelona,F,30,34,189966
+08,Barcelona,F,35,39,193555
+08,Barcelona,F,40,44,215477
+08,Barcelona,F,45,49,248144
+08,Barcelona,F,50,54,236859
+08,Barcelona,F,55,59,211829
+08,Barcelona,F,60,64,189586
+08,Barcelona,F,65,69,169429
+08,Barcelona,F,70,74,145790
+08,Barcelona,F,75,79,136032
+08,Barcelona,F,80,84,102830
+08,Barcelona,F,85,89,66099
+08,Barcelona,F,90,94,42015
+08,Barcelona,F,95,99,12310
+08,Barcelona,F,100,,1836
+46,Valencia/València,M,0,4,50191
+46,Valencia/València,M,5,9,62064
+46,Valencia/València,M,10,14,73365
+46,Valencia/València,M,15,19,80272
+46,Valencia/València,M,20,24,79935
+46,Valencia/València,M,25,29,78852
+46,Valencia/València,M,30,34,82843
+46,Valencia/València,M,35,39,85949
+46,Valencia/València,M,40,44,100665
+46,Valencia/València,M,45,49,119162
+46,Valencia/València,M,50,54,111986
+46,Valencia/València,M,55,59,101434
+46,Valencia/València,M,60,64,88133
+46,Valencia/València,M,65,69,73563
+46,Valencia/València,M,70,74,57920
+46,Valencia/València,M,75,79,47350
+46,Valencia/València,M,80,84,33194
+46,Valencia/València,M,85,89,16769
+46,Valencia/València,M,90,94,7495
+46,Valencia/València,M,95,99,1529
+46,Valencia/València,M,100,,121
+46,Valencia/València,F,0,4,47035
+46,Valencia/València,F,5,9,58943
+46,Valencia/València,F,10,14,68685
+46,Valencia/València,F,15,19,75626
+46,Valencia/València,F,20,24,75937
+46,Valencia/València,F,25,29,76053
+46,Valencia/València,F,30,34,81064
+46,Valencia/València,F,35,39,86089
+46,Valencia/València,F,40,44,100503
+46,Valencia/València,F,45,49,117044
+46,Valencia/València,F,50,54,110793
+46,Valencia/València,F,55,59,103793
+46,Valencia/València,F,60,64,95094
+46,Valencia/València,F,65,69,82759
+46,Valencia/València,F,70,74,69535
+46,Valencia/València,F,75,79,62132
+46,Valencia/València,F,80,84,48044
+46,Valencia/València,F,85,89,29866
+46,Valencia/València,F,90,94,17086
+46,Valencia/València,F,95,99,4553
+46,Valencia/València,F,100,,570
+48,Bizkaia,M,0,4,18164
+48,Bizkaia,M,5,9,23474
+48,Bizkaia,M,10,14,27847
+48,Bizkaia,M,15,19,30361
+48,Bizkaia,M,20,24,31141
+48,Bizkaia,M,25,29,29902
+48,Bizkaia,M,30,34,29878
+48,Bizkaia,M,35,39,32189
+48,Bizkaia,M,40,44,39017
+48,Bizkaia,M,45,49,47346
+48,Bizkaia,M,50,54,46982
+48,Bizkaia,M,55,59,44400
+48,Bizkaia,M,60,64,41874
+48,Bizkaia,M,65,69,36685
+48,Bizkaia,M,70,74,28970
+48,Bizkaia,M,75,79,24706
+48,Bizkaia,M,80,84,16742
+48,Bizkaia,M,85,89,9354
+48,Bizkaia,M,90,94,4869
+48,Bizkaia,M,95,99,969
+48,Bizkaia,M,100,,75
+48,Bizkaia,F,0,4,17116
+48,Bizkaia,F,5,9,22007
+48,Bizkaia,F,10,14,26843
+48,Bizkaia,F,15,19,27699
+48,Bizkaia,F,20,24,28721
+48,Bizkaia,F,25,29,28414
+48,Bizkaia,F,30,34,28856
+48,Bizkaia,F,35,39,32245
+48,Bizkaia,F,40,44,38693
+48,Bizkaia,F,45,49,47510
+48,Bizkaia,F,50,54,47256
+48,Bizkaia,F,55,59,45966
+48,Bizkaia,F,60,64,45451
+48,Bizkaia,F,65,69,41406
+48,Bizkaia,F,70,74,34505
+48,Bizkaia,F,75,79,31997
+48,Bizkaia,F,80,84,24565
+48,Bizkaia,F,85,89,17500
+48,Bizkaia,F,90,94,11682
+48,Bizkaia,F,95,99,3396
+48,Bizkaia,F,100,,460
+41,Sevilla,M,0,4,38848
+41,Sevilla,M,5,9,47941
+41,Sevilla,M,10,14,56286
+41,Sevilla,M,15,19,63536
+41,Sevilla,M,20,24,58128
+41,Sevilla,M,25,29,53836
+41,Sevilla,M,30,34,58160
+41,Sevilla,M,35,39,60046
+41,Sevilla,M,40,44,71820
+41,Sevilla,M,45,49,83802
+41,Sevilla,M,50,54,79307
+41,Sevilla,M,55,59,73062
+41,Sevilla,M,60,64,63011
+41,Sevilla,M,65,69,49805
+41,Sevilla,M,70,74,38744
+41,Sevilla,M,75,79,31577
+41,Sevilla,M,80,84,21243
+41,Sevilla,M,85,89,10178
+41,Sevilla,M,90,94,4074
+41,Sevilla,M,95,99,751
+41,Sevilla,M,100,,66
+41,Sevilla,F,0,4,36763
+41,Sevilla,F,5,9,45082
+41,Sevilla,F,10,14,53445
+41,Sevilla,F,15,19,59753
+41,Sevilla,F,20,24,55147
+41,Sevilla,F,25,29,52130
+41,Sevilla,F,30,34,57437
+41,Sevilla,F,35,39,61504
+41,Sevilla,F,40,44,73662
+41,Sevilla,F,45,49,84925
+41,Sevilla,F,50,54,81363
+41,Sevilla,F,55,59,76912
+41,Sevilla,F,60,64,68097
+41,Sevilla,F,65,69,56590
+41,Sevilla,F,70,74,45898
+41,Sevilla,F,75,79,41677
+41,Sevilla,F,80,84,31462
+41,Sevilla,F,85,89,19151
+41,Sevilla,F,90,94,9854
+41,Sevilla,F,95,99,2319
+41,Sevilla,F,100,,272
+29,Málaga,M,0,4,33124
+29,Málaga,M,5,9,42703
+29,Málaga,M,10,14,49957
+29,Málaga,M,15,19,52985
+29,Málaga,M,20,24,49954
+29,Málaga,M,25,29,47887
+29,Málaga,M,30,34,52002
+29,Málaga,M,35,39,57601
+29,Málaga,M,40,44,67742
+29,Málaga,M,45,49,74558
+29,Málaga,M,50,54,71280
+29,Málaga,M,55,59,65232
+29,Málaga,M,60,64,57896
+29,Málaga,M,65,69,47750
+29,Málaga,M,70,74,37700
+29,Málaga,M,75,79,31743
+29,Málaga,M,80,84,19994
+29,Málaga,M,85,89,9932
+29,Málaga,M,90,94,3839
+29,Málaga,M,95,99,773
+29,Málaga,M,100,,60
+29,Málaga,F,0,4,31442
+29,Málaga,F,5,9,40491
+29,Málaga,F,10,14,47240
+29,Málaga,F,15,19,49866
+29,Málaga,F,20,24,47292
+29,Málaga,F,25,29,46964
+29,Málaga,F,30,34,53487
+29,Málaga,F,35,39,60960
+29,Málaga,F,40,44,70992
+29,Málaga,F,45,49,75770
+29,Málaga,F,50,54,72909
+29,Málaga,F,55,59,68846
+29,Málaga,F,60,64,62367
+29,Málaga,F,65,69,53588
+29,Málaga,F,70,74,43385
+29,Málaga,F,75,79,37844
+29,Málaga,F,80,84,26659
+29,Málaga,F,85,89,16310
+29,Málaga,F,90,94,7911
+29,Málaga,F,95,99,1934
+29,Málaga,F,100,,214
+15,A Coruña,M,0,4,16625
+15,A Coruña,M,5,9,21877
+15,A Coruña,M,10,14,25409
+15,A Coruña,M,15,19,26929
+15,A Coruña,M,20,24,26014
+15,A Coruña,M,25,29,25508
+15,A Coruña,M,30,34,27711
+15,A Coruña,M,35,39,31365
+15,A Coruña,M,40,44,40267
+15,A Coruña,M,45,49,48223
+15,A Coruña,M,50,54,46039
+15,A Coruña,M,55,59,42061
+15,A Coruña,M,60,64,39234
+15,A Coruña,M,65,69,35057
+15,A Coruña,M,70,74,29629
+15,A Coruña,M,75,79,26450
+15,A Coruña,M,80,84,18732
+15,A Coruña,M,85,89,10779
+15,A Coruña,M,90,94,5512
+15,A Coruña,M,95,99,1115
+15,A Coruña,M,100,,99
+15,A Coruña,F,0,4,15831
+15,A Coruña,F,5,9,20801
+15,A Coruña,F,10,14,23684
+15,A Coruña,F,15,19,25287
+15,A Coruña,F,20,24,24467
+15,A Coruña,F,25,29,24705
+15,A Coruña,F,30,34,27379
+15,A Coruña,F,35,39,31634
+15,A Coruña,F,40,44,40820
+15,A Coruña,F,45,49,49261
+15,A Coruña,F,50,54,47791
+15,A Coruña,F,55,59,45701
+15,A Coruña,F,60,64,42543
+15,A Coruña,F,65,69,39588
+15,A Coruña,F,70,74,35261
+15,A Coruña,F,75,79,34267
+15,A Coruña,F,80,84,26823
+15,A Coruña,F,85,89,18821
+15,A Coruña,F,90,94,12324
+15,A Coruña,F,95,99,3520
+15,A Coruña,F,100,,480

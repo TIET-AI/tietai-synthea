@@ -64,6 +64,7 @@ def _discover() -> None:
     _discovered = True
 
     from synthea.locale import us  # noqa: F401  (registers on import)
+    from synthea.locale import es  # noqa: F401
 
     try:
         from importlib.metadata import entry_points
