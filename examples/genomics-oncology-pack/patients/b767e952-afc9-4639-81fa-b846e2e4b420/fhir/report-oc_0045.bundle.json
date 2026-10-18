@@ -41,6 +41,89 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad",
+      "request": {
+        "method": "PUT",
+        "url": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+      },
+      "resource": {
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "code": "C34.9",
+                "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+              }
+            ]
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "problem-list-item",
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+              }
+            ]
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "code": "active",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "code": "254637007",
+              "display": "Malignant neoplasm of lung (disorder)",
+              "system": "http://snomed.info/sct"
+            },
+            {
+              "code": "C34.90",
+              "system": "https://tiet.ai/fhir/CodeSystem/cie10-es"
+            }
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-histology-morphology-behavior",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "8046/3",
+                  "display": "Carcinoma de pulmón no microcítico",
+                  "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+                }
+              ]
+            }
+          }
+        ],
+        "id": "7c3d53b0-7427-428e-bbc6-587791ecd2ad",
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
+          ]
+        },
+        "onsetDateTime": "2021-11-23",
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "urn:uuid:e7293e1f-a881-417a-877a-89d6481ff2be"
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "code": "confirmed",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+            }
+          ]
+        }
+      }
+    },
+    {
       "fullUrl": "urn:uuid:06576cc4-e017-4467-9598-1cfec20558d7",
       "request": {
         "method": "POST",
@@ -97,14 +180,14 @@
           {
             "attachment": {
               "contentType": "application/pdf",
-              "hash": "JA+61jzyUEONQh74vmyFxV1FESmlRXajC7C3Q2BTCP0=",
-              "size": 1983,
+              "hash": "6eyykwNbAuxmWtO3zhy6kYojxfJSjMk/0ilkBXFZ0Iw=",
+              "size": 2010,
               "title": "Informe genético oc_0045 (sintético)",
-              "url": "drs://synthetic.tiet.ai/obj_141YXDCF7JA11RTGGYZ2Z6S1E5"
+              "url": "drs://synthetic.tiet.ai/obj_79XJS960TV0BP6CPPKPZ71SEMH"
             }
           }
         ],
-        "date": "2021-12-25T08:00:00Z",
+        "date": "2026-09-08T08:00:00Z",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-genomic-document"
@@ -319,6 +402,11 @@
           }
         ],
         "effectiveDateTime": "2021-12-02",
+        "focus": [
+          {
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+          }
+        ],
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-variant"
@@ -419,7 +507,7 @@
             "reference": "urn:uuid:d252e662-56dd-45f8-b6ec-3bcf71f1488c"
           }
         ],
-        "effectiveDateTime": "2021-12-25",
+        "effectiveDateTime": "2026-09-08",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/classification-source",
@@ -530,7 +618,7 @@
             "reference": "urn:uuid:d252e662-56dd-45f8-b6ec-3bcf71f1488c"
           }
         ],
-        "effectiveDateTime": "2021-12-25",
+        "effectiveDateTime": "2026-09-08",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/classification-source",
@@ -656,7 +744,7 @@
             "reference": "urn:uuid:d252e662-56dd-45f8-b6ec-3bcf71f1488c"
           }
         ],
-        "effectiveDateTime": "2021-12-25",
+        "effectiveDateTime": "2026-09-08",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/knowledge-release",
@@ -721,7 +809,7 @@
             "value": "oc_0045-b767e952"
           }
         ],
-        "issued": "2021-12-25T08:00:00Z",
+        "issued": "2026-09-08T08:00:00Z",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-genomic-report"
@@ -785,7 +873,7 @@
             }
           }
         ],
-        "recorded": "2021-12-25T09:00:00Z",
+        "recorded": "2026-09-08T09:00:00Z",
         "resourceType": "Provenance",
         "target": [
           {

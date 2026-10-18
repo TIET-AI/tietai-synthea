@@ -1,5 +1,5 @@
 {
-  "document_sha256": "34fa21e8f97f581a086edf4707fa75ca5816b460442caa5190ac853f995286e4",
+  "document_sha256": "a70e506d9135eec25949adc92d42c274981ceeadcdb264078a581cbcb601c4ae",
   "entities": [
     {
       "accession": "AP-2025-000507",
@@ -63,12 +63,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 12 mm en su mayor dimensión",
-      "quote_sha256": "725658a1dc7731115ccb5d9f0b7e4f7714fec599c412781b7aaf71fc2a8f9729",
+      "quote": "Tamaño tumoral: 25 mm en su mayor dimensión",
+      "quote_sha256": "a42d53d40e61162aec27e58519adac7d24d4194261ff5f5b8fde8b42143ea424",
       "source_unit": "mm",
-      "source_value": "12",
+      "source_value": "25",
       "unit": "mm",
-      "value": 12
+      "value": 25
     },
     {
       "assertion": "present",
@@ -83,18 +83,18 @@
     },
     {
       "assertion": "present",
-      "char_end": 712,
+      "char_end": 713,
       "char_start": 681,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: ausente",
-      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
-      "status": "absent"
+      "quote": "Invasión linfovascular: presente",
+      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
+      "status": "present"
     },
     {
       "assertion": "present",
-      "char_end": 741,
-      "char_start": 713,
+      "char_end": 742,
+      "char_start": 714,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -103,34 +103,34 @@
     },
     {
       "assertion": "present",
-      "char_end": 794,
-      "char_start": 742,
+      "char_end": 795,
+      "char_start": 743,
       "entity_id": "ent_0010",
-      "examined": 11,
+      "examined": 10,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 11 ganglios con metástasis",
-      "quote_sha256": "f6e2b107757492705ee8dbd7b94589e8f1ed0ea2be9e5242fb4fbc16e6bcd796"
+      "quote": "Ganglios linfáticos: 0 de 10 ganglios con metástasis",
+      "quote_sha256": "9e86ce942f8fba07e925d3f271d38cd9e48ad31ee100b91757abe391b11259d1"
     },
     {
       "assertion": "present",
-      "char_end": 856,
-      "char_start": 795,
+      "char_end": 859,
+      "char_start": 796,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA",
+      "quote_sha256": "4924b8c59e93853d8bd729d5eaed72d22bbf0fd7de142f5345109a6f0a1e963d",
+      "stage_group": "IA",
+      "t": "pT1c"
     },
     {
       "assertion": "present",
-      "char_end": 906,
-      "char_start": 857,
+      "char_end": 909,
+      "char_start": 860,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Deshawn Hoeger   Sexo: varón   Fecha de nacimiento: 1969-09-29\nCaso sintético oc_0011. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2025-000507: Lobectomía pulmonar derecha, recibida el 2025-07-14\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 12 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 11 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "8f5ab7be38a49f81c42fd59cece488c4a157bdd3f47a4ab4bc48542784c455df"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Deshawn Hoeger   Sexo: varón   Fecha de nacimiento: 1969-09-29\nCaso sintético oc_0011. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2025-000507: Lobectomía pulmonar derecha, recibida el 2025-07-14\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 25 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 10 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "e497aa4a8c8647b70a4c7abdf2ce997a6035281275a957077f0c2bc461d552e3"
 }

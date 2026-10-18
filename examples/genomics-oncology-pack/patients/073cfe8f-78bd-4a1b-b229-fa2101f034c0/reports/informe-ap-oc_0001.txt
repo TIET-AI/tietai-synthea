@@ -3,16 +3,16 @@ INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
 Documento sintético: no corresponde a ningún paciente real.
 Paciente: Gale Gutkowski   Sexo: mujer   Fecha de nacimiento: 1952-09-22
 Caso sintético oc_0001. Diagnóstico de referencia: carcinoma de pulmón.
-Muestra AP-2013-000137: Lobectomía pulmonar derecha, recibida el 2013-02-28
+Muestra AP-2018-000137: Lobectomía pulmonar derecha, recibida el 2018-02-28
 Procedimiento: Lobectomía pulmonar con linfadenectomía
 Localización del tumor: Pulmón (C34.9)
 Tipo histológico: Carcinoma de pulmón no microcítico (8046/3)
 Grado histológico: Grado 2 (moderadamente diferenciado)
-Tamaño tumoral: 46 mm en su mayor dimensión
-Márgenes quirúrgicos: negativos, margen más próximo a 4 mm
+Tamaño tumoral: 18 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 6 mm
 Invasión linfovascular: presente
 Invasión perineural: ausente
-Ganglios linfáticos: 0 de 9 ganglios con metástasis
-Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I
+Ganglios linfáticos: 0 de 17 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT1b pN0 cM0, estadio IA
 Comentario: Sin hallazgos adicionales de interés.
 Este informe es un documento sintético generado para pruebas de la plataforma.

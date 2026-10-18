@@ -3,17 +3,17 @@ INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
 Documento sintético: no corresponde a ningún paciente real.
 Paciente: Kristeen Lockman   Sexo: mujer   Fecha de nacimiento: 1943-07-15
 Caso sintético oc_0031. Diagnóstico de referencia: carcinoma de mama.
-Muestra AP-2000-001247: Tumorectomía de mama izquierda, recibida el 2000-05-06
+Muestra AP-2018-001247: Tumorectomía de mama izquierda, recibida el 2018-05-06
 Procedimiento: Tumorectomía con biopsia selectiva de ganglio centinela
 Localización del tumor: Mama (C50.9)
 Tipo histológico: Carcinoma ductal infiltrante (8500/3)
 Grado histológico: Grado 2 de Nottingham (puntuación 3+2+1)
-Tamaño tumoral: 15 mm en su mayor dimensión
+Tamaño tumoral: 49 mm en su mayor dimensión
 Márgenes quirúrgicos: negativos, margen más próximo a 6 mm
 Invasión linfovascular: ausente
 Invasión perineural: ausente
-Ganglios linfáticos: 0 de 9 ganglios con metástasis
-Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio IA
+Ganglios linfáticos: 0 de 17 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIA
 Receptor de estrógenos (RE): negativo, inmunohistoquímica
 Receptor de progesterona (RP): positivo, inmunohistoquímica
 HER2: negativo, inmunohistoquímica

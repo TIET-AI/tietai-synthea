@@ -32,8 +32,8 @@
     {
       "fullUrl": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683",
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
       },
       "resource": {
         "bodySite": [
@@ -91,6 +91,7 @@
             }
           }
         ],
+        "id": "dacf7e3a-d626-4424-90f0-8b1c783f2683",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
@@ -145,7 +146,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "meta": {
@@ -167,7 +168,7 @@
           "reference": "urn:uuid:c8c3051b-023b-4834-8d8d-cc3bd23db825"
         },
         "valueCodeableConcept": {
-          "text": "cT4"
+          "text": "cT3"
         }
       }
     },
@@ -205,7 +206,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "meta": {
@@ -227,7 +228,7 @@
           "reference": "urn:uuid:c8c3051b-023b-4834-8d8d-cc3bd23db825"
         },
         "valueCodeableConcept": {
-          "text": "cN2"
+          "text": "cN1b"
         }
       }
     },
@@ -265,7 +266,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "meta": {
@@ -287,7 +288,7 @@
           "reference": "urn:uuid:c8c3051b-023b-4834-8d8d-cc3bd23db825"
         },
         "valueCodeableConcept": {
-          "text": "cM1"
+          "text": "cM1a"
         }
       }
     },
@@ -325,7 +326,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "meta": {
@@ -347,7 +348,7 @@
           "reference": "urn:uuid:c8c3051b-023b-4834-8d8d-cc3bd23db825"
         },
         "valueCodeableConcept": {
-          "text": "IV"
+          "text": "IVA"
         }
       }
     },
@@ -385,7 +386,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "meta": {
@@ -407,7 +408,7 @@
           "reference": "urn:uuid:c8c3051b-023b-4834-8d8d-cc3bd23db825"
         },
         "valueCodeableConcept": {
-          "text": "pT4"
+          "text": "pT3"
         }
       }
     },
@@ -445,7 +446,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "meta": {
@@ -467,7 +468,7 @@
           "reference": "urn:uuid:c8c3051b-023b-4834-8d8d-cc3bd23db825"
         },
         "valueCodeableConcept": {
-          "text": "pN2"
+          "text": "pN1b"
         }
       }
     },
@@ -505,7 +506,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "meta": {
@@ -527,7 +528,7 @@
           "reference": "urn:uuid:c8c3051b-023b-4834-8d8d-cc3bd23db825"
         },
         "valueCodeableConcept": {
-          "text": "cM1"
+          "text": "cM1a"
         }
       }
     },
@@ -565,7 +566,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "meta": {
@@ -587,7 +588,7 @@
           "reference": "urn:uuid:c8c3051b-023b-4834-8d8d-cc3bd23db825"
         },
         "valueCodeableConcept": {
-          "text": "IV"
+          "text": "IVA"
         }
       }
     },
@@ -616,7 +617,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -651,7 +652,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -686,7 +687,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -721,7 +722,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -756,7 +757,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -791,7 +792,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -820,7 +821,7 @@
         "performedDateTime": "2020-05-06",
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "Procedure",
@@ -849,7 +850,7 @@
         "performedDateTime": "2020-06-17",
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "Procedure",
@@ -878,7 +879,7 @@
         "performedDateTime": "2020-07-29",
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "Procedure",
@@ -907,7 +908,7 @@
         "performedDateTime": "2020-09-09",
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "Procedure",
@@ -936,7 +937,7 @@
         "performedDateTime": "2020-10-21",
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "Procedure",
@@ -965,7 +966,7 @@
         "performedDateTime": "2020-12-02",
         "reasonReference": [
           {
-            "reference": "urn:uuid:dacf7e3a-d626-4424-90f0-8b1c783f2683"
+            "reference": "Condition/dacf7e3a-d626-4424-90f0-8b1c783f2683"
           }
         ],
         "resourceType": "Procedure",

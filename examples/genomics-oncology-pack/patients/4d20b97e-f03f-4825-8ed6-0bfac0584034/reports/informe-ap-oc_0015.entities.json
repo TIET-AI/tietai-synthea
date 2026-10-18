@@ -1,5 +1,5 @@
 {
-  "document_sha256": "60472db108c7e55f4f6244f73852c6b80f368bbe332643a20772b31dc40f74e4",
+  "document_sha256": "7aa4a008600d1d715ad56434de76a2b5bedd904dc555fd1fcdb217c549113d4b",
   "entities": [
     {
       "accession": "AP-2025-000655",
@@ -63,38 +63,38 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 12 mm en su mayor dimensión",
-      "quote_sha256": "725658a1dc7731115ccb5d9f0b7e4f7714fec599c412781b7aaf71fc2a8f9729",
+      "quote": "Tamaño tumoral: 17 mm en su mayor dimensión",
+      "quote_sha256": "cf0f32c9eac581eaaa34f3002547489b31c1e484916c35cd8ce6f1b067062367",
       "source_unit": "mm",
-      "source_value": "12",
+      "source_value": "17",
       "unit": "mm",
-      "value": 12
+      "value": 17
     },
     {
       "assertion": "present",
       "char_end": 675,
       "char_start": 617,
-      "distance_mm": 4,
+      "distance_mm": 6,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
-      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
+      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
       "status": "negative"
     },
     {
       "assertion": "present",
-      "char_end": 708,
+      "char_end": 707,
       "char_start": 676,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: presente",
-      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
-      "status": "present"
+      "quote": "Invasión linfovascular: ausente",
+      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
+      "status": "absent"
     },
     {
       "assertion": "present",
-      "char_end": 737,
-      "char_start": 709,
+      "char_end": 736,
+      "char_start": 708,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -103,34 +103,34 @@
     },
     {
       "assertion": "present",
-      "char_end": 790,
-      "char_start": 738,
+      "char_end": 789,
+      "char_start": 737,
       "entity_id": "ent_0010",
-      "examined": 15,
+      "examined": 13,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 15 ganglios con metástasis",
-      "quote_sha256": "2fccc042c4e8c15d109c3f1e8996cc497e9db370118c66b3aa93a79f932b39a0"
+      "quote": "Ganglios linfáticos: 0 de 13 ganglios con metástasis",
+      "quote_sha256": "f76f274725e83fd7fdfa8cb1038b70c8c283e81a47613e120cf72fed858b4f1c"
     },
     {
       "assertion": "present",
-      "char_end": 852,
-      "char_start": 791,
+      "char_end": 853,
+      "char_start": 790,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1b pN0 cM0, estadio IA",
+      "quote_sha256": "9b7cb8c9fd20dc841683fe2db4416dc76b95c9e55bd744b06c479545c74f6f8a",
+      "stage_group": "IA",
+      "t": "pT1b"
     },
     {
       "assertion": "present",
-      "char_end": 902,
-      "char_start": 853,
+      "char_end": 903,
+      "char_start": 854,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Shirly Huels   Sexo: mujer   Fecha de nacimiento: 1965-07-08\nCaso sintético oc_0015. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2025-000655: Lobectomía pulmonar derecha, recibida el 2025-11-15\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma microcítico de pulmón (8041/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 12 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 15 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "3d1559452aa5598cae1ab937270ac14d0d7af67ca28f6c73c9a643b20aa2a0ed"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Shirly Huels   Sexo: mujer   Fecha de nacimiento: 1965-07-08\nCaso sintético oc_0015. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2025-000655: Lobectomía pulmonar derecha, recibida el 2025-11-15\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma microcítico de pulmón (8041/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 17 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 13 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1b pN0 cM0, estadio IA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "4a4bd78f617ce41ee20a3a82b3c1237494ac04fa8b94e05efbd78e0aab709954"
 }

@@ -1,5 +1,5 @@
 {
-  "document_sha256": "433d1f96cd5aa86358491e1fe404057d1a10c1a2494735bf209da7cafeb38149",
+  "document_sha256": "4c1f5fbcd4e12c72c7b693512aea27be946e1da17a5d42833c794767f58260eb",
   "entities": [
     {
       "accession": "AP-2021-001395",
@@ -63,22 +63,22 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 21 mm en su mayor dimensión",
-      "quote_sha256": "a38fe37642ae7d5d91ef54d75a49c5e2b8f8c63f3b0f9a7761ace3923a997208",
+      "quote": "Tamaño tumoral: 22 mm en su mayor dimensión",
+      "quote_sha256": "364f46444ce96dbc5dffe1ab37ca97e01f34d55025d1f01b0c9e564fa05ea3fb",
       "source_unit": "mm",
-      "source_value": "21",
+      "source_value": "22",
       "unit": "mm",
-      "value": 21
+      "value": 22
     },
     {
       "assertion": "present",
       "char_end": 672,
       "char_start": 614,
-      "distance_mm": 6,
+      "distance_mm": 2,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
-      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 2 mm",
+      "quote_sha256": "1aab6ef667a62bc3d4c9b0b8cb229331e75a01b97f77e5832c3cb3aecb6e84c3",
       "status": "negative"
     },
     {
@@ -106,15 +106,15 @@
       "char_end": 786,
       "char_start": 734,
       "entity_id": "ent_0010",
-      "examined": 11,
+      "examined": 16,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 11 ganglios con metástasis",
-      "quote_sha256": "f6e2b107757492705ee8dbd7b94589e8f1ed0ea2be9e5242fb4fbc16e6bcd796"
+      "quote": "Ganglios linfáticos: 0 de 16 ganglios con metástasis",
+      "quote_sha256": "c7aadd35eddb3618cd8333db73ba500ca9aa5d06a590c364ad92ec1fc8c8a223"
     },
     {
       "assertion": "present",
-      "char_end": 848,
+      "char_end": 850,
       "char_start": 787,
       "edition": "8",
       "entity_id": "ent_0011",
@@ -122,15 +122,15 @@
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA",
+      "quote_sha256": "4924b8c59e93853d8bd729d5eaed72d22bbf0fd7de142f5345109a6f0a1e963d",
+      "stage_group": "IA",
+      "t": "pT1c"
     },
     {
       "assertion": "present",
-      "char_end": 898,
-      "char_start": 849,
+      "char_end": 900,
+      "char_start": 851,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Anna Torp   Sexo: mujer   Fecha de nacimiento: 1962-10-30\nCaso sintético oc_0035. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2021-001395: Lobectomía pulmonar derecha, recibida el 2021-01-25\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma microcítico de pulmón (8041/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 21 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 11 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "2b21fa88a4a431812cced7376fd8634644bbe918fca2a9942925fc46310c83a8"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Anna Torp   Sexo: mujer   Fecha de nacimiento: 1962-10-30\nCaso sintético oc_0035. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2021-001395: Lobectomía pulmonar derecha, recibida el 2021-01-25\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma microcítico de pulmón (8041/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 22 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 16 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "4c381a8d5c0695c395ce08a03812c3e79c5bfee6f18aafdcc9e3cbf7a13f6e4d"
 }

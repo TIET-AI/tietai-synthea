@@ -6,7 +6,7 @@ Caso sintético oc_0060. Diagnóstico de referencia: adenocarcinoma de colon.
 Panel NGS de tumor sólido OncoColon v3
 Muestra: tejido tumoral FFPE, biopsia de colon   ID de muestra SYN-0060
 Genoma de referencia GRCh38
-Fecha del informe: 1992-04-13
+Fecha del informe: 2026-09-09
 
 Variantes detectadas:
 KRAS NM_004985.5:c.35G>A (p.Gly12Asp) VAF 37,5%. Heterocigosis. Variante somática. Tier II (AMP).

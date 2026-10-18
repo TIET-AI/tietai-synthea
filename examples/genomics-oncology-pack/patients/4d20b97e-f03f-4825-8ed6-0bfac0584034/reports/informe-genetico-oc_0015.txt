@@ -6,7 +6,7 @@ Caso sintético oc_0015. Diagnóstico de referencia: carcinoma de pulmón.
 Panel NGS de tumor sólido OncoPulmon v4
 Muestra: tejido tumoral FFPE, biopsia pulmonar   ID de muestra SYN-0015
 Genoma de referencia GRCh38
-Fecha del informe: 2025-12-15
+Fecha del informe: 2026-09-18
 
 Variantes detectadas:
 EGFR NM_005228.5:c.2573T>G (p.Leu858Arg) VAF 44,4%. Heterocigosis. Variante somática. Tier I (AMP).

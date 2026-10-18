@@ -8,12 +8,12 @@ Procedimiento: Tumorectomía con biopsia selectiva de ganglio centinela
 Localización del tumor: Mama (C50.9)
 Tipo histológico: Carcinoma ductal infiltrante (8500/3)
 Grado histológico: Grado 2 de Nottingham (puntuación 3+2+1)
-Tamaño tumoral: 23 mm en su mayor dimensión
-Márgenes quirúrgicos: negativos, margen más próximo a 4 mm
+Tamaño tumoral: 38 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 2 mm
 Invasión linfovascular: ausente
 Invasión perineural: ausente
-Ganglios linfáticos: 0 de 10 ganglios con metástasis
-Estadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIA
+Ganglios linfáticos: 3 de 8 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT2 pN1a cM0, estadio IIB
 Receptor de estrógenos (RE): negativo, inmunohistoquímica
 Receptor de progesterona (RP): positivo, inmunohistoquímica
 HER2: negativo, inmunohistoquímica

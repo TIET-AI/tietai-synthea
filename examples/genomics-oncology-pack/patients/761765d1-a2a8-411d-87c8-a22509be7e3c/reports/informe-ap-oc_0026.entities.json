@@ -1,5 +1,5 @@
 {
-  "document_sha256": "6c4011a59966746104e2d87f0c14f8b783e1a0e60e3213aabaabfb8d163cb6ab",
+  "document_sha256": "47d05aa0f518672da03f002bfd1ab4505b4c81cbf31ec797d6b544dd688495f5",
   "entities": [
     {
       "accession": "AP-2020-001062",
@@ -62,22 +62,22 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 39 mm en su mayor dimensión",
-      "quote_sha256": "5d3956f0cacf5a7b8e22225b8fbd6d07644e4160f7a3ae6b9fa352ac018c3af8",
+      "quote": "Tamaño tumoral: 18 mm en su mayor dimensión",
+      "quote_sha256": "a792c85b812cabd8fd0711ab6ff925d5e7f7e911ee6098d5d672169337e7e0b8",
       "source_unit": "mm",
-      "source_value": "39",
+      "source_value": "18",
       "unit": "mm",
-      "value": 39
+      "value": 18
     },
     {
       "assertion": "present",
       "char_end": 659,
       "char_start": 601,
-      "distance_mm": 2,
+      "distance_mm": 4,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 2 mm",
-      "quote_sha256": "1aab6ef667a62bc3d4c9b0b8cb229331e75a01b97f77e5832c3cb3aecb6e84c3",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
+      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
       "status": "negative"
     },
     {
@@ -105,31 +105,31 @@
       "char_end": 773,
       "char_start": 721,
       "entity_id": "ent_0010",
-      "examined": 14,
+      "examined": 19,
       "kind": "nodes",
-      "positive": 1,
-      "quote": "Ganglios linfáticos: 1 de 14 ganglios con metástasis",
-      "quote_sha256": "7c7aeeefd9fedfc292a1e6c586c3153ffca886ef878c41bc9828f34fb0778f43"
+      "positive": 2,
+      "quote": "Ganglios linfáticos: 2 de 19 ganglios con metástasis",
+      "quote_sha256": "72f917a2d834b090dd07790fbfbed8ee43a93db65db7b491864351fc6e1c806b"
     },
     {
       "assertion": "present",
-      "char_end": 836,
+      "char_end": 839,
       "char_start": 774,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
-      "m": "cM1",
-      "n": "pN2",
+      "m": "cM1a",
+      "n": "pN1b",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT4 pN2 cM1, estadio IV",
-      "quote_sha256": "7c2ad1d76ab1d6593404c2a4c55848bf8bebed77e0ff380f84f930730d199491",
-      "stage_group": "IV",
-      "t": "pT4"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA",
+      "quote_sha256": "08dd9b7e32dc8cf40834ee1647888d0d08d93701b688509b97a19e02ff7de971",
+      "stage_group": "IVA",
+      "t": "pT3"
     },
     {
       "assertion": "present",
-      "char_end": 886,
-      "char_start": 837,
+      "char_end": 889,
+      "char_start": 840,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -140,6 +140,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Berta Bahena   Sexo: mujer   Fecha de nacimiento: 1958-03-12\nCaso sintético oc_0026. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2020-001062: Hemicolectomía derecha, recibida el 2020-04-19\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 39 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 1 de 14 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT4 pN2 cM1, estadio IV\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "666479025ff3972b89abffdc2c813f6ef96cd6ca1acd68daa0ac3a97c7a0e9e7"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Berta Bahena   Sexo: mujer   Fecha de nacimiento: 1958-03-12\nCaso sintético oc_0026. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2020-001062: Hemicolectomía derecha, recibida el 2020-04-19\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 18 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 2 de 19 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "68d00d35fc0ffced77edf1ee2193195cc1655c5b65c7886b7c4f6ccd562e3341"
 }

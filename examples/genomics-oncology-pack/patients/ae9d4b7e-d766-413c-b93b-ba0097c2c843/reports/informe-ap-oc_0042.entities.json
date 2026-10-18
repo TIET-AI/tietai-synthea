@@ -1,5 +1,5 @@
 {
-  "document_sha256": "a49a66679d314bee0099b9f6968faa43454b41fc94b6b5140627fb7b443b4239",
+  "document_sha256": "66fcc31e2f75a6c2ed89dc84f3661241345f9c90cc4d0e73b3e0f2bc64c039da",
   "entities": [
     {
       "accession": "AP-2019-001654",
@@ -62,38 +62,38 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 35 mm en su mayor dimensión",
-      "quote_sha256": "4b540ee425631441583f19d2ee1d12ce8e209f4963ee0a53346f724848580572",
+      "quote": "Tamaño tumoral: 51 mm en su mayor dimensión",
+      "quote_sha256": "6f21295359185cd73a4865088ccf83c228506a7725f6314763574fd67f2b1f52",
       "source_unit": "mm",
-      "source_value": "35",
+      "source_value": "51",
       "unit": "mm",
-      "value": 35
+      "value": 51
     },
     {
       "assertion": "present",
       "char_end": 657,
       "char_start": 599,
-      "distance_mm": 2,
+      "distance_mm": 4,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 2 mm",
-      "quote_sha256": "1aab6ef667a62bc3d4c9b0b8cb229331e75a01b97f77e5832c3cb3aecb6e84c3",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
+      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
       "status": "negative"
     },
     {
       "assertion": "present",
-      "char_end": 690,
+      "char_end": 689,
       "char_start": 658,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: presente",
-      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
-      "status": "present"
+      "quote": "Invasión linfovascular: ausente",
+      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
+      "status": "absent"
     },
     {
       "assertion": "present",
-      "char_end": 719,
-      "char_start": 691,
+      "char_end": 718,
+      "char_start": 690,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -103,33 +103,33 @@
     {
       "assertion": "present",
       "char_end": 771,
-      "char_start": 720,
+      "char_start": 719,
       "entity_id": "ent_0010",
-      "examined": 9,
+      "examined": 17,
       "kind": "nodes",
       "positive": 3,
-      "quote": "Ganglios linfáticos: 3 de 9 ganglios con metástasis",
-      "quote_sha256": "4dc118c5025aeb56558b2a0320d23ffd368bfa2cb7c96b7e6b617129d1a4d27c"
+      "quote": "Ganglios linfáticos: 3 de 17 ganglios con metástasis",
+      "quote_sha256": "5df142e36eb36f6d537ffa7d6c86c442e9876001354ce152ddb8bfe6366c1dac"
     },
     {
       "assertion": "present",
-      "char_end": 834,
+      "char_end": 837,
       "char_start": 772,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
-      "m": "cM1",
-      "n": "pN2",
+      "m": "cM1a",
+      "n": "pN1b",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT4 pN2 cM1, estadio IV",
-      "quote_sha256": "7c2ad1d76ab1d6593404c2a4c55848bf8bebed77e0ff380f84f930730d199491",
-      "stage_group": "IV",
-      "t": "pT4"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA",
+      "quote_sha256": "08dd9b7e32dc8cf40834ee1647888d0d08d93701b688509b97a19e02ff7de971",
+      "stage_group": "IVA",
+      "t": "pT3"
     },
     {
       "assertion": "present",
-      "char_end": 884,
-      "char_start": 835,
+      "char_end": 887,
+      "char_start": 838,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -140,6 +140,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Long Grady   Sexo: varón   Fecha de nacimiento: 1971-05-29\nCaso sintético oc_0042. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2019-001654: Hemicolectomía derecha, recibida el 2019-02-26\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 35 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 3 de 9 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT4 pN2 cM1, estadio IV\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "6d02741bcf83e634e90491ba235e387384cfc35c286be9d7907fdebc70fa03a5"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Long Grady   Sexo: varón   Fecha de nacimiento: 1971-05-29\nCaso sintético oc_0042. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2019-001654: Hemicolectomía derecha, recibida el 2019-02-26\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 51 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 3 de 17 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "fc07bac5f13ce53ffe3e0cefbdd2108b2ea7e44ad1eea83d641727ae2149cdee"
 }

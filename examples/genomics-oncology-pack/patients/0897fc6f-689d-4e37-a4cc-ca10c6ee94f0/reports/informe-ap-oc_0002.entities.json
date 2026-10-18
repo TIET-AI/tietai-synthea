@@ -1,16 +1,16 @@
 {
-  "document_sha256": "f8dbdac11ced1aa1643d9408f2edd947c55f59e0b8a2c248fe7a0b3db4336ba6",
+  "document_sha256": "eaadc96556f02015de3c4e391d6ba3b9e6bb815df274f8ea0a1beb77acf46c44",
   "entities": [
     {
-      "accession": "AP-2004-000174",
+      "accession": "AP-2018-000174",
       "assertion": "present",
       "char_end": 365,
       "char_start": 295,
-      "collection_date": "2004-03-25",
+      "collection_date": "2018-03-25",
       "entity_id": "ent_0001",
       "kind": "specimen",
-      "quote": "Muestra AP-2004-000174: Hemicolectomía derecha, recibida el 2004-03-25",
-      "quote_sha256": "18c099befc3faa5dd72b713a8971a3962528a229d0bed397224a701c19c169e2",
+      "quote": "Muestra AP-2018-000174: Hemicolectomía derecha, recibida el 2018-03-25",
+      "quote_sha256": "6690bdabd718bfa2e7fb018ee71ac79f755415fdd4f60f77491b78e54a933f20",
       "type_text": "hemicolectomía derecha"
     },
     {
@@ -62,22 +62,22 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 47 mm en su mayor dimensión",
-      "quote_sha256": "b010f26511da324358e29addc658d920e92a91bab217c069142501dc8c01cce9",
+      "quote": "Tamaño tumoral: 48 mm en su mayor dimensión",
+      "quote_sha256": "603742b72dc6c0783d3c3a543a844e9ce3cc6f48f745ed1959f6e8044b59b1d4",
       "source_unit": "mm",
-      "source_value": "47",
+      "source_value": "48",
       "unit": "mm",
-      "value": 47
+      "value": 48
     },
     {
       "assertion": "present",
       "char_end": 662,
       "char_start": 604,
-      "distance_mm": 2,
+      "distance_mm": 6,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 2 mm",
-      "quote_sha256": "1aab6ef667a62bc3d4c9b0b8cb229331e75a01b97f77e5832c3cb3aecb6e84c3",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
+      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
       "status": "negative"
     },
     {
@@ -102,34 +102,34 @@
     },
     {
       "assertion": "present",
-      "char_end": 775,
+      "char_end": 776,
       "char_start": 724,
       "entity_id": "ent_0010",
-      "examined": 9,
+      "examined": 21,
       "kind": "nodes",
-      "positive": 1,
-      "quote": "Ganglios linfáticos: 1 de 9 ganglios con metástasis",
-      "quote_sha256": "ad23608d67b0bb44fa810ad02160b6d03451eaa98fec65dfcf237834ed0d8147"
+      "positive": 3,
+      "quote": "Ganglios linfáticos: 3 de 21 ganglios con metástasis",
+      "quote_sha256": "64a9a080aedcd34ed1ff29d0d2828de92bdfd1de1bccb3d1d5a5fcb99c3d8cb0"
     },
     {
       "assertion": "present",
-      "char_end": 838,
-      "char_start": 776,
+      "char_end": 842,
+      "char_start": 777,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
-      "m": "cM1",
-      "n": "pN2",
+      "m": "cM1a",
+      "n": "pN1b",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT4 pN2 cM1, estadio IV",
-      "quote_sha256": "7c2ad1d76ab1d6593404c2a4c55848bf8bebed77e0ff380f84f930730d199491",
-      "stage_group": "IV",
-      "t": "pT4"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA",
+      "quote_sha256": "08dd9b7e32dc8cf40834ee1647888d0d08d93701b688509b97a19e02ff7de971",
+      "stage_group": "IVA",
+      "t": "pT3"
     },
     {
       "assertion": "present",
-      "char_end": 888,
-      "char_start": 839,
+      "char_end": 892,
+      "char_start": 843,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -140,6 +140,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Freddie Dickens   Sexo: varón   Fecha de nacimiento: 1962-06-22\nCaso sintético oc_0002. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2004-000174: Hemicolectomía derecha, recibida el 2004-03-25\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 47 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 1 de 9 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT4 pN2 cM1, estadio IV\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "66600d999a7f0e35199e96a561099ebe8e56d9a8bba41f275d5a5735db4d6fd3"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Freddie Dickens   Sexo: varón   Fecha de nacimiento: 1962-06-22\nCaso sintético oc_0002. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2018-000174: Hemicolectomía derecha, recibida el 2018-03-25\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 48 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 3 de 21 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "ad52b4c47f385d13d362c51be928131f73bc5e5874598a448364d01a407d1d0e"
 }

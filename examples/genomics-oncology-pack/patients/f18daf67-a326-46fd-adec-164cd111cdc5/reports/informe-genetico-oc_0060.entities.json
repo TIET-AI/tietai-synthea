@@ -1,5 +1,5 @@
 {
-  "document_sha256": "39d424ce454b5db2f3d9bc22bc06f741de13d552dccd7ec9237401ed5a2af24d",
+  "document_sha256": "73ccd068fb9838b8a38b5774fab964f72cfea00464ac169d812f64009243ac8f",
   "entities": [
     {
       "assertion": "present",
@@ -26,7 +26,7 @@
       "assertion": "present",
       "char_end": 408,
       "char_start": 337,
-      "collected_on": "1992-03-25",
+      "collected_on": "2018-03-25",
       "entity_id": "ent_0003",
       "kind": "specimen",
       "quote": "Muestra: tejido tumoral FFPE, biopsia de colon   ID de muestra SYN-0060",
@@ -96,6 +96,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.genomic-extraction/v1",
-  "source_text": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)\nINFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Clair Maggio   Sexo: varón   Fecha de nacimiento: 1949-04-17\nCaso sintético oc_0060. Diagnóstico de referencia: adenocarcinoma de colon.\nPanel NGS de tumor sólido OncoColon v3\nMuestra: tejido tumoral FFPE, biopsia de colon   ID de muestra SYN-0060\nGenoma de referencia GRCh38\nFecha del informe: 1992-04-13\n\nVariantes detectadas:\nKRAS NM_004985.5:c.35G>A (p.Gly12Asp) VAF 37,5%. Heterocigosis. Variante somática. Tier II (AMP).\nEstado de inestabilidad de microsatélites: MSI-H.\n\nImplicaciones:\n\nFuente de conocimiento: ClinVar versión 2026-09-01\nRecomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "b9f39f75f554b45ff70b54f4ba0f89e3c3e1405db6998eaf4b4e878f88ddd806"
+  "source_text": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)\nINFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Clair Maggio   Sexo: varón   Fecha de nacimiento: 1949-04-17\nCaso sintético oc_0060. Diagnóstico de referencia: adenocarcinoma de colon.\nPanel NGS de tumor sólido OncoColon v3\nMuestra: tejido tumoral FFPE, biopsia de colon   ID de muestra SYN-0060\nGenoma de referencia GRCh38\nFecha del informe: 2026-09-09\n\nVariantes detectadas:\nKRAS NM_004985.5:c.35G>A (p.Gly12Asp) VAF 37,5%. Heterocigosis. Variante somática. Tier II (AMP).\nEstado de inestabilidad de microsatélites: MSI-H.\n\nImplicaciones:\n\nFuente de conocimiento: ClinVar versión 2026-09-01\nRecomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "f8863a96a7b32f5054543419412e4e40cb6763991822517454c790421c4efc7e"
 }

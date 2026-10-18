@@ -1,17 +1,17 @@
 {
-  "document_sha256": "5c4df0f2079964d3887bf2eafcb976f664968958add883c27ba7e4d2e568bf6c",
+  "document_sha256": "7ba108c82e83f807ff4fe11f2b5f90f24efb20346d7a2001ef305726bc738e1f",
   "entities": [
     {
-      "accession": "AP-2013-001987",
+      "accession": "AP-2018-001987",
       "assertion": "present",
       "char_end": 362,
       "char_start": 287,
-      "collection_date": "2013-10-21",
+      "collection_date": "2018-10-21",
       "entity_id": "ent_0001",
       "kind": "specimen",
       "laterality": "right",
-      "quote": "Muestra AP-2013-001987: Lobectomía pulmonar derecha, recibida el 2013-10-21",
-      "quote_sha256": "1b2608218e7c43d187de1608fd67b4491f37a1630615946b981522581ef2ee12",
+      "quote": "Muestra AP-2018-001987: Lobectomía pulmonar derecha, recibida el 2018-10-21",
+      "quote_sha256": "c7043bc05d28099f8e1f92f86d66f622426b3eaf69a97a67f19f9a5e4a7e9ca3",
       "type_text": "lobectomía pulmonar derecha"
     },
     {
@@ -63,12 +63,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 42 mm en su mayor dimensión",
-      "quote_sha256": "93d9e4d73685bc1fa20a6d2fdb8753b819f8a53d4c01a2cf5a1bad86b68fe2d0",
+      "quote": "Tamaño tumoral: 25 mm en su mayor dimensión",
+      "quote_sha256": "a42d53d40e61162aec27e58519adac7d24d4194261ff5f5b8fde8b42143ea424",
       "source_unit": "mm",
-      "source_value": "42",
+      "source_value": "25",
       "unit": "mm",
-      "value": 42
+      "value": 25
     },
     {
       "assertion": "present",
@@ -103,34 +103,34 @@
     },
     {
       "assertion": "present",
-      "char_end": 790,
+      "char_end": 791,
       "char_start": 739,
       "entity_id": "ent_0010",
-      "examined": 8,
+      "examined": 14,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 8 ganglios con metástasis",
-      "quote_sha256": "d4d6af4cfa9cb9666353759a3899b60aa3aab75e25acdf3a389db5985dbdaed1"
+      "quote": "Ganglios linfáticos: 0 de 14 ganglios con metástasis",
+      "quote_sha256": "178992cd5062fd7d240fb7289779b960a9c67758c093c2a892334df23d1ccbaa"
     },
     {
       "assertion": "present",
-      "char_end": 852,
-      "char_start": 791,
+      "char_end": 855,
+      "char_start": 792,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA",
+      "quote_sha256": "4924b8c59e93853d8bd729d5eaed72d22bbf0fd7de142f5345109a6f0a1e963d",
+      "stage_group": "IA",
+      "t": "pT1c"
     },
     {
       "assertion": "present",
-      "char_end": 902,
-      "char_start": 853,
+      "char_end": 905,
+      "char_start": 856,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Cleo Barton   Sexo: mujer   Fecha de nacimiento: 1951-11-19\nCaso sintético oc_0051. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2013-001987: Lobectomía pulmonar derecha, recibida el 2013-10-21\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 42 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 8 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "6c335680987daeccb480f3fa22ca15d9436547d6a2ee44b31cd0d3afb4f0a248"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Cleo Barton   Sexo: mujer   Fecha de nacimiento: 1951-11-19\nCaso sintético oc_0051. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2018-001987: Lobectomía pulmonar derecha, recibida el 2018-10-21\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 25 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 14 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "8c9e1e749d7507f728b477ab66369d5c7e963dacf3fd2e210ff3d4d30669371e"
 }

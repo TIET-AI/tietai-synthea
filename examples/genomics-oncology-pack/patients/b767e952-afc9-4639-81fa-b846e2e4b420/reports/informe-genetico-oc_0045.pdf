@@ -15,7 +15,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
 endobj
 6 0 obj
-<< /Length 1264 >>
+<< /Length 1291 >>
 stream
 BT /F1 9 Tf 12 TL 40 800 Td
 (LABORATORIO DE GEN\311TICA MOLECULAR \(sint\351tico\)) Tj T*
@@ -26,13 +26,13 @@ BT /F1 9 Tf 12 TL 40 800 Td
 (Panel NGS de tumor s\363lido OncoPulmon v4) Tj T*
 (Muestra: tejido tumoral FFPE, biopsia pulmonar   ID de muestra SYN-0045) Tj T*
 (Genoma de referencia GRCh38) Tj T*
-(Fecha del informe: 2021-12-25) Tj T*
+(Fecha del informe: 2026-09-08) Tj T*
 () Tj T*
 (Variantes detectadas:) Tj T*
 (EGFR NM_005228.5:c.2235_2249del \(p.Glu746_Ala750del\) VAF 36,9%. Heterocigosis. Variante som\341tica. Tier I \(AMP\).) Tj T*
 () Tj T*
 (Implicaciones:) Tj T*
-(Clasificaci\363n alternativa de EGFR \(laboratorio\): Tier II \(AMP\).) Tj T*
+(Clasificaci\363n alternativa de EGFR NM_005228.5:c.2235_2249del \(laboratorio\): Tier II \(AMP\).) Tj T*
 (Implicaci\363n terap\351utica: osimertinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulm\363n.) Tj T*
 () Tj T*
 (Fuente de conocimiento: ClinVar versi\363n 2026-09-01) Tj T*
@@ -53,5 +53,5 @@ xref
 trailer
 << /Size 7 /Root 1 0 R /Info 4 0 R >>
 startxref
-1767
+1794
 %%EOF

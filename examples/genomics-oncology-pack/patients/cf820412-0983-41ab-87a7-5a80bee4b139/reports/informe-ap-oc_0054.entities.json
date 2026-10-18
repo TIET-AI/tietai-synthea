@@ -1,16 +1,16 @@
 {
-  "document_sha256": "16e82672cf28be8cc4d9ee99286c8176388b17266effe460043a3625aaf23b2c",
+  "document_sha256": "b05dde96ef3da4ba2925f751c3ded3488229c27cc7f06456932e6a6dea4f6992",
   "entities": [
     {
-      "accession": "AP-1983-002098",
+      "accession": "AP-2018-002098",
       "assertion": "present",
       "char_end": 365,
       "char_start": 295,
-      "collection_date": "1983-08-23",
+      "collection_date": "2018-08-23",
       "entity_id": "ent_0001",
       "kind": "specimen",
-      "quote": "Muestra AP-1983-002098: Hemicolectomía derecha, recibida el 1983-08-23",
-      "quote_sha256": "752117617f9092dab7101af5cba51a0663b76b2b0e40330e612b12d34e195419",
+      "quote": "Muestra AP-2018-002098: Hemicolectomía derecha, recibida el 2018-08-23",
+      "quote_sha256": "29abdceb12ba4aaf65c1ce139c5cd72c8bafb242b83f635a8e33a24fcc60ac89",
       "type_text": "hemicolectomía derecha"
     },
     {
@@ -62,22 +62,22 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 35 mm en su mayor dimensión",
-      "quote_sha256": "4b540ee425631441583f19d2ee1d12ce8e209f4963ee0a53346f724848580572",
+      "quote": "Tamaño tumoral: 31 mm en su mayor dimensión",
+      "quote_sha256": "81428998d7bd05bb7a3a0dbfe80ee51b6130a4295f8f3e2d3d4aaf2f22ab4ef2",
       "source_unit": "mm",
-      "source_value": "35",
+      "source_value": "31",
       "unit": "mm",
-      "value": 35
+      "value": 31
     },
     {
       "assertion": "present",
       "char_end": 662,
       "char_start": 604,
-      "distance_mm": 6,
+      "distance_mm": 4,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
-      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
+      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
       "status": "negative"
     },
     {
@@ -105,31 +105,31 @@
       "char_end": 777,
       "char_start": 725,
       "entity_id": "ent_0010",
-      "examined": 16,
+      "examined": 14,
       "kind": "nodes",
-      "positive": 2,
-      "quote": "Ganglios linfáticos: 2 de 16 ganglios con metástasis",
-      "quote_sha256": "d3f4b089775637561a0115b655de146d687bbbe6fc47a220924b04df9a8fc250"
+      "positive": 3,
+      "quote": "Ganglios linfáticos: 3 de 14 ganglios con metástasis",
+      "quote_sha256": "fe45a0ff35df1cbe5b3fc8886ac6724b537b44c6b0bd98485b0ad50df01547c3"
     },
     {
       "assertion": "present",
-      "char_end": 841,
+      "char_end": 843,
       "char_start": 778,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
-      "n": "pN1",
+      "n": "pN1b",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1 cM0, estadio III",
-      "quote_sha256": "7e2fcb2a797c9b9703a4edf8f7d92040f6d8003090ede4e903b6e9507621d052",
-      "stage_group": "III",
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM0, estadio IIIB",
+      "quote_sha256": "4a1e22549dc118b71f72826e324ffbc319160b7e484f7f6748dc38f2ad758510",
+      "stage_group": "IIIB",
       "t": "pT3"
     },
     {
       "assertion": "present",
-      "char_end": 891,
-      "char_start": 842,
+      "char_end": 893,
+      "char_start": 844,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -140,6 +140,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Edgar Marquardt   Sexo: varón   Fecha de nacimiento: 1943-02-26\nCaso sintético oc_0054. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-1983-002098: Hemicolectomía derecha, recibida el 1983-08-23\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 35 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 2 de 16 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1 cM0, estadio III\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "85f3de20f48363e77599e46c3f5a24ec1a48ed03820106b28ddb3035d1961c3d"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Edgar Marquardt   Sexo: varón   Fecha de nacimiento: 1943-02-26\nCaso sintético oc_0054. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2018-002098: Hemicolectomía derecha, recibida el 2018-08-23\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 31 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 3 de 14 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1b cM0, estadio IIIB\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "f5d50fe0e9dcda66d3182b3418071cbb6ea2c226b61f3bafda2a335c6516e8ca"
 }

@@ -3,17 +3,17 @@ INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
 Documento sintético: no corresponde a ningún paciente real.
 Paciente: Aurore Purdy   Sexo: mujer   Fecha de nacimiento: 1953-10-09
 Caso sintético oc_0028. Diagnóstico de referencia: carcinoma de mama.
-Muestra AP-1996-001136: Tumorectomía de mama izquierda, recibida el 1996-05-12
+Muestra AP-2018-001136: Tumorectomía de mama izquierda, recibida el 2018-05-12
 Procedimiento: Tumorectomía con biopsia selectiva de ganglio centinela
 Localización del tumor: Mama (C50.9)
 Tipo histológico: Carcinoma ductal infiltrante (8500/3)
 Grado histológico: Grado 2 de Nottingham (puntuación 3+2+1)
-Tamaño tumoral: 20 mm en su mayor dimensión
+Tamaño tumoral: 12 mm en su mayor dimensión
 Márgenes quirúrgicos: negativos, margen más próximo a 2 mm
 Invasión linfovascular: ausente
 Invasión perineural: ausente
-Ganglios linfáticos: 3 de 16 ganglios con metástasis
-Estadificación pTNM (TNM 8.ª edición): pT2 pN1 cM0, estadio IB
+Ganglios linfáticos: 0 de 14 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA
 Receptor de estrógenos (RE): positivo, inmunohistoquímica
 Receptor de progesterona (RP): positivo, inmunohistoquímica
 HER2: negativo, inmunohistoquímica

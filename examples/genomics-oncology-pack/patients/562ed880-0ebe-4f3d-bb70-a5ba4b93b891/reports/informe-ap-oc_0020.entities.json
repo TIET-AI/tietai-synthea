@@ -1,5 +1,5 @@
 {
-  "document_sha256": "3877e100e05c4d2d77d0143689e9bc7d43d9bf5b95eb532d4d39b6acc4d4b1dc",
+  "document_sha256": "469ba138c78cdcaa05577bbee55f9b1715be6f30ad8ccd073fa5d1a34da27799",
   "entities": [
     {
       "accession": "AP-2018-000840",
@@ -63,22 +63,22 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 47 mm en su mayor dimensión",
-      "quote_sha256": "b010f26511da324358e29addc658d920e92a91bab217c069142501dc8c01cce9",
+      "quote": "Tamaño tumoral: 33 mm en su mayor dimensión",
+      "quote_sha256": "a8f8c1f7f1c6e3acc837ea1361b185c2103b674671204249930f3689e2628496",
       "source_unit": "mm",
-      "source_value": "47",
+      "source_value": "33",
       "unit": "mm",
-      "value": 47
+      "value": 33
     },
     {
       "assertion": "present",
       "char_end": 681,
       "char_start": 623,
-      "distance_mm": 4,
+      "distance_mm": 6,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
-      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
+      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
       "status": "negative"
     },
     {
@@ -103,34 +103,34 @@
     },
     {
       "assertion": "present",
-      "char_end": 794,
+      "char_end": 795,
       "char_start": 743,
       "entity_id": "ent_0010",
-      "examined": 8,
+      "examined": 17,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 8 ganglios con metástasis",
-      "quote_sha256": "d4d6af4cfa9cb9666353759a3899b60aa3aab75e25acdf3a389db5985dbdaed1"
+      "quote": "Ganglios linfáticos: 0 de 17 ganglios con metástasis",
+      "quote_sha256": "45d2ecf98c79df52ef21bf8095d60cbe05912bce7a29711bae665fb0e5df53f6"
     },
     {
       "assertion": "present",
-      "char_end": 856,
-      "char_start": 795,
+      "char_end": 859,
+      "char_start": 796,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT2a pN0 cM0, estadio IB",
+      "quote_sha256": "1f714d019d2fec6bdb1eb93dc1a29d5176978a02cd22d870bd323d81c69fef53",
+      "stage_group": "IB",
+      "t": "pT2a"
     },
     {
       "assertion": "present",
-      "char_end": 906,
-      "char_start": 857,
+      "char_end": 909,
+      "char_start": 860,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Freddie Labadie   Sexo: mujer   Fecha de nacimiento: 1958-03-20\nCaso sintético oc_0020. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2018-000840: Lobectomía pulmonar derecha, recibida el 2018-10-28\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 47 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 8 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "b38867b42e2a2f788cbe36a86da7c54139a29b20d34d4ca32381a2046442593e"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Freddie Labadie   Sexo: mujer   Fecha de nacimiento: 1958-03-20\nCaso sintético oc_0020. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2018-000840: Lobectomía pulmonar derecha, recibida el 2018-10-28\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 33 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 17 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT2a pN0 cM0, estadio IB\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "e16789cae2271ad107c5bff0fdbbf8ab50a7d16aa3ac009f570de0c8f69d51f3"
 }

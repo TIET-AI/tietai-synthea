@@ -6,7 +6,7 @@ Caso sintético oc_0046. Diagnóstico de referencia: carcinoma de mama.
 Panel NGS de tumor sólido OncoMama v2
 Muestra: tejido tumoral FFPE, biopsia de mama   ID de muestra SYN-0046
 Genoma de referencia GRCh38
-Fecha del informe: 1999-10-26
+Fecha del informe: 2026-09-12
 
 Variantes detectadas:
 TP53 NM_000546.6:c.524G>A (p.Arg175His) VAF 42,4%. Heterocigosis. Variante somática. Tier II (AMP).

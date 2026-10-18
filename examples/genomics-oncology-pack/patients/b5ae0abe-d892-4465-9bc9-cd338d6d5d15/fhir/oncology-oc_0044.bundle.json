@@ -32,8 +32,8 @@
     {
       "fullUrl": "urn:uuid:a67556fe-a70c-4657-ba36-231d5db49d60",
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/a67556fe-a70c-4657-ba36-231d5db49d60"
       },
       "resource": {
         "bodySite": [
@@ -91,12 +91,13 @@
             }
           }
         ],
+        "id": "a67556fe-a70c-4657-ba36-231d5db49d60",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
           ]
         },
-        "onsetDateTime": "1996-06-29",
+        "onsetDateTime": "2018-06-29",
         "resourceType": "Condition",
         "subject": {
           "reference": "urn:uuid:4c9e7ce3-ac70-46c2-ac57-1163887b07a7"
@@ -136,7 +137,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1996-07-06",
+        "effectiveDateTime": "2018-07-06",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -145,7 +146,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:a67556fe-a70c-4657-ba36-231d5db49d60"
+            "reference": "Condition/a67556fe-a70c-4657-ba36-231d5db49d60"
           }
         ],
         "meta": {
@@ -167,7 +168,7 @@
           "reference": "urn:uuid:4c9e7ce3-ac70-46c2-ac57-1163887b07a7"
         },
         "valueCodeableConcept": {
-          "text": "cT3"
+          "text": "cT2"
         }
       }
     },
@@ -196,7 +197,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1996-07-06",
+        "effectiveDateTime": "2018-07-06",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -205,7 +206,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:a67556fe-a70c-4657-ba36-231d5db49d60"
+            "reference": "Condition/a67556fe-a70c-4657-ba36-231d5db49d60"
           }
         ],
         "meta": {
@@ -227,7 +228,7 @@
           "reference": "urn:uuid:4c9e7ce3-ac70-46c2-ac57-1163887b07a7"
         },
         "valueCodeableConcept": {
-          "text": "cN1"
+          "text": "cN1a"
         }
       }
     },
@@ -256,7 +257,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1996-07-06",
+        "effectiveDateTime": "2018-07-06",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -265,7 +266,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:a67556fe-a70c-4657-ba36-231d5db49d60"
+            "reference": "Condition/a67556fe-a70c-4657-ba36-231d5db49d60"
           }
         ],
         "meta": {
@@ -316,7 +317,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1996-07-06",
+        "effectiveDateTime": "2018-07-06",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -325,7 +326,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:a67556fe-a70c-4657-ba36-231d5db49d60"
+            "reference": "Condition/a67556fe-a70c-4657-ba36-231d5db49d60"
           }
         ],
         "meta": {
@@ -347,7 +348,7 @@
           "reference": "urn:uuid:4c9e7ce3-ac70-46c2-ac57-1163887b07a7"
         },
         "valueCodeableConcept": {
-          "text": "III"
+          "text": "IIIA"
         }
       }
     },
@@ -376,7 +377,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1996-07-14",
+        "effectiveDateTime": "2018-07-14",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -385,7 +386,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:a67556fe-a70c-4657-ba36-231d5db49d60"
+            "reference": "Condition/a67556fe-a70c-4657-ba36-231d5db49d60"
           }
         ],
         "meta": {
@@ -407,7 +408,7 @@
           "reference": "urn:uuid:4c9e7ce3-ac70-46c2-ac57-1163887b07a7"
         },
         "valueCodeableConcept": {
-          "text": "pT3"
+          "text": "pT2"
         }
       }
     },
@@ -436,7 +437,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1996-07-14",
+        "effectiveDateTime": "2018-07-14",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -445,7 +446,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:a67556fe-a70c-4657-ba36-231d5db49d60"
+            "reference": "Condition/a67556fe-a70c-4657-ba36-231d5db49d60"
           }
         ],
         "meta": {
@@ -467,7 +468,7 @@
           "reference": "urn:uuid:4c9e7ce3-ac70-46c2-ac57-1163887b07a7"
         },
         "valueCodeableConcept": {
-          "text": "pN1"
+          "text": "pN1a"
         }
       }
     },
@@ -496,7 +497,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1996-07-14",
+        "effectiveDateTime": "2018-07-14",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -505,7 +506,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:a67556fe-a70c-4657-ba36-231d5db49d60"
+            "reference": "Condition/a67556fe-a70c-4657-ba36-231d5db49d60"
           }
         ],
         "meta": {
@@ -556,7 +557,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1996-07-14",
+        "effectiveDateTime": "2018-07-14",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -565,7 +566,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:a67556fe-a70c-4657-ba36-231d5db49d60"
+            "reference": "Condition/a67556fe-a70c-4657-ba36-231d5db49d60"
           }
         ],
         "meta": {
@@ -587,7 +588,7 @@
           "reference": "urn:uuid:4c9e7ce3-ac70-46c2-ac57-1163887b07a7"
         },
         "valueCodeableConcept": {
-          "text": "III"
+          "text": "IIIA"
         }
       }
     },
@@ -607,10 +608,10 @@
             }
           ]
         },
-        "performedDateTime": "1996-07-27",
+        "performedDateTime": "2018-07-27",
         "reasonReference": [
           {
-            "reference": "urn:uuid:a67556fe-a70c-4657-ba36-231d5db49d60"
+            "reference": "Condition/a67556fe-a70c-4657-ba36-231d5db49d60"
           }
         ],
         "resourceType": "Procedure",

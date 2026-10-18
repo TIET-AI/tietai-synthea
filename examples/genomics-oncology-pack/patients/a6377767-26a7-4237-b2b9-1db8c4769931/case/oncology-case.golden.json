@@ -1,0 +1,163 @@
+{
+  "schema": "tietai.oncology-case-golden/v1",
+  "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
+  "patient": "a6377767-26a7-4237-b2b9-1db8c4769931",
+  "summary_sha256": "5f1d73aca6548adb86c435e0009dd2c9757aada8a08c557f90fab87e843d3015",
+  "case": {
+    "cases": [
+      {
+        "biomarkers": [
+          {
+            "code": "LOINC 81695-9",
+            "date": "1997-05-13",
+            "display": "MSI",
+            "value": "MSI-H"
+          }
+        ],
+        "case_id": "oc_0001",
+        "diagnosis": {
+          "cie10es": "C18.9",
+          "clinical_status": "active",
+          "date": "1997-04-25",
+          "display": "Malignant neoplasm of colon (disorder)",
+          "icdo3_morphology": "8140/3",
+          "icdo3_topography": "C18.9",
+          "snomed": "94260004"
+        },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Tier i",
+            "conflicting_significance": [
+              "Tier ii"
+            ],
+            "gene": "BRAF",
+            "hgvs_c": "NM_004333.6:c.1799T>A",
+            "hgvs_p": "NP_004324.2:p.Val600Glu",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/81f9c9d2-f461-4d4c-9301-40c2d5f67431"
+          },
+          {
+            "clinical_significance": "Tier ii",
+            "gene": "KRAS",
+            "hgvs_c": "NM_004985.5:c.35G>A",
+            "hgvs_p": "NP_004976.2:p.Gly12Asp",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/8e811fc1-c9e0-4a84-94d0-c54b580b2eb2"
+          }
+        ],
+        "primary_condition_ref": "Condition/725e76c6-81fd-4cd0-ac86-056888fe2be8",
+        "staging": [
+          {
+            "date": "1997-05-02",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM1",
+            "n": "cN2",
+            "stage_group": "IV",
+            "system": "TNM",
+            "t": "cT4"
+          },
+          {
+            "date": "1997-05-16",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM1",
+            "n": "pN2",
+            "stage_group": "IV",
+            "system": "TNM",
+            "t": "pT4"
+          }
+        ],
+        "treatments": [
+          {
+            "code": "SNOMED 9905009",
+            "display": "Loop colostomy (procedure)",
+            "fhir_status": "completed",
+            "kind": "surgical",
+            "start": "1997-05-23"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "1997-07-04"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "1997-08-15"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "1997-09-26"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "1997-11-07"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "1997-12-19"
+          },
+          {
+            "code": "SNOMED 703423002",
+            "display": "Combined chemotherapy and radiation therapy (procedure)",
+            "fhir_status": "completed",
+            "kind": "radiotherapy",
+            "start": "1998-01-30"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          },
+          {
+            "code": "ATC L01XA03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "oxaliplatin"
+          }
+        ]
+      }
+    ],
+    "patient_ref": "Patient/737ceb1c-1ca4-47e8-95ef-f82e2d4baf7c",
+    "schema": "tietai.oncology-case/v1"
+  }
+}

@@ -1,17 +1,17 @@
 {
-  "document_sha256": "72a87a1cfe4dac041ba212c469c0f2a6b6bf3d30c96fece1ec263cdd640cb146",
+  "document_sha256": "9c3538262b8f4e37915e9aba45b461d056ec37c7d1015244eb747be8ee49ff0d",
   "entities": [
     {
-      "accession": "AP-2016-000544",
+      "accession": "AP-2018-000544",
       "assertion": "present",
       "char_end": 364,
       "char_start": 286,
-      "collection_date": "2016-09-12",
+      "collection_date": "2018-09-12",
       "entity_id": "ent_0001",
       "kind": "specimen",
       "laterality": "left",
-      "quote": "Muestra AP-2016-000544: Tumorectomía de mama izquierda, recibida el 2016-09-12",
-      "quote_sha256": "369a298446a896d2bcd4972cbd1895e968964222b24599b555ccd05f887d2ad9",
+      "quote": "Muestra AP-2018-000544: Tumorectomía de mama izquierda, recibida el 2018-09-12",
+      "quote_sha256": "49a17262e810623fc2bdff9b3e9df90f40bf4ea38c7d6bd5f0dddf5a9d6c63c5",
       "type_text": "tumorectomía de mama izquierda"
     },
     {
@@ -63,22 +63,22 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 20 mm en su mayor dimensión",
-      "quote_sha256": "e24ba5a7453c694daaf99ebd6c48ac0974601cb592ce733d6a112d37314a7fe9",
+      "quote": "Tamaño tumoral: 25 mm en su mayor dimensión",
+      "quote_sha256": "a42d53d40e61162aec27e58519adac7d24d4194261ff5f5b8fde8b42143ea424",
       "source_unit": "mm",
-      "source_value": "20",
+      "source_value": "25",
       "unit": "mm",
-      "value": 20
+      "value": 25
     },
     {
       "assertion": "present",
       "char_end": 691,
       "char_start": 633,
-      "distance_mm": 4,
+      "distance_mm": 6,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
-      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
+      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
       "status": "negative"
     },
     {
@@ -103,34 +103,34 @@
     },
     {
       "assertion": "present",
-      "char_end": 805,
+      "char_end": 806,
       "char_start": 754,
       "entity_id": "ent_0010",
-      "examined": 8,
+      "examined": 10,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 8 ganglios con metástasis",
-      "quote_sha256": "d4d6af4cfa9cb9666353759a3899b60aa3aab75e25acdf3a389db5985dbdaed1"
+      "quote": "Ganglios linfáticos: 0 de 10 ganglios con metástasis",
+      "quote_sha256": "9e86ce942f8fba07e925d3f271d38cd9e48ad31ee100b91757abe391b11259d1"
     },
     {
       "assertion": "present",
-      "char_end": 868,
-      "char_start": 806,
+      "char_end": 870,
+      "char_start": 807,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio IA",
-      "quote_sha256": "79cd93f8d19d234892dc58a94d69d489517169ff6f022120f9f46bc737f7ef0c",
-      "stage_group": "IA",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIA",
+      "quote_sha256": "f6d5b61ae0f17f3f6231bd069c6679258f05d7c2be16d3275d3696a01681fc9a",
+      "stage_group": "IIA",
+      "t": "pT2"
     },
     {
       "assertion": "present",
-      "char_end": 926,
-      "char_start": 869,
+      "char_end": 928,
+      "char_start": 871,
       "code": "16112-5",
       "entity_id": "ent_0012",
       "kind": "biomarker",
@@ -142,8 +142,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 986,
-      "char_start": 927,
+      "char_end": 988,
+      "char_start": 929,
       "code": "16113-3",
       "entity_id": "ent_0013",
       "kind": "biomarker",
@@ -155,8 +155,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 1021,
-      "char_start": 987,
+      "char_end": 1023,
+      "char_start": 989,
       "code": "48676-1",
       "entity_id": "ent_0014",
       "kind": "biomarker",
@@ -168,8 +168,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 1071,
-      "char_start": 1022,
+      "char_end": 1073,
+      "char_start": 1024,
       "entity_id": "ent_0015",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -180,6 +180,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Sarai Hudson   Sexo: mujer   Fecha de nacimiento: 1942-12-02\nCaso sintético oc_0012. Diagnóstico de referencia: carcinoma de mama.\nMuestra AP-2016-000544: Tumorectomía de mama izquierda, recibida el 2016-09-12\nProcedimiento: Tumorectomía con biopsia selectiva de ganglio centinela\nLocalización del tumor: Mama (C50.9)\nTipo histológico: Carcinoma ductal infiltrante (8500/3)\nGrado histológico: Grado 2 de Nottingham (puntuación 3+2+1)\nTamaño tumoral: 20 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 8 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio IA\nReceptor de estrógenos (RE): positivo, inmunohistoquímica\nReceptor de progesterona (RP): negativo, inmunohistoquímica\nHER2: positivo, inmunohistoquímica\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "c81db96237c4fc55761efcbafb0a1b8d0ca61e24c5468fbad2c767c6d25c9a2d"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Sarai Hudson   Sexo: mujer   Fecha de nacimiento: 1942-12-02\nCaso sintético oc_0012. Diagnóstico de referencia: carcinoma de mama.\nMuestra AP-2018-000544: Tumorectomía de mama izquierda, recibida el 2018-09-12\nProcedimiento: Tumorectomía con biopsia selectiva de ganglio centinela\nLocalización del tumor: Mama (C50.9)\nTipo histológico: Carcinoma ductal infiltrante (8500/3)\nGrado histológico: Grado 2 de Nottingham (puntuación 3+2+1)\nTamaño tumoral: 25 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 10 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIA\nReceptor de estrógenos (RE): positivo, inmunohistoquímica\nReceptor de progesterona (RP): negativo, inmunohistoquímica\nHER2: positivo, inmunohistoquímica\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "d16dce1ae6c56c8678a5db3133d30911a86e69925ad889e1ebb45ddb40d20e8d"
 }

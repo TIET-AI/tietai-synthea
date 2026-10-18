@@ -8,11 +8,11 @@ Procedimiento: Lobectomía pulmonar con linfadenectomía
 Localización del tumor: Pulmón (C34.9)
 Tipo histológico: Carcinoma de pulmón no microcítico (8046/3)
 Grado histológico: Grado 2 (moderadamente diferenciado)
-Tamaño tumoral: 12 mm en su mayor dimensión
+Tamaño tumoral: 25 mm en su mayor dimensión
 Márgenes quirúrgicos: negativos, margen más próximo a 6 mm
-Invasión linfovascular: ausente
+Invasión linfovascular: presente
 Invasión perineural: ausente
-Ganglios linfáticos: 0 de 11 ganglios con metástasis
-Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I
+Ganglios linfáticos: 0 de 10 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA
 Comentario: Sin hallazgos adicionales de interés.
 Este informe es un documento sintético generado para pruebas de la plataforma.

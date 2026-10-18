@@ -1,16 +1,16 @@
 {
-  "document_sha256": "f74b66fc1605cfd6877ca90c8087aee7332ba4d050dae54be83de7473c1834de",
+  "document_sha256": "470e6807b8507279eb692040d384fdd7f112b2d5a4f6c812c209a0d321bb0f90",
   "entities": [
     {
-      "accession": "AP-1991-001839",
+      "accession": "AP-2018-001839",
       "assertion": "present",
       "char_end": 364,
       "char_start": 294,
-      "collection_date": "1991-08-18",
+      "collection_date": "2018-08-18",
       "entity_id": "ent_0001",
       "kind": "specimen",
-      "quote": "Muestra AP-1991-001839: Hemicolectomía derecha, recibida el 1991-08-18",
-      "quote_sha256": "09c0cf0c23a11e19a1d24cc6bceacee66312774bf72656363ba1ebc19031c73d",
+      "quote": "Muestra AP-2018-001839: Hemicolectomía derecha, recibida el 2018-08-18",
+      "quote_sha256": "5e9a137cbabc94860206a92a8150e6c1258a3396378d9115852ba6e01486c1a2",
       "type_text": "hemicolectomía derecha"
     },
     {
@@ -62,12 +62,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 14 mm en su mayor dimensión",
-      "quote_sha256": "d40687f577a7b5bd70f03dcfa656ece7796541e49f2694e71f1711d660b6b27e",
+      "quote": "Tamaño tumoral: 20 mm en su mayor dimensión",
+      "quote_sha256": "e24ba5a7453c694daaf99ebd6c48ac0974601cb592ce733d6a112d37314a7fe9",
       "source_unit": "mm",
-      "source_value": "14",
+      "source_value": "20",
       "unit": "mm",
-      "value": 14
+      "value": 20
     },
     {
       "assertion": "present",
@@ -82,18 +82,18 @@
     },
     {
       "assertion": "present",
-      "char_end": 693,
+      "char_end": 694,
       "char_start": 662,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: ausente",
-      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
-      "status": "absent"
+      "quote": "Invasión linfovascular: presente",
+      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
+      "status": "present"
     },
     {
       "assertion": "present",
-      "char_end": 722,
-      "char_start": 694,
+      "char_end": 723,
+      "char_start": 695,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -102,34 +102,34 @@
     },
     {
       "assertion": "present",
-      "char_end": 775,
-      "char_start": 723,
+      "char_end": 776,
+      "char_start": 724,
       "entity_id": "ent_0010",
-      "examined": 15,
+      "examined": 16,
       "kind": "nodes",
-      "positive": 1,
-      "quote": "Ganglios linfáticos: 1 de 15 ganglios con metástasis",
-      "quote_sha256": "25f8be4b293bdf6c21768bbfbc7fe2a8e3f7a55e5f7f6d48132e2394126ab800"
+      "positive": 3,
+      "quote": "Ganglios linfáticos: 3 de 16 ganglios con metástasis",
+      "quote_sha256": "3645b59723121ed14f2cda8bc27fc303bec6bfa4bd7516f13bc3d12f089d4182"
     },
     {
       "assertion": "present",
-      "char_end": 839,
-      "char_start": 776,
+      "char_end": 842,
+      "char_start": 777,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
-      "n": "pN1",
+      "n": "pN1b",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1 cM0, estadio III",
-      "quote_sha256": "7e2fcb2a797c9b9703a4edf8f7d92040f6d8003090ede4e903b6e9507621d052",
-      "stage_group": "III",
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM0, estadio IIIB",
+      "quote_sha256": "4a1e22549dc118b71f72826e324ffbc319160b7e484f7f6748dc38f2ad758510",
+      "stage_group": "IIIB",
       "t": "pT3"
     },
     {
       "assertion": "present",
-      "char_end": 889,
-      "char_start": 840,
+      "char_end": 892,
+      "char_start": 843,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -140,6 +140,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Felipe Oquendo   Sexo: varón   Fecha de nacimiento: 1947-01-17\nCaso sintético oc_0047. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-1991-001839: Hemicolectomía derecha, recibida el 1991-08-18\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 14 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 1 de 15 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1 cM0, estadio III\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "58f7ac9b9c9efa38a3c39197df81bd06913ed0af54b35a3cce3dd66b469e40e6"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Felipe Oquendo   Sexo: varón   Fecha de nacimiento: 1947-01-17\nCaso sintético oc_0047. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2018-001839: Hemicolectomía derecha, recibida el 2018-08-18\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 20 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 3 de 16 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1b cM0, estadio IIIB\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "1a1af5edf793a18599103378314105e1c41364fa03ca777dfbda483161ba7c53"
 }

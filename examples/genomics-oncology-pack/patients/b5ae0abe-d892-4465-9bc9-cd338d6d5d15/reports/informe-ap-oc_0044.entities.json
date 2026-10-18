@@ -1,16 +1,16 @@
 {
-  "document_sha256": "a2328ece6840b104ae755c20996bc57f0fd4b31a0f582bce9f38bcd63ef13875",
+  "document_sha256": "f4b63fc67669d8b0bd051a2d215a64cf53b1be5ba70d23fec4ef43e7bb79c526",
   "entities": [
     {
-      "accession": "AP-1996-001728",
+      "accession": "AP-2018-001728",
       "assertion": "present",
       "char_end": 365,
       "char_start": 295,
-      "collection_date": "1996-07-11",
+      "collection_date": "2018-07-11",
       "entity_id": "ent_0001",
       "kind": "specimen",
-      "quote": "Muestra AP-1996-001728: Hemicolectomía derecha, recibida el 1996-07-11",
-      "quote_sha256": "95d1d46a7811aad9f7dadcda12c3bd473773c49c1b59febfc1299322c112cbcb",
+      "quote": "Muestra AP-2018-001728: Hemicolectomía derecha, recibida el 2018-07-11",
+      "quote_sha256": "8424b741fe7783366b8f2da8ec5f20c83f9be71d99760fb1ff376ec1fdcca04a",
       "type_text": "hemicolectomía derecha"
     },
     {
@@ -62,12 +62,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 46 mm en su mayor dimensión",
-      "quote_sha256": "a68794ca5082e336a0fd1b9958e419c5f33c96c75239630b1c05f282c6429d18",
+      "quote": "Tamaño tumoral: 40 mm en su mayor dimensión",
+      "quote_sha256": "4a8d2cd82f50c53c74c0db7a68966cfa9c8e23b617f74482d3e50e952f0fb0c4",
       "source_unit": "mm",
-      "source_value": "46",
+      "source_value": "40",
       "unit": "mm",
-      "value": 46
+      "value": 40
     },
     {
       "assertion": "present",
@@ -105,31 +105,31 @@
       "char_end": 776,
       "char_start": 724,
       "entity_id": "ent_0010",
-      "examined": 15,
+      "examined": 22,
       "kind": "nodes",
-      "positive": 2,
-      "quote": "Ganglios linfáticos: 2 de 15 ganglios con metástasis",
-      "quote_sha256": "437203d3bb3b6221a7125d044dbd504359ca26c5e3b5212c1a434152e22c0232"
+      "positive": 1,
+      "quote": "Ganglios linfáticos: 1 de 22 ganglios con metástasis",
+      "quote_sha256": "113d1c7269bc5110baaa5a81f40e2d17cff353b429af1408b23850c71926ffab"
     },
     {
       "assertion": "present",
-      "char_end": 840,
+      "char_end": 842,
       "char_start": 777,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
-      "n": "pN1",
+      "n": "pN1a",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1 cM0, estadio III",
-      "quote_sha256": "7e2fcb2a797c9b9703a4edf8f7d92040f6d8003090ede4e903b6e9507621d052",
-      "stage_group": "III",
-      "t": "pT3"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT2 pN1a cM0, estadio IIIA",
+      "quote_sha256": "82752bac3edbf6d261042ed7b66594a0522dab8586fee508950f73f16f1cdc9c",
+      "stage_group": "IIIA",
+      "t": "pT2"
     },
     {
       "assertion": "present",
-      "char_end": 890,
-      "char_start": 841,
+      "char_end": 892,
+      "char_start": 843,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -140,6 +140,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Robbie Gislason   Sexo: varón   Fecha de nacimiento: 1942-11-28\nCaso sintético oc_0044. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-1996-001728: Hemicolectomía derecha, recibida el 1996-07-11\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 46 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 2 de 15 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1 cM0, estadio III\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "41ad36f98e0ae9a48f85ae54039c688adfa03fd5ea57d8bdb129af31cae0bde6"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Robbie Gislason   Sexo: varón   Fecha de nacimiento: 1942-11-28\nCaso sintético oc_0044. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2018-001728: Hemicolectomía derecha, recibida el 2018-07-11\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 40 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 1 de 22 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT2 pN1a cM0, estadio IIIA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "6e576c4c7ad0a192d12e9407dc78a79689c71818edef853bdff81e610595d398"
 }

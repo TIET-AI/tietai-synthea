@@ -1,5 +1,5 @@
 {
-  "document_sha256": "a76777fef7c12c2f9243ed9f0d7ef29d29a113d7657a7edf8b402a1dc6493435",
+  "document_sha256": "39bae25822d0a08f298052166561f7e4cdf1577ad356ea29b5862c27d7752729",
   "entities": [
     {
       "accession": "AP-2025-000248",
@@ -62,22 +62,22 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 45 mm en su mayor dimensión",
-      "quote_sha256": "299deb3490e972d40b185ebb8e9b066c89e70cde83d481b1040114e10d66ff2d",
+      "quote": "Tamaño tumoral: 38 mm en su mayor dimensión",
+      "quote_sha256": "219d555c1b5b80b751f850ecf8a1336308158e07729845afdb531283f01388b6",
       "source_unit": "mm",
-      "source_value": "45",
+      "source_value": "38",
       "unit": "mm",
-      "value": 45
+      "value": 38
     },
     {
       "assertion": "present",
       "char_end": 660,
       "char_start": 602,
-      "distance_mm": 4,
+      "distance_mm": 6,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
-      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
+      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
       "status": "negative"
     },
     {
@@ -105,31 +105,31 @@
       "char_end": 775,
       "char_start": 723,
       "entity_id": "ent_0010",
-      "examined": 12,
+      "examined": 21,
       "kind": "nodes",
-      "positive": 2,
-      "quote": "Ganglios linfáticos: 2 de 12 ganglios con metástasis",
-      "quote_sha256": "4f68a63fc9df0af5c632a1dfc4869104ada9618f0a9f91324b4612690927af8e"
+      "positive": 3,
+      "quote": "Ganglios linfáticos: 3 de 21 ganglios con metástasis",
+      "quote_sha256": "64a9a080aedcd34ed1ff29d0d2828de92bdfd1de1bccb3d1d5a5fcb99c3d8cb0"
     },
     {
       "assertion": "present",
-      "char_end": 839,
+      "char_end": 841,
       "char_start": 776,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
-      "n": "pN1",
+      "n": "pN1b",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1 cM0, estadio III",
-      "quote_sha256": "7e2fcb2a797c9b9703a4edf8f7d92040f6d8003090ede4e903b6e9507621d052",
-      "stage_group": "III",
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM0, estadio IIIB",
+      "quote_sha256": "4a1e22549dc118b71f72826e324ffbc319160b7e484f7f6748dc38f2ad758510",
+      "stage_group": "IIIB",
       "t": "pT3"
     },
     {
       "assertion": "present",
-      "char_end": 889,
-      "char_start": 840,
+      "char_end": 891,
+      "char_start": 842,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -140,6 +140,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Chris Roberts   Sexo: varón   Fecha de nacimiento: 1970-10-27\nCaso sintético oc_0004. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2025-000248: Hemicolectomía derecha, recibida el 2025-08-23\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 45 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 2 de 12 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1 cM0, estadio III\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "132788f85dbe2a801832d72de5d9dcd33398c77d0de505d25480c76cd77d5542"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Chris Roberts   Sexo: varón   Fecha de nacimiento: 1970-10-27\nCaso sintético oc_0004. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2025-000248: Hemicolectomía derecha, recibida el 2025-08-23\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 38 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 3 de 21 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1b cM0, estadio IIIB\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "4bee433de3b45060dbb3b09fba89029ee1ccd45745414882ae462ccfa0690831"
 }

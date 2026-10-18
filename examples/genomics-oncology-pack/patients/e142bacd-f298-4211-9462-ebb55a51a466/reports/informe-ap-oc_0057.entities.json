@@ -1,5 +1,5 @@
 {
-  "document_sha256": "722c6e19db685ccf80a15e2f4cbc625fb1f2131f05da11960505000852fe3454",
+  "document_sha256": "28c558047db37e0063472940cf8d2459493501dc9b3c7ef4351751b0a8dfdab5",
   "entities": [
     {
       "accession": "AP-2024-002209",
@@ -63,12 +63,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 47 mm en su mayor dimensión",
-      "quote_sha256": "b010f26511da324358e29addc658d920e92a91bab217c069142501dc8c01cce9",
+      "quote": "Tamaño tumoral: 21 mm en su mayor dimensión",
+      "quote_sha256": "a38fe37642ae7d5d91ef54d75a49c5e2b8f8c63f3b0f9a7761ace3923a997208",
       "source_unit": "mm",
-      "source_value": "47",
+      "source_value": "21",
       "unit": "mm",
-      "value": 47
+      "value": 21
     },
     {
       "assertion": "present",
@@ -83,18 +83,18 @@
     },
     {
       "assertion": "present",
-      "char_end": 711,
+      "char_end": 712,
       "char_start": 680,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: ausente",
-      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
-      "status": "absent"
+      "quote": "Invasión linfovascular: presente",
+      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
+      "status": "present"
     },
     {
       "assertion": "present",
-      "char_end": 740,
-      "char_start": 712,
+      "char_end": 741,
+      "char_start": 713,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -103,34 +103,34 @@
     },
     {
       "assertion": "present",
-      "char_end": 793,
-      "char_start": 741,
+      "char_end": 794,
+      "char_start": 742,
       "entity_id": "ent_0010",
-      "examined": 11,
+      "examined": 16,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 11 ganglios con metástasis",
-      "quote_sha256": "f6e2b107757492705ee8dbd7b94589e8f1ed0ea2be9e5242fb4fbc16e6bcd796"
+      "quote": "Ganglios linfáticos: 0 de 16 ganglios con metástasis",
+      "quote_sha256": "c7aadd35eddb3618cd8333db73ba500ca9aa5d06a590c364ad92ec1fc8c8a223"
     },
     {
       "assertion": "present",
-      "char_end": 855,
-      "char_start": 794,
+      "char_end": 858,
+      "char_start": 795,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA",
+      "quote_sha256": "4924b8c59e93853d8bd729d5eaed72d22bbf0fd7de142f5345109a6f0a1e963d",
+      "stage_group": "IA",
+      "t": "pT1c"
     },
     {
       "assertion": "present",
-      "char_end": 905,
-      "char_start": 856,
+      "char_end": 908,
+      "char_start": 859,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Jorge Windler   Sexo: varón   Fecha de nacimiento: 1965-06-01\nCaso sintético oc_0057. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2024-002209: Lobectomía pulmonar derecha, recibida el 2024-07-25\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 47 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 11 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "ff96af086ce1580da5580f558c1ace824838439c83ffc9cfcdbf4f4061476781"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Jorge Windler   Sexo: varón   Fecha de nacimiento: 1965-06-01\nCaso sintético oc_0057. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2024-002209: Lobectomía pulmonar derecha, recibida el 2024-07-25\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 21 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 16 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "948739c5292ed27c8b4adcc8652dc27940a2fa08afcd4a728d05f1981063effe"
 }

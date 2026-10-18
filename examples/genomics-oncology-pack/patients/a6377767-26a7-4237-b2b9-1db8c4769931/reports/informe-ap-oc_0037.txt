@@ -3,16 +3,16 @@ INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
 Documento sintético: no corresponde a ningún paciente real.
 Paciente: Anisha Schowalter   Sexo: mujer   Fecha de nacimiento: 1944-10-13
 Caso sintético oc_0037. Diagnóstico de referencia: adenocarcinoma de colon.
-Muestra AP-1997-001469: Hemicolectomía derecha, recibida el 1997-05-13
+Muestra AP-2018-001469: Hemicolectomía derecha, recibida el 2018-05-13
 Procedimiento: Hemicolectomía derecha con linfadenectomía
 Localización del tumor: Colon (C18.9)
 Tipo histológico: Adenocarcinoma (8140/3)
 Grado histológico: Grado 2 (moderadamente diferenciado)
-Tamaño tumoral: 35 mm en su mayor dimensión
+Tamaño tumoral: 33 mm en su mayor dimensión
 Márgenes quirúrgicos: negativos, margen más próximo a 4 mm
 Invasión linfovascular: ausente
 Invasión perineural: ausente
-Ganglios linfáticos: 1 de 14 ganglios con metástasis
-Estadificación pTNM (TNM 8.ª edición): pT4 pN2 cM1, estadio IV
+Ganglios linfáticos: 2 de 12 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA
 Comentario: Sin hallazgos adicionales de interés.
 Este informe es un documento sintético generado para pruebas de la plataforma.

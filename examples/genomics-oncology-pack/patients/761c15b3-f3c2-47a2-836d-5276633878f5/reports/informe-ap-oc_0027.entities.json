@@ -1,5 +1,5 @@
 {
-  "document_sha256": "81f922feb6e4c56b1f1b069878c05d774e91c6cfa5a7bed551a8e0ddbaf6ed27",
+  "document_sha256": "1b319675db9fbe8c92cf03cf8cd1714dba55b531eacabff2f30a88feac4d42e7",
   "entities": [
     {
       "accession": "AP-2019-001099",
@@ -63,38 +63,38 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 29 mm en su mayor dimensión",
-      "quote_sha256": "ebfa5e5206b0fd3ac944c02d63c75747db80f34d720ad29952ce510a2aa4ae04",
+      "quote": "Tamaño tumoral: 77 mm en su mayor dimensión",
+      "quote_sha256": "8023f7f3f39c9cef02333372146f8932bf2ebd8ce365750500816496880f58db",
       "source_unit": "mm",
-      "source_value": "29",
+      "source_value": "77",
       "unit": "mm",
-      "value": 29
+      "value": 77
     },
     {
       "assertion": "present",
       "char_end": 692,
       "char_start": 634,
-      "distance_mm": 6,
+      "distance_mm": 4,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
-      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
+      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
       "status": "negative"
     },
     {
       "assertion": "present",
-      "char_end": 724,
+      "char_end": 725,
       "char_start": 693,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: ausente",
-      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
-      "status": "absent"
+      "quote": "Invasión linfovascular: presente",
+      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
+      "status": "present"
     },
     {
       "assertion": "present",
-      "char_end": 753,
-      "char_start": 725,
+      "char_end": 754,
+      "char_start": 726,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -104,33 +104,33 @@
     {
       "assertion": "present",
       "char_end": 806,
-      "char_start": 754,
+      "char_start": 755,
       "entity_id": "ent_0010",
-      "examined": 17,
+      "examined": 8,
       "kind": "nodes",
-      "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 17 ganglios con metástasis",
-      "quote_sha256": "45d2ecf98c79df52ef21bf8095d60cbe05912bce7a29711bae665fb0e5df53f6"
+      "positive": 2,
+      "quote": "Ganglios linfáticos: 2 de 8 ganglios con metástasis",
+      "quote_sha256": "3e25a45e557603f55079c27e8db052face0e9d2761f3a46795a8b65461c88a3d"
     },
     {
       "assertion": "present",
-      "char_end": 869,
+      "char_end": 872,
       "char_start": 807,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
-      "n": "pN0",
+      "n": "pN1a",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio IA",
-      "quote_sha256": "79cd93f8d19d234892dc58a94d69d489517169ff6f022120f9f46bc737f7ef0c",
-      "stage_group": "IA",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1a cM0, estadio IIIA",
+      "quote_sha256": "7d8977deb33cc337e3639575bb34004573f84028eff9a4bf2b2b46bd11e4260f",
+      "stage_group": "IIIA",
+      "t": "pT3"
     },
     {
       "assertion": "present",
-      "char_end": 927,
-      "char_start": 870,
+      "char_end": 930,
+      "char_start": 873,
       "code": "16112-5",
       "entity_id": "ent_0012",
       "kind": "biomarker",
@@ -142,8 +142,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 987,
-      "char_start": 928,
+      "char_end": 990,
+      "char_start": 931,
       "code": "16113-3",
       "entity_id": "ent_0013",
       "kind": "biomarker",
@@ -155,8 +155,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 1022,
-      "char_start": 988,
+      "char_end": 1025,
+      "char_start": 991,
       "code": "48676-1",
       "entity_id": "ent_0014",
       "kind": "biomarker",
@@ -168,8 +168,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 1072,
-      "char_start": 1023,
+      "char_end": 1075,
+      "char_start": 1026,
       "entity_id": "ent_0015",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -180,6 +180,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Dorcas Harvey   Sexo: mujer   Fecha de nacimiento: 1961-01-01\nCaso sintético oc_0027. Diagnóstico de referencia: carcinoma de mama.\nMuestra AP-2019-001099: Tumorectomía de mama izquierda, recibida el 2019-09-18\nProcedimiento: Tumorectomía con biopsia selectiva de ganglio centinela\nLocalización del tumor: Mama (C50.9)\nTipo histológico: Carcinoma ductal infiltrante (8500/3)\nGrado histológico: Grado 2 de Nottingham (puntuación 3+2+1)\nTamaño tumoral: 29 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 17 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio IA\nReceptor de estrógenos (RE): positivo, inmunohistoquímica\nReceptor de progesterona (RP): positivo, inmunohistoquímica\nHER2: negativo, inmunohistoquímica\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "4bba3db61c9e3d92ebf0689bec851af66e5864684a3fa51b51f3ceb066e8b1c6"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Dorcas Harvey   Sexo: mujer   Fecha de nacimiento: 1961-01-01\nCaso sintético oc_0027. Diagnóstico de referencia: carcinoma de mama.\nMuestra AP-2019-001099: Tumorectomía de mama izquierda, recibida el 2019-09-18\nProcedimiento: Tumorectomía con biopsia selectiva de ganglio centinela\nLocalización del tumor: Mama (C50.9)\nTipo histológico: Carcinoma ductal infiltrante (8500/3)\nGrado histológico: Grado 2 de Nottingham (puntuación 3+2+1)\nTamaño tumoral: 77 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 2 de 8 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1a cM0, estadio IIIA\nReceptor de estrógenos (RE): positivo, inmunohistoquímica\nReceptor de progesterona (RP): positivo, inmunohistoquímica\nHER2: negativo, inmunohistoquímica\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "c5d5348d8f8e6190bd72c470b332041be576933bfac7c593480489ab098da358"
 }

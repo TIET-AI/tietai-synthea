@@ -41,6 +41,89 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c",
+      "request": {
+        "method": "PUT",
+        "url": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+      },
+      "resource": {
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "code": "C50.9",
+                "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+              }
+            ]
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "problem-list-item",
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+              }
+            ]
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "code": "active",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "code": "254837009",
+              "display": "Malignant neoplasm of breast (disorder)",
+              "system": "http://snomed.info/sct"
+            },
+            {
+              "code": "C50.919",
+              "system": "https://tiet.ai/fhir/CodeSystem/cie10-es"
+            }
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-histology-morphology-behavior",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "8500/3",
+                  "display": "Carcinoma ductal infiltrante",
+                  "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+                }
+              ]
+            }
+          }
+        ],
+        "id": "c42a8fe6-5a01-48a9-9fca-c651ad9f022c",
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
+          ]
+        },
+        "onsetDateTime": "2019-09-01",
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "urn:uuid:dd8ceb99-4039-4e94-99ea-42f6eedac5b4"
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "code": "confirmed",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+            }
+          ]
+        }
+      }
+    },
+    {
       "fullUrl": "urn:uuid:55208ef2-65b6-425e-a5b4-ef4e72d36fe7",
       "request": {
         "method": "POST",
@@ -123,14 +206,14 @@
           {
             "attachment": {
               "contentType": "application/pdf",
-              "hash": "VsWCt/qtcssMTQV48ZlmU1YvgF+n4PIyRxlS7HkkwuA=",
-              "size": 2180,
+              "hash": "wZHRsEaNJqcAr/4gSyMMmv/REKWynPjvQ20WICQ2+rY=",
+              "size": 2202,
               "title": "Informe genético oc_0027 (sintético)",
-              "url": "drs://synthetic.tiet.ai/obj_2PRP1BFYNDEB5GRK85F3RSJSJK"
+              "url": "drs://synthetic.tiet.ai/obj_61J78V0HMD4TKG1BZY415J634T"
             }
           }
         ],
-        "date": "2019-10-13T08:00:00Z",
+        "date": "2026-09-06T08:00:00Z",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-genomic-document"
@@ -345,6 +428,11 @@
           }
         ],
         "effectiveDateTime": "2019-09-18",
+        "focus": [
+          {
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+          }
+        ],
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-variant"
@@ -558,6 +646,11 @@
           }
         ],
         "effectiveDateTime": "2019-09-18",
+        "focus": [
+          {
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+          }
+        ],
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-variant"
@@ -664,7 +757,7 @@
             "reference": "urn:uuid:d7d6f2af-807f-4032-8188-5b23eeae5c92"
           }
         ],
-        "effectiveDateTime": "2019-10-13",
+        "effectiveDateTime": "2026-09-06",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/classification-source",
@@ -775,7 +868,7 @@
             "reference": "urn:uuid:d7d6f2af-807f-4032-8188-5b23eeae5c92"
           }
         ],
-        "effectiveDateTime": "2019-10-13",
+        "effectiveDateTime": "2026-09-06",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/classification-source",
@@ -901,7 +994,7 @@
             "reference": "urn:uuid:d7d6f2af-807f-4032-8188-5b23eeae5c92"
           }
         ],
-        "effectiveDateTime": "2019-10-13",
+        "effectiveDateTime": "2026-09-06",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/knowledge-release",
@@ -1008,7 +1101,7 @@
             "reference": "urn:uuid:2185c62b-a5b0-4518-9be7-86a3ec6177ea"
           }
         ],
-        "effectiveDateTime": "2019-10-13",
+        "effectiveDateTime": "2026-09-06",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/classification-source",
@@ -1140,7 +1233,7 @@
             "reference": "urn:uuid:2185c62b-a5b0-4518-9be7-86a3ec6177ea"
           }
         ],
-        "effectiveDateTime": "2019-10-13",
+        "effectiveDateTime": "2026-09-06",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/knowledge-release",
@@ -1211,7 +1304,7 @@
             "value": "oc_0027-761c15b3"
           }
         ],
-        "issued": "2019-10-13T08:00:00Z",
+        "issued": "2026-09-06T08:00:00Z",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-genomic-report"
@@ -1287,7 +1380,7 @@
             }
           }
         ],
-        "recorded": "2019-10-13T09:00:00Z",
+        "recorded": "2026-09-06T09:00:00Z",
         "resourceType": "Provenance",
         "target": [
           {

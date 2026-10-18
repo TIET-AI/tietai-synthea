@@ -1,16 +1,16 @@
 {
-  "document_sha256": "504f18e555d9e73dbcd8f5f8e66560ecf42f6e790e0aae280187f386612db21d",
+  "document_sha256": "bec52648d8e3843f80b0380b26efcac9865bfd12f3f2ffce8cd11b56a9e57cfd",
   "entities": [
     {
-      "accession": "AP-2004-002024",
+      "accession": "AP-2018-002024",
       "assertion": "present",
       "char_end": 367,
       "char_start": 297,
-      "collection_date": "2004-05-29",
+      "collection_date": "2018-05-29",
       "entity_id": "ent_0001",
       "kind": "specimen",
-      "quote": "Muestra AP-2004-002024: Hemicolectomía derecha, recibida el 2004-05-29",
-      "quote_sha256": "0901847b2d9f5333eeffdce95a02c0fb2e41f20bd81557658fe64cb95e4df27e",
+      "quote": "Muestra AP-2018-002024: Hemicolectomía derecha, recibida el 2018-05-29",
+      "quote_sha256": "19759e2a4805fd623ada4c6c6fcdd4c7cbdef5448c40314b9fee7d10a113a216",
       "type_text": "hemicolectomía derecha"
     },
     {
@@ -62,22 +62,22 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 26 mm en su mayor dimensión",
-      "quote_sha256": "3a7b131d1615a98274ccac541d67fa27fa3d96f074b1eba284cde0396d4c3908",
+      "quote": "Tamaño tumoral: 21 mm en su mayor dimensión",
+      "quote_sha256": "a38fe37642ae7d5d91ef54d75a49c5e2b8f8c63f3b0f9a7761ace3923a997208",
       "source_unit": "mm",
-      "source_value": "26",
+      "source_value": "21",
       "unit": "mm",
-      "value": 26
+      "value": 21
     },
     {
       "assertion": "present",
       "char_end": 664,
       "char_start": 606,
-      "distance_mm": 4,
+      "distance_mm": 2,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
-      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 2 mm",
+      "quote_sha256": "1aab6ef667a62bc3d4c9b0b8cb229331e75a01b97f77e5832c3cb3aecb6e84c3",
       "status": "negative"
     },
     {
@@ -105,31 +105,31 @@
       "char_end": 778,
       "char_start": 726,
       "entity_id": "ent_0010",
-      "examined": 14,
+      "examined": 20,
       "kind": "nodes",
-      "positive": 1,
-      "quote": "Ganglios linfáticos: 1 de 14 ganglios con metástasis",
-      "quote_sha256": "7c7aeeefd9fedfc292a1e6c586c3153ffca886ef878c41bc9828f34fb0778f43"
+      "positive": 2,
+      "quote": "Ganglios linfáticos: 2 de 20 ganglios con metástasis",
+      "quote_sha256": "3c4af9a9b9129d938246b30bf7ba28694fc037b99f9242bd7281db58a95e2dc2"
     },
     {
       "assertion": "present",
-      "char_end": 842,
+      "char_end": 844,
       "char_start": 779,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
-      "n": "pN1",
+      "n": "pN1b",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1 cM0, estadio III",
-      "quote_sha256": "7e2fcb2a797c9b9703a4edf8f7d92040f6d8003090ede4e903b6e9507621d052",
-      "stage_group": "III",
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM0, estadio IIIB",
+      "quote_sha256": "4a1e22549dc118b71f72826e324ffbc319160b7e484f7f6748dc38f2ad758510",
+      "stage_group": "IIIB",
       "t": "pT3"
     },
     {
       "assertion": "present",
-      "char_end": 892,
-      "char_start": 843,
+      "char_end": 894,
+      "char_start": 845,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -140,6 +140,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Jerica Runolfsson   Sexo: mujer   Fecha de nacimiento: 1961-03-11\nCaso sintético oc_0052. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2004-002024: Hemicolectomía derecha, recibida el 2004-05-29\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 26 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 1 de 14 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1 cM0, estadio III\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "e32321ad17783441752999d0d298673c49a7af6b62d0ef306558a1b57a9ba28f"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Jerica Runolfsson   Sexo: mujer   Fecha de nacimiento: 1961-03-11\nCaso sintético oc_0052. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2018-002024: Hemicolectomía derecha, recibida el 2018-05-29\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 21 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 2 de 20 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1b cM0, estadio IIIB\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "fcf4c931d4a2cb53afcb6a811af619812d99c073eebdd1cfea8c68b7bde007bc"
 }

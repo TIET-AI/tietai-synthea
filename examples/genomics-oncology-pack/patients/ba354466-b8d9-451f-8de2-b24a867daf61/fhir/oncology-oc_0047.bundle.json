@@ -32,8 +32,8 @@
     {
       "fullUrl": "urn:uuid:00996c86-1e91-4c0e-9d7a-0e8447b9b5cc",
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
       },
       "resource": {
         "bodySite": [
@@ -91,12 +91,13 @@
             }
           }
         ],
+        "id": "00996c86-1e91-4c0e-9d7a-0e8447b9b5cc",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
           ]
         },
-        "onsetDateTime": "1991-08-09",
+        "onsetDateTime": "2018-08-09",
         "resourceType": "Condition",
         "subject": {
           "reference": "urn:uuid:e353e2f9-5894-4813-8ab5-68ea3665a10d"
@@ -136,7 +137,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1991-08-16",
+        "effectiveDateTime": "2018-08-16",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -145,7 +146,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
+            "reference": "Condition/00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
           }
         ],
         "meta": {
@@ -196,7 +197,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1991-08-16",
+        "effectiveDateTime": "2018-08-16",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -205,7 +206,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
+            "reference": "Condition/00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
           }
         ],
         "meta": {
@@ -227,7 +228,7 @@
           "reference": "urn:uuid:e353e2f9-5894-4813-8ab5-68ea3665a10d"
         },
         "valueCodeableConcept": {
-          "text": "cN1"
+          "text": "cN1b"
         }
       }
     },
@@ -256,7 +257,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1991-08-16",
+        "effectiveDateTime": "2018-08-16",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -265,7 +266,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
+            "reference": "Condition/00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
           }
         ],
         "meta": {
@@ -316,7 +317,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1991-08-16",
+        "effectiveDateTime": "2018-08-16",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -325,7 +326,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
+            "reference": "Condition/00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
           }
         ],
         "meta": {
@@ -347,7 +348,7 @@
           "reference": "urn:uuid:e353e2f9-5894-4813-8ab5-68ea3665a10d"
         },
         "valueCodeableConcept": {
-          "text": "III"
+          "text": "IIIB"
         }
       }
     },
@@ -376,7 +377,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1991-08-21",
+        "effectiveDateTime": "2018-08-21",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -385,7 +386,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
+            "reference": "Condition/00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
           }
         ],
         "meta": {
@@ -436,7 +437,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1991-08-21",
+        "effectiveDateTime": "2018-08-21",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -445,7 +446,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
+            "reference": "Condition/00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
           }
         ],
         "meta": {
@@ -467,7 +468,7 @@
           "reference": "urn:uuid:e353e2f9-5894-4813-8ab5-68ea3665a10d"
         },
         "valueCodeableConcept": {
-          "text": "pN1"
+          "text": "pN1b"
         }
       }
     },
@@ -496,7 +497,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1991-08-21",
+        "effectiveDateTime": "2018-08-21",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -505,7 +506,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
+            "reference": "Condition/00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
           }
         ],
         "meta": {
@@ -556,7 +557,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1991-08-21",
+        "effectiveDateTime": "2018-08-21",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -565,7 +566,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
+            "reference": "Condition/00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
           }
         ],
         "meta": {
@@ -587,7 +588,7 @@
           "reference": "urn:uuid:e353e2f9-5894-4813-8ab5-68ea3665a10d"
         },
         "valueCodeableConcept": {
-          "text": "III"
+          "text": "IIIB"
         }
       }
     },
@@ -607,10 +608,10 @@
             }
           ]
         },
-        "performedDateTime": "1991-09-06",
+        "performedDateTime": "2018-09-06",
         "reasonReference": [
           {
-            "reference": "urn:uuid:00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
+            "reference": "Condition/00996c86-1e91-4c0e-9d7a-0e8447b9b5cc"
           }
         ],
         "resourceType": "Procedure",

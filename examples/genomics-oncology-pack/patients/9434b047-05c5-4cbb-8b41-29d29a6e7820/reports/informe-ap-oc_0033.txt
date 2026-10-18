@@ -3,16 +3,17 @@ INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
 Documento sintético: no corresponde a ningún paciente real.
 Paciente: Jewell Moen   Sexo: varón   Fecha de nacimiento: 1943-11-30
 Caso sintético oc_0033. Diagnóstico de referencia: adenocarcinoma de próstata.
-Muestra AP-2007-001321: Prostatectomía radical, recibida el 2007-11-10
+Muestra AP-2018-001321: Prostatectomía radical, recibida el 2018-11-10
 Procedimiento: Prostatectomía radical con linfadenectomía pélvica
 Localización del tumor: Próstata (C61.9)
 Tipo histológico: Adenocarcinoma (8140/3)
 Grado histológico: Gleason 3+4=7 (grupo de grado 2)
 Tamaño tumoral: 23 mm en su mayor dimensión
-Márgenes quirúrgicos: negativos, margen más próximo a 4 mm
+Márgenes quirúrgicos: negativos, margen más próximo a 2 mm
 Invasión linfovascular: presente
 Invasión perineural: ausente
-Ganglios linfáticos: 0 de 9 ganglios con metástasis
-Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I
+Ganglios linfáticos: 0 de 8 ganglios con metástasis
+PSA preoperatorio: 31,9 ng/mL
+Estadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIIA
 Comentario: Sin hallazgos adicionales de interés.
 Este informe es un documento sintético generado para pruebas de la plataforma.

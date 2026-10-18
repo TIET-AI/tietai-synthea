@@ -1,0 +1,141 @@
+{
+  "schema": "tietai.oncology-case-golden/v1",
+  "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
+  "patient": "7adbd7f1-fa3f-470c-a467-f6bc5df5ea15",
+  "summary_sha256": "2cd43c1af863179d197ae2f30de484784c4ba86f54333e42daea263b22379514",
+  "case": {
+    "cases": [
+      {
+        "biomarkers": [
+          {
+            "code": "LOINC 16112-5",
+            "date": "1991-02-17",
+            "display": "ER",
+            "value": "Positive (qualifier value)"
+          },
+          {
+            "code": "LOINC 16113-3",
+            "date": "1991-02-17",
+            "display": "PR",
+            "value": "Positive (qualifier value)"
+          },
+          {
+            "code": "LOINC 48676-1",
+            "date": "1991-02-17",
+            "display": "HER2",
+            "value": "Negative (qualifier value)"
+          }
+        ],
+        "case_id": "oc_0001",
+        "diagnosis": {
+          "cie10es": "C18.9",
+          "clinical_status": "active",
+          "date": "1991-02-01",
+          "display": "Malignant neoplasm of colon (disorder)",
+          "icdo3_morphology": "8140/3",
+          "icdo3_topography": "C18.9",
+          "snomed": "363406005"
+        },
+        "primary_condition_ref": "Condition/761efc3e-3426-46c5-9ed2-d48418b46913",
+        "staging": [
+          {
+            "date": "1991-02-08",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN1",
+            "stage_group": "IB",
+            "system": "TNM",
+            "t": "cT2"
+          },
+          {
+            "date": "1991-02-17",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN1",
+            "stage_group": "IB",
+            "system": "TNM",
+            "t": "pT2"
+          }
+        ],
+        "treatments": [
+          {
+            "code": "SNOMED 43075005",
+            "display": "Partial resection of colon (procedure)",
+            "fhir_status": "completed",
+            "kind": "surgical",
+            "start": "1991-03-01"
+          }
+        ]
+      },
+      {
+        "biomarkers": [
+          {
+            "code": "LOINC 16112-5",
+            "date": "1996-05-15",
+            "display": "ER",
+            "value": "Positive (qualifier value)"
+          },
+          {
+            "code": "LOINC 16113-3",
+            "date": "1996-05-15",
+            "display": "PR",
+            "value": "Positive (qualifier value)"
+          },
+          {
+            "code": "LOINC 48676-1",
+            "date": "1996-05-15",
+            "display": "HER2",
+            "value": "Negative (qualifier value)"
+          }
+        ],
+        "case_id": "oc_0002",
+        "diagnosis": {
+          "cie10es": "C50.919",
+          "clinical_status": "active",
+          "date": "1996-05-03",
+          "display": "Malignant neoplasm of breast (disorder)",
+          "icdo3_morphology": "8500/3",
+          "icdo3_topography": "C50.9",
+          "snomed": "254837009"
+        },
+        "primary_condition_ref": "Condition/6f1bac36-9b8c-4a88-bfb2-eaa8db31fc54",
+        "staging": [
+          {
+            "date": "1996-05-10",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN1",
+            "stage_group": "IB",
+            "system": "TNM",
+            "t": "cT2"
+          },
+          {
+            "date": "1996-05-15",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN1",
+            "stage_group": "IB",
+            "system": "TNM",
+            "t": "pT2"
+          }
+        ]
+      }
+    ],
+    "omissions": [
+      {
+        "code": "biomarker_not_shown",
+        "message": "One or more biomarker results in the record could not be shown."
+      },
+      {
+        "code": "unattributed_elements",
+        "message": "One or more elements could not be attributed to a cancer case and are not shown."
+      }
+    ],
+    "patient_ref": "Patient/ed82ea14-fb51-4e7a-bc82-5387c788c878",
+    "schema": "tietai.oncology-case/v1"
+  }
+}

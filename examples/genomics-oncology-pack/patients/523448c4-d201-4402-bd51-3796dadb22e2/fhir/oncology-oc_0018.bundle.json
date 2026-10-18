@@ -32,8 +32,8 @@
     {
       "fullUrl": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104",
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
       },
       "resource": {
         "bodySite": [
@@ -91,12 +91,13 @@
             }
           }
         ],
+        "id": "36afddf5-280b-4ee6-b621-0b05278ee104",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
           ]
         },
-        "onsetDateTime": "2015-07-10",
+        "onsetDateTime": "2018-07-10",
         "resourceType": "Condition",
         "subject": {
           "reference": "urn:uuid:52be3d74-d335-4d04-8118-86be87ab653b"
@@ -136,7 +137,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2015-07-17",
+        "effectiveDateTime": "2018-07-17",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -145,7 +146,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "meta": {
@@ -167,7 +168,7 @@
           "reference": "urn:uuid:52be3d74-d335-4d04-8118-86be87ab653b"
         },
         "valueCodeableConcept": {
-          "text": "cT1"
+          "text": "cT2"
         }
       }
     },
@@ -196,7 +197,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2015-07-17",
+        "effectiveDateTime": "2018-07-17",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -205,7 +206,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "meta": {
@@ -256,7 +257,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2015-07-17",
+        "effectiveDateTime": "2018-07-17",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -265,7 +266,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "meta": {
@@ -316,7 +317,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2015-07-17",
+        "effectiveDateTime": "2018-07-17",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -325,7 +326,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "meta": {
@@ -376,7 +377,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2015-07-23",
+        "effectiveDateTime": "2018-07-23",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -385,7 +386,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "meta": {
@@ -407,7 +408,7 @@
           "reference": "urn:uuid:52be3d74-d335-4d04-8118-86be87ab653b"
         },
         "valueCodeableConcept": {
-          "text": "pT1"
+          "text": "pT2"
         }
       }
     },
@@ -436,7 +437,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2015-07-23",
+        "effectiveDateTime": "2018-07-23",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -445,7 +446,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "meta": {
@@ -496,7 +497,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2015-07-23",
+        "effectiveDateTime": "2018-07-23",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -505,7 +506,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "meta": {
@@ -556,7 +557,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2015-07-23",
+        "effectiveDateTime": "2018-07-23",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -565,7 +566,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "meta": {
@@ -617,10 +618,10 @@
             }
           ]
         },
-        "effectiveDateTime": "2015-07-23",
+        "effectiveDateTime": "2018-07-23",
         "focus": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "resourceType": "Observation",
@@ -632,7 +633,7 @@
           "code": "ng/mL",
           "system": "http://unitsofmeasure.org",
           "unit": "ng/mL",
-          "value": 12.91
+          "value": 9.8
         }
       }
     },
@@ -643,7 +644,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2015-07-10",
+        "authoredOn": "2018-07-10",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -661,7 +662,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -678,7 +679,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2015-07-10",
+        "authoredOn": "2018-07-10",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -696,7 +697,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -713,7 +714,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2016-04-08",
+        "authoredOn": "2019-04-08",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -731,7 +732,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -748,7 +749,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2016-04-08",
+        "authoredOn": "2019-04-08",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -766,7 +767,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:36afddf5-280b-4ee6-b621-0b05278ee104"
+            "reference": "Condition/36afddf5-280b-4ee6-b621-0b05278ee104"
           }
         ],
         "resourceType": "MedicationRequest",

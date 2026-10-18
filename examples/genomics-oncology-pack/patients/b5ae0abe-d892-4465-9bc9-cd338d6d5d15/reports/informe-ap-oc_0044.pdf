@@ -15,7 +15,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
 endobj
 6 0 obj
-<< /Length 1250 >>
+<< /Length 1252 >>
 stream
 BT /F1 9 Tf 12 TL 40 800 Td
 (SERVICIO DE ANATOM\315A PATOL\323GICA \(sint\351tico\)) Tj T*
@@ -23,17 +23,17 @@ BT /F1 9 Tf 12 TL 40 800 Td
 (Documento sint\351tico: no corresponde a ning\372n paciente real.) Tj T*
 (Paciente: Robbie Gislason   Sexo: var\363n   Fecha de nacimiento: 1942-11-28) Tj T*
 (Caso sint\351tico oc_0044. Diagn\363stico de referencia: adenocarcinoma de colon.) Tj T*
-(Muestra AP-1996-001728: Hemicolectom\355a derecha, recibida el 1996-07-11) Tj T*
+(Muestra AP-2018-001728: Hemicolectom\355a derecha, recibida el 2018-07-11) Tj T*
 (Procedimiento: Hemicolectom\355a derecha con linfadenectom\355a) Tj T*
 (Localizaci\363n del tumor: Colon \(C18.9\)) Tj T*
 (Tipo histol\363gico: Adenocarcinoma \(8140/3\)) Tj T*
 (Grado histol\363gico: Grado 2 \(moderadamente diferenciado\)) Tj T*
-(Tama\361o tumoral: 46 mm en su mayor dimensi\363n) Tj T*
+(Tama\361o tumoral: 40 mm en su mayor dimensi\363n) Tj T*
 (M\341rgenes quir\372rgicos: negativos, margen m\341s pr\363ximo a 6 mm) Tj T*
 (Invasi\363n linfovascular: ausente) Tj T*
 (Invasi\363n perineural: ausente) Tj T*
-(Ganglios linf\341ticos: 2 de 15 ganglios con met\341stasis) Tj T*
-(Estadificaci\363n pTNM \(TNM 8.\252 edici\363n\): pT3 pN1 cM0, estadio III) Tj T*
+(Ganglios linf\341ticos: 1 de 22 ganglios con met\341stasis) Tj T*
+(Estadificaci\363n pTNM \(TNM 8.\252 edici\363n\): pT2 pN1a cM0, estadio IIIA) Tj T*
 (Comentario: Sin hallazgos adicionales de inter\351s.) Tj T*
 (Este informe es un documento sint\351tico generado para pruebas de la plataforma.) Tj T*
 ET
@@ -51,5 +51,5 @@ xref
 trailer
 << /Size 7 /Root 1 0 R /Info 4 0 R >>
 startxref
-1747
+1749
 %%EOF

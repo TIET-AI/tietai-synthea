@@ -1,16 +1,16 @@
 {
-  "document_sha256": "0c547c8a7f1068137e51866b921a0c79c8787ff5d63b64806aaa724f4a537e36",
+  "document_sha256": "d21179741da5adfa3a9cb1504fa1c7be91a091395f441eca3c9f86ce6112e58f",
   "entities": [
     {
-      "accession": "AP-1997-001469",
+      "accession": "AP-2018-001469",
       "assertion": "present",
       "char_end": 367,
       "char_start": 297,
-      "collection_date": "1997-05-13",
+      "collection_date": "2018-05-13",
       "entity_id": "ent_0001",
       "kind": "specimen",
-      "quote": "Muestra AP-1997-001469: Hemicolectomía derecha, recibida el 1997-05-13",
-      "quote_sha256": "e0a24b971acc61ce70dbf7071a61a3664aef52726c709dce000f8b13f0eb1e16",
+      "quote": "Muestra AP-2018-001469: Hemicolectomía derecha, recibida el 2018-05-13",
+      "quote_sha256": "2379782159742d78baa1ea6ee00e58f23176fc441a8b2f5c2c30907954749fe2",
       "type_text": "hemicolectomía derecha"
     },
     {
@@ -62,12 +62,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 35 mm en su mayor dimensión",
-      "quote_sha256": "4b540ee425631441583f19d2ee1d12ce8e209f4963ee0a53346f724848580572",
+      "quote": "Tamaño tumoral: 33 mm en su mayor dimensión",
+      "quote_sha256": "a8f8c1f7f1c6e3acc837ea1361b185c2103b674671204249930f3689e2628496",
       "source_unit": "mm",
-      "source_value": "35",
+      "source_value": "33",
       "unit": "mm",
-      "value": 35
+      "value": 33
     },
     {
       "assertion": "present",
@@ -105,31 +105,31 @@
       "char_end": 778,
       "char_start": 726,
       "entity_id": "ent_0010",
-      "examined": 14,
+      "examined": 12,
       "kind": "nodes",
-      "positive": 1,
-      "quote": "Ganglios linfáticos: 1 de 14 ganglios con metástasis",
-      "quote_sha256": "7c7aeeefd9fedfc292a1e6c586c3153ffca886ef878c41bc9828f34fb0778f43"
+      "positive": 2,
+      "quote": "Ganglios linfáticos: 2 de 12 ganglios con metástasis",
+      "quote_sha256": "4f68a63fc9df0af5c632a1dfc4869104ada9618f0a9f91324b4612690927af8e"
     },
     {
       "assertion": "present",
-      "char_end": 841,
+      "char_end": 844,
       "char_start": 779,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
-      "m": "cM1",
-      "n": "pN2",
+      "m": "cM1a",
+      "n": "pN1b",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT4 pN2 cM1, estadio IV",
-      "quote_sha256": "7c2ad1d76ab1d6593404c2a4c55848bf8bebed77e0ff380f84f930730d199491",
-      "stage_group": "IV",
-      "t": "pT4"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA",
+      "quote_sha256": "08dd9b7e32dc8cf40834ee1647888d0d08d93701b688509b97a19e02ff7de971",
+      "stage_group": "IVA",
+      "t": "pT3"
     },
     {
       "assertion": "present",
-      "char_end": 891,
-      "char_start": 842,
+      "char_end": 894,
+      "char_start": 845,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -140,6 +140,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Anisha Schowalter   Sexo: mujer   Fecha de nacimiento: 1944-10-13\nCaso sintético oc_0037. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-1997-001469: Hemicolectomía derecha, recibida el 1997-05-13\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 35 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 1 de 14 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT4 pN2 cM1, estadio IV\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "f8e190c952e42d3f30616e1d741c21435d1f26c8a01b0f04e8644b0a446fb312"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Anisha Schowalter   Sexo: mujer   Fecha de nacimiento: 1944-10-13\nCaso sintético oc_0037. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2018-001469: Hemicolectomía derecha, recibida el 2018-05-13\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 33 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 2 de 12 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "4b9689860174cb946615ce882728e2b4decae1ca13641c42d1b1362e041683e8"
 }

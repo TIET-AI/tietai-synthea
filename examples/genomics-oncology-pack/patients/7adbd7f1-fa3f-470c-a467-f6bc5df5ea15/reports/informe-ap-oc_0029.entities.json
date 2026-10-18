@@ -1,16 +1,16 @@
 {
-  "document_sha256": "11d339e6401ba2e7fa150abf54652776d65b920f46bc052a72f765c36befaab2",
+  "document_sha256": "620b10dd5dd0635f9295aaab8dce0734531d17182d4b9280bc12c67c11f82413",
   "entities": [
     {
-      "accession": "AP-1991-001173",
+      "accession": "AP-2018-001173",
       "assertion": "present",
       "char_end": 362,
       "char_start": 292,
-      "collection_date": "1991-02-14",
+      "collection_date": "2018-02-14",
       "entity_id": "ent_0001",
       "kind": "specimen",
-      "quote": "Muestra AP-1991-001173: Hemicolectomía derecha, recibida el 1991-02-14",
-      "quote_sha256": "82192f1ce3080695201342c77ad4a924492648906b83bdc0dd20849a13973cb7",
+      "quote": "Muestra AP-2018-001173: Hemicolectomía derecha, recibida el 2018-02-14",
+      "quote_sha256": "b1324b2d33b39e4105b905995b08c7953527c11dec04473fb4a53349eed30c76",
       "type_text": "hemicolectomía derecha"
     },
     {
@@ -62,22 +62,22 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 41 mm en su mayor dimensión",
-      "quote_sha256": "e569fbea6c0d467459df4fa3c523a677c7b58dd3e219cfe310b692c9b4dbb6e9",
+      "quote": "Tamaño tumoral: 31 mm en su mayor dimensión",
+      "quote_sha256": "81428998d7bd05bb7a3a0dbfe80ee51b6130a4295f8f3e2d3d4aaf2f22ab4ef2",
       "source_unit": "mm",
-      "source_value": "41",
+      "source_value": "31",
       "unit": "mm",
-      "value": 41
+      "value": 31
     },
     {
       "assertion": "present",
       "char_end": 659,
       "char_start": 601,
-      "distance_mm": 4,
+      "distance_mm": 6,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
-      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
+      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
       "status": "negative"
     },
     {
@@ -105,31 +105,31 @@
       "char_end": 773,
       "char_start": 721,
       "entity_id": "ent_0010",
-      "examined": 17,
+      "examined": 23,
       "kind": "nodes",
-      "positive": 1,
-      "quote": "Ganglios linfáticos: 1 de 17 ganglios con metástasis",
-      "quote_sha256": "61fb984368c0b813034508945d7201e6e999fe0d1b3d3bceb565c500081f3121"
+      "positive": 0,
+      "quote": "Ganglios linfáticos: 0 de 23 ganglios con metástasis",
+      "quote_sha256": "f1856befad0ae9faed2ac0d148a4e1d94326e4dc26b7dad6045cc8f47e60fd07"
     },
     {
       "assertion": "present",
-      "char_end": 836,
+      "char_end": 838,
       "char_start": 774,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
-      "n": "pN1",
+      "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT2 pN1 cM0, estadio IB",
-      "quote_sha256": "60e95baa70c5166670d2d6521e9eefbbf09105f5668e88924052b7f7bf5cdf1b",
-      "stage_group": "IB",
-      "t": "pT2"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT4a pN0 cM0, estadio IIB",
+      "quote_sha256": "ed55efbb944fa8620cc9340e5f166f8aaa508714d6220ec7e802d5ae387df518",
+      "stage_group": "IIB",
+      "t": "pT4a"
     },
     {
       "assertion": "present",
-      "char_end": 894,
-      "char_start": 837,
+      "char_end": 896,
+      "char_start": 839,
       "code": "16112-5",
       "entity_id": "ent_0012",
       "kind": "biomarker",
@@ -141,8 +141,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 954,
-      "char_start": 895,
+      "char_end": 956,
+      "char_start": 897,
       "code": "16113-3",
       "entity_id": "ent_0013",
       "kind": "biomarker",
@@ -154,8 +154,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 989,
-      "char_start": 955,
+      "char_end": 991,
+      "char_start": 957,
       "code": "48676-1",
       "entity_id": "ent_0014",
       "kind": "biomarker",
@@ -167,8 +167,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 1039,
-      "char_start": 990,
+      "char_end": 1041,
+      "char_start": 992,
       "entity_id": "ent_0015",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -179,6 +179,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Aurore Purdy   Sexo: mujer   Fecha de nacimiento: 1953-10-09\nCaso sintético oc_0029. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-1991-001173: Hemicolectomía derecha, recibida el 1991-02-14\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 41 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 1 de 17 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT2 pN1 cM0, estadio IB\nReceptor de estrógenos (RE): positivo, inmunohistoquímica\nReceptor de progesterona (RP): positivo, inmunohistoquímica\nHER2: negativo, inmunohistoquímica\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "47f83554c664349f3f26f88c9a644201d6c4f6828b747d348a40b03ac775d884"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Aurore Purdy   Sexo: mujer   Fecha de nacimiento: 1953-10-09\nCaso sintético oc_0029. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2018-001173: Hemicolectomía derecha, recibida el 2018-02-14\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 31 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 23 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT4a pN0 cM0, estadio IIB\nReceptor de estrógenos (RE): positivo, inmunohistoquímica\nReceptor de progesterona (RP): positivo, inmunohistoquímica\nHER2: negativo, inmunohistoquímica\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "4b668631286f8a8198baf6dd283249f9da2589284883cac9719416fe2ad1cdd7"
 }

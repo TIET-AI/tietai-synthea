@@ -1,0 +1,96 @@
+{
+  "schema": "tietai.oncology-case-golden/v1",
+  "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
+  "patient": "39a3f9ea-b8cc-4af7-8b76-e1a9c257359e",
+  "summary_sha256": "5c4db2f0746396a34a5befb9a398c8733cc595b8bf6bfa9df78b22e0930ccdf7",
+  "case": {
+    "cases": [
+      {
+        "biomarkers": [
+          {
+            "code": "LOINC 16112-5",
+            "date": "2016-09-15",
+            "display": "ER",
+            "value": "Positive (qualifier value)"
+          },
+          {
+            "code": "LOINC 16113-3",
+            "date": "2016-09-15",
+            "display": "PR",
+            "value": "Negative (qualifier value)"
+          },
+          {
+            "code": "LOINC 48676-1",
+            "date": "2016-09-15",
+            "display": "HER2",
+            "value": "Positive (qualifier value)"
+          }
+        ],
+        "case_id": "oc_0001",
+        "diagnosis": {
+          "cie10es": "C50.919",
+          "clinical_status": "active",
+          "date": "2016-08-24",
+          "display": "Malignant neoplasm of breast (disorder)",
+          "icdo3_morphology": "8500/3",
+          "icdo3_topography": "C50.9",
+          "snomed": "254837009"
+        },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Pathogenic",
+            "gene": "BRCA1",
+            "hgvs_c": "NM_007294.4:c.5266dup",
+            "hgvs_p": "NP_009225.1:p.Gln1756ProfsTer74",
+            "source_class": "germline",
+            "variant_observation_ref": "Observation/36a71f0e-c102-4149-be99-693e8641124f"
+          },
+          {
+            "clinical_significance": "Tier i",
+            "conflicting_significance": [
+              "Tier ii"
+            ],
+            "gene": "PIK3CA",
+            "hgvs_c": "NM_006218.4:c.3140A>G",
+            "hgvs_p": "NP_006209.2:p.His1047Arg",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/50ec3cd8-19fd-49bf-bede-8b21287e1c29"
+          },
+          {
+            "clinical_significance": "Tier ii",
+            "gene": "TP53",
+            "hgvs_c": "NM_000546.6:c.524G>A",
+            "hgvs_p": "NP_000537.3:p.Arg175His",
+            "source_class": "somatic",
+            "variant_observation_ref": "Observation/aeab9b1e-e6ef-4520-9739-793e2c1be3d4"
+          }
+        ],
+        "primary_condition_ref": "Condition/afa85d39-3194-437e-a492-cc0241c1957c",
+        "staging": [
+          {
+            "date": "2016-08-31",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN0",
+            "stage_group": "IA",
+            "system": "TNM",
+            "t": "cT1"
+          },
+          {
+            "date": "2016-09-15",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN0",
+            "stage_group": "IA",
+            "system": "TNM",
+            "t": "pT1"
+          }
+        ]
+      }
+    ],
+    "patient_ref": "Patient/99de360c-bb32-44e2-af4d-607dc8e896ef",
+    "schema": "tietai.oncology-case/v1"
+  }
+}

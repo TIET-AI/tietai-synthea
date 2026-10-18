@@ -1,5 +1,5 @@
 {
-  "document_sha256": "deff2e853b42786e90bfc599a4cecf08bb93b0cedcdcdf00af4c9cab92ed16ed",
+  "document_sha256": "d48298eab2fcfc8b77d2972bbd48f08af2d8a51e7d47cd55dda8e8ba3395f577",
   "entities": [
     {
       "accession": "AP-2018-002246",
@@ -50,10 +50,10 @@
       "char_start": 518,
       "entity_id": "ent_0005",
       "kind": "grade",
-      "quote": "Grado histológico: Gleason 3+4=7 (grupo de grado 2)",
-      "quote_sha256": "ebb3a1465cfb7eef66b7608ce4e6c903e7bfd223e74daa14fbf4497871bf8e36",
+      "quote": "Grado histológico: Gleason 3+3=6 (grupo de grado 1)",
+      "quote_sha256": "e96271fc6a63dd7cefdc2f85976c32fcedfa0828f05db1211e3c5cf20aa05cc8",
       "system": "gleason",
-      "value_text": "Gleason 3+4=7"
+      "value_text": "Gleason 3+3=6"
     },
     {
       "assertion": "present",
@@ -62,12 +62,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 32 mm en su mayor dimensión",
-      "quote_sha256": "d876638619e9f2eb54f50803101978442a3ad90085c33e826eb5d7bdde66da31",
+      "quote": "Tamaño tumoral: 16 mm en su mayor dimensión",
+      "quote_sha256": "399d6fd035ebf33f8960bfce97df5999ce1f5a6fa2a9fc9425f9be6489b8cdce",
       "source_unit": "mm",
-      "source_value": "32",
+      "source_value": "16",
       "unit": "mm",
-      "value": 32
+      "value": 16
     },
     {
       "assertion": "present",
@@ -82,18 +82,18 @@
     },
     {
       "assertion": "present",
-      "char_end": 704,
+      "char_end": 705,
       "char_start": 673,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: ausente",
-      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
-      "status": "absent"
+      "quote": "Invasión linfovascular: presente",
+      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
+      "status": "present"
     },
     {
       "assertion": "present",
-      "char_end": 733,
-      "char_start": 705,
+      "char_end": 734,
+      "char_start": 706,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -102,35 +102,51 @@
     },
     {
       "assertion": "present",
-      "char_end": 786,
-      "char_start": 734,
+      "char_end": 787,
+      "char_start": 735,
       "entity_id": "ent_0010",
-      "examined": 11,
+      "examined": 10,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 11 ganglios con metástasis",
-      "quote_sha256": "f6e2b107757492705ee8dbd7b94589e8f1ed0ea2be9e5242fb4fbc16e6bcd796"
+      "quote": "Ganglios linfáticos: 0 de 10 ganglios con metástasis",
+      "quote_sha256": "9e86ce942f8fba07e925d3f271d38cd9e48ad31ee100b91757abe391b11259d1"
     },
     {
       "assertion": "present",
-      "char_end": 848,
-      "char_start": 787,
-      "edition": "8",
+      "char_end": 816,
+      "char_start": 788,
+      "code": "2857-1",
       "entity_id": "ent_0011",
+      "kind": "biomarker",
+      "method_text": "suero",
+      "name_text": "PSA",
+      "quote": "PSA preoperatorio: 5,9 ng/mL",
+      "quote_sha256": "6b6a236a54c9da5322a761bd4b1fec8e6e1bc02fc2d392dd663aab9dc0879870",
+      "value": {
+        "unit": "ng/mL",
+        "value": 5.9
+      }
+    },
+    {
+      "assertion": "present",
+      "char_end": 878,
+      "char_start": 817,
+      "edition": "8",
+      "entity_id": "ent_0012",
       "kind": "ptnm",
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio I",
+      "quote_sha256": "708655b691d2bd498d98ffe621e77ef2689ef355c39f96dbe481fa7227310d5c",
       "stage_group": "I",
-      "t": "pT1"
+      "t": "pT2"
     },
     {
       "assertion": "present",
-      "char_end": 898,
-      "char_start": 849,
-      "entity_id": "ent_0012",
+      "char_end": 928,
+      "char_start": 879,
+      "entity_id": "ent_0013",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
       "quote_sha256": "11e9843a2d02a194a5ec2d8957eb89a420b5b3b5ebea4c1641addd81f70c636e",
@@ -140,6 +156,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Gilbert Dickens   Sexo: varón   Fecha de nacimiento: 1964-04-02\nCaso sintético oc_0058. Diagnóstico de referencia: adenocarcinoma de próstata.\nMuestra AP-2018-002246: Prostatectomía radical, recibida el 2018-04-06\nProcedimiento: Prostatectomía radical con linfadenectomía pélvica\nLocalización del tumor: Próstata (C61.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Gleason 3+4=7 (grupo de grado 2)\nTamaño tumoral: 32 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 11 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "0f4f6b118a52cedfb52f2ac42b7d66725684aaa5fed9ded2ba36c03ef4470745"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Gilbert Dickens   Sexo: varón   Fecha de nacimiento: 1964-04-02\nCaso sintético oc_0058. Diagnóstico de referencia: adenocarcinoma de próstata.\nMuestra AP-2018-002246: Prostatectomía radical, recibida el 2018-04-06\nProcedimiento: Prostatectomía radical con linfadenectomía pélvica\nLocalización del tumor: Próstata (C61.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Gleason 3+3=6 (grupo de grado 1)\nTamaño tumoral: 16 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 10 ganglios con metástasis\nPSA preoperatorio: 5,9 ng/mL\nEstadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "30c362f88e1301e49d0b9b8bebd71a72c2baaeb96d7b591a84acd8108dd74680"
 }

@@ -3,16 +3,16 @@ INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
 Documento sintético: no corresponde a ningún paciente real.
 Paciente: Felipe Oquendo   Sexo: varón   Fecha de nacimiento: 1947-01-17
 Caso sintético oc_0047. Diagnóstico de referencia: adenocarcinoma de colon.
-Muestra AP-1991-001839: Hemicolectomía derecha, recibida el 1991-08-18
+Muestra AP-2018-001839: Hemicolectomía derecha, recibida el 2018-08-18
 Procedimiento: Hemicolectomía derecha con linfadenectomía
 Localización del tumor: Colon (C18.9)
 Tipo histológico: Adenocarcinoma (8140/3)
 Grado histológico: Grado 2 (moderadamente diferenciado)
-Tamaño tumoral: 14 mm en su mayor dimensión
+Tamaño tumoral: 20 mm en su mayor dimensión
 Márgenes quirúrgicos: negativos, margen más próximo a 6 mm
-Invasión linfovascular: ausente
+Invasión linfovascular: presente
 Invasión perineural: ausente
-Ganglios linfáticos: 1 de 15 ganglios con metástasis
-Estadificación pTNM (TNM 8.ª edición): pT3 pN1 cM0, estadio III
+Ganglios linfáticos: 3 de 16 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM0, estadio IIIB
 Comentario: Sin hallazgos adicionales de interés.
 Este informe es un documento sintético generado para pruebas de la plataforma.

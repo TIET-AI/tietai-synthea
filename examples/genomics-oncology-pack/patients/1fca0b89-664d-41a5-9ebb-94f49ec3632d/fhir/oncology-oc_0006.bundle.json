@@ -32,8 +32,8 @@
     {
       "fullUrl": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06",
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
       },
       "resource": {
         "bodySite": [
@@ -91,6 +91,7 @@
             }
           }
         ],
+        "id": "fc52f8e9-675a-4f74-8d55-411af4fb8c06",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
@@ -145,7 +146,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06"
+            "reference": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
           }
         ],
         "meta": {
@@ -167,7 +168,7 @@
           "reference": "urn:uuid:00275bd3-1c3e-4268-8a3c-72629700b37d"
         },
         "valueCodeableConcept": {
-          "text": "cT1"
+          "text": "cT3a"
         }
       }
     },
@@ -205,7 +206,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06"
+            "reference": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
           }
         ],
         "meta": {
@@ -265,7 +266,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06"
+            "reference": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
           }
         ],
         "meta": {
@@ -325,7 +326,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06"
+            "reference": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
           }
         ],
         "meta": {
@@ -347,7 +348,7 @@
           "reference": "urn:uuid:00275bd3-1c3e-4268-8a3c-72629700b37d"
         },
         "valueCodeableConcept": {
-          "text": "I"
+          "text": "IIIB"
         }
       }
     },
@@ -385,7 +386,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06"
+            "reference": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
           }
         ],
         "meta": {
@@ -407,7 +408,7 @@
           "reference": "urn:uuid:00275bd3-1c3e-4268-8a3c-72629700b37d"
         },
         "valueCodeableConcept": {
-          "text": "pT1"
+          "text": "pT3a"
         }
       }
     },
@@ -445,7 +446,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06"
+            "reference": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
           }
         ],
         "meta": {
@@ -505,7 +506,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06"
+            "reference": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
           }
         ],
         "meta": {
@@ -565,7 +566,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06"
+            "reference": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
           }
         ],
         "meta": {
@@ -587,7 +588,7 @@
           "reference": "urn:uuid:00275bd3-1c3e-4268-8a3c-72629700b37d"
         },
         "valueCodeableConcept": {
-          "text": "I"
+          "text": "IIIB"
         }
       }
     },
@@ -620,7 +621,7 @@
         "effectiveDateTime": "2026-08-14",
         "focus": [
           {
-            "reference": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06"
+            "reference": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
           }
         ],
         "resourceType": "Observation",
@@ -632,7 +633,7 @@
           "code": "ng/mL",
           "system": "http://unitsofmeasure.org",
           "unit": "ng/mL",
-          "value": 19.98
+          "value": 14.5
         }
       }
     },
@@ -661,7 +662,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06"
+            "reference": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -696,7 +697,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:fc52f8e9-675a-4f74-8d55-411af4fb8c06"
+            "reference": "Condition/fc52f8e9-675a-4f74-8d55-411af4fb8c06"
           }
         ],
         "resourceType": "MedicationRequest",

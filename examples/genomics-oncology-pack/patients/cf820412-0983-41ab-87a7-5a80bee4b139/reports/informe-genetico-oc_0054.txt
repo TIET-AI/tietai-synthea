@@ -6,7 +6,7 @@ Caso sintético oc_0054. Diagnóstico de referencia: adenocarcinoma de colon.
 Panel NGS de tumor sólido OncoColon v3
 Muestra: tejido tumoral FFPE, biopsia de colon   ID de muestra SYN-0054
 Genoma de referencia GRCh38
-Fecha del informe: 1983-09-10
+Fecha del informe: 2026-09-07
 
 Variantes detectadas:
 KRAS NM_004985.5:c.35G>A (p.Gly12Asp) VAF 31,1%. Heterocigosis. Variante somática. Tier II (AMP).

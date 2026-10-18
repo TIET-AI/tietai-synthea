@@ -1,16 +1,16 @@
 {
-  "document_sha256": "9016218c761fa8566fbb2010241ff6ab9727e66bddab823487ccc721983e8d1c",
+  "document_sha256": "f0727e97c710c89e57a799963d38a456b672cec4936af8f6b6ec8b4644d0f455",
   "entities": [
     {
-      "accession": "AP-2015-001210",
+      "accession": "AP-2018-001210",
       "assertion": "present",
       "char_end": 363,
       "char_start": 293,
-      "collection_date": "2015-10-05",
+      "collection_date": "2018-10-05",
       "entity_id": "ent_0001",
       "kind": "specimen",
-      "quote": "Muestra AP-2015-001210: Hemicolectomía derecha, recibida el 2015-10-05",
-      "quote_sha256": "80e952c3935f5bf9e41b59ca2e3766470d79fbf89ede00780ad9aecab3027ff4",
+      "quote": "Muestra AP-2018-001210: Hemicolectomía derecha, recibida el 2018-10-05",
+      "quote_sha256": "f3ff5be9641ad82baa83169a06a0854a0079c923554c7fa41c6d15b1b2e9595c",
       "type_text": "hemicolectomía derecha"
     },
     {
@@ -62,12 +62,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 33 mm en su mayor dimensión",
-      "quote_sha256": "a8f8c1f7f1c6e3acc837ea1361b185c2103b674671204249930f3689e2628496",
+      "quote": "Tamaño tumoral: 30 mm en su mayor dimensión",
+      "quote_sha256": "21f7bb29d2ab8eb0901e8a8fa925b0aa9a2674a1ec9f034b59a8fe4e8a150d48",
       "source_unit": "mm",
-      "source_value": "33",
+      "source_value": "30",
       "unit": "mm",
-      "value": 33
+      "value": 30
     },
     {
       "assertion": "present",
@@ -105,31 +105,31 @@
       "char_end": 775,
       "char_start": 723,
       "entity_id": "ent_0010",
-      "examined": 16,
+      "examined": 13,
       "kind": "nodes",
       "positive": 3,
-      "quote": "Ganglios linfáticos: 3 de 16 ganglios con metástasis",
-      "quote_sha256": "3645b59723121ed14f2cda8bc27fc303bec6bfa4bd7516f13bc3d12f089d4182"
+      "quote": "Ganglios linfáticos: 3 de 13 ganglios con metástasis",
+      "quote_sha256": "6b67be85ec47978fde715f0c39c4270b850a81007c4dc200049e4d3a7e21d607"
     },
     {
       "assertion": "present",
-      "char_end": 838,
+      "char_end": 841,
       "char_start": 776,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
-      "m": "cM1",
-      "n": "pN2",
+      "m": "cM1a",
+      "n": "pN1b",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT4 pN2 cM1, estadio IV",
-      "quote_sha256": "7c2ad1d76ab1d6593404c2a4c55848bf8bebed77e0ff380f84f930730d199491",
-      "stage_group": "IV",
-      "t": "pT4"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA",
+      "quote_sha256": "08dd9b7e32dc8cf40834ee1647888d0d08d93701b688509b97a19e02ff7de971",
+      "stage_group": "IVA",
+      "t": "pT3"
     },
     {
       "assertion": "present",
-      "char_end": 888,
-      "char_start": 839,
+      "char_end": 891,
+      "char_start": 842,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -140,6 +140,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Luba Schimmel   Sexo: mujer   Fecha de nacimiento: 1948-10-29\nCaso sintético oc_0030. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2015-001210: Hemicolectomía derecha, recibida el 2015-10-05\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 33 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 3 de 16 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT4 pN2 cM1, estadio IV\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "4d36e5cf736e9ba6a3cddbc774fe39e54bec88912f01a5e035fd0e0fdddd7d5d"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Luba Schimmel   Sexo: mujer   Fecha de nacimiento: 1948-10-29\nCaso sintético oc_0030. Diagnóstico de referencia: adenocarcinoma de colon.\nMuestra AP-2018-001210: Hemicolectomía derecha, recibida el 2018-10-05\nProcedimiento: Hemicolectomía derecha con linfadenectomía\nLocalización del tumor: Colon (C18.9)\nTipo histológico: Adenocarcinoma (8140/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 30 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 3 de 13 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT3 pN1b cM1a, estadio IVA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "395a71715a5a02cb690a80b58166c4dc9d796be6c1f506ae6c3dc91db00be8d3"
 }

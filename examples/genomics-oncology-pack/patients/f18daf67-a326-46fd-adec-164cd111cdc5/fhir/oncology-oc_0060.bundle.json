@@ -32,8 +32,8 @@
     {
       "fullUrl": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d",
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
       },
       "resource": {
         "bodySite": [
@@ -91,12 +91,13 @@
             }
           }
         ],
+        "id": "7dd25f3e-1651-4b11-8546-d948c1aff69d",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
           ]
         },
-        "onsetDateTime": "1992-03-08",
+        "onsetDateTime": "2018-03-08",
         "resourceType": "Condition",
         "subject": {
           "reference": "urn:uuid:32a93f53-2fa2-44b1-9477-9218450273a7"
@@ -136,7 +137,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1992-03-15",
+        "effectiveDateTime": "2018-03-15",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -145,7 +146,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "meta": {
@@ -167,7 +168,7 @@
           "reference": "urn:uuid:32a93f53-2fa2-44b1-9477-9218450273a7"
         },
         "valueCodeableConcept": {
-          "text": "cT4"
+          "text": "cT3"
         }
       }
     },
@@ -196,7 +197,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1992-03-15",
+        "effectiveDateTime": "2018-03-15",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -205,7 +206,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "meta": {
@@ -227,7 +228,7 @@
           "reference": "urn:uuid:32a93f53-2fa2-44b1-9477-9218450273a7"
         },
         "valueCodeableConcept": {
-          "text": "cN2"
+          "text": "cN1b"
         }
       }
     },
@@ -256,7 +257,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1992-03-15",
+        "effectiveDateTime": "2018-03-15",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -265,7 +266,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "meta": {
@@ -287,7 +288,7 @@
           "reference": "urn:uuid:32a93f53-2fa2-44b1-9477-9218450273a7"
         },
         "valueCodeableConcept": {
-          "text": "cM1"
+          "text": "cM1a"
         }
       }
     },
@@ -316,7 +317,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1992-03-15",
+        "effectiveDateTime": "2018-03-15",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -325,7 +326,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "meta": {
@@ -347,7 +348,7 @@
           "reference": "urn:uuid:32a93f53-2fa2-44b1-9477-9218450273a7"
         },
         "valueCodeableConcept": {
-          "text": "IV"
+          "text": "IVA"
         }
       }
     },
@@ -376,7 +377,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1992-03-28",
+        "effectiveDateTime": "2018-03-28",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -385,7 +386,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "meta": {
@@ -407,7 +408,7 @@
           "reference": "urn:uuid:32a93f53-2fa2-44b1-9477-9218450273a7"
         },
         "valueCodeableConcept": {
-          "text": "pT4"
+          "text": "pT3"
         }
       }
     },
@@ -436,7 +437,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1992-03-28",
+        "effectiveDateTime": "2018-03-28",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -445,7 +446,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "meta": {
@@ -467,7 +468,7 @@
           "reference": "urn:uuid:32a93f53-2fa2-44b1-9477-9218450273a7"
         },
         "valueCodeableConcept": {
-          "text": "pN2"
+          "text": "pN1b"
         }
       }
     },
@@ -496,7 +497,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1992-03-28",
+        "effectiveDateTime": "2018-03-28",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -505,7 +506,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "meta": {
@@ -527,7 +528,7 @@
           "reference": "urn:uuid:32a93f53-2fa2-44b1-9477-9218450273a7"
         },
         "valueCodeableConcept": {
-          "text": "cM1"
+          "text": "cM1a"
         }
       }
     },
@@ -556,7 +557,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1992-03-28",
+        "effectiveDateTime": "2018-03-28",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -565,7 +566,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "meta": {
@@ -587,7 +588,7 @@
           "reference": "urn:uuid:32a93f53-2fa2-44b1-9477-9218450273a7"
         },
         "valueCodeableConcept": {
-          "text": "IV"
+          "text": "IVA"
         }
       }
     },
@@ -598,7 +599,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "1992-04-05",
+        "authoredOn": "2018-04-05",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -616,7 +617,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -633,7 +634,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "1992-05-17",
+        "authoredOn": "2018-05-17",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -651,7 +652,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -668,7 +669,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "1992-06-28",
+        "authoredOn": "2018-06-28",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -686,7 +687,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -703,7 +704,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "1992-08-09",
+        "authoredOn": "2018-08-09",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -721,7 +722,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -738,7 +739,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "1992-09-20",
+        "authoredOn": "2018-09-20",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -756,7 +757,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -773,7 +774,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "1992-11-01",
+        "authoredOn": "2018-11-01",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -791,7 +792,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -817,10 +818,10 @@
             }
           ]
         },
-        "performedDateTime": "1992-04-05",
+        "performedDateTime": "2018-04-05",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "Procedure",
@@ -846,10 +847,10 @@
             }
           ]
         },
-        "performedDateTime": "1992-05-17",
+        "performedDateTime": "2018-05-17",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "Procedure",
@@ -875,10 +876,10 @@
             }
           ]
         },
-        "performedDateTime": "1992-06-28",
+        "performedDateTime": "2018-06-28",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "Procedure",
@@ -904,10 +905,10 @@
             }
           ]
         },
-        "performedDateTime": "1992-08-09",
+        "performedDateTime": "2018-08-09",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "Procedure",
@@ -933,10 +934,10 @@
             }
           ]
         },
-        "performedDateTime": "1992-09-20",
+        "performedDateTime": "2018-09-20",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "Procedure",
@@ -962,10 +963,10 @@
             }
           ]
         },
-        "performedDateTime": "1992-11-01",
+        "performedDateTime": "2018-11-01",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7dd25f3e-1651-4b11-8546-d948c1aff69d"
+            "reference": "Condition/7dd25f3e-1651-4b11-8546-d948c1aff69d"
           }
         ],
         "resourceType": "Procedure",

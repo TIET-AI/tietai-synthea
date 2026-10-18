@@ -1,5 +1,5 @@
 {
-  "document_sha256": "2973d35c7e000af9a900043c1ebdf282bc818081394e0b2ac342a4947c31497c",
+  "document_sha256": "5f144b17b733f491f1c75ea7816aa24e3d43296e093976de00c21d1df2ec5b01",
   "entities": [
     {
       "assertion": "present",
@@ -26,7 +26,7 @@
       "assertion": "present",
       "char_end": 419,
       "char_start": 345,
-      "collected_on": "2017-04-09",
+      "collected_on": "2018-04-09",
       "entity_id": "ent_0003",
       "kind": "specimen",
       "quote": "Muestra: tejido tumoral FFPE, biopsia de próstata   ID de muestra SYN-0038",
@@ -63,7 +63,7 @@
     },
     {
       "assertion": "present",
-      "char_end": 713,
+      "char_end": 735,
       "char_start": 631,
       "entity_id": "ent_0006",
       "implication_kind": "diagnostic",
@@ -71,13 +71,13 @@
       "linked_variant_ids": [
         "ent_0005"
       ],
-      "quote": "Clasificación alternativa de BRCA2 (laboratorio): Probablemente patogénica (ACMG).",
-      "quote_sha256": "c58b9fb300625f8cd45daa5ead27bb54ffae79fb1bde8f004489414841d9909f"
+      "quote": "Clasificación alternativa de BRCA2 NM_000059.4:c.5946del (laboratorio): Probablemente patogénica (ACMG).",
+      "quote_sha256": "ed6d76b1cdf538593f164c0bbfc69b294f0109b44f4f477ef63af2e3142e761f"
     },
     {
       "assertion": "present",
-      "char_end": 817,
-      "char_start": 714,
+      "char_end": 839,
+      "char_start": 736,
       "entity_id": "ent_0007",
       "evidence_level": "Tier I - Level A",
       "implication_kind": "therapeutic",
@@ -92,8 +92,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 869,
-      "char_start": 819,
+      "char_end": 891,
+      "char_start": 841,
       "entity_id": "ent_0008",
       "kind": "knowledge_release",
       "name": "clinvar",
@@ -103,8 +103,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 943,
-      "char_start": 870,
+      "char_end": 965,
+      "char_start": 892,
       "entity_id": "ent_0009",
       "kind": "recommendation",
       "quote": "Recomendación: Se recomienda valorar consejo genético y estudio familiar.",
@@ -115,6 +115,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.genomic-extraction/v1",
-  "source_text": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)\nINFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Mikel Hartmann   Sexo: varón   Fecha de nacimiento: 1953-08-27\nCaso sintético oc_0038. Diagnóstico de referencia: adenocarcinoma de próstata.\nPanel NGS de tumor sólido OncoProstata v1\nMuestra: tejido tumoral FFPE, biopsia de próstata   ID de muestra SYN-0038\nGenoma de referencia GRCh38\nFecha del informe: 2017-05-06\n\nVariantes detectadas:\nBRCA2 NM_000059.4:c.5946del (p.Ser1982ArgfsTer22) VAF 50,0%. Heterocigosis. Variante germinal. Patogénica (ACMG).\n\nImplicaciones:\nClasificación alternativa de BRCA2 (laboratorio): Probablemente patogénica (ACMG).\nImplicación terapéutica: olaparib. Evidencia: Tier I - Level A. Enfermedad: adenocarcinoma de próstata.\n\nFuente de conocimiento: ClinVar versión 2026-09-01\nRecomendación: Se recomienda valorar consejo genético y estudio familiar.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "8934217c91db1bb2177d6fbe1e2114982cb10aca8ddf91e131b56b63681c1562"
+  "source_text": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)\nINFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Mikel Hartmann   Sexo: varón   Fecha de nacimiento: 1953-08-27\nCaso sintético oc_0038. Diagnóstico de referencia: adenocarcinoma de próstata.\nPanel NGS de tumor sólido OncoProstata v1\nMuestra: tejido tumoral FFPE, biopsia de próstata   ID de muestra SYN-0038\nGenoma de referencia GRCh38\nFecha del informe: 2026-09-14\n\nVariantes detectadas:\nBRCA2 NM_000059.4:c.5946del (p.Ser1982ArgfsTer22) VAF 50,0%. Heterocigosis. Variante germinal. Patogénica (ACMG).\n\nImplicaciones:\nClasificación alternativa de BRCA2 NM_000059.4:c.5946del (laboratorio): Probablemente patogénica (ACMG).\nImplicación terapéutica: olaparib. Evidencia: Tier I - Level A. Enfermedad: adenocarcinoma de próstata.\n\nFuente de conocimiento: ClinVar versión 2026-09-01\nRecomendación: Se recomienda valorar consejo genético y estudio familiar.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "069c0d64cba199eca4591e9ad61410afc1ca6427a51c4d2ef6ffa10e9e24c48a"
 }

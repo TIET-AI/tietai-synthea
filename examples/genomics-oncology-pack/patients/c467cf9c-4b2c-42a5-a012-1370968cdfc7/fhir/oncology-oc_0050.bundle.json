@@ -32,8 +32,8 @@
     {
       "fullUrl": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453",
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
       },
       "resource": {
         "bodySite": [
@@ -91,12 +91,13 @@
             }
           }
         ],
+        "id": "be83534e-34e8-4a24-bfd7-04d6284d2453",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
           ]
         },
-        "onsetDateTime": "1980-10-13",
+        "onsetDateTime": "2018-10-13",
         "resourceType": "Condition",
         "subject": {
           "reference": "urn:uuid:07164351-46b9-4b90-8a18-cd114969bb8a"
@@ -136,7 +137,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1980-10-20",
+        "effectiveDateTime": "2018-10-20",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -145,7 +146,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "meta": {
@@ -167,7 +168,7 @@
           "reference": "urn:uuid:07164351-46b9-4b90-8a18-cd114969bb8a"
         },
         "valueCodeableConcept": {
-          "text": "cT1"
+          "text": "cT3"
         }
       }
     },
@@ -196,7 +197,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1980-10-20",
+        "effectiveDateTime": "2018-10-20",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -205,7 +206,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "meta": {
@@ -227,7 +228,7 @@
           "reference": "urn:uuid:07164351-46b9-4b90-8a18-cd114969bb8a"
         },
         "valueCodeableConcept": {
-          "text": "cN0"
+          "text": "cN1a"
         }
       }
     },
@@ -256,7 +257,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1980-10-20",
+        "effectiveDateTime": "2018-10-20",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -265,7 +266,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "meta": {
@@ -316,7 +317,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1980-10-20",
+        "effectiveDateTime": "2018-10-20",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -325,7 +326,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "meta": {
@@ -347,7 +348,7 @@
           "reference": "urn:uuid:07164351-46b9-4b90-8a18-cd114969bb8a"
         },
         "valueCodeableConcept": {
-          "text": "IA"
+          "text": "IIIA"
         }
       }
     },
@@ -376,7 +377,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1980-10-24",
+        "effectiveDateTime": "2018-10-24",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -385,7 +386,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "meta": {
@@ -407,7 +408,7 @@
           "reference": "urn:uuid:07164351-46b9-4b90-8a18-cd114969bb8a"
         },
         "valueCodeableConcept": {
-          "text": "pT1"
+          "text": "pT3"
         }
       }
     },
@@ -436,7 +437,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1980-10-24",
+        "effectiveDateTime": "2018-10-24",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -445,7 +446,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "meta": {
@@ -467,7 +468,7 @@
           "reference": "urn:uuid:07164351-46b9-4b90-8a18-cd114969bb8a"
         },
         "valueCodeableConcept": {
-          "text": "pN0"
+          "text": "pN1a"
         }
       }
     },
@@ -496,7 +497,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1980-10-24",
+        "effectiveDateTime": "2018-10-24",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -505,7 +506,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "meta": {
@@ -556,7 +557,7 @@
             }
           ]
         },
-        "effectiveDateTime": "1980-10-24",
+        "effectiveDateTime": "2018-10-24",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -565,7 +566,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "meta": {
@@ -587,7 +588,7 @@
           "reference": "urn:uuid:07164351-46b9-4b90-8a18-cd114969bb8a"
         },
         "valueCodeableConcept": {
-          "text": "IA"
+          "text": "IIIA"
         }
       }
     },
@@ -617,10 +618,10 @@
             }
           ]
         },
-        "effectiveDateTime": "1980-10-24",
+        "effectiveDateTime": "2018-10-24",
         "focus": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "Observation",
@@ -665,10 +666,10 @@
             }
           ]
         },
-        "effectiveDateTime": "1980-10-24",
+        "effectiveDateTime": "2018-10-24",
         "focus": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "Observation",
@@ -713,10 +714,10 @@
             }
           ]
         },
-        "effectiveDateTime": "1980-10-24",
+        "effectiveDateTime": "2018-10-24",
         "focus": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "Observation",
@@ -742,7 +743,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2013-10-28",
+        "authoredOn": "2051-10-28",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -760,7 +761,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -777,7 +778,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2013-10-28",
+        "authoredOn": "2051-10-28",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -795,7 +796,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -812,7 +813,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2013-12-23",
+        "authoredOn": "2051-12-23",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -830,7 +831,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -847,7 +848,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2013-12-23",
+        "authoredOn": "2051-12-23",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -865,7 +866,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -882,7 +883,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2014-02-24",
+        "authoredOn": "2052-02-24",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -900,7 +901,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -917,7 +918,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2014-02-24",
+        "authoredOn": "2052-02-24",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -935,7 +936,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -952,7 +953,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2014-04-21",
+        "authoredOn": "2052-04-21",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -970,7 +971,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -987,7 +988,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2014-04-21",
+        "authoredOn": "2052-04-21",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -1005,7 +1006,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -1022,7 +1023,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2014-05-12",
+        "authoredOn": "2052-05-12",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -1040,7 +1041,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -1057,7 +1058,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2014-05-12",
+        "authoredOn": "2052-05-12",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -1075,7 +1076,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -1092,7 +1093,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2014-07-07",
+        "authoredOn": "2052-07-07",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -1110,7 +1111,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -1127,7 +1128,7 @@
         "url": "MedicationRequest"
       },
       "resource": {
-        "authoredOn": "2014-07-07",
+        "authoredOn": "2052-07-07",
         "intent": "order",
         "medicationCodeableConcept": {
           "coding": [
@@ -1145,7 +1146,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -1171,10 +1172,10 @@
             }
           ]
         },
-        "performedDateTime": "2013-10-28",
+        "performedDateTime": "2051-10-28",
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "Procedure",
@@ -1200,10 +1201,10 @@
             }
           ]
         },
-        "performedDateTime": "2013-12-23",
+        "performedDateTime": "2051-12-23",
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "Procedure",
@@ -1229,10 +1230,10 @@
             }
           ]
         },
-        "performedDateTime": "2014-02-24",
+        "performedDateTime": "2052-02-24",
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "Procedure",
@@ -1258,10 +1259,10 @@
             }
           ]
         },
-        "performedDateTime": "2014-04-21",
+        "performedDateTime": "2052-04-21",
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "Procedure",
@@ -1287,10 +1288,10 @@
             }
           ]
         },
-        "performedDateTime": "2014-05-12",
+        "performedDateTime": "2052-05-12",
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "Procedure",
@@ -1316,10 +1317,10 @@
             }
           ]
         },
-        "performedDateTime": "2014-07-07",
+        "performedDateTime": "2052-07-07",
         "reasonReference": [
           {
-            "reference": "urn:uuid:be83534e-34e8-4a24-bfd7-04d6284d2453"
+            "reference": "Condition/be83534e-34e8-4a24-bfd7-04d6284d2453"
           }
         ],
         "resourceType": "Procedure",

@@ -32,8 +32,8 @@
     {
       "fullUrl": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c",
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
       },
       "resource": {
         "bodySite": [
@@ -91,6 +91,7 @@
             }
           }
         ],
+        "id": "c42a8fe6-5a01-48a9-9fca-c651ad9f022c",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
@@ -145,7 +146,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
           }
         ],
         "meta": {
@@ -167,7 +168,7 @@
           "reference": "urn:uuid:dd8ceb99-4039-4e94-99ea-42f6eedac5b4"
         },
         "valueCodeableConcept": {
-          "text": "cT1"
+          "text": "cT3"
         }
       }
     },
@@ -205,7 +206,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
           }
         ],
         "meta": {
@@ -227,7 +228,7 @@
           "reference": "urn:uuid:dd8ceb99-4039-4e94-99ea-42f6eedac5b4"
         },
         "valueCodeableConcept": {
-          "text": "cN0"
+          "text": "cN1a"
         }
       }
     },
@@ -265,7 +266,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
           }
         ],
         "meta": {
@@ -325,7 +326,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
           }
         ],
         "meta": {
@@ -347,7 +348,7 @@
           "reference": "urn:uuid:dd8ceb99-4039-4e94-99ea-42f6eedac5b4"
         },
         "valueCodeableConcept": {
-          "text": "IA"
+          "text": "IIIA"
         }
       }
     },
@@ -385,7 +386,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
           }
         ],
         "meta": {
@@ -407,7 +408,7 @@
           "reference": "urn:uuid:dd8ceb99-4039-4e94-99ea-42f6eedac5b4"
         },
         "valueCodeableConcept": {
-          "text": "pT1"
+          "text": "pT3"
         }
       }
     },
@@ -445,7 +446,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
           }
         ],
         "meta": {
@@ -467,7 +468,7 @@
           "reference": "urn:uuid:dd8ceb99-4039-4e94-99ea-42f6eedac5b4"
         },
         "valueCodeableConcept": {
-          "text": "pN0"
+          "text": "pN1a"
         }
       }
     },
@@ -505,7 +506,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
           }
         ],
         "meta": {
@@ -565,7 +566,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
           }
         ],
         "meta": {
@@ -587,7 +588,7 @@
           "reference": "urn:uuid:dd8ceb99-4039-4e94-99ea-42f6eedac5b4"
         },
         "valueCodeableConcept": {
-          "text": "IA"
+          "text": "IIIA"
         }
       }
     },
@@ -620,7 +621,7 @@
         "effectiveDateTime": "2019-09-21",
         "focus": [
           {
-            "reference": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
           }
         ],
         "resourceType": "Observation",
@@ -668,7 +669,7 @@
         "effectiveDateTime": "2019-09-21",
         "focus": [
           {
-            "reference": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
           }
         ],
         "resourceType": "Observation",
@@ -716,7 +717,7 @@
         "effectiveDateTime": "2019-09-21",
         "focus": [
           {
-            "reference": "urn:uuid:c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
+            "reference": "Condition/c42a8fe6-5a01-48a9-9fca-c651ad9f022c"
           }
         ],
         "resourceType": "Observation",

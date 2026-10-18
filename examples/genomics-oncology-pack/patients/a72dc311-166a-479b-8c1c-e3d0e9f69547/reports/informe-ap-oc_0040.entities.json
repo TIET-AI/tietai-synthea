@@ -1,17 +1,17 @@
 {
-  "document_sha256": "dfce024f8480e7c267a677b9b22ad97ecf9dae4bff79300617bb73598ab06823",
+  "document_sha256": "299b3226a689d94d72356603bf138b7253137ec848eee9fee15b29aa14dcf548",
   "entities": [
     {
-      "accession": "AP-2013-001580",
+      "accession": "AP-2018-001580",
       "assertion": "present",
       "char_end": 360,
       "char_start": 285,
-      "collection_date": "2013-12-24",
+      "collection_date": "2018-12-24",
       "entity_id": "ent_0001",
       "kind": "specimen",
       "laterality": "right",
-      "quote": "Muestra AP-2013-001580: Lobectomía pulmonar derecha, recibida el 2013-12-24",
-      "quote_sha256": "0a5ff77e683dc31b006834b5df7e5adbdb2e787b7c26f17f6c38bfeac785d687",
+      "quote": "Muestra AP-2018-001580: Lobectomía pulmonar derecha, recibida el 2018-12-24",
+      "quote_sha256": "0c9b07e73302224dd4ff740b3e8f657fa868b15b3288f10f4d707ca39bda8d08",
       "type_text": "lobectomía pulmonar derecha"
     },
     {
@@ -63,12 +63,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 18 mm en su mayor dimensión",
-      "quote_sha256": "a792c85b812cabd8fd0711ab6ff925d5e7f7e911ee6098d5d672169337e7e0b8",
+      "quote": "Tamaño tumoral: 25 mm en su mayor dimensión",
+      "quote_sha256": "a42d53d40e61162aec27e58519adac7d24d4194261ff5f5b8fde8b42143ea424",
       "source_unit": "mm",
-      "source_value": "18",
+      "source_value": "25",
       "unit": "mm",
-      "value": 18
+      "value": 25
     },
     {
       "assertion": "present",
@@ -83,18 +83,18 @@
     },
     {
       "assertion": "present",
-      "char_end": 708,
+      "char_end": 707,
       "char_start": 676,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: presente",
-      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
-      "status": "present"
+      "quote": "Invasión linfovascular: ausente",
+      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
+      "status": "absent"
     },
     {
       "assertion": "present",
-      "char_end": 737,
-      "char_start": 709,
+      "char_end": 736,
+      "char_start": 708,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -103,29 +103,29 @@
     },
     {
       "assertion": "present",
-      "char_end": 790,
-      "char_start": 738,
+      "char_end": 788,
+      "char_start": 737,
       "entity_id": "ent_0010",
-      "examined": 14,
+      "examined": 8,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 14 ganglios con metástasis",
-      "quote_sha256": "178992cd5062fd7d240fb7289779b960a9c67758c093c2a892334df23d1ccbaa"
+      "quote": "Ganglios linfáticos: 0 de 8 ganglios con metástasis",
+      "quote_sha256": "d4d6af4cfa9cb9666353759a3899b60aa3aab75e25acdf3a389db5985dbdaed1"
     },
     {
       "assertion": "present",
       "char_end": 852,
-      "char_start": 791,
+      "char_start": 789,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA",
+      "quote_sha256": "4924b8c59e93853d8bd729d5eaed72d22bbf0fd7de142f5345109a6f0a1e963d",
+      "stage_group": "IA",
+      "t": "pT1c"
     },
     {
       "assertion": "present",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Jack Veum   Sexo: varón   Fecha de nacimiento: 1965-10-28\nCaso sintético oc_0040. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2013-001580: Lobectomía pulmonar derecha, recibida el 2013-12-24\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 18 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 14 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "5d19fb9ff4615598bc195bd08ceaca0ef7c17967e1beb4ccbb0eef4c91a8d9fb"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Jack Veum   Sexo: varón   Fecha de nacimiento: 1965-10-28\nCaso sintético oc_0040. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2018-001580: Lobectomía pulmonar derecha, recibida el 2018-12-24\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 25 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 8 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "f604eac7fcad5156f566cdddafa7d2ef8508ce20e4781ec0eb81c36334148d78"
 }

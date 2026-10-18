@@ -1,17 +1,17 @@
 {
-  "document_sha256": "089fdae20cf7c7ce48b7bcaf09958739ee3d51b6f7f30cca680807bfad6c97a0",
+  "document_sha256": "f6067e60a17aa070ae85149687b66d8f845c988ed6717712ff077c7f82a38eeb",
   "entities": [
     {
-      "accession": "AP-2014-000396",
+      "accession": "AP-2018-000396",
       "assertion": "present",
       "char_end": 360,
       "char_start": 285,
-      "collection_date": "2014-10-08",
+      "collection_date": "2018-10-08",
       "entity_id": "ent_0001",
       "kind": "specimen",
       "laterality": "right",
-      "quote": "Muestra AP-2014-000396: Lobectomía pulmonar derecha, recibida el 2014-10-08",
-      "quote_sha256": "927b7440c5fd54534a82b21090196a6f78d539c6b8c9cf9d0fda6bedc98ac6ee",
+      "quote": "Muestra AP-2018-000396: Lobectomía pulmonar derecha, recibida el 2018-10-08",
+      "quote_sha256": "f7ffcb4f15ba7525001af5d09d45d87d60883362f4e9df05dde7341daff840e5",
       "type_text": "lobectomía pulmonar derecha"
     },
     {
@@ -63,12 +63,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 48 mm en su mayor dimensión",
-      "quote_sha256": "603742b72dc6c0783d3c3a543a844e9ce3cc6f48f745ed1959f6e8044b59b1d4",
+      "quote": "Tamaño tumoral: 35 mm en su mayor dimensión",
+      "quote_sha256": "4b540ee425631441583f19d2ee1d12ce8e209f4963ee0a53346f724848580572",
       "source_unit": "mm",
-      "source_value": "48",
+      "source_value": "35",
       "unit": "mm",
-      "value": 48
+      "value": 35
     },
     {
       "assertion": "present",
@@ -83,18 +83,18 @@
     },
     {
       "assertion": "present",
-      "char_end": 707,
+      "char_end": 708,
       "char_start": 676,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: ausente",
-      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
-      "status": "absent"
+      "quote": "Invasión linfovascular: presente",
+      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
+      "status": "present"
     },
     {
       "assertion": "present",
-      "char_end": 736,
-      "char_start": 708,
+      "char_end": 737,
+      "char_start": 709,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -103,34 +103,34 @@
     },
     {
       "assertion": "present",
-      "char_end": 789,
-      "char_start": 737,
+      "char_end": 790,
+      "char_start": 738,
       "entity_id": "ent_0010",
-      "examined": 14,
+      "examined": 15,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 14 ganglios con metástasis",
-      "quote_sha256": "178992cd5062fd7d240fb7289779b960a9c67758c093c2a892334df23d1ccbaa"
+      "quote": "Ganglios linfáticos: 0 de 15 ganglios con metástasis",
+      "quote_sha256": "2fccc042c4e8c15d109c3f1e8996cc497e9db370118c66b3aa93a79f932b39a0"
     },
     {
       "assertion": "present",
-      "char_end": 851,
-      "char_start": 790,
+      "char_end": 854,
+      "char_start": 791,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT2a pN0 cM0, estadio IB",
+      "quote_sha256": "1f714d019d2fec6bdb1eb93dc1a29d5176978a02cd22d870bd323d81c69fef53",
+      "stage_group": "IB",
+      "t": "pT2a"
     },
     {
       "assertion": "present",
-      "char_end": 901,
-      "char_start": 852,
+      "char_end": 904,
+      "char_start": 855,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Hong Will   Sexo: mujer   Fecha de nacimiento: 1950-07-04\nCaso sintético oc_0008. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2014-000396: Lobectomía pulmonar derecha, recibida el 2014-10-08\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 48 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 14 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "e28a2bcd3a725afbd00e43aceb3fb993f3e9d9e1138e5fe91b8e56553e2fd606"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Hong Will   Sexo: mujer   Fecha de nacimiento: 1950-07-04\nCaso sintético oc_0008. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2018-000396: Lobectomía pulmonar derecha, recibida el 2018-10-08\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 35 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 15 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT2a pN0 cM0, estadio IB\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "5750b0c52fc48777fb3d5f8ba044fe4d11287a1ac874a7da7db97ea49e017c7b"
 }

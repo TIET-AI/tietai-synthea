@@ -1,5 +1,5 @@
 {
-  "document_sha256": "e33739b2c02864007ad3ce22a9b9add11860d4792ff33ccd8b888500be30724b",
+  "document_sha256": "5c850cc26cfdd83078c867e8422466e017c1861af5046b5fe159e457e2b0e5de",
   "entities": [
     {
       "accession": "AP-2022-000581",
@@ -63,22 +63,22 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 23 mm en su mayor dimensión",
-      "quote_sha256": "9740d39d6672d1003599e7f1728d9d7a1d449a6fe80f0d355455d79e4eadfa7d",
+      "quote": "Tamaño tumoral: 38 mm en su mayor dimensión",
+      "quote_sha256": "219d555c1b5b80b751f850ecf8a1336308158e07729845afdb531283f01388b6",
       "source_unit": "mm",
-      "source_value": "23",
+      "source_value": "38",
       "unit": "mm",
-      "value": 23
+      "value": 38
     },
     {
       "assertion": "present",
       "char_end": 693,
       "char_start": 635,
-      "distance_mm": 4,
+      "distance_mm": 2,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
-      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 2 mm",
+      "quote_sha256": "1aab6ef667a62bc3d4c9b0b8cb229331e75a01b97f77e5832c3cb3aecb6e84c3",
       "status": "negative"
     },
     {
@@ -103,28 +103,28 @@
     },
     {
       "assertion": "present",
-      "char_end": 807,
+      "char_end": 806,
       "char_start": 755,
       "entity_id": "ent_0010",
-      "examined": 10,
+      "examined": 8,
       "kind": "nodes",
-      "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 10 ganglios con metástasis",
-      "quote_sha256": "9e86ce942f8fba07e925d3f271d38cd9e48ad31ee100b91757abe391b11259d1"
+      "positive": 3,
+      "quote": "Ganglios linfáticos: 3 de 8 ganglios con metástasis",
+      "quote_sha256": "1b7cf4596966856a4d376c5a7a8ceb5f335ed13c5e9f06f0a15b575372bc4164"
     },
     {
       "assertion": "present",
       "char_end": 871,
-      "char_start": 808,
+      "char_start": 807,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
-      "n": "pN0",
+      "n": "pN1a",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIA",
-      "quote_sha256": "f6d5b61ae0f17f3f6231bd069c6679258f05d7c2be16d3275d3696a01681fc9a",
-      "stage_group": "IIA",
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT2 pN1a cM0, estadio IIB",
+      "quote_sha256": "abdc807530c781be75fe47a3af9319a9b34d323cbc4b6affd6ed883e0dc6088f",
+      "stage_group": "IIB",
       "t": "pT2"
     },
     {
@@ -180,6 +180,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Marilu Vázquez   Sexo: mujer   Fecha de nacimiento: 1955-12-23\nCaso sintético oc_0013. Diagnóstico de referencia: carcinoma de mama.\nMuestra AP-2022-000581: Tumorectomía de mama izquierda, recibida el 2022-07-20\nProcedimiento: Tumorectomía con biopsia selectiva de ganglio centinela\nLocalización del tumor: Mama (C50.9)\nTipo histológico: Carcinoma ductal infiltrante (8500/3)\nGrado histológico: Grado 2 de Nottingham (puntuación 3+2+1)\nTamaño tumoral: 23 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 10 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIA\nReceptor de estrógenos (RE): negativo, inmunohistoquímica\nReceptor de progesterona (RP): positivo, inmunohistoquímica\nHER2: negativo, inmunohistoquímica\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "d6bde55672a0e632772accc345dccec25ad6c8ec185bea9cc0deca3ce7af7cf2"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Marilu Vázquez   Sexo: mujer   Fecha de nacimiento: 1955-12-23\nCaso sintético oc_0013. Diagnóstico de referencia: carcinoma de mama.\nMuestra AP-2022-000581: Tumorectomía de mama izquierda, recibida el 2022-07-20\nProcedimiento: Tumorectomía con biopsia selectiva de ganglio centinela\nLocalización del tumor: Mama (C50.9)\nTipo histológico: Carcinoma ductal infiltrante (8500/3)\nGrado histológico: Grado 2 de Nottingham (puntuación 3+2+1)\nTamaño tumoral: 38 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 3 de 8 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT2 pN1a cM0, estadio IIB\nReceptor de estrógenos (RE): negativo, inmunohistoquímica\nReceptor de progesterona (RP): positivo, inmunohistoquímica\nHER2: negativo, inmunohistoquímica\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "46d41a9470c8a878a9f304d0450e896105522e2e74f6cf023a2145a1742acf9f"
 }

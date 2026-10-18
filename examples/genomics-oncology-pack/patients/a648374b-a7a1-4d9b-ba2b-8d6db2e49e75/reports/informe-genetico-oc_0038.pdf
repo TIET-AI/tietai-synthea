@@ -15,7 +15,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
 endobj
 6 0 obj
-<< /Length 1292 >>
+<< /Length 1314 >>
 stream
 BT /F1 9 Tf 12 TL 40 800 Td
 (LABORATORIO DE GEN\311TICA MOLECULAR \(sint\351tico\)) Tj T*
@@ -26,13 +26,13 @@ BT /F1 9 Tf 12 TL 40 800 Td
 (Panel NGS de tumor s\363lido OncoProstata v1) Tj T*
 (Muestra: tejido tumoral FFPE, biopsia de pr\363stata   ID de muestra SYN-0038) Tj T*
 (Genoma de referencia GRCh38) Tj T*
-(Fecha del informe: 2017-05-06) Tj T*
+(Fecha del informe: 2026-09-14) Tj T*
 () Tj T*
 (Variantes detectadas:) Tj T*
 (BRCA2 NM_000059.4:c.5946del \(p.Ser1982ArgfsTer22\) VAF 50,0%. Heterocigosis. Variante germinal. Patog\351nica \(ACMG\).) Tj T*
 () Tj T*
 (Implicaciones:) Tj T*
-(Clasificaci\363n alternativa de BRCA2 \(laboratorio\): Probablemente patog\351nica \(ACMG\).) Tj T*
+(Clasificaci\363n alternativa de BRCA2 NM_000059.4:c.5946del \(laboratorio\): Probablemente patog\351nica \(ACMG\).) Tj T*
 (Implicaci\363n terap\351utica: olaparib. Evidencia: Tier I - Level A. Enfermedad: adenocarcinoma de pr\363stata.) Tj T*
 () Tj T*
 (Fuente de conocimiento: ClinVar versi\363n 2026-09-01) Tj T*
@@ -53,5 +53,5 @@ xref
 trailer
 << /Size 7 /Root 1 0 R /Info 4 0 R >>
 startxref
-1795
+1817
 %%EOF

@@ -32,8 +32,8 @@
     {
       "fullUrl": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b",
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
       },
       "resource": {
         "bodySite": [
@@ -91,6 +91,7 @@
             }
           }
         ],
+        "id": "2d304bb1-809b-4282-b0f2-eb545a66075b",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
@@ -145,7 +146,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b"
+            "reference": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
           }
         ],
         "meta": {
@@ -205,7 +206,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b"
+            "reference": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
           }
         ],
         "meta": {
@@ -227,7 +228,7 @@
           "reference": "urn:uuid:5b7b215b-ad5f-406d-9d8f-738692ae5a59"
         },
         "valueCodeableConcept": {
-          "text": "cN0"
+          "text": "cN1a"
         }
       }
     },
@@ -265,7 +266,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b"
+            "reference": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
           }
         ],
         "meta": {
@@ -325,7 +326,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b"
+            "reference": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
           }
         ],
         "meta": {
@@ -347,7 +348,7 @@
           "reference": "urn:uuid:5b7b215b-ad5f-406d-9d8f-738692ae5a59"
         },
         "valueCodeableConcept": {
-          "text": "IIA"
+          "text": "IIB"
         }
       }
     },
@@ -385,7 +386,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b"
+            "reference": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
           }
         ],
         "meta": {
@@ -445,7 +446,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b"
+            "reference": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
           }
         ],
         "meta": {
@@ -467,7 +468,7 @@
           "reference": "urn:uuid:5b7b215b-ad5f-406d-9d8f-738692ae5a59"
         },
         "valueCodeableConcept": {
-          "text": "pN0"
+          "text": "pN1a"
         }
       }
     },
@@ -505,7 +506,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b"
+            "reference": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
           }
         ],
         "meta": {
@@ -565,7 +566,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b"
+            "reference": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
           }
         ],
         "meta": {
@@ -587,7 +588,7 @@
           "reference": "urn:uuid:5b7b215b-ad5f-406d-9d8f-738692ae5a59"
         },
         "valueCodeableConcept": {
-          "text": "IIA"
+          "text": "IIB"
         }
       }
     },
@@ -620,7 +621,7 @@
         "effectiveDateTime": "2022-07-23",
         "focus": [
           {
-            "reference": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b"
+            "reference": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
           }
         ],
         "resourceType": "Observation",
@@ -668,7 +669,7 @@
         "effectiveDateTime": "2022-07-23",
         "focus": [
           {
-            "reference": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b"
+            "reference": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
           }
         ],
         "resourceType": "Observation",
@@ -716,7 +717,7 @@
         "effectiveDateTime": "2022-07-23",
         "focus": [
           {
-            "reference": "urn:uuid:2d304bb1-809b-4282-b0f2-eb545a66075b"
+            "reference": "Condition/2d304bb1-809b-4282-b0f2-eb545a66075b"
           }
         ],
         "resourceType": "Observation",

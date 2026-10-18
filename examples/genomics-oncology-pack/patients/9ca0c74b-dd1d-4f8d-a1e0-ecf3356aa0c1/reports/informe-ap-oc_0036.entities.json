@@ -1,5 +1,5 @@
 {
-  "document_sha256": "693c3dd6cca1f9218d4e914410938d5298e250e646c57261397d82de965e32a2",
+  "document_sha256": "66c83145c9f5da92e2206d032d5cae61d497a89ec2997450636aeb8d52e2baf6",
   "entities": [
     {
       "accession": "AP-2019-001432",
@@ -63,12 +63,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 13 mm en su mayor dimensión",
-      "quote_sha256": "032070e1959e55e95fe6c2ac048c5d4674a76fbc54d5158ca469b870779397ec",
+      "quote": "Tamaño tumoral: 29 mm en su mayor dimensión",
+      "quote_sha256": "ebfa5e5206b0fd3ac944c02d63c75747db80f34d720ad29952ce510a2aa4ae04",
       "source_unit": "mm",
-      "source_value": "13",
+      "source_value": "29",
       "unit": "mm",
-      "value": 13
+      "value": 29
     },
     {
       "assertion": "present",
@@ -83,18 +83,18 @@
     },
     {
       "assertion": "present",
-      "char_end": 713,
+      "char_end": 712,
       "char_start": 681,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: presente",
-      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
-      "status": "present"
+      "quote": "Invasión linfovascular: ausente",
+      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
+      "status": "absent"
     },
     {
       "assertion": "present",
-      "char_end": 742,
-      "char_start": 714,
+      "char_end": 741,
+      "char_start": 713,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -104,17 +104,17 @@
     {
       "assertion": "present",
       "char_end": 794,
-      "char_start": 743,
+      "char_start": 742,
       "entity_id": "ent_0010",
-      "examined": 9,
+      "examined": 12,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 9 ganglios con metástasis",
-      "quote_sha256": "e7c4c3bc7e030ca09c73e1582c6ee9c365c4b945f9da03dc1168cbafa3005646"
+      "quote": "Ganglios linfáticos: 0 de 12 ganglios con metástasis",
+      "quote_sha256": "c057d5cc74f45c991afcee63ce7247063033b2a757bd4d129e994ddf574d190b"
     },
     {
       "assertion": "present",
-      "char_end": 856,
+      "char_end": 858,
       "char_start": 795,
       "edition": "8",
       "entity_id": "ent_0011",
@@ -122,15 +122,15 @@
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA",
+      "quote_sha256": "4924b8c59e93853d8bd729d5eaed72d22bbf0fd7de142f5345109a6f0a1e963d",
+      "stage_group": "IA",
+      "t": "pT1c"
     },
     {
       "assertion": "present",
-      "char_end": 906,
-      "char_start": 857,
+      "char_end": 908,
+      "char_start": 859,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Regan Homenick   Sexo: mujer   Fecha de nacimiento: 1968-04-23\nCaso sintético oc_0036. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2019-001432: Lobectomía pulmonar derecha, recibida el 2019-06-02\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 13 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 9 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "ace9cf75cd30af7e67ca9f44b4159a6a982750e0b6951afe74a027c37a5c3074"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Regan Homenick   Sexo: mujer   Fecha de nacimiento: 1968-04-23\nCaso sintético oc_0036. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2019-001432: Lobectomía pulmonar derecha, recibida el 2019-06-02\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 29 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 12 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "22484e453cd7183f0ff2a4234e46aba1a078f41d116a6d8dc4140cbd30d745a9"
 }

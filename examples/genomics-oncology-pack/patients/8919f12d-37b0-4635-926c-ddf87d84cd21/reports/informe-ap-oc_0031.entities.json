@@ -1,17 +1,17 @@
 {
-  "document_sha256": "4629b3d6215f6605cbcefb106adcd52ca6a19c6edc6974dd1a1f48093be2572d",
+  "document_sha256": "51244dde41937e34bea0fbe0e39b611b662f662852b7d82dcfbc91cfd1de5e02",
   "entities": [
     {
-      "accession": "AP-2000-001247",
+      "accession": "AP-2018-001247",
       "assertion": "present",
       "char_end": 368,
       "char_start": 290,
-      "collection_date": "2000-05-06",
+      "collection_date": "2018-05-06",
       "entity_id": "ent_0001",
       "kind": "specimen",
       "laterality": "left",
-      "quote": "Muestra AP-2000-001247: Tumorectomía de mama izquierda, recibida el 2000-05-06",
-      "quote_sha256": "945a854afc5103b4534a646fa9ed50a57752ff7e83ecfd1979b9a4bdbaba9ace",
+      "quote": "Muestra AP-2018-001247: Tumorectomía de mama izquierda, recibida el 2018-05-06",
+      "quote_sha256": "44fb9b87b029645c2d26d25b592ed8c9f98b36c59f5e1e395192aace2bcee14f",
       "type_text": "tumorectomía de mama izquierda"
     },
     {
@@ -63,12 +63,12 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 15 mm en su mayor dimensión",
-      "quote_sha256": "86c856089ca8007131a3ed408fd941b4a3c85e6c1be39f0e868fda244db5c82e",
+      "quote": "Tamaño tumoral: 49 mm en su mayor dimensión",
+      "quote_sha256": "1f4bafb557deb86322f18f6684f7ba6de643515aad928305078cdaefafcee920",
       "source_unit": "mm",
-      "source_value": "15",
+      "source_value": "49",
       "unit": "mm",
-      "value": 15
+      "value": 49
     },
     {
       "assertion": "present",
@@ -103,34 +103,34 @@
     },
     {
       "assertion": "present",
-      "char_end": 808,
+      "char_end": 809,
       "char_start": 757,
       "entity_id": "ent_0010",
-      "examined": 9,
+      "examined": 17,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 9 ganglios con metástasis",
-      "quote_sha256": "e7c4c3bc7e030ca09c73e1582c6ee9c365c4b945f9da03dc1168cbafa3005646"
+      "quote": "Ganglios linfáticos: 0 de 17 ganglios con metástasis",
+      "quote_sha256": "45d2ecf98c79df52ef21bf8095d60cbe05912bce7a29711bae665fb0e5df53f6"
     },
     {
       "assertion": "present",
-      "char_end": 871,
-      "char_start": 809,
+      "char_end": 873,
+      "char_start": 810,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio IA",
-      "quote_sha256": "79cd93f8d19d234892dc58a94d69d489517169ff6f022120f9f46bc737f7ef0c",
-      "stage_group": "IA",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIA",
+      "quote_sha256": "f6d5b61ae0f17f3f6231bd069c6679258f05d7c2be16d3275d3696a01681fc9a",
+      "stage_group": "IIA",
+      "t": "pT2"
     },
     {
       "assertion": "present",
-      "char_end": 929,
-      "char_start": 872,
+      "char_end": 931,
+      "char_start": 874,
       "code": "16112-5",
       "entity_id": "ent_0012",
       "kind": "biomarker",
@@ -142,8 +142,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 989,
-      "char_start": 930,
+      "char_end": 991,
+      "char_start": 932,
       "code": "16113-3",
       "entity_id": "ent_0013",
       "kind": "biomarker",
@@ -155,8 +155,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 1024,
-      "char_start": 990,
+      "char_end": 1026,
+      "char_start": 992,
       "code": "48676-1",
       "entity_id": "ent_0014",
       "kind": "biomarker",
@@ -168,8 +168,8 @@
     },
     {
       "assertion": "present",
-      "char_end": 1074,
-      "char_start": 1025,
+      "char_end": 1076,
+      "char_start": 1027,
       "entity_id": "ent_0015",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -180,6 +180,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Kristeen Lockman   Sexo: mujer   Fecha de nacimiento: 1943-07-15\nCaso sintético oc_0031. Diagnóstico de referencia: carcinoma de mama.\nMuestra AP-2000-001247: Tumorectomía de mama izquierda, recibida el 2000-05-06\nProcedimiento: Tumorectomía con biopsia selectiva de ganglio centinela\nLocalización del tumor: Mama (C50.9)\nTipo histológico: Carcinoma ductal infiltrante (8500/3)\nGrado histológico: Grado 2 de Nottingham (puntuación 3+2+1)\nTamaño tumoral: 15 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 9 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio IA\nReceptor de estrógenos (RE): negativo, inmunohistoquímica\nReceptor de progesterona (RP): positivo, inmunohistoquímica\nHER2: negativo, inmunohistoquímica\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "936a5e9494fdaeae28a9cc28d391c5ff2efd264990776339f4ffba5500a34484"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Kristeen Lockman   Sexo: mujer   Fecha de nacimiento: 1943-07-15\nCaso sintético oc_0031. Diagnóstico de referencia: carcinoma de mama.\nMuestra AP-2018-001247: Tumorectomía de mama izquierda, recibida el 2018-05-06\nProcedimiento: Tumorectomía con biopsia selectiva de ganglio centinela\nLocalización del tumor: Mama (C50.9)\nTipo histológico: Carcinoma ductal infiltrante (8500/3)\nGrado histológico: Grado 2 de Nottingham (puntuación 3+2+1)\nTamaño tumoral: 49 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 17 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIA\nReceptor de estrógenos (RE): negativo, inmunohistoquímica\nReceptor de progesterona (RP): positivo, inmunohistoquímica\nHER2: negativo, inmunohistoquímica\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "4a5a98294d43956120ce77dbf2d6aba32656263ebd00b2f54a91f03e691b126c"
 }

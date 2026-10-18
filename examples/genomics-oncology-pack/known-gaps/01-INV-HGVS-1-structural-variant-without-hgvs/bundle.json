@@ -57,7 +57,7 @@
               }
             ]
           },
-          "collectedDateTime": "2013-02-28"
+          "collectedDateTime": "2018-02-28"
         },
         "resourceType": "Specimen",
         "status": "available",
@@ -207,7 +207,7 @@
             }
           }
         ],
-        "effectiveDateTime": "2013-02-28",
+        "effectiveDateTime": "2018-02-28",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-variant"

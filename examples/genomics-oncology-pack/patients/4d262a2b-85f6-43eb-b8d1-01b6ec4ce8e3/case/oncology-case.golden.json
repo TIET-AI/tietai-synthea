@@ -1,0 +1,109 @@
+{
+  "schema": "tietai.oncology-case-golden/v1",
+  "label": "Produced by the GO-20 builder (pkg/oncologycase, test TestBuildGoldenGO61Pack) over the pack's bundles; ids are the uuids of the bundles' urn:uuid fullUrls; reader holds read:fhir.germline. Regenerate with GO61_UPDATE=1.",
+  "patient": "4d262a2b-85f6-43eb-b8d1-01b6ec4ce8e3",
+  "summary_sha256": "d0cc3ba8d88a133c5adea4c87ae8eb8331d47787fd3aa310583a8c3090497a86",
+  "case": {
+    "cases": [
+      {
+        "biomarkers": [
+          {
+            "code": "LOINC 2857-1",
+            "date": "2022-08-29",
+            "display": "PSA",
+            "quantity": {
+              "unit": "ng/mL",
+              "value": 27.22
+            }
+          }
+        ],
+        "case_id": "oc_0001",
+        "diagnosis": {
+          "cie10es": "C61",
+          "clinical_status": "active",
+          "date": "2022-08-07",
+          "display": "Malignant tumor of prostate (disorder)",
+          "icdo3_morphology": "8140/3",
+          "icdo3_topography": "C61.9",
+          "snomed": "399068003"
+        },
+        "genomic_findings": [
+          {
+            "clinical_significance": "Pathogenic",
+            "conflicting_significance": [
+              "Likely pathogenic"
+            ],
+            "gene": "BRCA2",
+            "hgvs_c": "NM_000059.4:c.5946del",
+            "hgvs_p": "NP_000050.3:p.Ser1982ArgfsTer22",
+            "source_class": "germline",
+            "variant_observation_ref": "Observation/49d61aa5-afea-428d-90bd-1b76f87fa3cb"
+          }
+        ],
+        "primary_condition_ref": "Condition/fac1c9f2-5bd3-423d-bf8d-d3bccadb8b32",
+        "staging": [
+          {
+            "date": "2022-08-14",
+            "edition": "8",
+            "kind": "clinical",
+            "m": "cM0",
+            "n": "cN0",
+            "stage_group": "I",
+            "system": "TNM",
+            "t": "cT1"
+          },
+          {
+            "date": "2022-08-29",
+            "edition": "8",
+            "kind": "pathological",
+            "m": "cM0",
+            "n": "pN0",
+            "stage_group": "I",
+            "system": "TNM",
+            "t": "pT1"
+          }
+        ],
+        "treatments": [
+          {
+            "code": "ATC L02BB03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "bicalutamide"
+          },
+          {
+            "code": "ATC L02AE02",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "leuprorelin"
+          },
+          {
+            "code": "ATC L02BB03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "bicalutamide"
+          },
+          {
+            "code": "ATC L02AE02",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "leuprorelin"
+          },
+          {
+            "code": "ATC L02BB03",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "bicalutamide"
+          },
+          {
+            "code": "ATC L02AE02",
+            "fhir_status": "completed",
+            "kind": "systemic",
+            "regimen": "leuprorelin"
+          }
+        ]
+      }
+    ],
+    "patient_ref": "Patient/1df5e927-5503-43fd-a43f-cc021b0ab77c",
+    "schema": "tietai.oncology-case/v1"
+  }
+}

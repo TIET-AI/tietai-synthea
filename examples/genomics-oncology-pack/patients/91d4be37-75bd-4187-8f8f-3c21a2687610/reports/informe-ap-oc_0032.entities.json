@@ -1,17 +1,17 @@
 {
-  "document_sha256": "f7055b4eeda804fa5f2f1bff96209a720da8d356456e56508c12ed9d29c29a56",
+  "document_sha256": "a9e591d4923f37def0193fa1ac051f5055485e5e1cbd8fe324085f386743b3a4",
   "entities": [
     {
-      "accession": "AP-2011-001284",
+      "accession": "AP-2018-001284",
       "assertion": "present",
       "char_end": 367,
       "char_start": 292,
-      "collection_date": "2011-02-21",
+      "collection_date": "2018-02-21",
       "entity_id": "ent_0001",
       "kind": "specimen",
       "laterality": "right",
-      "quote": "Muestra AP-2011-001284: Lobectomía pulmonar derecha, recibida el 2011-02-21",
-      "quote_sha256": "d18d7200ab2c626580698be58ba627861fd8cfb1a63654d9cf08059b6921305e",
+      "quote": "Muestra AP-2018-001284: Lobectomía pulmonar derecha, recibida el 2018-02-21",
+      "quote_sha256": "617b55a588c74c57fd10da7282038c993106bf29808b34ed11039e64c594ac64",
       "type_text": "lobectomía pulmonar derecha"
     },
     {
@@ -63,22 +63,22 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 27 mm en su mayor dimensión",
-      "quote_sha256": "d0c5c3bfee5b13c7927cc6369d3b79cd23e28551cb460372d68c75f01e4da7b0",
+      "quote": "Tamaño tumoral: 18 mm en su mayor dimensión",
+      "quote_sha256": "a792c85b812cabd8fd0711ab6ff925d5e7f7e911ee6098d5d672169337e7e0b8",
       "source_unit": "mm",
-      "source_value": "27",
+      "source_value": "18",
       "unit": "mm",
-      "value": 27
+      "value": 18
     },
     {
       "assertion": "present",
       "char_end": 682,
       "char_start": 624,
-      "distance_mm": 6,
+      "distance_mm": 2,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
-      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 2 mm",
+      "quote_sha256": "1aab6ef667a62bc3d4c9b0b8cb229331e75a01b97f77e5832c3cb3aecb6e84c3",
       "status": "negative"
     },
     {
@@ -106,15 +106,15 @@
       "char_end": 797,
       "char_start": 745,
       "entity_id": "ent_0010",
-      "examined": 15,
+      "examined": 11,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 15 ganglios con metástasis",
-      "quote_sha256": "2fccc042c4e8c15d109c3f1e8996cc497e9db370118c66b3aa93a79f932b39a0"
+      "quote": "Ganglios linfáticos: 0 de 11 ganglios con metástasis",
+      "quote_sha256": "f6e2b107757492705ee8dbd7b94589e8f1ed0ea2be9e5242fb4fbc16e6bcd796"
     },
     {
       "assertion": "present",
-      "char_end": 859,
+      "char_end": 861,
       "char_start": 798,
       "edition": "8",
       "entity_id": "ent_0011",
@@ -122,15 +122,15 @@
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1b pN0 cM0, estadio IA",
+      "quote_sha256": "9b7cb8c9fd20dc841683fe2db4416dc76b95c9e55bd744b06c479545c74f6f8a",
+      "stage_group": "IA",
+      "t": "pT1b"
     },
     {
       "assertion": "present",
-      "char_end": 909,
-      "char_start": 860,
+      "char_end": 911,
+      "char_start": 862,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Bridgett Gerlach   Sexo: mujer   Fecha de nacimiento: 1957-10-19\nCaso sintético oc_0032. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2011-001284: Lobectomía pulmonar derecha, recibida el 2011-02-21\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 27 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 15 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "c32ceaa3d11b4ac998368b5fd57a03b92688a5499d0d39605693816c7a7d9972"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Bridgett Gerlach   Sexo: mujer   Fecha de nacimiento: 1957-10-19\nCaso sintético oc_0032. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2018-001284: Lobectomía pulmonar derecha, recibida el 2018-02-21\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 18 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 11 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1b pN0 cM0, estadio IA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "7c217c147ac6f837d864af798ccd870f5090caf9e2b45cdd3fb09174205b430f"
 }

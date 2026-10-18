@@ -15,7 +15,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
 endobj
 6 0 obj
-<< /Length 1708 >>
+<< /Length 1735 >>
 stream
 BT /F1 9 Tf 12 TL 40 800 Td
 (LABORATORIO DE GEN\311TICA MOLECULAR \(sint\351tico\)) Tj T*
@@ -26,7 +26,7 @@ BT /F1 9 Tf 12 TL 40 800 Td
 (Panel NGS de tumor s\363lido OncoPulmon v4) Tj T*
 (Muestra: tejido tumoral FFPE, biopsia pulmonar   ID de muestra SYN-0040) Tj T*
 (Genoma de referencia GRCh38) Tj T*
-(Fecha del informe: 2014-01-14) Tj T*
+(Fecha del informe: 2026-09-11) Tj T*
 () Tj T*
 (Variantes detectadas:) Tj T*
 (EGFR NM_005228.5:c.2573T>G \(p.Leu858Arg\) VAF 44,6%. Heterocigosis. Variante som\341tica. Tier I \(AMP\).) Tj T*
@@ -35,7 +35,7 @@ BT /F1 9 Tf 12 TL 40 800 Td
 () Tj T*
 (Implicaciones:) Tj T*
 (Implicaci\363n terap\351utica: osimertinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulm\363n.) Tj T*
-(Clasificaci\363n alternativa de EGFR \(laboratorio\): Tier II \(AMP\).) Tj T*
+(Clasificaci\363n alternativa de EGFR NM_005228.5:c.2235_2249del \(laboratorio\): Tier II \(AMP\).) Tj T*
 (Implicaci\363n terap\351utica: osimertinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulm\363n.) Tj T*
 (Implicaci\363n terap\351utica: alectinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulm\363n.) Tj T*
 () Tj T*
@@ -57,5 +57,5 @@ xref
 trailer
 << /Size 7 /Root 1 0 R /Info 4 0 R >>
 startxref
-2211
+2238
 %%EOF

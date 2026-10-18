@@ -6,14 +6,14 @@ Caso sintético oc_0011. Diagnóstico de referencia: carcinoma de pulmón.
 Panel NGS de tumor sólido OncoPulmon v4
 Muestra: tejido tumoral FFPE, biopsia pulmonar   ID de muestra SYN-0011
 Genoma de referencia GRCh38
-Fecha del informe: 2025-08-11
+Fecha del informe: 2026-09-09
 
 Variantes detectadas:
 EGFR NM_005228.5:c.2235_2249del (p.Glu746_Ala750del) VAF 28,8%. Heterocigosis. Variante somática. Tier I (AMP).
 Reordenamiento ALK::EML4 detectado por RNA. VAF 26,8%. Variante somática. Tier I (AMP).
 
 Implicaciones:
-Clasificación alternativa de EGFR (laboratorio): Tier II (AMP).
+Clasificación alternativa de EGFR NM_005228.5:c.2235_2249del (laboratorio): Tier II (AMP).
 Implicación terapéutica: osimertinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulmón.
 Implicación terapéutica: alectinib. Evidencia: Tier I - Level A. Enfermedad: carcinoma de pulmón.
 

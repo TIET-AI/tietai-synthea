@@ -32,8 +32,8 @@
     {
       "fullUrl": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad",
       "request": {
-        "method": "POST",
-        "url": "Condition"
+        "method": "PUT",
+        "url": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
       },
       "resource": {
         "bodySite": [
@@ -91,6 +91,7 @@
             }
           }
         ],
+        "id": "7c3d53b0-7427-428e-bbc6-587791ecd2ad",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
@@ -145,7 +146,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "meta": {
@@ -167,7 +168,7 @@
           "reference": "urn:uuid:e7293e1f-a881-417a-877a-89d6481ff2be"
         },
         "valueCodeableConcept": {
-          "text": "cT1"
+          "text": "cT1b"
         }
       }
     },
@@ -205,7 +206,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "meta": {
@@ -265,7 +266,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "meta": {
@@ -325,7 +326,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "meta": {
@@ -347,7 +348,7 @@
           "reference": "urn:uuid:e7293e1f-a881-417a-877a-89d6481ff2be"
         },
         "valueCodeableConcept": {
-          "text": "I"
+          "text": "IA"
         }
       }
     },
@@ -385,7 +386,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "meta": {
@@ -407,7 +408,7 @@
           "reference": "urn:uuid:e7293e1f-a881-417a-877a-89d6481ff2be"
         },
         "valueCodeableConcept": {
-          "text": "pT1"
+          "text": "pT1b"
         }
       }
     },
@@ -445,7 +446,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "meta": {
@@ -505,7 +506,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "meta": {
@@ -565,7 +566,7 @@
         ],
         "focus": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "meta": {
@@ -587,7 +588,7 @@
           "reference": "urn:uuid:e7293e1f-a881-417a-877a-89d6481ff2be"
         },
         "valueCodeableConcept": {
-          "text": "I"
+          "text": "IA"
         }
       }
     },
@@ -616,7 +617,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -651,7 +652,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -686,7 +687,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -721,7 +722,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -756,7 +757,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -791,7 +792,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -826,7 +827,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -861,7 +862,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -896,7 +897,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -931,7 +932,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -966,7 +967,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -1001,7 +1002,7 @@
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "MedicationRequest",
@@ -1030,7 +1031,7 @@
         "performedDateTime": "2021-12-14",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "Procedure",
@@ -1059,7 +1060,7 @@
         "performedDateTime": "2022-01-04",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "Procedure",
@@ -1088,7 +1089,7 @@
         "performedDateTime": "2022-03-01",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "Procedure",
@@ -1117,7 +1118,7 @@
         "performedDateTime": "2022-05-03",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "Procedure",
@@ -1146,7 +1147,7 @@
         "performedDateTime": "2022-05-24",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "Procedure",
@@ -1175,7 +1176,7 @@
         "performedDateTime": "2022-07-19",
         "reasonReference": [
           {
-            "reference": "urn:uuid:7c3d53b0-7427-428e-bbc6-587791ecd2ad"
+            "reference": "Condition/7c3d53b0-7427-428e-bbc6-587791ecd2ad"
           }
         ],
         "resourceType": "Procedure",

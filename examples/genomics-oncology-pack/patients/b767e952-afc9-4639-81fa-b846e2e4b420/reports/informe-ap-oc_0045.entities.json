@@ -1,5 +1,5 @@
 {
-  "document_sha256": "14de5d7702778076a87ef1b25e7d29f97d2efd943c4c73b517cdba11b415f85e",
+  "document_sha256": "307e511bbeabe4cb6ed357a6f2fae1784feecfeacdcdac2e3ebb0b44db43206c",
   "entities": [
     {
       "accession": "AP-2021-001765",
@@ -63,38 +63,38 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 14 mm en su mayor dimensión",
-      "quote_sha256": "d40687f577a7b5bd70f03dcfa656ece7796541e49f2694e71f1711d660b6b27e",
+      "quote": "Tamaño tumoral: 16 mm en su mayor dimensión",
+      "quote_sha256": "399d6fd035ebf33f8960bfce97df5999ce1f5a6fa2a9fc9425f9be6489b8cdce",
       "source_unit": "mm",
-      "source_value": "14",
+      "source_value": "16",
       "unit": "mm",
-      "value": 14
+      "value": 16
     },
     {
       "assertion": "present",
       "char_end": 679,
       "char_start": 621,
-      "distance_mm": 6,
+      "distance_mm": 2,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 6 mm",
-      "quote_sha256": "d8cc3f0fbd8e538e8da441a986558e7ea323ba55eadbe51f53d35ad0c41003af",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 2 mm",
+      "quote_sha256": "1aab6ef667a62bc3d4c9b0b8cb229331e75a01b97f77e5832c3cb3aecb6e84c3",
       "status": "negative"
     },
     {
       "assertion": "present",
-      "char_end": 711,
+      "char_end": 712,
       "char_start": 680,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: ausente",
-      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
-      "status": "absent"
+      "quote": "Invasión linfovascular: presente",
+      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
+      "status": "present"
     },
     {
       "assertion": "present",
-      "char_end": 740,
-      "char_start": 712,
+      "char_end": 741,
+      "char_start": 713,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -104,17 +104,17 @@
     {
       "assertion": "present",
       "char_end": 793,
-      "char_start": 741,
+      "char_start": 742,
       "entity_id": "ent_0010",
-      "examined": 18,
+      "examined": 8,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 18 ganglios con metástasis",
-      "quote_sha256": "d9cc6febb4eaf6da2ab5098f23ae4849783c64f4c5e1034627c83f4e266f0c1e"
+      "quote": "Ganglios linfáticos: 0 de 8 ganglios con metástasis",
+      "quote_sha256": "d4d6af4cfa9cb9666353759a3899b60aa3aab75e25acdf3a389db5985dbdaed1"
     },
     {
       "assertion": "present",
-      "char_end": 855,
+      "char_end": 857,
       "char_start": 794,
       "edition": "8",
       "entity_id": "ent_0011",
@@ -122,15 +122,15 @@
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1b pN0 cM0, estadio IA",
+      "quote_sha256": "9b7cb8c9fd20dc841683fe2db4416dc76b95c9e55bd744b06c479545c74f6f8a",
+      "stage_group": "IA",
+      "t": "pT1b"
     },
     {
       "assertion": "present",
-      "char_end": 905,
-      "char_start": 856,
+      "char_end": 907,
+      "char_start": 858,
       "entity_id": "ent_0012",
       "kind": "comment",
       "quote": "Comentario: Sin hallazgos adicionales de interés.",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Ricardo Rojas   Sexo: varón   Fecha de nacimiento: 1966-09-27\nCaso sintético oc_0045. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2021-001765: Lobectomía pulmonar derecha, recibida el 2021-12-02\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 14 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 6 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 18 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "4c9a2a0150c353c7cbfa7da44e585b651575508a1d17eb2c0e2e1c0dd6fbaadf"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Ricardo Rojas   Sexo: varón   Fecha de nacimiento: 1966-09-27\nCaso sintético oc_0045. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2021-001765: Lobectomía pulmonar derecha, recibida el 2021-12-02\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 16 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 8 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1b pN0 cM0, estadio IA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "789a6abd306ae5b68073bbb8ddfa81e28f3b5cad15e61302dffefb9de3ee4b93"
 }

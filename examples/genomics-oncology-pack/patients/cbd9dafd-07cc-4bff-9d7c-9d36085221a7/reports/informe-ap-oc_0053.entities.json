@@ -1,5 +1,5 @@
 {
-  "document_sha256": "4ed3485bae586258a4910f28cb262a531454f0e2ed362c3d775bdfb41b760c6c",
+  "document_sha256": "96d2fde1e14924135149993ef2b3a6c2fb3a532d7eb4a657cf233372b738412f",
   "entities": [
     {
       "accession": "AP-2021-002061",
@@ -63,38 +63,38 @@
       "dimension": "greatest",
       "entity_id": "ent_0006",
       "kind": "size_mm",
-      "quote": "Tamaño tumoral: 25 mm en su mayor dimensión",
-      "quote_sha256": "a42d53d40e61162aec27e58519adac7d24d4194261ff5f5b8fde8b42143ea424",
+      "quote": "Tamaño tumoral: 21 mm en su mayor dimensión",
+      "quote_sha256": "a38fe37642ae7d5d91ef54d75a49c5e2b8f8c63f3b0f9a7761ace3923a997208",
       "source_unit": "mm",
-      "source_value": "25",
+      "source_value": "21",
       "unit": "mm",
-      "value": 25
+      "value": 21
     },
     {
       "assertion": "present",
       "char_end": 675,
       "char_start": 617,
-      "distance_mm": 4,
+      "distance_mm": 2,
       "entity_id": "ent_0007",
       "kind": "margins",
-      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 4 mm",
-      "quote_sha256": "6e4012724d577197c613d1d8206e9ca472c5156fca024bd1ab3f694db7b4313a",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 2 mm",
+      "quote_sha256": "1aab6ef667a62bc3d4c9b0b8cb229331e75a01b97f77e5832c3cb3aecb6e84c3",
       "status": "negative"
     },
     {
       "assertion": "present",
-      "char_end": 708,
+      "char_end": 707,
       "char_start": 676,
       "entity_id": "ent_0008",
       "kind": "lymphovascular_invasion",
-      "quote": "Invasión linfovascular: presente",
-      "quote_sha256": "97d1d148591d3f4fe3712792c4352b1f51eb41d4030f811da42f87f606c5850a",
-      "status": "present"
+      "quote": "Invasión linfovascular: ausente",
+      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
+      "status": "absent"
     },
     {
       "assertion": "present",
-      "char_end": 737,
-      "char_start": 709,
+      "char_end": 736,
+      "char_start": 708,
       "entity_id": "ent_0009",
       "kind": "perineural_invasion",
       "quote": "Invasión perineural: ausente",
@@ -103,29 +103,29 @@
     },
     {
       "assertion": "present",
-      "char_end": 790,
-      "char_start": 738,
+      "char_end": 788,
+      "char_start": 737,
       "entity_id": "ent_0010",
-      "examined": 17,
+      "examined": 9,
       "kind": "nodes",
       "positive": 0,
-      "quote": "Ganglios linfáticos: 0 de 17 ganglios con metástasis",
-      "quote_sha256": "45d2ecf98c79df52ef21bf8095d60cbe05912bce7a29711bae665fb0e5df53f6"
+      "quote": "Ganglios linfáticos: 0 de 9 ganglios con metástasis",
+      "quote_sha256": "e7c4c3bc7e030ca09c73e1582c6ee9c365c4b945f9da03dc1168cbafa3005646"
     },
     {
       "assertion": "present",
       "char_end": 852,
-      "char_start": 791,
+      "char_start": 789,
       "edition": "8",
       "entity_id": "ent_0011",
       "kind": "ptnm",
       "m": "cM0",
       "n": "pN0",
       "prefix": "p",
-      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I",
-      "quote_sha256": "be8077d5d1ad5b478aa5afd824cffbf437b5af3ec8fcfb39ca6eeb2e42a920a3",
-      "stage_group": "I",
-      "t": "pT1"
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA",
+      "quote_sha256": "4924b8c59e93853d8bd729d5eaed72d22bbf0fd7de142f5345109a6f0a1e963d",
+      "stage_group": "IA",
+      "t": "pT1c"
     },
     {
       "assertion": "present",
@@ -141,6 +141,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.synoptic-pathology/v1",
-  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Dino Koss   Sexo: varón   Fecha de nacimiento: 1963-07-19\nCaso sintético oc_0053. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2021-002061: Lobectomía pulmonar derecha, recibida el 2021-05-27\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 25 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 4 mm\nInvasión linfovascular: presente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 17 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1 pN0 cM0, estadio I\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "1e7eded219e8b7922caa34e7bbfb851d8d56ba211e38b290dc8f99ee94c3b54b"
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Dino Koss   Sexo: varón   Fecha de nacimiento: 1963-07-19\nCaso sintético oc_0053. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2021-002061: Lobectomía pulmonar derecha, recibida el 2021-05-27\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma de pulmón no microcítico (8046/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 21 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 9 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1c pN0 cM0, estadio IA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "1ddaa2f956e2478b307dff96b6f96845f76390267f637c33ca2a0fac21e5db38"
 }

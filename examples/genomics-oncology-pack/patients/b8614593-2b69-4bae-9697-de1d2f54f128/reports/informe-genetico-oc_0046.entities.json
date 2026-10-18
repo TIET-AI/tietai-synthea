@@ -1,5 +1,5 @@
 {
-  "document_sha256": "03eebb353cd7b285f57eecb83b433b45e9e99ff5aeb2de37cca001d2b0679bfe",
+  "document_sha256": "b6a05e11c93829f0fa0529d6ea99172b1807ed81e3a3c3541b00eec352af2e14",
   "entities": [
     {
       "assertion": "present",
@@ -26,7 +26,7 @@
       "assertion": "present",
       "char_end": 400,
       "char_start": 330,
-      "collected_on": "1999-10-12",
+      "collected_on": "2018-10-12",
       "entity_id": "ent_0003",
       "kind": "specimen",
       "quote": "Muestra: tejido tumoral FFPE, biopsia de mama   ID de muestra SYN-0046",
@@ -86,6 +86,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.genomic-extraction/v1",
-  "source_text": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)\nINFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Maurice Will   Sexo: mujer   Fecha de nacimiento: 1954-06-11\nCaso sintético oc_0046. Diagnóstico de referencia: carcinoma de mama.\nPanel NGS de tumor sólido OncoMama v2\nMuestra: tejido tumoral FFPE, biopsia de mama   ID de muestra SYN-0046\nGenoma de referencia GRCh38\nFecha del informe: 1999-10-26\n\nVariantes detectadas:\nTP53 NM_000546.6:c.524G>A (p.Arg175His) VAF 42,4%. Heterocigosis. Variante somática. Tier II (AMP).\n\nImplicaciones:\n\nFuente de conocimiento: ClinVar versión 2026-09-01\nRecomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "89507d8f9b22d377cd65393cdef1c6e53dd30dafc7efb21578cf7c88a7e74a3f"
+  "source_text": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)\nINFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Maurice Will   Sexo: mujer   Fecha de nacimiento: 1954-06-11\nCaso sintético oc_0046. Diagnóstico de referencia: carcinoma de mama.\nPanel NGS de tumor sólido OncoMama v2\nMuestra: tejido tumoral FFPE, biopsia de mama   ID de muestra SYN-0046\nGenoma de referencia GRCh38\nFecha del informe: 2026-09-12\n\nVariantes detectadas:\nTP53 NM_000546.6:c.524G>A (p.Arg175His) VAF 42,4%. Heterocigosis. Variante somática. Tier II (AMP).\n\nImplicaciones:\n\nFuente de conocimiento: ClinVar versión 2026-09-01\nRecomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "25b4f94b7974f3a2acb30a8311847c5b1a5d12221f23299a11be1a1eab1402ff"
 }

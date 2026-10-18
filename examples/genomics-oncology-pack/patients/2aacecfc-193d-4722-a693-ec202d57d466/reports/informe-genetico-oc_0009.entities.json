@@ -1,5 +1,5 @@
 {
-  "document_sha256": "af0bedbd07d568aca604423ca0085a5e4ceda0bfcf73c5548ae10c6d82b33ab0",
+  "document_sha256": "151e7bcf6d3be85d404c1a9d4c7af2d409077ea07a95dfb9cd10c0794a849a07",
   "entities": [
     {
       "assertion": "present",
@@ -26,7 +26,7 @@
       "assertion": "present",
       "char_end": 412,
       "char_start": 341,
-      "collected_on": "2006-02-17",
+      "collected_on": "2018-02-17",
       "entity_id": "ent_0003",
       "kind": "specimen",
       "quote": "Muestra: tejido tumoral FFPE, biopsia de colon   ID de muestra SYN-0009",
@@ -86,6 +86,6 @@
   "extractor_version": "go-61-gold/1",
   "needs_review": true,
   "schema": "tietai.genomic-extraction/v1",
-  "source_text": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)\nINFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Taylor Bergstrom   Sexo: varón   Fecha de nacimiento: 1969-10-25\nCaso sintético oc_0009. Diagnóstico de referencia: adenocarcinoma de colon.\nPanel NGS de tumor sólido OncoColon v3\nMuestra: tejido tumoral FFPE, biopsia de colon   ID de muestra SYN-0009\nGenoma de referencia GRCh38\nFecha del informe: 2006-03-12\n\nVariantes detectadas:\nKRAS NM_004985.5:c.35G>A (p.Gly12Asp) VAF 32,3%. Heterocigosis. Variante somática. Tier II (AMP).\n\nImplicaciones:\n\nFuente de conocimiento: ClinVar versión 2026-09-01\nRecomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
-  "source_text_sha256": "635e841b47ee6b69ecbf67f3b306ff27f2361a977f0a18a52eede0e3f9ad3c82"
+  "source_text": "LABORATORIO DE GENÉTICA MOLECULAR (sintético)\nINFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Taylor Bergstrom   Sexo: varón   Fecha de nacimiento: 1969-10-25\nCaso sintético oc_0009. Diagnóstico de referencia: adenocarcinoma de colon.\nPanel NGS de tumor sólido OncoColon v3\nMuestra: tejido tumoral FFPE, biopsia de colon   ID de muestra SYN-0009\nGenoma de referencia GRCh38\nFecha del informe: 2026-09-12\n\nVariantes detectadas:\nKRAS NM_004985.5:c.35G>A (p.Gly12Asp) VAF 32,3%. Heterocigosis. Variante somática. Tier II (AMP).\n\nImplicaciones:\n\nFuente de conocimiento: ClinVar versión 2026-09-01\nRecomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "00be78cf0155361c7c8d7ee7c8d000190245d47511202882a21930ac936076b7"
 }
