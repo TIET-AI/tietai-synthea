@@ -216,7 +216,8 @@ class TestGeneratedPopulation:
 
     def test_the_elderly_are_on_medicare(self, people):
         for person in people:
-            if person.age_at(REFERENCE_DATE) >= MEDICARE_AGE:
+            # (a patient who died young was never 65)
+            if person.alive and person.age_at(REFERENCE_DATE) >= MEDICARE_AGE:
                 assert person.attributes['current_coverage'].kind == 'medicare'
 
     def test_coverage_does_not_churn_every_year(self, people):

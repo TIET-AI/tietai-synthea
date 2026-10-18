@@ -321,7 +321,7 @@ class TestReferencePackDeterminism:
 
     #: sha256 of each patient's bundle, seed 42, ages 20-70, 2020-01-01.
     #:
-    #: Moved in 1.5.0, when lab observations gained referenceRange and interpretation and
+    #: Moved in 1.4.1 (#113), when lab observations gained referenceRange and interpretation and
     #: the red-cell indices started being derived (#113): same 1360 resources, only
     #: Observations altered.
     #:
@@ -334,9 +334,9 @@ class TestReferencePackDeterminism:
     #: Update these only when generated output is *meant* to change, and say
     #: in the changelog that it did.
     EXPECTED = [
-        '5e402c7e5a69477e5802864749fffffe3c92647637e676bf395ff213757946d1',
-        'e5e405ec3c795608a877426571203621809219defc7d61fbcd7ed702da5ee630',
-        'ee736fe0c224235623f4454ce01965ac2721ff31a29a7c68c22a131c4f6941b3',
+        '3ce60bd898974f1fe62a14cf4ff54c7270a78993c7e53f036f4408291012a889',
+        '7181bff2ba3da3050ebd113c5a7d9881d032a26fe3ac2b6a0c0b4054e4e5b773',
+        '89142919e1d60f71364f41352aa118f24cfc39abd9ac5debeff54678461df17e',
     ]
     LEGACY_EXPECTED = [
         'e6867cde12b3e1aae5ab5749b48b162f68909394d901a946b67f4d5e1dafec86',
