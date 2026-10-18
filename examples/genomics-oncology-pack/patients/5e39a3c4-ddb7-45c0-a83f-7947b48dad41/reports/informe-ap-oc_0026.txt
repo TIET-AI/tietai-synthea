@@ -1,0 +1,19 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Eddie Dare   Sexo: varón   Fecha de nacimiento: 1963-10-12
+Caso sintético oc_0026. Diagnóstico de referencia: adenocarcinoma de próstata.
+Muestra AP-2018-001062: Prostatectomía radical, recibida el 2018-06-30
+Procedimiento: Prostatectomía radical con linfadenectomía pélvica
+Localización del tumor: Próstata (C61.9)
+Tipo histológico: Adenocarcinoma (8140/3)
+Grado histológico: Gleason 3+3=6 (grupo de grado 1)
+Tamaño tumoral: 31 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 2 mm
+Invasión linfovascular: ausente
+Invasión perineural: ausente
+Ganglios linfáticos: 0 de 14 ganglios con metástasis
+PSA preoperatorio: 17,1 ng/mL
+Estadificación pTNM (TNM 8.ª edición): pT2 pN0 cM0, estadio IIA
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

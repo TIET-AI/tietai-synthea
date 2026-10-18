@@ -20,6 +20,10 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+class GenomicsPackError(RuntimeError):
+    """A genomics-pack failure; it must stop the run, never be swallowed."""
+
+
 class PatientExporter(ABC):
     """Base class for exporters that export individual patients."""
     
@@ -113,6 +117,16 @@ class Exporter:
         if self.config.get_bool('exporter.text.export', False):
             self.patient_exporters.append(TextExporter(self.config, self.base_dir))
 
+        # Synthetic genomics/oncology pack (GO-61). Off by default. The
+        # per-person exporter only stages descriptors; the finalizer writes the
+        # pack once the whole population is known.
+        if self.config.get_bool('exporter.genomics.export', False):
+            from synthea.export.genomics import GenomicsExporter, GenomicsPackFinalizer
+            self.patient_exporters.append(
+                GenomicsExporter(self.config, self.base_dir, self.locale))
+            self.post_exporters.append(
+                GenomicsPackFinalizer(self.config, self.base_dir))
+
     def _reject_unimplemented(self):
         """Fail immediately, and clearly, for an exporter that does not exist."""
         for key, (name, issue) in self.UNIMPLEMENTED.items():
@@ -123,6 +137,13 @@ class Exporter:
                 f"this version. Turn it off, or follow {issue}. "
                 f"Available exporters: exporter.fhir.export, exporter.json.export."
             )
+
+    def begin_run(self):
+        """Called once by the parent process before generation starts."""
+        for exporter in self.patient_exporters:
+            begin = getattr(exporter, 'begin', None)
+            if begin:
+                begin()
 
     def export(self, person: 'Person'):
         """Export a person using all enabled exporters.
@@ -136,6 +157,8 @@ class Exporter:
         for exporter in self.patient_exporters:
             try:
                 exporter.export(person, 0)
+            except GenomicsPackError:
+                raise
             except Exception as e:
                 print(f"Error exporting with {exporter.__class__.__name__}: {e}")
 
@@ -149,6 +172,8 @@ class Exporter:
         for exporter in self.post_exporters:
             try:
                 exporter.export(None, stats)
+            except GenomicsPackError:
+                raise
             except Exception as e:
                 print(f"Error in post-completion export: {e}")
 

@@ -1,0 +1,19 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Wilfredo Johnston   Sexo: varón   Fecha de nacimiento: 1950-01-07
+Caso sintético oc_0011. Diagnóstico de referencia: adenocarcinoma de próstata.
+Muestra AP-2026-000507: Prostatectomía radical, recibida el 2026-01-03
+Procedimiento: Prostatectomía radical con linfadenectomía pélvica
+Localización del tumor: Próstata (C61.9)
+Tipo histológico: Adenocarcinoma (8140/3)
+Grado histológico: Gleason 3+4=7 (grupo de grado 2)
+Tamaño tumoral: 14 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 6 mm
+Invasión linfovascular: presente
+Invasión perineural: ausente
+Ganglios linfáticos: 0 de 9 ganglios con metástasis
+PSA preoperatorio: 12,8 ng/mL
+Estadificación pTNM (TNM 8.ª edición): pT3a pN0 cM0, estadio IIIB
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

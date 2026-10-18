@@ -1,0 +1,1223 @@
+{
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:46a7906c-9e75-4932-aaab-6cf7a116010e",
+      "request": {
+        "method": "POST",
+        "url": "Organization"
+      },
+      "resource": {
+        "name": "Laboratorio de Genética Molecular (sintético)",
+        "resourceType": "Organization"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:6a446446-2b34-4a51-a8e7-26e6504f7de9",
+      "request": {
+        "ifNoneExist": "identifier=urn:tietai:synthetic|2900a4e9-3ba8-4c2e-96fb-754c70fae755",
+        "method": "POST",
+        "url": "Patient"
+      },
+      "resource": {
+        "active": true,
+        "birthDate": "1966-02-23",
+        "gender": "female",
+        "identifier": [
+          {
+            "system": "urn:tietai:synthetic",
+            "value": "2900a4e9-3ba8-4c2e-96fb-754c70fae755"
+          }
+        ],
+        "name": [
+          {
+            "family": "Haley",
+            "given": [
+              "Lisabeth"
+            ],
+            "use": "official"
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:fbaf5113-f436-4647-b0a7-1dc3d9e91410",
+      "request": {
+        "method": "PUT",
+        "url": "Condition/fbaf5113-f436-4647-b0a7-1dc3d9e91410"
+      },
+      "resource": {
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "code": "C18.9",
+                "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+              }
+            ]
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "problem-list-item",
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+              }
+            ]
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "code": "active",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "code": "363406005",
+              "display": "Malignant neoplasm of colon (disorder)",
+              "system": "http://snomed.info/sct"
+            },
+            {
+              "code": "C18.9",
+              "system": "https://tiet.ai/fhir/CodeSystem/cie10-es"
+            }
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-histology-morphology-behavior",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "8140/3",
+                  "display": "Adenocarcinoma",
+                  "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+                }
+              ]
+            }
+          }
+        ],
+        "id": "fbaf5113-f436-4647-b0a7-1dc3d9e91410",
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
+          ]
+        },
+        "onsetDateTime": "2018-04-01",
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "urn:uuid:6a446446-2b34-4a51-a8e7-26e6504f7de9"
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "code": "confirmed",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:537cc058-b62b-4130-aeef-a54525085c78",
+      "request": {
+        "method": "POST",
+        "url": "Specimen"
+      },
+      "resource": {
+        "collection": {
+          "bodySite": {
+            "coding": [
+              {
+                "code": "71854001",
+                "display": "Colon structure",
+                "system": "http://snomed.info/sct"
+              }
+            ]
+          },
+          "collectedDateTime": "2018-04-11"
+        },
+        "receivedTime": "2018-04-11T10:00:00Z",
+        "resourceType": "Specimen",
+        "status": "available",
+        "subject": {
+          "reference": "urn:uuid:6a446446-2b34-4a51-a8e7-26e6504f7de9"
+        },
+        "type": {
+          "coding": [
+            {
+              "code": "119376003",
+              "display": "Tissue specimen",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a96275ae-8df6-4f76-952d-38396608d379",
+      "request": {
+        "method": "POST",
+        "url": "DocumentReference"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "genomic",
+                "system": "https://tiet.ai/fhir/CodeSystem/tietai-genomics"
+              }
+            ]
+          }
+        ],
+        "content": [
+          {
+            "attachment": {
+              "contentType": "application/pdf",
+              "hash": "9JfmODMCIwbCp4xvUxN+mtYhiy2AcHvRbhpRU2EHDPY=",
+              "size": 2105,
+              "title": "Informe genético oc_0010 (sintético)",
+              "url": "drs://synthetic.tiet.ai/obj_7MJZK3GCR24C3C59WCDX9H6ZMT"
+            }
+          }
+        ],
+        "date": "2026-09-07T08:00:00Z",
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-genomic-document"
+          ]
+        },
+        "resourceType": "DocumentReference",
+        "status": "current",
+        "subject": {
+          "reference": "urn:uuid:6a446446-2b34-4a51-a8e7-26e6504f7de9"
+        },
+        "type": {
+          "coding": [
+            {
+              "code": "51969-4",
+              "display": "Genetic analysis report",
+              "system": "http://loinc.org"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a366b092-44ba-4b32-ac20-71c15d8b805f",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "code": "GE",
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "69548-6",
+              "display": "Genetic variant assessment",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "48018-6",
+                  "display": "Gene studied [ID]",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "HGNC:6407",
+                  "display": "KRAS",
+                  "system": "http://www.genenames.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "48004-6",
+                  "display": "DNA change (c.HGVS)",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "NM_004985.5:c.35G>A",
+                  "display": "NM_004985.5:c.35G>A",
+                  "system": "http://varnomen.hgvs.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "48005-3",
+                  "display": "Amino acid change (pHGVS)",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "NP_004976.2:p.Gly12Asp",
+                  "display": "NP_004976.2:p.Gly12Asp",
+                  "system": "http://varnomen.hgvs.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "81290-9",
+                  "display": "Genomic DNA change (gHGVS)",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "NC_000012.12:g.25245350C>T",
+                  "display": "NC_000012.12:g.25245350C>T",
+                  "system": "http://varnomen.hgvs.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "62374-4",
+                  "display": "Human reference sequence assembly version",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "LA26806-2",
+                  "display": "GRCh38",
+                  "system": "http://loinc.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "48002-0",
+                  "display": "Genomic source class",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "LA6684-0",
+                  "display": "Somatic",
+                  "system": "http://loinc.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "53034-5",
+                  "display": "Allelic state",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "LA6706-1",
+                  "display": "Heterozygous",
+                  "system": "http://loinc.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "81258-6",
+                  "display": "Sample VAF",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "code": "1",
+              "system": "http://unitsofmeasure.org",
+              "value": 0.408
+            }
+          }
+        ],
+        "effectiveDateTime": "2018-04-11",
+        "focus": [
+          {
+            "reference": "Condition/fbaf5113-f436-4647-b0a7-1dc3d9e91410"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-variant"
+          ]
+        },
+        "performer": [
+          {
+            "reference": "urn:uuid:46a7906c-9e75-4932-aaab-6cf7a116010e"
+          }
+        ],
+        "resourceType": "Observation",
+        "specimen": {
+          "reference": "urn:uuid:537cc058-b62b-4130-aeef-a54525085c78"
+        },
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:6a446446-2b34-4a51-a8e7-26e6504f7de9"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:08f1838e-7574-409d-83e7-1be1bba9151c",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "code": "GE",
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "69548-6",
+              "display": "Genetic variant assessment",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "48018-6",
+                  "display": "Gene studied [ID]",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "HGNC:1097",
+                  "display": "BRAF",
+                  "system": "http://www.genenames.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "48004-6",
+                  "display": "DNA change (c.HGVS)",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "NM_004333.6:c.1799T>A",
+                  "display": "NM_004333.6:c.1799T>A",
+                  "system": "http://varnomen.hgvs.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "48005-3",
+                  "display": "Amino acid change (pHGVS)",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "NP_004324.2:p.Val600Glu",
+                  "display": "NP_004324.2:p.Val600Glu",
+                  "system": "http://varnomen.hgvs.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "81290-9",
+                  "display": "Genomic DNA change (gHGVS)",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "NC_000007.14:g.140753336A>T",
+                  "display": "NC_000007.14:g.140753336A>T",
+                  "system": "http://varnomen.hgvs.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "62374-4",
+                  "display": "Human reference sequence assembly version",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "LA26806-2",
+                  "display": "GRCh38",
+                  "system": "http://loinc.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "48002-0",
+                  "display": "Genomic source class",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "LA6684-0",
+                  "display": "Somatic",
+                  "system": "http://loinc.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "53034-5",
+                  "display": "Allelic state",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "LA6706-1",
+                  "display": "Heterozygous",
+                  "system": "http://loinc.org"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "81258-6",
+                  "display": "Sample VAF",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "code": "1",
+              "system": "http://unitsofmeasure.org",
+              "value": 0.298
+            }
+          }
+        ],
+        "effectiveDateTime": "2018-04-11",
+        "focus": [
+          {
+            "reference": "Condition/fbaf5113-f436-4647-b0a7-1dc3d9e91410"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-variant"
+          ]
+        },
+        "performer": [
+          {
+            "reference": "urn:uuid:46a7906c-9e75-4932-aaab-6cf7a116010e"
+          }
+        ],
+        "resourceType": "Observation",
+        "specimen": {
+          "reference": "urn:uuid:537cc058-b62b-4130-aeef-a54525085c78"
+        },
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:6a446446-2b34-4a51-a8e7-26e6504f7de9"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:dc7221f0-5e04-423c-8bb8-fbac6f353b15",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "code": "GE",
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "diagnostic-implication",
+              "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs"
+            }
+          ]
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "53037-8",
+                  "display": "Genetic variation clinical significance [Imp]",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "tier-ii",
+                  "display": "Tier ii",
+                  "system": "https://tiet.ai/fhir/CodeSystem/tietai-genomics"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "81259-4",
+                  "display": "Associated phenotype",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "363406005",
+                  "display": "Malignant neoplasm of colon (disorder)",
+                  "system": "http://snomed.info/sct"
+                }
+              ]
+            }
+          }
+        ],
+        "derivedFrom": [
+          {
+            "reference": "urn:uuid:a366b092-44ba-4b32-ac20-71c15d8b805f"
+          }
+        ],
+        "effectiveDateTime": "2026-09-07",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/classification-source",
+            "valueString": "clinvar@2026-09-01"
+          },
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/knowledge-release",
+            "valueString": "clinvar@2026-09-01"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-diagnostic-implication"
+          ]
+        },
+        "performer": [
+          {
+            "reference": "urn:uuid:46a7906c-9e75-4932-aaab-6cf7a116010e"
+          }
+        ],
+        "resourceType": "Observation",
+        "specimen": {
+          "reference": "urn:uuid:537cc058-b62b-4130-aeef-a54525085c78"
+        },
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:6a446446-2b34-4a51-a8e7-26e6504f7de9"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a9801bdf-ea06-45c8-94b8-7c570926d18d",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "code": "GE",
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "diagnostic-implication",
+              "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs"
+            }
+          ]
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "53037-8",
+                  "display": "Genetic variation clinical significance [Imp]",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "tier-i",
+                  "display": "Tier i",
+                  "system": "https://tiet.ai/fhir/CodeSystem/tietai-genomics"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "81259-4",
+                  "display": "Associated phenotype",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "363406005",
+                  "display": "Malignant neoplasm of colon (disorder)",
+                  "system": "http://snomed.info/sct"
+                }
+              ]
+            }
+          }
+        ],
+        "derivedFrom": [
+          {
+            "reference": "urn:uuid:08f1838e-7574-409d-83e7-1be1bba9151c"
+          }
+        ],
+        "effectiveDateTime": "2026-09-07",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/classification-source",
+            "valueString": "clinvar@2026-09-01"
+          },
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/knowledge-release",
+            "valueString": "clinvar@2026-09-01"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-diagnostic-implication"
+          ]
+        },
+        "performer": [
+          {
+            "reference": "urn:uuid:46a7906c-9e75-4932-aaab-6cf7a116010e"
+          }
+        ],
+        "resourceType": "Observation",
+        "specimen": {
+          "reference": "urn:uuid:537cc058-b62b-4130-aeef-a54525085c78"
+        },
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:6a446446-2b34-4a51-a8e7-26e6504f7de9"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:fb1dc1a6-f04e-41d0-bc9b-2c7ee5ae9c44",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "code": "GE",
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "diagnostic-implication",
+              "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs"
+            }
+          ]
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "53037-8",
+                  "display": "Genetic variation clinical significance [Imp]",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "tier-ii",
+                  "display": "Tier ii",
+                  "system": "https://tiet.ai/fhir/CodeSystem/tietai-genomics"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "81259-4",
+                  "display": "Associated phenotype",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "363406005",
+                  "display": "Malignant neoplasm of colon (disorder)",
+                  "system": "http://snomed.info/sct"
+                }
+              ]
+            }
+          }
+        ],
+        "derivedFrom": [
+          {
+            "reference": "urn:uuid:08f1838e-7574-409d-83e7-1be1bba9151c"
+          }
+        ],
+        "effectiveDateTime": "2026-09-07",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/classification-source",
+            "valueString": "custom@2026-09-01"
+          },
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/knowledge-release",
+            "valueString": "clinvar@2026-09-01"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-diagnostic-implication"
+          ]
+        },
+        "performer": [
+          {
+            "reference": "urn:uuid:46a7906c-9e75-4932-aaab-6cf7a116010e"
+          }
+        ],
+        "resourceType": "Observation",
+        "specimen": {
+          "reference": "urn:uuid:537cc058-b62b-4130-aeef-a54525085c78"
+        },
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:6a446446-2b34-4a51-a8e7-26e6504f7de9"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:11e4c810-63f9-4c0c-b287-e0d2bf541b90",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "code": "GE",
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "therapeutic-implication",
+              "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs"
+            }
+          ]
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "51963-7",
+                  "display": "Medication assessed",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "L01EC03",
+                  "display": "encorafenib",
+                  "system": "http://www.whocc.no/atc"
+                }
+              ],
+              "text": "encorafenib"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "81259-4",
+                  "display": "Associated phenotype",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "363406005",
+                  "display": "Malignant neoplasm of colon (disorder)",
+                  "system": "http://snomed.info/sct"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "93044-6",
+                  "display": "Level of evidence",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "text": "Tier I - Level A"
+            }
+          }
+        ],
+        "derivedFrom": [
+          {
+            "reference": "urn:uuid:08f1838e-7574-409d-83e7-1be1bba9151c"
+          }
+        ],
+        "effectiveDateTime": "2026-09-07",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/knowledge-release",
+            "valueString": "clinvar@2026-09-01"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-therapeutic-implication"
+          ]
+        },
+        "performer": [
+          {
+            "reference": "urn:uuid:46a7906c-9e75-4932-aaab-6cf7a116010e"
+          }
+        ],
+        "resourceType": "Observation",
+        "specimen": {
+          "reference": "urn:uuid:537cc058-b62b-4130-aeef-a54525085c78"
+        },
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:6a446446-2b34-4a51-a8e7-26e6504f7de9"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:819b3132-316d-457b-ab77-9e4aa27290ce",
+      "request": {
+        "method": "POST",
+        "url": "DiagnosticReport"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "GE",
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "51969-4",
+              "display": "Genetic analysis report",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/knowledge-release",
+            "valueString": "clinvar@2026-09-01"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:tietai:synthetic:report",
+            "value": "oc_0010-2900a4e9"
+          }
+        ],
+        "issued": "2026-09-07T08:00:00Z",
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-genomic-report"
+          ]
+        },
+        "performer": [
+          {
+            "reference": "urn:uuid:46a7906c-9e75-4932-aaab-6cf7a116010e"
+          }
+        ],
+        "resourceType": "DiagnosticReport",
+        "result": [
+          {
+            "reference": "urn:uuid:a366b092-44ba-4b32-ac20-71c15d8b805f"
+          },
+          {
+            "reference": "urn:uuid:08f1838e-7574-409d-83e7-1be1bba9151c"
+          },
+          {
+            "reference": "urn:uuid:dc7221f0-5e04-423c-8bb8-fbac6f353b15"
+          },
+          {
+            "reference": "urn:uuid:a9801bdf-ea06-45c8-94b8-7c570926d18d"
+          },
+          {
+            "reference": "urn:uuid:fb1dc1a6-f04e-41d0-bc9b-2c7ee5ae9c44"
+          },
+          {
+            "reference": "urn:uuid:11e4c810-63f9-4c0c-b287-e0d2bf541b90"
+          }
+        ],
+        "specimen": [
+          {
+            "reference": "urn:uuid:537cc058-b62b-4130-aeef-a54525085c78"
+          }
+        ],
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:6a446446-2b34-4a51-a8e7-26e6504f7de9"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b7fd2f4c-f7a2-4f8b-b0ba-f9dbfedf39cf",
+      "request": {
+        "method": "POST",
+        "url": "Provenance"
+      },
+      "resource": {
+        "agent": [
+          {
+            "who": {
+              "reference": "urn:uuid:46a7906c-9e75-4932-aaab-6cf7a116010e"
+            }
+          },
+          {
+            "who": {
+              "display": "tietai-synthea genomics pack generator (synthetic)"
+            }
+          }
+        ],
+        "entity": [
+          {
+            "role": "source",
+            "what": {
+              "reference": "urn:uuid:a96275ae-8df6-4f76-952d-38396608d379"
+            }
+          }
+        ],
+        "recorded": "2026-09-07T09:00:00Z",
+        "resourceType": "Provenance",
+        "target": [
+          {
+            "reference": "urn:uuid:819b3132-316d-457b-ab77-9e4aa27290ce"
+          }
+        ]
+      }
+    }
+  ],
+  "resourceType": "Bundle",
+  "type": "transaction"
+}

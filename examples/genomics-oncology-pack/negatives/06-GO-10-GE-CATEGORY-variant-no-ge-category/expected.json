@@ -1,0 +1,20 @@
+{
+  "expected": [
+    {
+      "code": "required",
+      "detailCode": "STRUCT_REQUIRED",
+      "severity": "error"
+    },
+    {
+      "code": "required",
+      "detailCode": "STRUCT_SLICE_REQUIRED",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "GO-10-GE-CATEGORY",
+  "layer": "fhir-validate",
+  "note": "variant lacking the v2-0074 GE category",
+  "seed": [],
+  "variant": "missing-ge"
+}

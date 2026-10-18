@@ -1,0 +1,15 @@
+{
+  "expected": [
+    {
+      "code": "invariant",
+      "detailCode": "INV-KNOWLEDGE-1",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-KNOWLEDGE-1",
+  "layer": "fhir-validate",
+  "note": "report with no release and no unknown-knowledge reason",
+  "seed": [],
+  "variant": "neither"
+}

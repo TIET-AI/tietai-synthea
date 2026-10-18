@@ -1,0 +1,1192 @@
+{
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8",
+      "request": {
+        "ifNoneExist": "identifier=urn:tietai:synthetic|4c7c89bc-ef68-4fe3-ad49-6d91fe8a960c",
+        "method": "POST",
+        "url": "Patient"
+      },
+      "resource": {
+        "active": true,
+        "birthDate": "1949-09-04",
+        "gender": "female",
+        "identifier": [
+          {
+            "system": "urn:tietai:synthetic",
+            "value": "4c7c89bc-ef68-4fe3-ad49-6d91fe8a960c"
+          }
+        ],
+        "name": [
+          {
+            "family": "Koss",
+            "given": [
+              "Twila"
+            ],
+            "use": "official"
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ad9f6d8a-9cf3-4330-bfee-091564d6263e",
+      "request": {
+        "method": "PUT",
+        "url": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+      },
+      "resource": {
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "code": "C34.9",
+                "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+              }
+            ]
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "problem-list-item",
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+              }
+            ]
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "code": "active",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "code": "254637007",
+              "display": "Malignant neoplasm of lung (disorder)",
+              "system": "http://snomed.info/sct"
+            },
+            {
+              "code": "C34.90",
+              "system": "https://tiet.ai/fhir/CodeSystem/cie10-es"
+            }
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-histology-morphology-behavior",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "8046/3",
+                  "display": "Carcinoma de pulmón no microcítico",
+                  "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+                }
+              ]
+            }
+          }
+        ],
+        "id": "ad9f6d8a-9cf3-4330-bfee-091564d6263e",
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
+          ]
+        },
+        "onsetDateTime": "2018-11-25",
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "code": "confirmed",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:96f68f94-9f7a-4c33-8ca3-c0d683998721",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21905-5",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-12-02",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        },
+        "valueCodeableConcept": {
+          "text": "cT1c"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ee460f3e-24ad-4610-b258-d441b521a61b",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21906-3",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-12-02",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        },
+        "valueCodeableConcept": {
+          "text": "cN0"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:687afc99-cb9d-4471-bf5c-7864bc94d5a4",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21907-1",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-12-02",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        },
+        "valueCodeableConcept": {
+          "text": "cM0"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:71b3a1df-71f4-4525-8556-c856bffb0b16",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21908-9",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-12-02",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        },
+        "valueCodeableConcept": {
+          "text": "IA"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:f73b6174-3fb0-4057-8251-b005bd321fcd",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21899-0",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-12-07",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        },
+        "valueCodeableConcept": {
+          "text": "pT1c"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:28278144-09aa-4b1e-895e-b259f2211873",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21900-6",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-12-07",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        },
+        "valueCodeableConcept": {
+          "text": "pN0"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ba266e0c-5a6b-4376-bc03-32541eba02f2",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21901-4",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-12-07",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        },
+        "valueCodeableConcept": {
+          "text": "cM0"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:6e5ef3e2-f9e4-430b-a58b-7c12a6c05c15",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21902-2",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-12-07",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        },
+        "valueCodeableConcept": {
+          "text": "IA"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ac0040a0-5353-47ab-80da-1d3e878c60f6",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-01-05",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01XA01",
+              "display": "cisplatin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "1736854",
+              "display": "Cisplatin 50 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:df1cedd5-a6fe-4747-af60-c12f30378d94",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-01-05",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01CD01",
+              "display": "paclitaxel",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "583214",
+              "display": "PACLitaxel 100 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:51dd54d0-2cc3-4345-833d-b1ec5f7d4a1e",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-02-22",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01XA01",
+              "display": "cisplatin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "1736854",
+              "display": "Cisplatin 50 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:3cddd7b0-e3ba-4591-9980-dc904a29672d",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-02-22",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01CD01",
+              "display": "paclitaxel",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "583214",
+              "display": "PACLitaxel 100 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c615abae-d18d-4aba-aa72-e6bcc4d9ffeb",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-04-12",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01XA01",
+              "display": "cisplatin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "1736854",
+              "display": "Cisplatin 50 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:63c8ae3b-7a77-4a08-b3aa-043e0a3fa3ea",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-04-12",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01CD01",
+              "display": "paclitaxel",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "583214",
+              "display": "PACLitaxel 100 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:19839dc9-aa36-4b58-871a-e09c7f4816e2",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-05-27",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01XA01",
+              "display": "cisplatin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "1736854",
+              "display": "Cisplatin 50 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:635beb56-6ed8-4909-94cf-739cba240f20",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-05-27",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01CD01",
+              "display": "paclitaxel",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "583214",
+              "display": "PACLitaxel 100 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:5117ed03-7d8f-4dae-a15e-cb992eefd93b",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-07-13",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01XA01",
+              "display": "cisplatin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "1736854",
+              "display": "Cisplatin 50 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:2a99799e-cf2a-49ed-a3df-59ae9b390422",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-07-13",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01CD01",
+              "display": "paclitaxel",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "583214",
+              "display": "PACLitaxel 100 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:77298658-547c-4465-b0ee-89af48d9102c",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-08-28",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01XA01",
+              "display": "cisplatin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "1736854",
+              "display": "Cisplatin 50 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:867e552c-602f-4bea-918b-6b3eb28bebce",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-08-28",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L01CD01",
+              "display": "paclitaxel",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "583214",
+              "display": "PACLitaxel 100 MG Injection",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:933f9bbb-ed9f-4b5a-8371-46ed97d00658",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "703423002",
+              "display": "Combined chemotherapy and radiation therapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2019-01-05",
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:5fcf9948-735f-40a4-95b6-781f2db6249f",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "703423002",
+              "display": "Combined chemotherapy and radiation therapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2019-02-22",
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b7f5ac47-3c72-4f12-9139-2367ff83bba2",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "703423002",
+              "display": "Combined chemotherapy and radiation therapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2019-04-12",
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:47792290-5579-4a20-8998-58a9bea1835c",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "703423002",
+              "display": "Combined chemotherapy and radiation therapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2019-05-27",
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:d0d4de9a-97bd-4366-b69a-d323b17d7e52",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "703423002",
+              "display": "Combined chemotherapy and radiation therapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2019-07-13",
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:2575a411-aa92-4669-81ef-bc9c9b218b84",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "703423002",
+              "display": "Combined chemotherapy and radiation therapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2019-08-28",
+        "reasonReference": [
+          {
+            "reference": "Condition/ad9f6d8a-9cf3-4330-bfee-091564d6263e"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:b8a62f9b-67c6-4b08-9725-f098a1e191d8"
+        }
+      }
+    }
+  ],
+  "resourceType": "Bundle",
+  "type": "transaction"
+}

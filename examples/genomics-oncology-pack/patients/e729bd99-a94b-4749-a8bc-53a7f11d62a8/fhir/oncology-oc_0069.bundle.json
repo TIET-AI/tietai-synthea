@@ -1,0 +1,1063 @@
+{
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6",
+      "request": {
+        "ifNoneExist": "identifier=urn:tietai:synthetic|e729bd99-a94b-4749-a8bc-53a7f11d62a8",
+        "method": "POST",
+        "url": "Patient"
+      },
+      "resource": {
+        "active": true,
+        "birthDate": "1955-04-07",
+        "gender": "male",
+        "identifier": [
+          {
+            "system": "urn:tietai:synthetic",
+            "value": "e729bd99-a94b-4749-a8bc-53a7f11d62a8"
+          }
+        ],
+        "name": [
+          {
+            "family": "Hamill",
+            "given": [
+              "Cedric"
+            ],
+            "use": "official"
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:df3bb16f-d541-4822-84fa-32c75f27d999",
+      "request": {
+        "method": "PUT",
+        "url": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+      },
+      "resource": {
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "code": "C61.9",
+                "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+              }
+            ]
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "problem-list-item",
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+              }
+            ]
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "code": "active",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "code": "399068003",
+              "display": "Malignant tumor of prostate (disorder)",
+              "system": "http://snomed.info/sct"
+            },
+            {
+              "code": "C61",
+              "system": "https://tiet.ai/fhir/CodeSystem/cie10-es"
+            }
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-histology-morphology-behavior",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "8140/3",
+                  "display": "Adenocarcinoma",
+                  "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+                }
+              ]
+            }
+          }
+        ],
+        "id": "df3bb16f-d541-4822-84fa-32c75f27d999",
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
+          ]
+        },
+        "onsetDateTime": "2021-10-04",
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "code": "confirmed",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:31b00203-d436-4097-85fb-996c37abcd17",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21905-5",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2021-10-11",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        },
+        "valueCodeableConcept": {
+          "text": "cT2"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:fdf11d94-7c60-43c4-9d34-9667041446f3",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21906-3",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2021-10-11",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        },
+        "valueCodeableConcept": {
+          "text": "cN0"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:38ad4068-0773-4eea-ba6f-f8ff3de6432a",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21907-1",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2021-10-11",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        },
+        "valueCodeableConcept": {
+          "text": "cM0"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:abb009f8-1cad-4605-a99f-87c9193e2f54",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21908-9",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2021-10-11",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        },
+        "valueCodeableConcept": {
+          "text": "IIA"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c092ee4c-5268-4523-ac67-f9a7c8cd3418",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21899-0",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2021-10-25",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        },
+        "valueCodeableConcept": {
+          "text": "pT2"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:42356b7a-4857-4640-9242-fd82d7f4d282",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21900-6",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2021-10-25",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        },
+        "valueCodeableConcept": {
+          "text": "pN0"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c84d1059-6625-4dfd-80b7-16d2e681d735",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21901-4",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2021-10-25",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        },
+        "valueCodeableConcept": {
+          "text": "cM0"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:14a238d5-66f3-437c-a152-731df16f88ec",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21902-2",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2021-10-25",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        },
+        "valueCodeableConcept": {
+          "text": "IIA"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:676bd90c-71ec-4567-aee0-84181df8aea0",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "2857-1",
+              "display": "2857-1",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2021-10-25",
+        "focus": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        },
+        "valueQuantity": {
+          "code": "ng/mL",
+          "system": "http://unitsofmeasure.org",
+          "unit": "ng/mL",
+          "value": 15.8
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:95ee7efb-c62b-4b75-afc2-1da9499a5b78",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2021-10-04",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02BB03",
+              "display": "bicalutamide",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "199123",
+              "display": "bicalutamide 50 MG Oral Tablet",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:209b599b-fe42-4a8c-bc23-1c4f79ea803c",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2021-10-04",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02AE02",
+              "display": "leuprorelin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "752899",
+              "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:f827997d-aa54-480c-a79e-190acdd3fe70",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2022-03-10",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02BB03",
+              "display": "bicalutamide",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "199123",
+              "display": "bicalutamide 50 MG Oral Tablet",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:afe3b15f-e991-48a1-95b5-9e2ee996b2a3",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2022-03-10",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02AE02",
+              "display": "leuprorelin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "752899",
+              "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:3d5cc59c-a052-4311-9109-4c2f87360ca6",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2023-01-19",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02BB03",
+              "display": "bicalutamide",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "199123",
+              "display": "bicalutamide 50 MG Oral Tablet",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:302861c7-7da9-4f84-aa61-c97ec9be1c19",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2023-01-19",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02AE02",
+              "display": "leuprorelin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "752899",
+              "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:827dcc62-84e2-4313-a068-ba64b5b559a1",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2024-01-25",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02BB03",
+              "display": "bicalutamide",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "199123",
+              "display": "bicalutamide 50 MG Oral Tablet",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:0312ece4-53ba-4e20-a840-738123de5cf8",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2024-01-25",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02AE02",
+              "display": "leuprorelin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "752899",
+              "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8c963302-023b-462f-a231-4421ed10140d",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2025-02-06",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02BB03",
+              "display": "bicalutamide",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "199123",
+              "display": "bicalutamide 50 MG Oral Tablet",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:5b8a492b-d62b-4350-b3c2-74bc72f7aef4",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2025-02-06",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02AE02",
+              "display": "leuprorelin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "752899",
+              "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:f3430587-17a6-4185-9ec2-24220e9a0e64",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2026-01-01",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02BB03",
+              "display": "bicalutamide",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "199123",
+              "display": "bicalutamide 50 MG Oral Tablet",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:fbd2dc2b-1439-4fd8-a968-82dec03d6065",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2026-01-01",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02AE02",
+              "display": "leuprorelin",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "752899",
+              "display": "0.25 ML Leuprolide Acetate 30 MG/ML Prefilled Syringe",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/df3bb16f-d541-4822-84fa-32c75f27d999"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:0e4a4335-f6d4-4eb7-bf72-5574f45b57e6"
+        }
+      }
+    }
+  ],
+  "resourceType": "Bundle",
+  "type": "transaction"
+}
