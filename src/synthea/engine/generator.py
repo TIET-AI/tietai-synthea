@@ -18,6 +18,7 @@ from tqdm import tqdm
 logger = logging.getLogger(__name__)
 
 from synthea.engine.module import Module
+from synthea.world.calibration import apply_calibration
 from synthea.world.person import Person
 from synthea.world.demographics import Demographics
 from synthea.world.location import Location
@@ -250,9 +251,6 @@ class Generator:
         """Load all modules."""
         print("Loading modules...")
         
-        from synthea.engine.state import EncounterEndState
-        EncounterEndState.completes = self.config.get_bool('generate.encounter_end_completes', False)
-
         # Optional state-level patches (cohort enrichment); none by default.
         Module.set_state_patches(self._load_module_patches())
 
@@ -445,7 +443,10 @@ class Generator:
 
         # Identity, coding and export conventions all come from here.
         person.locale = self.locale
-        
+
+        # Configured population rates (calibration.*), read by modules.
+        apply_calibration(person, self.config.settings)
+
         # Set demographics
         self._set_demographics(person)
         

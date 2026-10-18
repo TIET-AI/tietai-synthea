@@ -1,0 +1,18 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Pilar Dach   Sexo: mujer   Fecha de nacimiento: 1953-10-21
+Caso sintético oc_0016. Diagnóstico de referencia: adenocarcinoma de colon.
+Muestra AP-2018-000692: Hemicolectomía derecha, recibida el 2018-10-22
+Procedimiento: Hemicolectomía derecha con linfadenectomía
+Localización del tumor: Colon (C18.9)
+Tipo histológico: Adenocarcinoma (8140/3)
+Grado histológico: Grado 2 (moderadamente diferenciado)
+Tamaño tumoral: 49 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 6 mm
+Invasión linfovascular: ausente
+Invasión perineural: ausente
+Ganglios linfáticos: 3 de 12 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM0, estadio IIIB
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

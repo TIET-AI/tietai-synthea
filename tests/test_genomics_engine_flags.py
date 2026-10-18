@@ -18,7 +18,6 @@ T0 = datetime(2021, 6, 1)
 @pytest.fixture(autouse=True)
 def _restore():
     yield
-    EncounterEndState.completes = False
     Module.set_state_patches(None)
 
 
@@ -32,17 +31,11 @@ def _person():
     return p
 
 
-def test_encounter_end_default_never_completes():
-    """The stock behaviour (a known defect): the state yields on every step."""
-    p, s = _person(), _end()
-    assert [s.run(p, T0 + timedelta(days=d)) for d in (0, 0, 1, 7, 30)] == [False] * 5
-
-
-def test_encounter_end_completes_when_enabled_and_rearms():
-    EncounterEndState.completes = True
+def test_encounter_end_moves_on_and_rearms():
+    """#119: the defect GO-61 switched around is fixed for every run, so there
+    is no switch any more. The state ends the visit and yields once."""
     p, s = _person(), _end()
     assert s.run(p, T0) is False                      # ends the encounter, yields
-    assert s.run(p, T0) is False                      # same step: still yields
     assert s.run(p, T0 + timedelta(days=1)) is True   # next step: moves on
     assert s.run(p, T0 + timedelta(days=40)) is False  # a later visit yields again
 
@@ -66,13 +59,11 @@ def test_generator_reads_module_patches_and_stock_is_empty():
     o.seed = 1
     g = Generator(o, config=cfg)
     assert g._load_module_patches() == {}
-    assert EncounterEndState.completes is False and Module._state_patches == {}
+    assert Module._state_patches == {}
     cfg.set("generate.module_patches", str(resource_path("genomics") / "cohort_patches.yaml"))
-    cfg.set("generate.encounter_end_completes", True)
     g = Generator(o, config=cfg)
     patches = g._load_module_patches()
     assert set(patches) == {"lung_cancer", "colorectal_cancer", "breast_cancer", "prostate_cancer"}
-    assert EncounterEndState.completes is True
     doc = yaml.safe_load((resource_path("genomics") / "cohort_patches.yaml").read_text())
     assert len(doc["patches"]) == 4
 
@@ -94,7 +85,7 @@ def test_cli_flags_set_config_and_default_is_off(tmp_path, monkeypatch):
     assert runner.invoke(cli.main, base).exit_code == 0
     c = seen["config"]
     assert c.get_bool("exporter.genomics.export", False) is False
-    assert not c.get("generate.module_patches") and c.get_bool("generate.encounter_end_completes", False) is False
+    assert not c.get("generate.module_patches")
     assert runner.invoke(cli.main, base + ["--genomics"]).exit_code == 0
     c = seen["config"]
     assert c.get_bool("exporter.genomics.export") is True and not c.get("generate.module_patches")
@@ -103,5 +94,4 @@ def test_cli_flags_set_config_and_default_is_off(tmp_path, monkeypatch):
     c = seen["config"]
     assert c.get_bool("exporter.genomics.export") is True
     assert str(c.get("generate.module_patches")).endswith("cohort_patches.yaml")
-    assert c.get_bool("generate.encounter_end_completes") is True
     assert c.get_bool("exporter.genomics.regenerate_reference") is True

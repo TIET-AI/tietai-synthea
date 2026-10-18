@@ -1,0 +1,18 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Lisabeth Haley   Sexo: mujer   Fecha de nacimiento: 1966-02-23
+Caso sintético oc_0010. Diagnóstico de referencia: adenocarcinoma de colon.
+Muestra AP-2018-000470: Hemicolectomía derecha, recibida el 2018-04-11
+Procedimiento: Hemicolectomía derecha con linfadenectomía
+Localización del tumor: Colon (C18.9)
+Tipo histológico: Adenocarcinoma (8140/3)
+Grado histológico: Grado 2 (moderadamente diferenciado)
+Tamaño tumoral: 53 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 6 mm
+Invasión linfovascular: ausente
+Invasión perineural: ausente
+Ganglios linfáticos: 2 de 13 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT3 pN1b cM0, estadio IIIB
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

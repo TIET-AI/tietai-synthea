@@ -172,7 +172,6 @@ def main(population, seed, clinician_seed, gender, age, module, config, modules_
         config_obj.set('exporter.genomics.export', True)
     if genomics_cohort:
         from synthea.helpers.resources import resource_path
-        config_obj.set('generate.encounter_end_completes', True)
         config_obj.set('generate.module_patches',
                        str(resource_path('genomics') / 'cohort_patches.yaml'))
     if regenerate_reference:

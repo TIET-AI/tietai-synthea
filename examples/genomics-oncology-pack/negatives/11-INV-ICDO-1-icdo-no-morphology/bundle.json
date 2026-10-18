@@ -1,27 +1,27 @@
 {
   "entry": [
     {
-      "fullUrl": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef",
+      "fullUrl": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48",
       "request": {
-        "ifNoneExist": "identifier=urn:tietai:synthetic|39a3f9ea-b8cc-4af7-8b76-e1a9c257359e",
+        "ifNoneExist": "identifier=urn:tietai:synthetic|0f23e2b0-f42d-4e94-8bfe-40fe4fa2b9e5",
         "method": "POST",
         "url": "Patient"
       },
       "resource": {
         "active": true,
-        "birthDate": "1942-12-02",
+        "birthDate": "1964-03-09",
         "gender": "female",
         "identifier": [
           {
             "system": "urn:tietai:synthetic",
-            "value": "39a3f9ea-b8cc-4af7-8b76-e1a9c257359e"
+            "value": "0f23e2b0-f42d-4e94-8bfe-40fe4fa2b9e5"
           }
         ],
         "name": [
           {
-            "family": "Hudson",
+            "family": "Johns",
             "given": [
-              "Sarai"
+              "Nguyet"
             ],
             "use": "official"
           }
@@ -30,10 +30,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:afa85d39-3194-437e-a492-cc0241c1957c",
+      "fullUrl": "urn:uuid:6ca87a73-d334-4e93-92a0-f8b6732925e9",
       "request": {
         "method": "PUT",
-        "url": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+        "url": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
       },
       "resource": {
         "bodySite": [
@@ -77,16 +77,16 @@
             }
           ]
         },
-        "id": "afa85d39-3194-437e-a492-cc0241c1957c",
+        "id": "6ca87a73-d334-4e93-92a0-f8b6732925e9",
         "meta": {
           "profile": [
             "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
           ]
         },
-        "onsetDateTime": "2018-08-24",
+        "onsetDateTime": "2018-06-15",
         "resourceType": "Condition",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "verificationStatus": {
           "coding": [
@@ -99,7 +99,7 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:96499e1d-adcd-4afd-b918-d0f276ab38f8",
+      "fullUrl": "urn:uuid:a48b05da-9a9f-4ebc-802a-2a6bc1e8a28f",
       "request": {
         "method": "POST",
         "url": "Observation"
@@ -123,7 +123,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2018-08-31",
+        "effectiveDateTime": "2018-06-22",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -132,7 +132,7 @@
         ],
         "focus": [
           {
-            "reference": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
           }
         ],
         "meta": {
@@ -151,7 +151,7 @@
         "resourceType": "Observation",
         "status": "final",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "valueCodeableConcept": {
           "text": "cT2"
@@ -159,7 +159,7 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:465df9c1-cb1e-46f7-927c-3d6c8fbd3d2a",
+      "fullUrl": "urn:uuid:d868a3ba-a73d-4776-bd6c-831f6ef91f3d",
       "request": {
         "method": "POST",
         "url": "Observation"
@@ -183,7 +183,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2018-08-31",
+        "effectiveDateTime": "2018-06-22",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -192,7 +192,7 @@
         ],
         "focus": [
           {
-            "reference": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
           }
         ],
         "meta": {
@@ -211,15 +211,15 @@
         "resourceType": "Observation",
         "status": "final",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "valueCodeableConcept": {
-          "text": "cN0"
+          "text": "cN1a"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:f3cdd49d-e15a-4773-b4b0-c3070e28534c",
+      "fullUrl": "urn:uuid:5ae59b42-eccd-44ca-81c0-bb49d75f8905",
       "request": {
         "method": "POST",
         "url": "Observation"
@@ -243,7 +243,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2018-08-31",
+        "effectiveDateTime": "2018-06-22",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -252,7 +252,7 @@
         ],
         "focus": [
           {
-            "reference": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
           }
         ],
         "meta": {
@@ -271,15 +271,15 @@
         "resourceType": "Observation",
         "status": "final",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "valueCodeableConcept": {
-          "text": "cM0"
+          "text": "cM1"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:2cccd145-2bbe-4fbb-bdc6-17996dc81492",
+      "fullUrl": "urn:uuid:7ab1d77c-c8cd-4e4f-9632-46168b96a639",
       "request": {
         "method": "POST",
         "url": "Observation"
@@ -303,7 +303,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2018-08-31",
+        "effectiveDateTime": "2018-06-22",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -312,7 +312,7 @@
         ],
         "focus": [
           {
-            "reference": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
           }
         ],
         "meta": {
@@ -331,15 +331,15 @@
         "resourceType": "Observation",
         "status": "final",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "valueCodeableConcept": {
-          "text": "IIA"
+          "text": "IV"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:d68d9181-4398-4218-ae98-07b5e3e66824",
+      "fullUrl": "urn:uuid:4754885f-284e-4eee-8304-dd427ab1337a",
       "request": {
         "method": "POST",
         "url": "Observation"
@@ -363,7 +363,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2018-09-15",
+        "effectiveDateTime": "2018-06-29",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -372,7 +372,7 @@
         ],
         "focus": [
           {
-            "reference": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
           }
         ],
         "meta": {
@@ -391,7 +391,7 @@
         "resourceType": "Observation",
         "status": "final",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "valueCodeableConcept": {
           "text": "pT2"
@@ -399,7 +399,7 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:02c3773a-2d42-417b-adcb-f8a606d06538",
+      "fullUrl": "urn:uuid:32c0fc43-e5ac-42ed-b3ce-feafd9e64a04",
       "request": {
         "method": "POST",
         "url": "Observation"
@@ -423,7 +423,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2018-09-15",
+        "effectiveDateTime": "2018-06-29",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -432,7 +432,7 @@
         ],
         "focus": [
           {
-            "reference": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
           }
         ],
         "meta": {
@@ -451,15 +451,15 @@
         "resourceType": "Observation",
         "status": "final",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "valueCodeableConcept": {
-          "text": "pN0"
+          "text": "pN1a"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:cb175e6d-c0f4-47cf-9c05-b2923ed6a91c",
+      "fullUrl": "urn:uuid:144b73cd-7dc1-4e07-b709-1061f3617d3d",
       "request": {
         "method": "POST",
         "url": "Observation"
@@ -483,7 +483,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2018-09-15",
+        "effectiveDateTime": "2018-06-29",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -492,7 +492,7 @@
         ],
         "focus": [
           {
-            "reference": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
           }
         ],
         "meta": {
@@ -511,15 +511,15 @@
         "resourceType": "Observation",
         "status": "final",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "valueCodeableConcept": {
-          "text": "cM0"
+          "text": "cM1"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:6b8b2ca6-b1c7-4e70-8df0-7700d5ea317a",
+      "fullUrl": "urn:uuid:10d06bb7-3fe0-4999-ab8b-0c8302effd00",
       "request": {
         "method": "POST",
         "url": "Observation"
@@ -543,7 +543,7 @@
             }
           ]
         },
-        "effectiveDateTime": "2018-09-15",
+        "effectiveDateTime": "2018-06-29",
         "extension": [
           {
             "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
@@ -552,7 +552,7 @@
         ],
         "focus": [
           {
-            "reference": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
           }
         ],
         "meta": {
@@ -571,15 +571,15 @@
         "resourceType": "Observation",
         "status": "final",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "valueCodeableConcept": {
-          "text": "IIA"
+          "text": "IV"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:5feae62e-fad3-4bb9-a9ad-7d171b1091b7",
+      "fullUrl": "urn:uuid:68c92584-7659-4343-ad4d-668ededb2a2c",
       "request": {
         "method": "POST",
         "url": "Observation"
@@ -604,16 +604,16 @@
             }
           ]
         },
-        "effectiveDateTime": "2018-09-15",
+        "effectiveDateTime": "2018-06-29",
         "focus": [
           {
-            "reference": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
           }
         ],
         "resourceType": "Observation",
         "status": "final",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "valueCodeableConcept": {
           "coding": [
@@ -627,7 +627,7 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:bf320c16-62d4-4359-8521-d63fdd7acf5b",
+      "fullUrl": "urn:uuid:e9ff35a1-7ba0-4c67-afe4-b2ddaa277130",
       "request": {
         "method": "POST",
         "url": "Observation"
@@ -652,16 +652,16 @@
             }
           ]
         },
-        "effectiveDateTime": "2018-09-15",
+        "effectiveDateTime": "2018-06-29",
         "focus": [
           {
-            "reference": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
           }
         ],
         "resourceType": "Observation",
         "status": "final",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "valueCodeableConcept": {
           "coding": [
@@ -675,7 +675,7 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:89026a4d-2d47-4b06-825e-7d71008002b5",
+      "fullUrl": "urn:uuid:d31c9cc1-f953-4091-8274-6b7ef583a440",
       "request": {
         "method": "POST",
         "url": "Observation"
@@ -700,25 +700,263 @@
             }
           ]
         },
-        "effectiveDateTime": "2018-09-15",
+        "effectiveDateTime": "2018-06-29",
         "focus": [
           {
-            "reference": "Condition/afa85d39-3194-437e-a492-cc0241c1957c"
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
           }
         ],
         "resourceType": "Observation",
         "status": "final",
         "subject": {
-          "reference": "urn:uuid:99de360c-bb32-44e2-af4d-607dc8e896ef"
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         },
         "valueCodeableConcept": {
           "coding": [
             {
-              "code": "10828004",
-              "display": "Positive (qualifier value)",
+              "code": "260385009",
+              "display": "Negative (qualifier value)",
               "system": "http://snomed.info/sct"
             }
           ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:822ac4ce-92ca-46a1-b480-d342a92c95b3",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2019-12-04",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02BA01",
+              "display": "tamoxifen",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "198240",
+              "display": "Tamoxifen 10 MG Oral Tablet",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:5c4bf6c7-e297-46cc-8af4-f58c975778de",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "392021009",
+              "display": "Lumpectomy of breast (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-07-15",
+        "reasonReference": [
+          {
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:eb4bd7bf-173e-4ea5-9416-b0737d414cad",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "1287742003",
+              "display": "Radiotherapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-08-14",
+        "reasonReference": [
+          {
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cc6d6127-1c42-4f99-9a13-cedc46a77320",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "1287742003",
+              "display": "Radiotherapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-09-06",
+        "reasonReference": [
+          {
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:6481893b-27d1-44ba-b13a-37278ec68218",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "1287742003",
+              "display": "Radiotherapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-10-04",
+        "reasonReference": [
+          {
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:79b02944-5c16-4f40-be64-c99d7323d7ca",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "1287742003",
+              "display": "Radiotherapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-11-01",
+        "reasonReference": [
+          {
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:73ac6303-f236-4495-bff4-667c445727d5",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "1287742003",
+              "display": "Radiotherapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-11-29",
+        "reasonReference": [
+          {
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:0f661d2d-f621-4a70-a71a-61d9c0916415",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "1287742003",
+              "display": "Radiotherapy (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-12-27",
+        "reasonReference": [
+          {
+            "reference": "Condition/6ca87a73-d334-4e93-92a0-f8b6732925e9"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:db821efd-d4fa-4e56-b4de-7fd7eb75db48"
         }
       }
     }

@@ -12,6 +12,16 @@ import hashlib
 
 from synthea.helpers.rng import random_seed
 
+#: Names modules use for a vital sign -> the name it is stored under. Upstream
+#: modules say "BMI"; the lifecycle stores "Body Mass Index", so a module
+#: reading "BMI" saw nothing and no patient was ever classed as obese.
+_VITAL_SIGN_ALIASES = {'BMI': 'Body Mass Index'}
+
+
+def canonical_vital_sign(name: str) -> str:
+    """The name a vital sign is stored under, whatever a module calls it."""
+    return _VITAL_SIGN_ALIASES.get(name, name)
+
 if TYPE_CHECKING:
     from synthea.world.health_record import HealthRecord
 
@@ -106,7 +116,24 @@ class Person:
         
         age_delta = time - birth_date
         return age_delta.days / 365.25
-    
+
+    def age_in_years(self, time: datetime) -> int:
+        """Completed years of age at ``time``, as on a birthday calendar.
+
+        Lookup tables stratify by whole-year bands (``0-4``, ``5-9``), so they
+        must be matched with this rather than :meth:`age_at`: a fractional
+        4.5 falls between those two rows and matches neither.
+        """
+        birth_date = self.attributes.get('birth_date')
+        if not birth_date:
+            return 0
+        if isinstance(birth_date, str):
+            birth_date = datetime.fromisoformat(birth_date)
+        years = time.year - birth_date.year
+        if (time.month, time.day) < (birth_date.month, birth_date.day):
+            years -= 1
+        return max(years, 0)
+
     @property
     def age(self) -> float:
         """Get the person's current age."""
@@ -153,6 +180,7 @@ class Person:
         Returns:
             The value of the vital sign, or None if not set
         """
+        vital_sign = canonical_vital_sign(vital_sign)
         if vital_sign in self.vital_signs:
             return self.vital_signs[vital_sign].get('value')
         return None
@@ -167,7 +195,7 @@ class Person:
             unit: The unit of measurement
             time: The time of measurement
         """
-        self.vital_signs[vital_sign] = {
+        self.vital_signs[canonical_vital_sign(vital_sign)] = {
             'value': value,
             'unit': unit,
             'time': time

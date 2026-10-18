@@ -1,0 +1,980 @@
+{
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf",
+      "request": {
+        "ifNoneExist": "identifier=urn:tietai:synthetic|c8a702cf-6e81-462e-b4ed-7ce85b7faab5",
+        "method": "POST",
+        "url": "Patient"
+      },
+      "resource": {
+        "active": true,
+        "birthDate": "1961-03-11",
+        "gender": "female",
+        "identifier": [
+          {
+            "system": "urn:tietai:synthetic",
+            "value": "c8a702cf-6e81-462e-b4ed-7ce85b7faab5"
+          }
+        ],
+        "name": [
+          {
+            "family": "Runolfsson",
+            "given": [
+              "Jerica"
+            ],
+            "use": "official"
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:e562cc96-7434-48dd-a824-74da96299318",
+      "request": {
+        "method": "PUT",
+        "url": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+      },
+      "resource": {
+        "bodySite": [
+          {
+            "coding": [
+              {
+                "code": "C50.9",
+                "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+              }
+            ]
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "problem-list-item",
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+              }
+            ]
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "code": "active",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "code": "254837009",
+              "display": "Malignant neoplasm of breast (disorder)",
+              "system": "http://snomed.info/sct"
+            },
+            {
+              "code": "C50.919",
+              "system": "https://tiet.ai/fhir/CodeSystem/cie10-es"
+            }
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-histology-morphology-behavior",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "8500/3",
+                  "display": "Carcinoma ductal infiltrante",
+                  "system": "http://terminology.hl7.org/CodeSystem/icd-o-3"
+                }
+              ]
+            }
+          }
+        ],
+        "id": "e562cc96-7434-48dd-a824-74da96299318",
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-cancer-condition"
+          ]
+        },
+        "onsetDateTime": "2018-08-15",
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "code": "confirmed",
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:d40811a3-300a-4b0d-97d3-7fe4000f65e2",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21905-5",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-08-22",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "valueCodeableConcept": {
+          "text": "cT2"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:886980b6-bb28-4945-8f6a-6eacd140f8bb",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21906-3",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-08-22",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "valueCodeableConcept": {
+          "text": "cN1a"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:85111f92-aa8b-4838-bdde-670706ee9702",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21907-1",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-08-22",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "valueCodeableConcept": {
+          "text": "cM1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a23f90e1-a3e2-46b1-923c-ca3e48639f6e",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21908-9",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-08-22",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "valueCodeableConcept": {
+          "text": "IV"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:136e6cc3-a59e-4893-a79c-2cc5f9fa95a7",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21899-0",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-09-06",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "valueCodeableConcept": {
+          "text": "pT2"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:7ee4caae-4fc7-4490-a879-8ba2d95a7f98",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21900-6",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-09-06",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "valueCodeableConcept": {
+          "text": "pN1a"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:0b069e94-9666-4cde-81e3-226cd5b36339",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21901-4",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-09-06",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "valueCodeableConcept": {
+          "text": "cM1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c1d224e6-92e4-4a45-98ff-aa8cd89dd73c",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "21902-2",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-09-06",
+        "extension": [
+          {
+            "url": "https://tiet.ai/fhir/StructureDefinition/staging-edition",
+            "valueString": "8"
+          }
+        ],
+        "focus": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "meta": {
+          "profile": [
+            "https://tiet.ai/fhir/StructureDefinition/tietai-tnm-observation"
+          ]
+        },
+        "method": {
+          "coding": [
+            {
+              "code": "TNM",
+              "system": "https://tiet.ai/fhir/staging-system"
+            }
+          ]
+        },
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "valueCodeableConcept": {
+          "text": "IV"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:d6e547eb-a321-4367-a7e5-cacc86cb2f3d",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "16112-5",
+              "display": "16112-5",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-09-06",
+        "focus": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "code": "10828004",
+              "display": "Positive (qualifier value)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:19c0d22d-2d3c-4ba0-b419-1f7a1f308b7b",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "16113-3",
+              "display": "16113-3",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-09-06",
+        "focus": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "code": "260385009",
+              "display": "Negative (qualifier value)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cb54a02f-7417-48c7-8ce9-fcb4f9d50736",
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "laboratory",
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "48676-1",
+              "display": "48676-1",
+              "system": "http://loinc.org"
+            }
+          ]
+        },
+        "effectiveDateTime": "2018-09-06",
+        "focus": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "resourceType": "Observation",
+        "status": "final",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "code": "260385009",
+              "display": "Negative (qualifier value)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:6c399135-0de7-4b31-9b11-4ce65916fb12",
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      },
+      "resource": {
+        "authoredOn": "2020-01-29",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "code": "L02BA01",
+              "display": "tamoxifen",
+              "system": "http://www.whocc.no/atc"
+            },
+            {
+              "code": "198240",
+              "display": "Tamoxifen 10 MG Oral Tablet",
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm"
+            }
+          ]
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "resourceType": "MedicationRequest",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cc1a6cc1-fa69-47a5-aa39-8f607e9c6f87",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "392023007",
+              "display": "Excision of lesion of breast (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-09-12",
+        "reasonReference": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:e36ae48e-fe4d-4000-8884-5fe0c82d82be",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "33195004",
+              "display": "External beam radiation therapy procedure (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-10-06",
+        "reasonReference": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:142ce666-608d-43d5-8e96-11baf81c0af8",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "33195004",
+              "display": "External beam radiation therapy procedure (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-11-02",
+        "reasonReference": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:6259108c-561a-418d-aec0-5156ced4b2d3",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "33195004",
+              "display": "External beam radiation therapy procedure (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-11-30",
+        "reasonReference": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ac27b7bb-b8cf-4da9-b19f-2e268445ae22",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "33195004",
+              "display": "External beam radiation therapy procedure (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2018-12-28",
+        "reasonReference": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8398d75a-0512-4cc5-9b5f-34c2613dff60",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "33195004",
+              "display": "External beam radiation therapy procedure (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2019-01-25",
+        "reasonReference": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:76b25727-d326-473b-9665-342f3a3096a1",
+      "request": {
+        "method": "POST",
+        "url": "Procedure"
+      },
+      "resource": {
+        "code": {
+          "coding": [
+            {
+              "code": "33195004",
+              "display": "External beam radiation therapy procedure (procedure)",
+              "system": "http://snomed.info/sct"
+            }
+          ]
+        },
+        "performedDateTime": "2019-02-22",
+        "reasonReference": [
+          {
+            "reference": "Condition/e562cc96-7434-48dd-a824-74da96299318"
+          }
+        ],
+        "resourceType": "Procedure",
+        "status": "completed",
+        "subject": {
+          "reference": "urn:uuid:dc396acd-0ff6-4569-9e63-99fd0d8fefaf"
+        }
+      }
+    }
+  ],
+  "resourceType": "Bundle",
+  "type": "transaction"
+}

@@ -318,14 +318,19 @@ def differential(observations: Dict[str, Any]) -> None:
 def make_coherent(observations: List[Any]) -> None:
     """Apply every panel rule to one encounter's observations.
 
-    Takes the latest observation per code, because an encounter can record the
-    same analyte more than once and the last is the one a reader sees.
+    A panel is the observations drawn at one time, so they are grouped by time
+    first: an inpatient stay can draw a panel every week, and reconciling only
+    the encounter's last panel left the earlier ones contradicting themselves.
+    Within a draw the latest observation per code is used, because the same
+    analyte can be recorded more than once and the last is the one a reader sees.
     """
-    by_code: Dict[str, Any] = {}
+    draws: Dict[Any, Dict[str, Any]] = {}
     for observation in observations:
         if observation.codes:
+            by_code = draws.setdefault(getattr(observation, 'time', None), {})
             by_code[str(observation.codes[0].code)] = observation
 
-    red_cell_indices(by_code)
-    protein_fractions(by_code)
-    differential(by_code)
+    for by_code in draws.values():
+        red_cell_indices(by_code)
+        protein_fractions(by_code)
+        differential(by_code)

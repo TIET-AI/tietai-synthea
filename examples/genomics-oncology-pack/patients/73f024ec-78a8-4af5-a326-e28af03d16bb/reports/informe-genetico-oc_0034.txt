@@ -1,0 +1,18 @@
+LABORATORIO DE GENÉTICA MOLECULAR (sintético)
+INFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Felisha Green   Sexo: mujer   Fecha de nacimiento: 1968-06-21
+Caso sintético oc_0034. Diagnóstico de referencia: adenocarcinoma de colon.
+Panel NGS de tumor sólido OncoColon v3
+Muestra: tejido tumoral FFPE, biopsia de colon   ID de muestra SYN-0034
+Genoma de referencia GRCh38
+Fecha del informe: 2026-09-10
+
+Variantes detectadas:
+KRAS NM_004985.5:c.35G>A (p.Gly12Asp) VAF 36,5%. Heterocigosis. Variante somática. Tier II (AMP).
+
+Implicaciones:
+
+Fuente de conocimiento: ClinVar versión 2026-09-01
+Recomendación: Se recomienda discutir el resultado en comité multidisciplinar de tumores.
+Este informe es un documento sintético generado para pruebas de la plataforma.

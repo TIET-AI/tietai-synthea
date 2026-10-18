@@ -297,7 +297,8 @@ class DelayState(State):
             delays[self.name] = time + self._calculate_delay(person)
 
         if time >= delays[self.name]:
-            del delays[self.name]
+            # Module.process resumes the states after this one at the expiry.
+            person.attributes[f'{self.module.name}_delay_exited'] = delays.pop(self.name)
             return True
         return False
 
@@ -352,7 +353,14 @@ class CounterState(State):
         """Update the counter."""
         attribute = self.definition.get('attribute')
         action = self.definition.get('action', 'increment')
-        
+        # GMF `amount`, default 1. It was ignored, so metabolic_syndrome_disease
+        # took 1 rather than 18 years off a diabetes countdown drawn from birth
+        # and onset slipped ~17 years later - past most patients' lifetimes.
+        try:
+            amount = int(self.definition.get('amount', 1))
+        except (TypeError, ValueError):
+            amount = 1
+
         if attribute:
             raw = person.attributes.get(attribute, 0)
             try:
@@ -360,9 +368,9 @@ class CounterState(State):
             except (TypeError, ValueError, OverflowError):
                 current = 0
             if action == 'increment':
-                person.attributes[attribute] = current + 1
+                person.attributes[attribute] = current + amount
             elif action == 'decrement':
-                person.attributes[attribute] = current - 1
+                person.attributes[attribute] = current - amount
         
         return True
 
@@ -438,41 +446,36 @@ class EncounterState(State):
 class EncounterEndState(State):
     """A state that ends a healthcare encounter."""
 
-    #: Known defect (found by GO-61): with the default ``False`` the state ends
-    #: the encounter and yields on every step, and never lets the module move on,
-    #: so any module path that crosses an EncounterEnd stalls for good (for
-    #: example lung cancer never reaches a diagnosis). ``True`` completes the
-    #: state on the step after it yielded. It stays off by default so existing
-    #: populations do not change; ``--genomics-cohort`` turns it on
-    #: (``generate.encounter_end_completes``).
-    completes: bool = False
-
     def run(self, person: 'Person', time: datetime) -> bool:
-        """End the current encounter and yield to the next time step.
+        """End the current encounter, yield once, then carry on.
 
-        Returning False (yield) prevents modules that loop back to an Encounter
-        state immediately after EncounterEnd from cycling indefinitely within a
-        single time step — matching the Java Synthea engine's behaviour where
-        ending an encounter naturally breaks the within-step loop.
+        Yielding prevents modules that loop back to an Encounter state
+        immediately after EncounterEnd from cycling within a single time step
+        (a wellness loop would otherwise re-attach to the visit it just ended).
+        The module resumes here at the next step, and that second run must
+        complete so the transition is followed. It used to yield on every run,
+        so a module stopped for good at its first EncounterEnd: every check-up
+        after the first was skipped, and so was every diagnosis made at one -
+        no patient was ever diagnosed with diabetes, kidney disease or cancer.
         """
-        end_key = f'{self.module.name}.{self.name}_ended_at'
-        last_ended = person.attributes.get(end_key)
+        yielded_key = f'{self.module.name}.{self.name}_yielded'
 
-        if self.completes:
-            if last_ended is not None and last_ended != time:
-                # Yielded on an earlier step: the encounter is over, move on.
-                del person.attributes[end_key]
-                return True
-        elif last_ended == time:
-            # Already ended this encounter at this time step; yield again.
-            return False
+        if person.attributes.pop(yielded_key, False):
+            # Resumed after the yield: the encounter is already closed.
+            return True
 
         if hasattr(person, 'record') and 'current_encounter' in person.attributes:
             encounter = person.attributes['current_encounter']
-            person.record.encounter_end(encounter, time)
+            # A routine check-up belongs to the core encounter module, which
+            # closes it; a module that attached to it only leaves it, as in
+            # upstream EncounterEnd. Ending it here closed the visit for every
+            # module after this one in the same step, and the labs they then
+            # recorded on it were never reconciled.
+            if encounter is not person.attributes.get('current_wellness_encounter'):
+                person.record.encounter_end(encounter, time)
             del person.attributes['current_encounter']
 
-        person.attributes[end_key] = time
+        person.attributes[yielded_key] = True
         return False
 
 
@@ -687,11 +690,7 @@ class VitalSignState(State):
             return True
 
         value = self._calculate_value(person)
-        person.vital_signs[vital_sign] = {
-            'value': value,
-            'unit': unit,
-            'time': time,
-        }
+        person.set_vital_sign(vital_sign, value, unit, time)
 
         # A vital set by a module must also reach the record, or it is invisible
         # to every exporter. Previously it lived only on the person, which is
@@ -1002,7 +1001,16 @@ class CallSubmoduleState(State):
             logger.warning("Submodule '%s' not found", submodule_name)
             return True
 
-        submodule.process(person, time)
+        # Upstream CallSubmodule: the caller waits here until the submodule
+        # reaches Terminal, resuming it each step. Returning True regardless
+        # abandoned a submodule at its first Delay - covid19/infection stopped
+        # at "Wait for Test", so no patient was ever diagnosed with COVID-19.
+        if not submodule.process(person, time):
+            return False
+        # Finished: forget its state, so the next call starts at Initial
+        # (upstream removes the submodule's history attribute).
+        person.attributes.pop(f'{submodule.name}_current_state', None)
+        person.attributes.pop(f'{submodule.name}_delays', None)
         return True
 
 

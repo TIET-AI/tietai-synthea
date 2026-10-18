@@ -1,0 +1,18 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Malisa Lueilwitz   Sexo: mujer   Fecha de nacimiento: 1965-04-12
+Caso sintético oc_0047. Diagnóstico de referencia: carcinoma de pulmón.
+Muestra AP-2021-001839: Lobectomía pulmonar derecha, recibida el 2021-02-13
+Procedimiento: Lobectomía pulmonar con linfadenectomía
+Localización del tumor: Pulmón (C34.9)
+Tipo histológico: Carcinoma de pulmón no microcítico (8046/3)
+Grado histológico: Grado 2 (moderadamente diferenciado)
+Tamaño tumoral: 39 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 4 mm
+Invasión linfovascular: presente
+Invasión perineural: ausente
+Ganglios linfáticos: 0 de 12 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT2a pN0 cM0, estadio IB
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

@@ -14,7 +14,7 @@ from pathlib import Path
 import importlib
 import inspect
 
-from synthea.engine.state import State
+from synthea.engine.state import DelayState, State
 from synthea.engine.transition import Transition
 from synthea.helpers.resources import resource_path
 
@@ -64,10 +64,35 @@ class Module:
         
         if not current_state_name:
             return True  # No initial state, module is done
-        
+
+        # PriorState conditions name a state, not a module: upstream searches
+        # the history of the module being processed, into which a submodule's
+        # history is merged. Keep the chain of modules in progress so visits
+        # are recorded against each and the condition can find them.
+        stack = getattr(person, '_module_stack', None)
+        if stack is None:
+            stack = []
+            person._module_stack = stack
+        stack.append(self.name)
+        try:
+            return self._process(person, time, current_state_key,
+                                 current_state_name, stack)
+        finally:
+            stack.pop()
+
+    def _process(self, person: 'Person', time: datetime, current_state_key: str,
+                 current_state_name: str, stack: List[str]) -> bool:
+        """Run states from ``current_state_name`` until one has to wait."""
         # Process states until we hit a delay or terminal state
         # Cap iterations to detect multi-state cycles (e.g. A→B→C→A without a Delay)
         _iterations = 0
+        # The time states are entered at. A Delay that expired between time
+        # steps hands over at its expiry, not at this step, so what follows it
+        # is rewound to then - as upstream Module.process does by recursing
+        # with the delay's `exited` time. Without this a short self-looping
+        # Delay (covid19 "Wait Until Exposure", 4 days) cycled once per two
+        # steps and a 30-minute test result landed a week after the visit.
+        now = time
         while current_state_name:
             if current_state_name not in self.states:
                 logger.warning("State '%s' not found in module '%s'", current_state_name, self.name)
@@ -78,11 +103,24 @@ class Module:
             # Mark state as visited (for PriorState conditions)
             # Record when, not just whether: a PriorState condition with a
             # `within` window needs the timestamp to answer 'recently?'.
-            person.attributes[f'{self.name}.{current_state_name}_visited'] = True
-            person.attributes[f'{self.name}.{current_state_name}_visited_at'] = time
+            # The sequence number orders visits within one step, which the
+            # `since` boundary of a PriorState condition needs.
+            seq = person.__dict__.get('_visit_seq', 0) + 1
+            person.__dict__['_visit_seq'] = seq
+            for name in stack:
+                person.attributes[f'{name}.{current_state_name}_visited'] = True
+                person.attributes[f'{name}.{current_state_name}_visited_at'] = now
+                person.attributes[f'{name}.{current_state_name}_visited_seq'] = seq
             
             # Run the state
-            completed = state.run(person, time)
+            completed = state.run(person, now)
+            if not completed and now < time and isinstance(state, DelayState):
+                # A Delay entered at the rewound time may already be over by
+                # the real one. Only a Delay: running any other waiting state
+                # twice would consume its wait (EncounterEnd's single yield,
+                # a wellness Encounter re-attaching to the visit it just left).
+                now = time
+                completed = state.run(person, now)
             
             if not completed:
                 # State needs more time (e.g., Delay state)
@@ -90,11 +128,15 @@ class Module:
                 return False
             
             # Get next state from transition
-            next_state = self._get_next_state(state, person, time)
-            
-            if next_state == current_state_name:
-                # Prevent direct self-loop
-                return True
+            next_state = self._get_next_state(state, person, now)
+
+            exited = person.attributes.pop(f'{self.name}_delay_exited', None)
+            if exited is not None and exited < now:
+                now = exited
+
+            # A state may transition to itself: every self-loop in the bundled
+            # modules is a Delay, which re-arms on re-entry. This used to
+            # return here, ending the module for the step.
 
             _iterations += 1
             if _iterations >= _MAX_MODULE_ITERATIONS:
@@ -162,10 +204,13 @@ class Module:
     
     #: Core modules, in the order they must run. `lifecycle` sets the age, BMI
     #: and vital signs that disease-module logic conditions read, so it goes
-    #: first; `encounter` opens the routine visit that `wellness` Encounter
-    #: states attach to, so it goes before anything clinical.
+    #: first; `cardiovascular_disease` turns those vitals into the `mi_risk`,
+    #: `ihd_risk`, `atrial_fibrillation_risk` and `stroke_risk` the heart
+    #: modules read; `encounter` opens the routine visit that `wellness`
+    #: Encounter states attach to, so it goes before anything clinical.
     CORE_MODULE_ORDER = [
         'lifecycle',
+        'cardiovascular_disease',
         'encounter',
         'immunizations',
         'health_insurance',

@@ -146,6 +146,27 @@ class TestRedCellIndices:
         assert panel[labs.MCH] == pytest.approx(
             panel[labs.HGB] * 10 / panel[labs.RBC], abs=0.2)
 
+    def test_every_draw_in_a_long_stay_is_reconciled(self):
+        """An inpatient stay drawing a CBC every week: each panel is coherent,
+        not only the last one (#113 follow-up)."""
+        from datetime import timedelta
+        person = _person()
+        encounter = person.record.encounter_start(VISIT, EncounterClass.INPATIENT)
+        draws = []
+        for week, (rbc, hct) in enumerate([(5.37, 47.47), (3.79, 35.70)]):
+            when = VISIT + timedelta(weeks=week)
+            draws.append({code: person.record.observation(
+                when, _loinc(code), value=value, unit=unit, encounter=encounter)
+                for code, (value, unit) in {
+                    labs.RBC: (rbc, '10*6/uL'), labs.HGB: (13.65, 'g/dL'),
+                    labs.HCT: (hct, '%'), labs.MCV: (91.6, 'fL'),
+                    labs.MCHC: (35.5, 'g/dL')}.items()})
+        person.record.encounter_end(encounter, VISIT + timedelta(weeks=2))
+
+        for panel in draws:
+            assert panel[labs.MCV].value == pytest.approx(
+                panel[labs.HCT].value * 10 / panel[labs.RBC].value, abs=0.2)
+
     def test_haemoglobin_is_preserved(self):
         """It is how every module expresses the severity of an anaemia."""
         panel = self._panel(**{
@@ -409,8 +430,10 @@ class TestGeneratedPopulation:
             code = observation.get('code', {}).get('coding', [{}])[0].get('code')
             if 'valueQuantity' not in observation:
                 continue
+            # One panel per draw: an inpatient stay can draw one every week.
             key = (observation.get('subject', {}).get('reference'),
-                   observation.get('encounter', {}).get('reference'))
+                   observation.get('encounter', {}).get('reference'),
+                   observation.get('effectiveDateTime'))
             panels.setdefault(key, {})[code] = \
                 observation['valueQuantity']['value']
 

@@ -33,13 +33,12 @@ uv run synthea --population 200 --seed 7 --genomics --output-dir ./out
 
 ### Cohort enrichment (`--genomics-cohort`) and the EncounterEnd defect
 
-Stock modules give about 9 cancer cases per 200 persons, nearly all breast and prostate, and **no lung or
-colorectal case ever completes**, because the engine's `EncounterEnd` state never lets a module move on
-(it ends the encounter and yields on every step; found while building this pack). Two opt-in changes make a
-four-family pack possible; neither is on by default, so existing populations do not change:
+Stock modules give few cancer cases per 200 persons, mostly breast and prostate. Until 1.5.0 **no lung or
+colorectal case ever completed**, because the engine's `EncounterEnd` state never let a module move on
+([#119](https://github.com/TIET-AI/tietai-synthea/issues/119)). GO-61 worked around it with an opt-in switch;
+1.5.0 fixes it for every run (#120), so the switch no longer exists. One opt-in change remains to make a
+four-family pack dense enough:
 
-* `generate.encounter_end_completes` (set by `--genomics-cohort`): `EncounterEnd` completes on the step after it
-  yielded. This is a genuine engine defect tracked in [#119](https://github.com/TIET-AI/tietai-synthea/issues/119); it needs its own fix and release note.
 * `generate.module_patches` = `resources/genomics/cohort_patches.yaml` (set by `--genomics-cohort`): replaces the
   *incidence gate* state of the four cancer modules with a fixed onset probability. Nothing after the gate
   changes. The pack manifest records the hash of the patch file.
