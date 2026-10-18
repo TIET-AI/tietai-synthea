@@ -13,7 +13,7 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ---
 
-## [Unreleased]
+## [1.5.0] - 2026-10-18
 
 Patients now develop the chronic diseases their modules describe, and the
 population rates that differ from the real world can be set in configuration.
