@@ -30,8 +30,10 @@ clause 8).
 | `providers/` | 8 CSV | 8.5 MB | Hospitals, primary care, urgent care and more |
 | `templates/` | 32 | ~200 KB | Clinical note and C-CDA templates |
 | `physiology/` | 7 | ~100 KB | SBML circulation models |
+| `locale/es/` | 12 | ~60 KB | Spain locale pack: geography, population, names, hospitals, SNS |
 | `keep_modules/` | 9 | small | Priority module sets |
 | Root files | 12 | ~600 KB | Growth charts, biometrics, names, schedules |
+| `genomics/` | 12 | ~80 KB | Curated variant and cancer-code tables, report templates, C5 schemas, cohort patches (GO-61 genomics pack) |
 
 ---
 
@@ -107,6 +109,15 @@ Clinical note (`notes/note.ftl`) and C-CDA templates.
 > [#43](https://github.com/TIET-AI/tietai-synthea/issues/43); the C-CDA
 > exporter does not exist.
 
+## Genomics pack — `genomics/`
+
+Inputs of the synthetic genomics/oncology pack (`--genomics`): `curated_variants.yaml` (+ schema),
+`cancer_codes.yaml`, `templates/*.j2` (Spanish reports), `c5/*.schema.json` (copies of the Hydra C5 extraction
+schemas) and `cohort_patches.yaml` (opt-in incidence-gate patches for the four cancer modules).
+
+> Synthetic test data; the curated tables are **pending clinical geneticist / terminology owner review**. See
+> [docs/genomics-pack.md](docs/genomics-pack.md).
+
 ## Physiology — `physiology/`
 
 SBML circulation models and generator configuration.
@@ -115,6 +126,18 @@ SBML circulation models and generator configuration.
 > [#33](https://github.com/TIET-AI/tietai-synthea/issues/33).
 
 ---
+
+## Locale packs — `locale/<code>/`
+
+Data for in-tree locale packs other than the US reference pack. Each pack
+directory carries its own `RESOURCES.md` with the source, reference date,
+licence and transformation of every file.
+
+- `locale/es/` — Spain: INE municipal population (Padrón, 1 Jan 2025) and age
+  and sex by province (ECP, 1 Jan 2025), MIVAU urban areas, GeoNames postal
+  codes, IGN coordinates, INE names and surnames, marital status and
+  nationality, one fictional hospital per city, and the Sistema Nacional de
+  Salud as sole payer. See [`locale/es/RESOURCES.md`](src/synthea/resources/locale/es/RESOURCES.md).
 
 ## Fetched on demand
 

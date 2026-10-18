@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tiet.ai/schemas/extraction/clinical/v1",
+  "$defs": {
+    "entity": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1
+        },
+        "section_hint": {
+          "type": "string"
+        },
+        "display": {
+          "type": "string"
+        },
+        "assertion": {
+          "enum": [
+            "present",
+            "negated",
+            "uncertain",
+            "hypothetical",
+            "family"
+          ]
+        },
+        "entity_id": {
+          "type": "string",
+          "pattern": "^ent_\\d{4}$"
+        },
+        "char_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "char_end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quote_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  },
+  "$comment": "Copied from TIET-AI/tietai-hydra-platform pkg/clinicalextract/schemas/envelope_v1.yaml at origin/feat/GO-22 91e8fbff59c676d0e2c766ca375e290758166c2c (GO-13 PR #1399 @ 39fc621b8be06a6ea70bc0135e3fa0f740e7c3ce, GO-22 PR #1401). Contract C5; owners GO-13/GO-22. Re-sync after those PRs merge."
+}

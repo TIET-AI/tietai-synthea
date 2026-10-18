@@ -1,0 +1,15 @@
+{
+  "expected": [
+    {
+      "code": "invariant",
+      "detailCode": "INV-PROVENANCE-1",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-PROVENANCE-1",
+  "layer": "fhir-validate",
+  "note": "report without a Provenance",
+  "seed": [],
+  "variant": "no-provenance"
+}

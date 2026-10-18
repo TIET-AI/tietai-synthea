@@ -20,6 +20,10 @@ class Config:
     def __init__(self):
         """Initialize configuration."""
         self.settings: Dict[str, Any] = {}
+        #: Keys the user set themselves - from their own properties file or
+        #: through `set` - as opposed to bundled or locale-pack defaults. A
+        #: locale pack's defaults must never override what a user asked for.
+        self.explicit_keys: set = set()
         self._load_defaults()
     
     def _load_defaults(self):
@@ -32,6 +36,8 @@ class Config:
             'exporter.years_of_history': 10,
             
             # FHIR exporter
+            'exporter.genomics.export': False,
+            'exporter.genomics.seed': 20261017,
             'exporter.fhir.export': True,
             'exporter.fhir.bulk_data': False,
             'exporter.fhir.transaction_bundle': True,
@@ -97,19 +103,49 @@ class Config:
                 Path('resources/synthea.properties'),
                 Path('../synthea.properties'),
             ]
-            
+
             for path in search_paths:
                 if path.exists():
                     filepath = str(path)
                     break
-        
+            # A `synthea.properties` in the working directory is the user's,
+            # not the bundled one.
+            user_file = bool(filepath) and not _same_file(
+                filepath, resource_path('synthea.properties'))
+        else:
+            # A user's file overrides the bundled defaults rather than
+            # replacing them, as the README describes. Loading it alone dropped
+            # every setting it did not repeat - including the calibration.*
+            # rates - and fell back to the hard-coded minimum.
+            bundled = resource_path('synthea.properties')
+            user_file = not _same_file(filepath, bundled)
+            if bundled.exists() and user_file:
+                self._load_properties_file(str(bundled))
+
         if filepath and Path(filepath).exists():
-            self._load_properties_file(filepath)
+            keys = self._load_properties_file(filepath)
+            if user_file:
+                self.explicit_keys.update(keys)
+
+    def apply_defaults(self, defaults: Dict[str, Any]) -> list:
+        """Overlay defaults (a locale pack's) beneath what the user set.
+
+        Precedence is bundled < these defaults < the user's own file or
+        `set` calls. Returns the keys that took effect.
+        """
+        applied = []
+        for key, value in (defaults or {}).items():
+            if key in self.explicit_keys:
+                continue
+            self.settings[key] = value
+            applied.append(key)
+        return applied
     
-    def _load_properties_file(self, filepath: str):
+    def _load_properties_file(self, filepath: str) -> list:
         """Load a Java-style properties file."""
         # Properties files are similar to INI but without sections
         # We'll read them line by line
+        keys = []
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
                 for line in f:
@@ -136,9 +172,12 @@ class Config:
                     
                     # Convert value to appropriate type
                     self.settings[key] = self._parse_value(value)
+                    keys.append(key)
         
         except Exception as e:
             print(f"Warning: Could not load properties file {filepath}: {e}")
+
+        return keys
     
     def _parse_value(self, value: str) -> Any:
         """Parse a string value to appropriate type."""
@@ -188,6 +227,7 @@ class Config:
             value: Value to set
         """
         self.settings[key] = value
+        self.explicit_keys.add(key)
     
     def get_bool(self, key: str, default: bool = False) -> bool:
         """
@@ -307,3 +347,11 @@ class Config:
                         value_str = str(value)
                     
                     f.write(f"{key} = {value_str}\n")
+
+
+def _same_file(a, b) -> bool:
+    """Whether two paths name the same file."""
+    try:
+        return Path(a).resolve() == Path(b).resolve()
+    except (OSError, RuntimeError):  # pragma: no cover - defensive
+        return False

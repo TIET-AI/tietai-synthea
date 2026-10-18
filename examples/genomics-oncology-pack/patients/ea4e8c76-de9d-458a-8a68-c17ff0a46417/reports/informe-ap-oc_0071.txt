@@ -1,0 +1,18 @@
+SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)
+INFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: Eula Lemke   Sexo: mujer   Fecha de nacimiento: 1970-10-23
+Caso sintético oc_0071. Diagnóstico de referencia: carcinoma de pulmón.
+Muestra AP-2018-002727: Lobectomía pulmonar derecha, recibida el 2018-07-21
+Procedimiento: Lobectomía pulmonar con linfadenectomía
+Localización del tumor: Pulmón (C34.9)
+Tipo histológico: Carcinoma microcítico de pulmón (8041/3)
+Grado histológico: Grado 2 (moderadamente diferenciado)
+Tamaño tumoral: 14 mm en su mayor dimensión
+Márgenes quirúrgicos: negativos, margen más próximo a 2 mm
+Invasión linfovascular: ausente
+Invasión perineural: ausente
+Ganglios linfáticos: 0 de 9 ganglios con metástasis
+Estadificación pTNM (TNM 8.ª edición): pT1b pN0 cM0, estadio IA
+Comentario: Sin hallazgos adicionales de interés.
+Este informe es un documento sintético generado para pruebas de la plataforma.

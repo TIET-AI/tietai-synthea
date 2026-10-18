@@ -6,6 +6,8 @@ is true of a patient regardless of what they suffer from:
 - **Identity** at birth: name, address, contact details, identifiers.
 - **Growth**: height and weight tracked against a stable CDC percentile through
   childhood, then adult weight change with age.
+- **Smoking**: whether the patient takes up smoking at 16 and, if so, the
+  chance each timestep that they quit.
 - **Vital signs**: a healthy baseline refreshed each timestep, which disease
   modules are free to override.
 - **Death**: background mortality from :mod:`synthea.world.mortality`, plus
@@ -48,6 +50,26 @@ MAX_CHART_AGE_MONTHS = 240
 #: assumption is wrong the test says so rather than the error hiding in the data.
 POUNDS_TO_KG = 0.45359237
 
+#: Upstream ``startSmoking``: nine in ten smokers start before 18; Synthea uses 16.
+SMOKING_START_AGE = 16
+
+#: ``lifecycle.quit_smoking.baseline`` and ``.timestep_delta`` in
+#: ``synthea.properties``: the per-timestep chance a smoker quits, and how it
+#: changes each step they do not (never below the baseline).
+QUIT_SMOKING_BASELINE = 0.01
+QUIT_SMOKING_TIMESTEP_DELTA = -0.01
+
+
+def likelihood_of_smoking(year: int) -> float:
+    """Upstream ``likelihoodOfBeingASmoker``: adult US smoking prevalence by year.
+
+    CDC trend figures: 42.4% in 1965 (held for earlier years), falling about
+    half a point a year to 16.1% in 2015, and extrapolated on from there.
+    """
+    if year < 1965:
+        return 0.424
+    return ((year * -0.4865) + 996.41) / 100.0
+
 
 class LifecycleModule(Module):
     """Identity, growth, vital signs and background mortality."""
@@ -72,6 +94,7 @@ class LifecycleModule(Module):
         identity.assign_marital_status(person, age)
 
         self._grow(person, age, time)
+        self._smoking(person, time)
         self._vitals(person, time)
         self._mortality(person, age, time)
 
@@ -171,6 +194,34 @@ class LifecycleModule(Module):
         return max(35.0, baseline + gained - lost)
 
     # ------------------------------------------------------------------
+    # Smoking
+    # ------------------------------------------------------------------
+
+    def _smoking(self, person: 'Person', time: datetime) -> None:
+        """Upstream ``LifecycleModule.startSmoking`` and ``quitSmoking``.
+
+        ``smoker`` feeds the ASCVD, Framingham CHD and stroke scores in
+        :mod:`synthea.world.cardiovascular_risk`, and the COPD, lung cancer and
+        asthma modules read it directly. Nothing set it before, so every
+        patient was a lifelong non-smoker.
+        """
+        attributes = person.attributes
+        age = person.age_in_years(time)
+
+        if attributes.get('smoker') is None and age == SMOKING_START_AGE:
+            attributes['smoker'] = person.random.random() < likelihood_of_smoking(time.year)
+            attributes['quit smoking probability'] = QUIT_SMOKING_BASELINE
+
+        if attributes.get('smoker') is True:
+            probability = attributes.get('quit smoking probability', QUIT_SMOKING_BASELINE)
+            if person.random.random() < probability:
+                attributes['smoker'] = False
+                attributes['quit smoking age'] = age
+            else:
+                attributes['quit smoking probability'] = max(
+                    QUIT_SMOKING_BASELINE, probability + QUIT_SMOKING_TIMESTEP_DELTA)
+
+    # ------------------------------------------------------------------
     # Vital signs
     # ------------------------------------------------------------------
 
@@ -180,11 +231,12 @@ class LifecycleModule(Module):
         A disease module that has raised a patient's blood pressure must keep
         it; this only fills in what nothing else has set during this step.
         """
-        for name, value in vitals.baseline_vitals(person).items():
+        for name, value in vitals.calculate_vitals(person, time).items():
             existing = person.vital_signs.get(name)
             if existing and existing.get('time') == time:
                 continue  # a module already set it this step
-            unit = vitals.VITAL_CODES.get(name, {}).get('unit')
+            unit = (vitals.VITAL_CODES.get(name, {}).get('unit')
+                    or vitals.LAB_UNITS.get(name))
             person.set_vital_sign(name, value, unit, time)
 
     # ------------------------------------------------------------------

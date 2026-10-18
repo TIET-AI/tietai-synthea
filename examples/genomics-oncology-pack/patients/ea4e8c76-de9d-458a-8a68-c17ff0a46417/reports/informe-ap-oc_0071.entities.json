@@ -1,0 +1,146 @@
+{
+  "document_sha256": "946f7dd829c23d7b1709d885c297ee35aff61fedabeefa11a1ac2514258d0e9e",
+  "entities": [
+    {
+      "accession": "AP-2018-002727",
+      "assertion": "present",
+      "char_end": 361,
+      "char_start": 286,
+      "collection_date": "2018-07-21",
+      "entity_id": "ent_0001",
+      "kind": "specimen",
+      "laterality": "right",
+      "quote": "Muestra AP-2018-002727: Lobectomía pulmonar derecha, recibida el 2018-07-21",
+      "quote_sha256": "b49736abb9babbdf1bc17d557b048d8e3b3309f638f73c300e1c90e857298d80",
+      "type_text": "lobectomía pulmonar derecha"
+    },
+    {
+      "assertion": "present",
+      "char_end": 416,
+      "char_start": 362,
+      "entity_id": "ent_0002",
+      "kind": "procedure",
+      "quote": "Procedimiento: Lobectomía pulmonar con linfadenectomía",
+      "quote_sha256": "8432ebfb7524c40c976d76c910c80890f09dcda249f2d729904d54f931fcf144",
+      "text": "Lobectomía pulmonar con linfadenectomía"
+    },
+    {
+      "assertion": "present",
+      "char_end": 455,
+      "char_start": 417,
+      "code": "C34.9",
+      "entity_id": "ent_0003",
+      "kind": "tumour_site",
+      "quote": "Localización del tumor: Pulmón (C34.9)",
+      "quote_sha256": "919fd9445a4bda88c39b0a4cf738ab05ed67cd48eef0fb036ec1e11add2524aa"
+    },
+    {
+      "assertion": "present",
+      "behaviour": "3",
+      "char_end": 514,
+      "char_start": 456,
+      "code": "8041",
+      "entity_id": "ent_0004",
+      "kind": "histology",
+      "quote": "Tipo histológico: Carcinoma microcítico de pulmón (8041/3)",
+      "quote_sha256": "717fcdf55ff6df3308a6f393e73e9c672e0a210d8cfaf9742693829de28c93c1"
+    },
+    {
+      "assertion": "present",
+      "char_end": 570,
+      "char_start": 515,
+      "entity_id": "ent_0005",
+      "kind": "grade",
+      "quote": "Grado histológico: Grado 2 (moderadamente diferenciado)",
+      "quote_sha256": "e9c9ad3dce03b5bb784cd05067b0eefa895fb32b03f66d095390628c08184eea",
+      "system": "who",
+      "value_text": "Grado 2"
+    },
+    {
+      "assertion": "present",
+      "char_end": 614,
+      "char_start": 571,
+      "dimension": "greatest",
+      "entity_id": "ent_0006",
+      "kind": "size_mm",
+      "quote": "Tamaño tumoral: 14 mm en su mayor dimensión",
+      "quote_sha256": "d40687f577a7b5bd70f03dcfa656ece7796541e49f2694e71f1711d660b6b27e",
+      "source_unit": "mm",
+      "source_value": "14",
+      "unit": "mm",
+      "value": 14
+    },
+    {
+      "assertion": "present",
+      "char_end": 673,
+      "char_start": 615,
+      "distance_mm": 2,
+      "entity_id": "ent_0007",
+      "kind": "margins",
+      "quote": "Márgenes quirúrgicos: negativos, margen más próximo a 2 mm",
+      "quote_sha256": "1aab6ef667a62bc3d4c9b0b8cb229331e75a01b97f77e5832c3cb3aecb6e84c3",
+      "status": "negative"
+    },
+    {
+      "assertion": "present",
+      "char_end": 705,
+      "char_start": 674,
+      "entity_id": "ent_0008",
+      "kind": "lymphovascular_invasion",
+      "quote": "Invasión linfovascular: ausente",
+      "quote_sha256": "483d15b1278d78d850d77cf07043f1108f1aba819c20f2c4ff2e73c8b361e22a",
+      "status": "absent"
+    },
+    {
+      "assertion": "present",
+      "char_end": 734,
+      "char_start": 706,
+      "entity_id": "ent_0009",
+      "kind": "perineural_invasion",
+      "quote": "Invasión perineural: ausente",
+      "quote_sha256": "e8d3e88161195121a3255994e6955fa29fa71ead8ec898a15328b7680a8129f9",
+      "status": "absent"
+    },
+    {
+      "assertion": "present",
+      "char_end": 786,
+      "char_start": 735,
+      "entity_id": "ent_0010",
+      "examined": 9,
+      "kind": "nodes",
+      "positive": 0,
+      "quote": "Ganglios linfáticos: 0 de 9 ganglios con metástasis",
+      "quote_sha256": "e7c4c3bc7e030ca09c73e1582c6ee9c365c4b945f9da03dc1168cbafa3005646"
+    },
+    {
+      "assertion": "present",
+      "char_end": 850,
+      "char_start": 787,
+      "edition": "8",
+      "entity_id": "ent_0011",
+      "kind": "ptnm",
+      "m": "cM0",
+      "n": "pN0",
+      "prefix": "p",
+      "quote": "Estadificación pTNM (TNM 8.ª edición): pT1b pN0 cM0, estadio IA",
+      "quote_sha256": "9b7cb8c9fd20dc841683fe2db4416dc76b95c9e55bd744b06c479545c74f6f8a",
+      "stage_group": "IA",
+      "t": "pT1b"
+    },
+    {
+      "assertion": "present",
+      "char_end": 900,
+      "char_start": 851,
+      "entity_id": "ent_0012",
+      "kind": "comment",
+      "quote": "Comentario: Sin hallazgos adicionales de interés.",
+      "quote_sha256": "11e9843a2d02a194a5ec2d8957eb89a420b5b3b5ebea4c1641addd81f70c636e",
+      "text": "Sin hallazgos adicionales de interés."
+    }
+  ],
+  "extractor_version": "go-61-gold/1",
+  "needs_review": true,
+  "schema": "tietai.synoptic-pathology/v1",
+  "source_text": "SERVICIO DE ANATOMÍA PATOLÓGICA (sintético)\nINFORME DE ANATOMÍA PATOLÓGICA SINTÉTICO\nDocumento sintético: no corresponde a ningún paciente real.\nPaciente: Eula Lemke   Sexo: mujer   Fecha de nacimiento: 1970-10-23\nCaso sintético oc_0071. Diagnóstico de referencia: carcinoma de pulmón.\nMuestra AP-2018-002727: Lobectomía pulmonar derecha, recibida el 2018-07-21\nProcedimiento: Lobectomía pulmonar con linfadenectomía\nLocalización del tumor: Pulmón (C34.9)\nTipo histológico: Carcinoma microcítico de pulmón (8041/3)\nGrado histológico: Grado 2 (moderadamente diferenciado)\nTamaño tumoral: 14 mm en su mayor dimensión\nMárgenes quirúrgicos: negativos, margen más próximo a 2 mm\nInvasión linfovascular: ausente\nInvasión perineural: ausente\nGanglios linfáticos: 0 de 9 ganglios con metástasis\nEstadificación pTNM (TNM 8.ª edición): pT1b pN0 cM0, estadio IA\nComentario: Sin hallazgos adicionales de interés.\nEste informe es un documento sintético generado para pruebas de la plataforma.\n",
+  "source_text_sha256": "3389c47500fdd43b7a37b0ad68debd04ea4a56fa20929f645bf19c278abae6ed"
+}

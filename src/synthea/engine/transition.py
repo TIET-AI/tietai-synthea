@@ -117,36 +117,41 @@ class DistributedTransition(Transition):
             return 0.0
 
     def _validate_distribution(self):
-        """Normalize fixed distributions to sum to 1.0; skip when any entry is attribute-based."""
+        """Warn when fixed probabilities do not sum to 1; never rescale them."""
         if any(isinstance(t.get('distribution'), dict) for t in self.transitions):
             return
         total = sum(self._resolve_distribution(t.get('distribution', 0), None)
                     for t in self.transitions)
-        if total > 0 and abs(total - 1.0) > 0.001:
-            for t in self.transitions:
-                t['distribution'] = self._resolve_distribution(t.get('distribution', 0), None) / total
+        if self.transitions and abs(total - 1.0) > 0.001:
+            logger.debug("distributed_transition sums to %.4f; the last option "
+                         "takes the remainder, as upstream", total)
 
     def follow(self, person: 'Person', time: datetime) -> Optional[str]:
         """Select a transition based on the probability distribution."""
-        if not self.transitions:
-            return None
+        return select_cumulative(self.transitions, person)
 
-        # Resolve all weights for this person, then normalize before selecting so that
-        # attribute-based weights (which bypass static normalization) are handled correctly.
-        weights = [self._resolve_distribution(t.get('distribution', 0), person)
-                   for t in self.transitions]
-        total = sum(weights)
-        if total <= 0:
-            return self.transitions[-1].get('transition')
 
-        rand = person.random.random() * total
-        cumulative = 0.0
-        for transition, weight in zip(self.transitions, weights):
-            cumulative += weight
-            if rand < cumulative:
-                return transition.get('transition')
+def select_cumulative(options: List[Dict[str, Any]], person: 'Person') -> Optional[str]:
+    """Upstream's distributed selection: probabilities are taken at face value.
 
-        return self.transitions[-1].get('transition')
+    One draw is compared with the running sum of the options' probabilities,
+    and the last option takes whatever is left. Probabilities used to be
+    rescaled to sum to 1, which made a probability read from an attribute
+    inexact: ``[{p}, {1}]`` - how modules express "p, otherwise carry on" -
+    gave p/(1+p), so a configured 3.8% came out as 3.66%.
+    """
+    if not options:
+        return None
+
+    rand = person.random.random()
+    cumulative = 0.0
+    for option in options:
+        cumulative += DistributedTransition._resolve_distribution(
+            option.get('distribution', 0), person)
+        if rand < cumulative:
+            return option.get('transition')
+
+    return options[-1].get('transition')
 
 
 class ConditionalTransition(Transition):
@@ -167,8 +172,10 @@ class ConditionalTransition(Transition):
             else:
                 # Default transition with no condition
                 return condition.get('transition')
-        
-        return None
+
+        # Upstream falls back to the last option when nothing matched.
+        # Returning None here ended the module for good instead.
+        return self.conditions[-1].get('transition') if self.conditions else None
 
 
 class ComplexTransition(Transition):
@@ -180,99 +187,40 @@ class ComplexTransition(Transition):
     
     def follow(self, person: 'Person', time: datetime) -> Optional[str]:
         """
-        Evaluate complex transitions.
-        
-        First evaluates conditions, then applies distributions among matching conditions.
+        Evaluate complex transitions, as upstream ``ComplexTransition`` does.
+
+        Options are tested in order and the first whose condition holds (or
+        that has no condition) is followed; when none holds, the last option
+        is followed. Pooling the distributions of every matching option let a
+        conditionless fallback fire alongside the branch that matched, and
+        returning None when nothing matched ended the module for good.
         """
         from synthea.engine.logic import Logic
-        
-        # Find all transitions whose conditions are met
-        matching = []
-        for transition in self.transitions:
-            if 'condition' in transition:
-                if Logic.test(transition['condition'], person, time):
-                    matching.append(transition)
-            else:
-                # No condition means always matches
-                matching.append(transition)
-        
-        if not matching:
+
+        if not self.transitions:
             return None
-        
-        # If only one match, use it
-        if len(matching) == 1:
-            return self._resolve_transition(matching[0], person, time)
-        
-        # Multiple matches - check for distributions
-        has_distributions = any('distributions' in t for t in matching)
-        
-        if has_distributions:
-            # Use distributed selection among matching transitions
-            return self._select_distributed(matching, person, time)
-        else:
-            # No distributions - use first matching transition
-            return self._resolve_transition(matching[0], person, time)
+
+        for transition in self.transitions:
+            if ('condition' not in transition
+                    or Logic.test(transition['condition'], person, time)):
+                return self._resolve_transition(transition, person, time)
+
+        return self._resolve_transition(self.transitions[-1], person, time)
     
     def _resolve_transition(self, transition: Dict[str, Any], person: 'Person',
                           time: datetime) -> Optional[str]:
-        """Resolve a single transition which may itself be distributed."""
-        if 'distributions' in transition:
-            return self._select_from_distributions(transition['distributions'], person)
-        else:
-            return transition.get('transition')
+        """Resolve a single option: its ``transition`` if named, as upstream
+        gives it precedence (wellness_encounters pairs one with an empty
+        ``distributions``), else a draw from its ``distributions``."""
+        if transition.get('transition'):
+            return transition['transition']
+        return self._select_from_distributions(transition.get('distributions') or [],
+                                               person)
 
-    def _select_distributed(self, transitions: List[Dict[str, Any]],
-                          person: 'Person', time: datetime) -> Optional[str]:
-        """Select from multiple transitions with distributions."""
-        all_options = []
-        for trans in transitions:
-            if 'distributions' in trans:
-                for dist in trans['distributions']:
-                    all_options.append({
-                        'transition': dist.get('transition'),
-                        'distribution': DistributedTransition._resolve_distribution(
-                            dist.get('distribution', 0), person),
-                    })
-            else:
-                all_options.append({
-                    'transition': trans.get('transition'),
-                    'distribution': 1.0 / len(transitions),
-                })
-
-        total = sum(opt['distribution'] for opt in all_options)
-        if total > 0:
-            for opt in all_options:
-                opt['distribution'] /= total
-
-        rand = person.random.random()
-        cumulative = 0.0
-        for option in all_options:
-            cumulative += option['distribution']
-            if rand < cumulative:
-                return option['transition']
-
-        return all_options[-1]['transition'] if all_options else None
-    
     def _select_from_distributions(self, distributions: List[Dict[str, Any]],
                                    person: 'Person') -> Optional[str]:
         """Select from a list of distributions."""
-        if not distributions:
-            return None
-
-        resolved = [DistributedTransition._resolve_distribution(d.get('distribution', 0), person)
-                    for d in distributions]
-        total = sum(resolved)
-        if total == 0:
-            return distributions[0].get('transition') if distributions else None
-
-        rand = person.random.random()
-        cumulative = 0.0
-        for dist, prob in zip(distributions, resolved):
-            cumulative += prob / total
-            if rand < cumulative:
-                return dist.get('transition')
-
-        return distributions[-1].get('transition') if distributions else None
+        return select_cumulative(distributions, person)
 
 
 class LookupTableTransition(Transition):
@@ -396,7 +344,7 @@ class LookupTableTransition(Transition):
                       person: 'Person', time: datetime,
                       targets: set) -> Optional[Dict[str, str]]:
         """The first row whose selector columns all match this patient."""
-        age: Optional[float] = None
+        age: Optional[int] = None
         millis: Optional[float] = None
         attributes = person.attributes
 
@@ -404,7 +352,13 @@ class LookupTableTransition(Transition):
             for kind, column, key, low, high, expected in selectors:
                 if kind == _AGE:
                     if age is None:
-                        age = person.age_at(time)
+                        # Whole years, as upstream matches them. A fractional
+                        # age fell into the gap between adjacent bands for
+                        # part of every year, missed every row and fell back
+                        # to default_probability - 1.0 for every target in
+                        # tables such as vhd_ps.csv, so 92% of patients were
+                        # given pulmonic valve stenosis.
+                        age = person.age_in_years(time)
                     if not low <= age <= high:
                         break
                 elif kind == _TIME:

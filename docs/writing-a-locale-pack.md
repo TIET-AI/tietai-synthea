@@ -1,6 +1,7 @@
 # Writing a locale pack
 
-The generator ships with one locale: the United States. Everything that is
+The generator ships with two locales: the United States (`us`, the reference
+pack) and Spain (`es`, `src/synthea/locale/es.py`). Everything that is
 specific to a country — names, addresses, identifiers, coverage, currency,
 coding conventions, the language a note is written in — lives in a **locale
 pack**, so using the generator somewhere else does not mean forking it.
@@ -110,7 +111,20 @@ Use whatever your country's equivalent of "never issued" is:
   identifier has a checksum, because validation will reject it everywhere
 
 Age and probability are applied by the interface, so your `format` does not
-have to remember them.
+have to remember them. `format` may return `None` when a person does not carry
+the identifier for a reason only your pack knows - the Spanish pack issues a
+DNI to nationals and an NIE to foreign nationals, deciding nationality in
+`assign_name`.
+
+Every scheme is exported on `Patient.identifier` with its `type_code`,
+`type_display`, `type_system` and `system`. The order of `identifiers` is the
+order of the random draws; if you want a different order on the Patient, set
+`identifier_export_order` to the keys in that order rather than reordering the
+schemes (which would change every seeded population).
+
+Use an official identifier system URI only where one exists. Where none does,
+use a URN that is plainly synthetic (the Spanish pack uses
+`urn:tietai:synthea:es:<name>`) - never invent an official-looking OID.
 
 ### Race and ethnicity
 
@@ -144,16 +158,147 @@ alone rather than dropping it.
 ### Data files
 
 ```python
-demographics_file='geography/demographics.csv',
-providers_files=('providers/hospitals.csv',),
+geography_file='geography.csv',
+demographics_file='population_by_age_sex.csv',
+providers_files={'providers/hospitals.csv': 'hospital'},
 payers_file='payers/insurers.csv',
-resource_root='/path/inside/your/package',
+plans_file='payers/plans.csv',
+cost_files={'encounter': 'costs/encounters.csv'},
+resource_root=str(Path(__file__).parent / 'data'),
 ```
+
+Paths are relative to `resource_root`. With no root the bundled resources are
+used. **A pack with a root never silently falls back to the bundled (US) file
+of the same name**: a declared file that is missing is a warning, and that
+data is treated as absent. `LocalePack.data_path(relative)` is the resolver
+the engine uses; use it in your own code too.
 
 Record where each file came from, its version and its licence, in a
 `RESOURCES.md` in your pack. This is a traceability requirement, not
 bureaucracy: someone will eventually need to know whether your provider list
 was allowed to be redistributed.
+
+#### Geography - where patients live
+
+A CSV, one row per municipality:
+
+```
+region,region_code,city,municipality,municipality_code,postal_codes,lat,lon,population
+Madrid,28,Madrid,Getafe,28065,28901|28902|28903|28904|28905|28906|28907,40.30,-3.73,189063
+```
+
+Each patient draws a municipality weighted by `population`, one of its
+`|`-separated `postal_codes`, and a home uniformly within `radius_km` (optional
+column, default 2) of `lat,lon`. The patient's attributes become `state`
+(= `region`), `region_code`, `city` (= `municipality`), `municipality_code`,
+`urban_area` (= `city`), `catchment_area` (optional `catchment` column, default
+`city`), `zip_code`, `latitude` and `longitude`.
+
+Users narrow it, for any pack, with:
+
+```properties
+generate.geography.cities = Madrid, Barcelona   # urban areas or municipalities
+generate.geography.regions = 28                 # region names or codes
+```
+
+`--state`/`--city` (and `generate.geography.state`/`.city`) select a region and
+a city the same way. Matching ignores case and accents. An unknown name is a
+warning that lists what is known; it never silently means "everywhere".
+
+Without a geography file the built-in US geography is used (the US pack does
+this, to keep its seeded output stable).
+
+#### Demographics - who lives there
+
+A CSV of population counts by region, sex and age band:
+
+```
+region_code,region,sex,age_low,age_high,population
+28,Madrid,F,0,4,123456
+28,Madrid,F,100,,1234
+```
+
+`region_code` matches the geography file. Leave `age_high` empty for an
+open-ended top band (it is read as five years wide). Sex is drawn from the
+region's totals, the band from that sex's counts, and the year uniformly
+within the band; because of that, a pack geography draws the home first and
+the age and sex second.
+
+#### Race and ethnicity
+
+With `race_categories=()` no race or ethnicity is drawn at all: the attributes
+are absent, modules' `Race` conditions are false, the cardiovascular risk
+model uses its non-Black column, and neither notes nor exports mention race.
+
+#### Facilities and clinicians
+
+`providers_files` **replaces** the bundled US directory. Give it a mapping of
+file to facility type, or a list of files whose rows carry a `facility_type`
+column (a row's column wins over the mapping). Types are those encounters ask
+for: `hospital`, `primary_care`, `urgent_care`, `nursing`, `longterm`,
+`hospice`, `home_health`, ... An encounter whose preferred types are absent
+falls back along `ENCOUNTER_PROVIDER_TYPES` and finally to any facility, so a
+pack with only hospitals sends every encounter class to a hospital.
+
+Columns the loader reads: `id`, `name`, `address`, `city`, `state`, `zip`,
+`lat`, `lon`, `phone`, `bed_count`, and two optional ones:
+
+- `catchment` - `|`-separated areas the facility serves. A patient whose
+  `catchment_area` is listed is sent there in preference to any other
+  facility of the type, which is how a public health system's assigned
+  hospital works;
+- `clinicians` - how many clinicians to staff it with. Otherwise
+  `generate.providers.clinicians_per_facility` (default 4).
+
+Clinicians come from the pack too: `clinician_names` (`rand -> (given,
+family)`, drawing from the facility's staffing generator),
+`clinician_specialties` (`(name, share)`), and `practitioner_identifier`, a
+`PractitionerIdentifierScheme(system, format, type_code, type_display)` that
+replaces the US NPI. Its values must be unissuable, like a patient's.
+
+#### Coverage and claims
+
+`coverage_policy` decides who is covered by what. It is a
+`synthea.world.payer.CoveragePolicy` with two methods: `kind_for(manager,
+person, age)` and `coverage_for(manager, person, age, time, kind)`. The
+default, `UnitedStatesCoverage`, is Medicare from 65, Medicaid or no cover on
+low income, otherwise a private plan. A national health system uses
+`UniversalCoverage(eligibility='SNS', kind='public')`, which covers everyone
+from birth with the plans whose `Eligibility Policy` is `SNS`.
+
+`produces_claims=False` says the health system does not bill per visit: the
+export carries Coverage (in IPS/EHDS, under the Payers section) but no Claim or
+ExplanationOfBenefit. Where claims are produced, Money is in `currency`.
+
+#### Population rates
+
+```python
+calibration={'calibration.reproduction.exposure': 0.2},
+```
+
+`calibration.*` defaults that suit your population. They apply over the
+bundled `synthea.properties` and under anything the user sets (their `-c`
+file or `Config.set`): bundled < pack < user. Cite the source of every value
+and record how it was measured.
+
+#### Notes
+
+`note_template` is looked up in `<resource_root>/templates/notes/` first and
+the bundled templates second. The template receives the bundled English
+sentences and also `patient`, the facts behind them (`first_name`, `sex`,
+`age_years`, `age_months`, `race`, `ethnicity` - None where the locale does not
+record race - `active_conditions`, `marital_status`, `smoker`,
+`quit_smoking_age`, `alcoholic`, `socioeconomic_status`, `education`,
+`insurer`), so a template in another language can phrase them itself. Clinical
+displays come from the codes and stay in the terminology's language.
+
+#### Export conventions
+
+`country_code` is `Address.country` for patients and facilities; a pack that
+sets the `postal_code` attribute in `assign_address` overrides the geography's
+postal code. `language` is `Patient.communication` when the name language has
+no entry in `language_lookup.json`. The US Core DocumentReference category is
+only written when the export profile is US Core.
 
 ## Testing your pack
 
@@ -172,6 +317,7 @@ notice for months.
 ```bash
 synthea --list-locales
 synthea -p 10 --locale xx -o ./out
+synthea -p 10 --locale es -o ./out-es
 ```
 
 Then read a generated note and a bundle. The things most often wrong on a first

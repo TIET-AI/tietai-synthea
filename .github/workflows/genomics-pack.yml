@@ -1,0 +1,64 @@
+name: genomics-pack
+
+# GO-61: the synthetic genomics/oncology reference pack must regenerate identically,
+# and its .vcf.gz files must be valid BGZF that tabix can index. The .tbi files are
+# committed next to the VCFs and are produced here, never by the Python generator.
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "src/synthea/export/genomics*.py"
+      - "src/synthea/export/bgzf.py"
+      - "src/synthea/export/vcf.py"
+      - "src/synthea/export/pdfmini.py"
+      - "src/synthea/resources/genomics/**"
+      - "examples/genomics-oncology-pack/**"
+      - ".github/workflows/genomics-pack.yml"
+  pull_request:
+    paths:
+      - "src/synthea/export/genomics*.py"
+      - "src/synthea/export/bgzf.py"
+      - "src/synthea/export/vcf.py"
+      - "src/synthea/export/pdfmini.py"
+      - "src/synthea/resources/genomics/**"
+      - "examples/genomics-oncology-pack/**"
+      - ".github/workflows/genomics-pack.yml"
+
+jobs:
+  pack:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install tabix (htslib)
+        # Ubuntu 24.04 ships tabix 1.19 (the design names 1.20, which is not packaged there).
+        # Pinned here; the index payload is compared uncompressed, so the exact version
+        # only matters for the format, which has been stable since 1.0.
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y "tabix=1.19*"
+          tabix --version | head -1
+      - name: Sync dependencies (locked)
+        run: uv sync --extra dev
+      - name: Unit tests for the pack
+        run: uv run --no-sync pytest -q -m "not slow" tests/test_bgzf.py tests/test_vcf_writer.py tests/test_pdfmini.py tests/test_genomics_entities.py tests/test_genomics_exporter.py tests/test_genomics_negatives.py tests/test_genomics_manifest.py
+      - name: Regenerate the reference pack and compare
+        run: |
+          uv run --no-sync synthea --population 200 --seed 20261017 --age 55-85 --reference-date 20261001 \
+            --genomics-cohort --regenerate-reference -c examples/genomics-oncology-pack-recipe.properties --output-dir out
+          # case/ (Hydra goldens) and *.tbi (this job) are not produced by the generator
+          diff -r -x case -x '*.tbi' out/genomics-oncology-pack examples/genomics-oncology-pack
+      - name: Index every reference VCF with tabix and compare with the committed index
+        run: |
+          set -e
+          for f in examples/genomics-oncology-pack/patients/*/vcf/*.vcf.gz; do
+            tmp="$(mktemp -d)"; cp "$f" "$tmp/x.vcf.gz"
+            tabix -p vcf "$tmp/x.vcf.gz"
+            # the committed index must describe the same payload (compare uncompressed)
+            cmp <(gzip -dc "$tmp/x.vcf.gz.tbi") <(gzip -dc "$f.tbi")
+            tabix -l "$f" > /dev/null
+            tabix -H "$f" > /dev/null
+          done

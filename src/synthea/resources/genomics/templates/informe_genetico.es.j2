@@ -1,0 +1,26 @@
+{{ ent('assay', lab_title, lab=lab_title) }}
+INFORME DE ANÁLISIS GENÉTICO DE TUMOR SÓLIDO
+Documento sintético: no corresponde a ningún paciente real.
+Paciente: {{ name }}   Sexo: {{ sex_es }}   Fecha de nacimiento: {{ dob }}
+Caso sintético {{ case_id }}. Diagnóstico de referencia: {{ dx_es }}.
+{{ ent('assay', panel_line, panel_name=panel_name, panel_version=panel_version) }}
+{{ ent('specimen', specimen_line, specimen_identifier=sid, specimen_type=stype, collected_on=collected) }}
+{{ ent('assay', build_line, build='GRCh38') }}
+Fecha del informe: {{ issued }}
+
+Variantes detectadas:
+{% for v in variants %}
+{{ ent('variant', v.line, key=v.key, fields=v.fields) }}
+{% endfor %}
+{% for b in biomarkers %}
+{{ ent(b.kind, b.line, fields=b.fields) }}
+{% endfor %}
+
+Implicaciones:
+{% for i in implications %}
+{{ ent('implication', i.line, links=i.links, fields=i.fields) }}
+{% endfor %}
+
+{{ ent('knowledge_release', release_line, fields=release_fields) }}
+{{ ent('recommendation', reco_line, fields=reco_fields) }}
+Este informe es un documento sintético generado para pruebas de la plataforma.

@@ -13,6 +13,224 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ---
 
+## [1.5.0] - 2026-10-18
+
+Patients now develop the chronic diseases their modules describe, and the
+population rates that differ from the real world can be set in configuration.
+
+Before this, a 500-patient lifetime run held **no** type 2 diabetes, chronic
+kidney disease, atrial fibrillation, coronary disease, stroke, cancer or
+COVID-19, while **92%** of patients had pulmonic or tricuspid valve stenosis.
+The modules were right; the engine that runs them was not. The same was true of
+1.2.0, 1.3.0 and 1.4.x.
+
+**Generated output changes substantially**, which is the point of this release.
+A seed from any earlier version will not reproduce.
+
+### Added - synthetic genomics and oncology pack (GO-61, #118)
+
+- **Synthetic genomics and oncology pack** (GO-61, `--genomics`, off by default): per cancer case a
+  `tietai-genomic-report` bundle, an mCODE oncology bundle, a BGZF VCF, Spanish genetic and pathology reports as PDF
+  plus text twin plus C5 expected entities, an HL7 ORU message, and 16 negative fixtures; a manifest with per-file
+  hashes; a Spanish-identifier PHI scan; a committed reference pack under `examples/genomics-oncology-pack/`.
+  See [docs/genomics-pack.md](docs/genomics-pack.md). New modules: `export/genomics*.py`, `bgzf.py`, `vcf.py`,
+  `pdfmini.py`. `--output` is now an alias of `--output-dir`.
+- `--genomics-cohort` and `generate.module_patches` (opt-in): cohort enrichment of the four cancer modules.
+- `jsonschema>=4.18` and `referencing` are now declared (the locked version already satisfied them).
+
+GO-61 shipped the `EncounterEnd` fix (#119) behind an opt-in switch,
+`generate.encounter_end_completes`. It is now always on - see below - and
+the switch is gone; the committed reference pack was regenerated.
+
+### Fixed - engine semantics (each now matches upstream Synthea)
+
+- **A module stopped for good at its first `EncounterEnd`.** The state yielded
+  on every run instead of once, so every check-up after the first was skipped
+  and so was every diagnosis made at one.
+- **`is nil` / `is not nil` were always false** - all 333 such conditions took
+  the wrong branch.
+- **`CallSubmodule` ran a submodule once per lifetime** and did not wait for it.
+  A submodule paused at a Delay was abandoned (COVID-19 was never tested or
+  diagnosed), and a finished one never ran again (kidney checks, contraception).
+- **`conditional_transition` and `complex_transition`** returned nothing when no
+  option matched - ending the module - and `complex_transition` pooled every
+  matching option instead of taking the first. Both now fall back to the last
+  option, as upstream.
+- **`PriorState` without a `module`** was always false (82 conditions in 39
+  modules), and `since` was ignored.
+- **States after an expired Delay ran at the step time**, not the Delay's
+  expiry, so short self-loops ran at half speed or less.
+- **Lookup tables were matched on fractional age**, so for part of every year a
+  patient fell between two bands, matched no row and got `default_probability`
+  for every target: 1.0 in `vhd_ps.csv`, hence the valve stenosis.
+- **`Counter` ignored `amount`**, putting diabetes onset ~17 years late.
+- **`distributed_transition` rescaled probabilities to sum to 1.** They are now
+  taken at face value with the remainder going to the last option, as
+  upstream; an attribute-valued probability is therefore exact.
+- **`virtual` was not an `EncounterClass`**, so telehealth encounters raised.
+- A module leaving a routine check-up closed it for every module after it, and
+  lab panels are now reconciled per draw (each weekly CBC in a long stay).
+- An EHDS category document could reference its author Organization without
+  containing it.
+
+### Fixed - physiology the modules read
+
+- **Laboratory values now follow the patient's disease state**: a port of
+  upstream `LifecycleModule.calculateVitalSigns` - HbA1c, glucose, lipid panel,
+  basic metabolic panel, eGFR/creatinine/microalbumin from CKD stage, and blood
+  pressure from `hypertension`. HbA1c used to be recorded with no value, which
+  diagnosed every patient with prediabetes as diabetic.
+- **Cardiovascular risk**: a port of upstream `CardiovascularDiseaseModule` and
+  its ASCVD and Framingham calculators, setting the `mi_risk`, `ihd_risk`,
+  `atrial_fibrillation_risk` and `stroke_risk` the heart modules wait on.
+- **Smoking**: upstream `startSmoking` / `quitSmoking`. Nothing set `smoker`,
+  so every patient was a lifelong non-smoker.
+- Modules reading the vital sign `BMI` now find `Body Mass Index`.
+- A treated HbA1c is held at 6.0% (diabetes) / 5.0% (prediabetes) at least.
+  **This deviates from upstream**, whose fixed drug effects put a lean diabetic
+  on basal insulin at 3.6% for life.
+
+### Added
+
+- **Calibration in configuration.** Every `calibration.*` key in
+  `synthea.properties` is copied onto each patient, where JSON modules read it
+  as an attribute-valued probability and core modules through
+  `synthea.world.calibration`. Calibrated, with sources in the file:
+
+  | Key | Upstream | Now |
+  |---|---|---|
+  | `cardiovascular.ihd_risk_multiplier` | 5 | 1.5 |
+  | `cardiovascular.af_risk_period_days` | 7 (timestep) | 30 |
+  | `cardiovascular.stroke_risk_period_days` | 7 (timestep) | 15 |
+  | `pregnancy.preeclampsia` | 0.08 | 0.038 |
+  | `pregnancy.eclampsia_given_preeclampsia` / `_de_novo` | 0.08 overall | 0.0044 / 0.0001 |
+  | `reproduction.exposure` | 1.0 (no gate) | 0.3 |
+
+- `Person.age_in_years(time)`: completed years, for whole-year bands.
+
+### Added - Spain locale pack
+
+- **`--locale es`**: patients live in the Madrid, Barcelona, Valencia, Bilbao,
+  Sevilla, Málaga and Santiago de Compostela urban areas (132 municipalities,
+  MIVAU urban-area delimitation). They are drawn by INE municipal population
+  (Padrón, 1 Jan 2025), and each gets a GeoNames postal code and a home near
+  the IGN municipal point. Age and sex follow their province (INE ECP,
+  1 Jan 2025).
+- **Identity:** INE given names by sex and two surnames by frequency, Spanish
+  addresses, and phone numbers in the unattributed `+34 30X` segment. DNI and
+  NIE numbers carry a deliberately wrong check letter, NUSS numbers wrong
+  control digits, and health-card codes a `ZZSYN` prefix. A DNI or NIE is
+  assigned by the INE foreign-national share of the province. Marital status
+  follows INE Censo 2024 shares. No race or ethnicity is recorded.
+- **Care:** one fictional "TietAI Hospital <city>" per city treats every
+  encounter of every class for that city's patients. Clinicians have
+  INE-derived names and a synthetic collegiate number.
+- **Coverage:** the Sistema Nacional de Salud gives universal public cover
+  from birth. No Claim or ExplanationOfBenefit is produced.
+- **Export:** EHDS export, `Address.country` `ES`, EUR, `Patient.communication`
+  `es`, and a Spanish clinical-note template.
+- **Calibration:** `calibration.reproduction.exposure = 0.22`, measured at 1.41
+  births per woman aged 46-60, against 1.36-1.58 completed cohort fertility
+  derived from INE.
+- Provenance of every file is in `resources/locale/es/RESOURCES.md`.
+
+### Added - generic locale-pack interface (any pack benefits)
+
+- **Pack data files are read.** `LocalePack.data_path()` resolves a file
+  against the pack's `resource_root`, and never falls back to the bundled US
+  file of the same name. Loaders that read pack files:
+  - geography (`geography_file`, a municipality CSV); `generate.geography.cities`
+    and `.regions` narrow it for any pack;
+  - demographics (`demographics_file`, population by region, sex and age band);
+  - facilities (`providers_files`), which replace the US directory and support
+    optional `facility_type`, `catchment` and `clinicians` columns;
+  - payers and plans;
+  - cost tables;
+  - the note template (pack directory first, then bundled).
+- **Clinicians:** `clinician_names`, `clinician_specialties` and
+  `practitioner_identifier` (a `PractitionerIdentifierScheme` replacing the
+  NPI). `generate.providers.clinicians_per_facility` sets staff per facility
+  (default 4).
+- **Coverage:** `coverage_policy` takes a
+  `synthea.world.payer.CoveragePolicy`. `UnitedStatesCoverage` is the default
+  and is unchanged; `UniversalCoverage` serves national systems.
+  `produces_claims=False` drops Claim and ExplanationOfBenefit and keeps
+  Coverage.
+- **Identifiers:** pack identifiers are exported (`identifier_export_order`
+  sets the order), and a scheme's `format` may return None. Practitioner
+  identifiers come from the pack.
+- **Calibration:** `LocalePack.calibration` applies with precedence bundled
+  `synthea.properties` < pack < the user's `-c` file or `Config.set`.
+  `Config.explicit_keys` and `Config.apply_defaults()` support this.
+- **Race:** a pack with empty `race_categories` draws no race or ethnicity,
+  and notes and exports mention none.
+- **Export:**
+  - `Address.country` comes from `country_code`, and Money uses `currency`.
+  - `Patient.communication` falls back to the pack `language`.
+  - The US Core DocumentReference category is written only under US Core.
+  - IPS and EHDS patient summaries gain the optional Payers section
+    (Coverage).
+- **Notes:** templates receive `patient`, the facts behind the English
+  sentences, so other languages can phrase them.
+
+### Changed
+
+- **`-c FILE` overlays the bundled `synthea.properties`** instead of replacing
+  it, as the README describes. A file holding a few keys used to drop every
+  other setting - including all calibration - and run on hard-coded minimums.
+- **`--locale` is applied.** The option was accepted and ignored; only
+  `generate.locale` worked.
+- **An unknown `--state` or `--city` warns** instead of silently keeping the
+  default location.
+- **The US pack declares what it uses.**
+  - Its facility files are the bundled directory, in the old load order.
+  - The passport identifier system is the one the exporter always wrote.
+  - Its geography and demographics files are now `None`. The upstream-format
+    `zipcodes.csv` and census `demographics.csv` were never read, and adopting
+    them would change seeded US output.
+
+  US output is byte-identical (the golden digests in `tests/test_locale.py`
+  are unchanged).
+
+### Measured: 1,000 patients, seed 20261018, full lifetime, living adults
+
+| | 1.4.1 | now | US reference |
+|---|---|---|---|
+| hypertension | 9% | 22% | ~30% diagnosed |
+| type 2 diabetes | 0% | 7.6% | ~10% diagnosed |
+| prediabetes | 0% | 40% | ~38% |
+| chronic kidney disease | 0% | 6.1% | ~14%, mostly undiagnosed |
+| ischemic heart disease | 0% | 5.7% | ~5-6% |
+| atrial fibrillation | 0% | 2.1% | ~2-3% |
+| stroke | 0% | 1.7% | ~3% |
+| COVID-19 | 0% | 10.6% | - |
+| obesity (BMI >= 30) | 0% | 20% | ~40% |
+| valve stenosis | 92% | <1% | <1% |
+| pregnancies per woman by 45 | - | 3.3 | ~3 |
+
+1.4.1 figures are from the 500-patient run that found the problem.
+
+### Known limitations
+
+- Heart failure (0.3%) and stroke remain below survey prevalence, and obesity
+  is half the US rate; these are left uncalibrated rather than tuned without a
+  source.
+- Pregnancy complication rates are per delivery in the literature and per
+  pregnancy here, so measured pre-eclampsia per pregnancy (2%) is below the
+  configured 3.8%.
+- Upstream's antihypertensive effects (`htn_drugs.csv`) are not bundled, so a
+  treated patient keeps an untreated blood pressure.
+
+### Upgrade notes
+
+- **Output changes everywhere.** Do not compare populations across this release.
+- A properties file passed with `-c` now inherits every setting it omits. If you
+  relied on the old behaviour, set the keys you need explicitly.
+- No change to the `synthea` command options or to `Generator` /
+  `GeneratorOptions`; `Person` gains `age_in_years`.
+
+---
+
 ## [1.4.1] - 2026-09-25
 
 Lab results now carry the interval they are read against, and the members of a

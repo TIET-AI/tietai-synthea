@@ -1,0 +1,20 @@
+{
+  "expected": [
+    {
+      "code": "required",
+      "detailCode": "STRUCT_REQUIRED",
+      "severity": "error"
+    },
+    {
+      "code": "invariant",
+      "detailCode": "INV-STAGING-METHOD-1",
+      "severity": "error"
+    }
+  ],
+  "fhirVersion": "R4",
+  "invariant": "INV-STAGING-METHOD-1",
+  "layer": "fhir-validate",
+  "note": "TNM observation without method",
+  "seed": [],
+  "variant": "no-method"
+}

@@ -34,6 +34,9 @@ class EncounterClass(Enum):
     HOSPICE = "hospice"
     HOME = "home"
     SNF = "snf"  # Skilled Nursing Facility
+    # Telehealth. The exporter and provider maps already knew it; the enum did
+    # not, so every virtual encounter raised and its module stopped there.
+    VIRTUAL = "virtual"
 
 
 @dataclass

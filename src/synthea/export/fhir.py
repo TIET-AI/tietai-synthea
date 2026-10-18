@@ -197,13 +197,13 @@ def _practitioner_role_uuid(clinician) -> str:
     return _stable_uuid('practitioner-role', clinician.id)
 
 
-def _facility_address(provider) -> Dict[str, Any]:
+def _facility_address(provider, country: str = 'US') -> Dict[str, Any]:
     return {
         "line": [provider.address] if provider.address else None,
         "city": provider.city or None,
         "state": provider.state or None,
         "postalCode": provider.zip_code or None,
-        "country": "US",
+        "country": country,
     }
 
 
@@ -212,22 +212,23 @@ COVERAGE_TYPES = {
     'medicare': 'PUBLICPOL',
     'medicaid': 'PUBLICPOL',
     'private': 'HIP',
+    'public': 'PUBLICPOL',
     'none': 'PUBLICPOL',
 }
 
 
-def _money(amount) -> Dict[str, Any]:
-    """A FHIR Money value in US dollars."""
-    return {"value": round(float(amount or 0.0), 2), "currency": "USD"}
+def _money(amount, currency: str = 'USD') -> Dict[str, Any]:
+    """A FHIR Money value, in the locale's currency."""
+    return {"value": round(float(amount or 0.0), 2), "currency": currency}
 
 
-def _adjudication(code: str, amount) -> Dict[str, Any]:
+def _adjudication(code: str, amount, currency: str = 'USD') -> Dict[str, Any]:
     return {
         "category": {"coding": [{
             "system": "http://terminology.hl7.org/CodeSystem/adjudication",
             "code": code,
         }]},
-        "amount": _money(amount),
+        "amount": _money(amount, currency),
     }
 
 
@@ -420,6 +421,16 @@ class FHIRExporter(PatientExporter):
         self.locale = locale
         self.profile = profiles.resolve(config, locale)
 
+        # Conventions read from the pack; without one, the reference (US)
+        # pack's, which is what this exporter wrote before packs existed.
+        conventions = locale
+        if conventions is None:
+            from synthea import locale as locale_registry
+            conventions = locale_registry.get()
+        self.conventions = conventions
+        self.country = conventions.country_code
+        self.currency = conventions.currency
+
         # Kept because a great deal of code and configuration still asks the
         # question this way.
         self.use_us_core = self.profile.us_extensions
@@ -495,6 +506,14 @@ class FHIRExporter(PatientExporter):
             "display": title,
         }]}
         bundle['entry'].insert(0, composition)
+
+        # The Composition's own author must travel with it too. Closing over
+        # the clinical entries alone left it out whenever no entry in the
+        # category happened to reference the same Organization.
+        present = {entry['fullUrl'] for entry in bundle['entry']}
+        bundle['entry'].extend(
+            entry for entry in _close_references([composition], full['entry'])
+            if entry['fullUrl'] not in present)
 
         return bundle
 
@@ -661,8 +680,11 @@ class FHIRExporter(PatientExporter):
             "use": "home",
             "city": person.attributes.get('city', 'Unknown'),
             "state": person.attributes.get('state', 'Unknown'),
-            "postalCode": person.attributes.get('zip_code', '00000'),
-            "country": "US",
+            # A pack that formats its own postal code wins over the one the
+            # geography drew.
+            "postalCode": (person.attributes.get('postal_code')
+                           or person.attributes.get('zip_code', '00000')),
+            "country": self.country,
         }
         if person.attributes.get('address'):
             address["line"] = [person.attributes['address']]
@@ -697,6 +719,9 @@ class FHIRExporter(PatientExporter):
             }]}
 
         language = person.attributes.get('language_code')
+        if not language and getattr(self.conventions, 'language', None):
+            from synthea.world.identity import LanguageCodes
+            language = LanguageCodes.for_code(self.conventions.language)
         if language:
             patient["communication"] = [{"language": {"coding": [{
                 "system": language.get('system', 'urn:ietf:bcp:47'),
@@ -1156,41 +1181,29 @@ class FHIRExporter(PatientExporter):
     # Patient identity
     # ------------------------------------------------------------------
 
-    #: Identifier attribute -> (type code, display, system). The systems are
-    #: synthetic, matching the synthetic identifiers themselves.
-    IDENTIFIER_TYPES = [
-        ('identifier_mrn', 'MR', 'Medical Record Number',
-         'http://hospital.smarthealthit.org'),
-        ('identifier_ssn', 'SS', 'Social Security Number',
-         'http://hl7.org/fhir/sid/us-ssn'),
-        ('identifier_drivers', 'DL', "Driver's License",
-         'urn:oid:2.16.840.1.113883.4.3.25'),
-        ('identifier_passport', 'PPN', 'Passport Number',
-         'http://standardhealthrecord.org/fhir/StructureDefinition/passportNumber'),
-    ]
-
     def _identifiers(self, person: 'Person') -> List[Dict[str, Any]]:
-        """Every identifier the patient carries, typed.
+        """Every identifier the patient carries, typed, as the pack declares.
 
         The generator's own patient id comes first so a bundle can always be
-        matched back to the run that produced it.
+        matched back to the run that produced it. The rest come from the
+        locale pack's identifier schemes, in its export order.
         """
         identifiers = [{
             "system": "https://github.com/TIET-AI/tietai-synthea",
             "value": person.id,
         }]
 
-        for attribute, code, display, system in self.IDENTIFIER_TYPES:
-            value = person.attributes.get(attribute)
+        for scheme in self.conventions.ordered_identifiers():
+            value = person.attributes.get(scheme.key)
             if not value:
                 continue
             identifiers.append({
                 "type": {"coding": [{
-                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                    "code": code,
-                    "display": display,
+                    "system": scheme.type_system,
+                    "code": scheme.type_code,
+                    "display": scheme.type_display,
                 }]},
-                "system": system,
+                "system": scheme.system,
                 "value": str(value),
             })
 
@@ -1273,11 +1286,12 @@ class FHIRExporter(PatientExporter):
                 "code": NOTE_CODE,
                 "display": NOTE_DISPLAY,
             }]},
+            # A US Core code system: only claimed where US Core is the profile.
             "category": [{"coding": [{
                 "system": "http://hl7.org/fhir/us/core/CodeSystem/us-core-documentreference-category",
                 "code": "clinical-note",
                 "display": "Clinical Note",
-            }]}],
+            }]}] if self.profile.us_extensions else None,
             "subject": self._subject(person),
             "date": fhir_datetime(written),
             "content": [{
@@ -1357,7 +1371,7 @@ class FHIRExporter(PatientExporter):
                 "code": "prov",
                 "display": "Healthcare Provider",
             }]}],
-            "address": [_facility_address(provider)],
+            "address": [_facility_address(provider, self.country)],
         }
         if provider.phone:
             resource["telecom"] = [{"system": "phone", "value": provider.phone}]
@@ -1371,7 +1385,7 @@ class FHIRExporter(PatientExporter):
             "id": _location_uuid(provider),
             "status": "active",
             "name": provider.name,
-            "address": _facility_address(provider),
+            "address": _facility_address(provider, self.country),
             "managingOrganization": {
                 "reference": f"urn:uuid:{_organization_uuid(provider)}"
             },
@@ -1396,11 +1410,19 @@ class FHIRExporter(PatientExporter):
                 "prefix": ["Dr."],
             }],
         }
-        if clinician.npi:
-            resource["identifier"] = [{
-                "system": "http://hl7.org/fhir/sid/us-npi",
-                "value": clinician.npi,
-            }]
+        if clinician.identifier:
+            identifier: Dict[str, Any] = {}
+            if clinician.identifier_type:
+                type_system, type_code, type_display = clinician.identifier_type
+                identifier["type"] = {"coding": [{
+                    "system": type_system,
+                    "code": type_code,
+                    "display": type_display,
+                }]}
+            identifier["system"] = (clinician.identifier_system
+                                    or "http://hl7.org/fhir/sid/us-npi")
+            identifier["value"] = clinician.identifier
+            resource["identifier"] = [identifier]
 
         return self._entry("Practitioner", resource["id"], resource)
 
@@ -1430,8 +1452,11 @@ class FHIRExporter(PatientExporter):
         than here.
         """
         history = person.attributes.get('coverage_history') or []
+        # A locale whose health system does not bill per visit (a tax-funded
+        # national service) produces coverage but no claims.
+        claims = getattr(self.conventions, 'produces_claims', True)
         priced = [encounter for encounter in person.record.encounters
-                  if getattr(encounter, 'cost', None)]
+                  if getattr(encounter, 'cost', None)] if claims else []
 
         # A Claim must reference a Coverage that is in the bundle, and FHIR
         # requires the reference. A patient can have priced care and no
@@ -1544,9 +1569,9 @@ class FHIRExporter(PatientExporter):
                     else {"text": "Encounter"}
                 ),
                 "encounter": [{"reference": f"urn:uuid:{encounter.id}"}],
-                "net": _money(encounter.cost),
+                "net": _money(encounter.cost, self.currency),
             }],
-            "total": _money(encounter.cost),
+            "total": _money(encounter.cost, self.currency),
         }
 
         coverage = getattr(encounter, 'coverage', None)
@@ -1605,9 +1630,9 @@ class FHIRExporter(PatientExporter):
                     else {"text": "Encounter"}
                 ),
                 "adjudication": [
-                    _adjudication('submitted', encounter.cost),
-                    _adjudication('benefit', encounter.payer_cost or 0.0),
-                    _adjudication('copay', encounter.patient_cost or 0.0),
+                    _adjudication('submitted', encounter.cost, self.currency),
+                    _adjudication('benefit', encounter.payer_cost or 0.0, self.currency),
+                    _adjudication('copay', encounter.patient_cost or 0.0, self.currency),
                 ],
             }],
             "total": [{
@@ -1615,7 +1640,7 @@ class FHIRExporter(PatientExporter):
                     "system": "http://terminology.hl7.org/CodeSystem/adjudication",
                     "code": "submitted",
                 }]},
-                "amount": _money(encounter.cost),
+                "amount": _money(encounter.cost, self.currency),
             }],
         }
 

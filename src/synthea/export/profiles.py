@@ -126,6 +126,9 @@ IPS_OPTIONAL_SECTIONS = (
     ('Procedures', '47519-4', ['Procedure']),
     ('Medical Devices', '46264-8', ['Device']),
     ('Plan of Care', '18776-5', ['CarePlan']),
+    # IPS "Payers" (sectionPayers). Without it an EHDS patient summary carried
+    # no Coverage at all, so who funds the patient's care was lost.
+    ('Payers', '48768-6', ['Coverage']),
 )
 
 IPS_PROFILE = ExportProfile(
