@@ -83,7 +83,7 @@ Every bundle was validated in enforce mode against the real validator (see the P
 * **Structural variants.** The spec asks for the ALK fusion as a `tietai-variant` with SO consequence and no HGVS
   component. The platform's `INV-HGVS-1` requires at least one HGVS component, so that form is rejected today.
   The fusion is therefore not in the positive report bundle; it is in the report text, the entity files and the
-  ORU-free `known-gaps/` bundle with the validator's actual answer (`INV-HGVS-1`). Needs a GO-10 decision.
+  `known-gaps/` bundle with the validator's actual answer (`INV-HGVS-1`). Needs a GO-10 decision.
 * **msi/tmb results** are accepted but make the report "not tagged validated" (`INV-RESULT-1-UNRESOLVED` warning),
   a documented GO-10 limit.
 * Negative `14-GO-05-LABEL-ON-WRITE` (germline variant without the label) is accepted by `$validate`: GERMLINE is
