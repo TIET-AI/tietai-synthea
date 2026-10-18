@@ -79,7 +79,7 @@ def _config(tmp_path, **kw):
     return c
 
 
-from tests.genomics_helpers import family_of, population as _population
+from tests.genomics_helpers import build_pack as build_pack_for_test, family_of, population as _population
 
 
 def _run(tmp_path, persons, **kw):
@@ -225,7 +225,7 @@ def test_prostate_mcode_resources_consistent_with_module(genomics_pack):
     for o in tnm:
         assert o["method"]["coding"][0]["code"] == "TNM"
         assert o["extension"][0]["valueString"] == "8"          # edition
-        assert o["focus"][0]["reference"].startswith("urn:uuid:")
+        assert o["focus"][0]["reference"].startswith("Condition/")
     codes = {o["code"]["coding"][0]["code"] for o in tnm}
     assert {"21908-9", "21902-2"} <= codes                      # clinical and pathological stage group
     psa = [o for o in _res(b, "Observation") if o["code"]["coding"][0]["code"] == "2857-1"]
@@ -269,3 +269,30 @@ def test_pack_identical_across_thread_counts(tmp_path):
                         "--output-dir", str(out)], check=True, capture_output=True)
         outs.append(_tree(out / "genomics-oncology-pack"))
     assert outs[0] == outs[1] and len(outs[0]) > 50
+
+
+# GO-20 attributes results to a case by explicit reference (found on two-case patients)
+def test_variant_and_msi_results_point_at_the_case_condition(genomics_pack):
+    for f in genomics_pack.glob("patients/*/fhir/report-*.bundle.json"):
+        b = json.loads(f.read_text("utf-8"))
+        conds = [e for e in b["entry"] if e["resource"]["resourceType"] == "Condition"]
+        assert len(conds) == 1 and conds[0]["request"]["method"] == "PUT"
+        assert conds[0]["request"]["url"] == "Condition/" + conds[0]["resource"]["id"]
+        onc = json.loads(next(f.parent.glob(f.name.replace("report-", "oncology-"))).read_text("utf-8"))
+        oc = [e for e in onc["entry"] if e["resource"]["resourceType"] == "Condition"][0]
+        assert oc == conds[0]                       # identical PUT with a client id: any commit order
+        for e in b["entry"]:
+            r = e["resource"]
+            if r["resourceType"] == "Observation" and (
+                    any(p.endswith("tietai-variant") for p in r.get("meta", {}).get("profile", []))
+                    or r["code"]["coding"][0]["code"] == "81695-9"):
+                assert r["focus"] == [{"reference": "Condition/" + conds[0]["resource"]["id"]}]
+
+
+def test_case_goldens_survive_an_in_place_rewrite(tmp_path):
+    pack = build_pack_for_test(tmp_path)
+    g = next(pack.glob("patients/*")) / "case"
+    g.mkdir()
+    (g / "oncology-case.golden.json").write_bytes(b"{\"hydra\": true}\n")
+    again = build_pack_for_test(tmp_path, reuse=True)
+    assert (g / "oncology-case.golden.json").read_bytes() == b"{\"hydra\": true}\n"

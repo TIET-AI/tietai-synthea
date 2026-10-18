@@ -60,5 +60,5 @@ jobs:
             # the committed index must describe the same payload (compare uncompressed)
             cmp <(gzip -dc "$tmp/x.vcf.gz.tbi") <(gzip -dc "$f.tbi")
             tabix -l "$f" > /dev/null
-            tabix "$f" > /dev/null
+            tabix -H "$f" > /dev/null
           done

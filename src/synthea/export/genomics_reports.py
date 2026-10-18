@@ -21,6 +21,7 @@ import jsonschema
 from referencing import Registry, Resource
 
 from synthea.export.genomics_fhir import CaseContext, tnm_values
+from synthea.export.genomics_staging import EDITION
 from synthea.export.genomics_model import CuratedVariant, genomics_resource
 
 _S, _M, _E = "", "", ""   # sentinels (private use, never in text)
@@ -189,7 +190,8 @@ def render_genetic_report(ctx: CaseContext) -> Tuple[str, List[Entity], Dict[str
         if v.second_classification:
             c = v.second_classification
             implications.append({
-                "line": f"Clasificación alternativa de {v.gene_symbol} (laboratorio): {_class_text(c)}.",
+                "line": (f"Clasificación alternativa de {v.gene_symbol} {v.hgvs_c or '(reordenamiento)'} (laboratorio): "
+                         f"{_class_text(c)}."),
                 "links": [key], "fields": {"implication_kind": "diagnostic"}})
         for t in v.therapies:
             implications.append({
@@ -266,14 +268,16 @@ def render_pathology_report(ctx: CaseContext) -> Tuple[str, List[Entity], Dict[s
     add("histology", f"Tipo histológico: {icdo['morphology_es']} ({icdo['morphology']}/{icdo['behaviour']})",
         code=icdo["morphology"], behaviour=icdo["behaviour"])
     if d.family == "prostate":
-        add("grade", "Grado histológico: Gleason 3+4=7 (grupo de grado 2)", system="gleason",
-            value_text="Gleason 3+4=7")
+        gl = ctx.staging.gleason
+        add("grade", f"Grado histológico: Gleason {gl} (grupo de grado {ctx.staging.grade_group})",
+            system="gleason", value_text=f"Gleason {gl}")
     elif d.family == "breast":
         add("grade", "Grado histológico: Grado 2 de Nottingham (puntuación 3+2+1)", system="nottingham",
             value_text="Grado 2")
     else:
         add("grade", "Grado histológico: Grado 2 (moderadamente diferenciado)", system="who", value_text="Grado 2")
-    size = rng.randint(12, 48)
+    st = ctx.staging
+    size = st.size_mm
     add("size_mm", f"Tamaño tumoral: {size} mm en su mayor dimensión", value=size, dimension="greatest",
         unit="mm", source_value=str(size), source_unit="mm")
     dist = rng.choice([2, 4, 6])
@@ -283,12 +287,15 @@ def render_pathology_report(ctx: CaseContext) -> Tuple[str, List[Entity], Dict[s
     add("lymphovascular_invasion", "Invasión linfovascular: " + ("ausente" if lvi_absent else "presente"),
         status="absent" if lvi_absent else "present")
     add("perineural_invasion", "Invasión perineural: ausente", status="absent")
-    examined = rng.randint(8, 18)
-    positive = 0 if tnm["n"].lstrip("pc") == "N0" else rng.randint(1, 3)
+    examined, positive = st.nodes_examined, st.nodes_positive
     add("nodes", f"Ganglios linfáticos: {positive} de {examined} ganglios con metástasis",
         examined=examined, positive=positive)
-    add("ptnm", f"Estadificación pTNM (TNM 8.ª edición): {tnm['t']} {tnm['n']} {tnm['m']}, estadio {tnm['stage']}",
-        prefix="p", t=tnm["t"], n=tnm["n"], m=tnm["m"], stage_group=tnm["stage"], edition="8")
+    if d.family == "prostate":
+        psa = f"{ctx.staging.psa:.1f}"
+        add("biomarker", f"PSA preoperatorio: {psa.replace('.', ',')} ng/mL", code="2857-1", name_text="PSA",
+            method_text="suero", value={"value": float(psa), "unit": "ng/mL"})
+    add("ptnm", f"Estadificación pTNM (TNM {EDITION}.ª edición): {tnm['t']} {tnm['n']} {tnm['m']}, estadio {tnm['stage']}",
+        prefix="p", t=tnm["t"], n=tnm["n"], m=tnm["m"], stage_group=tnm["stage"], edition=EDITION)
     for m in d.markers:
         if m["loinc"] in _MARKER_ES:
             label, nm = _MARKER_ES[m["loinc"]]

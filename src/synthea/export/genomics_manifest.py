@@ -21,17 +21,15 @@ from synthea.helpers.resources import resource_path
 _B = r"(?<![A-Za-z0-9+/_=.\-])"      # token boundaries: never inside an identifier-like token
 _A = r"(?![A-Za-z0-9+/_=\-])"
 
+# Separators people put inside identifiers: space, dot, dash, slash.
+_S = r"[ .\-/]?"
 PHI_PATTERNS: Dict[str, "re.Pattern[str]"] = {
-    "dni": re.compile(_B + r"\d{8}[A-Z]" + _A),
-    "nie": re.compile(_B + r"[XYZ]\d{7}[A-Z]" + _A),
+    "dni": re.compile(_B + r"\d{2}" + _S + r"\d{3}" + _S + r"\d{3}" + _S + r"[A-Za-z]" + _A),
+    "nie": re.compile(_B + r"[XYZxyz]" + _S + r"\d{1,2}" + _S + r"\d{3}" + _S + r"\d{3}" + _S + r"[A-Za-z]" + _A),
     "nhc": re.compile(r"(?i)(NHC|historia|H\.C\.|n[ºo°]\s*historia)\W{0,6}\d{5,10}"),
-    "cip": re.compile(r"(CIPA|TSI)\W{0,6}[A-Z0-9]{10,16}"),
-    # Bare 12-digit and 9-digit runs also occur as SNOMED/NCBI codes, so they only count
-    # in context ("NASS", "teléfono"...); the grouped forms count anywhere.
-    "nass": re.compile(r"(?i)(NASS|seguridad social|afiliaci[oó]n)\W{0,6}\d{12}\b|" + _B + r"\d{2}/\d{8,10}/\d{2}" + _A),
-    "phone": re.compile(r"(?i)(tel[eé]fono|tel\.?|m[oó]vil|fax|contacto)\W{0,6}(\+34|0034)?[ ]?[6789]\d{2}[ ]?\d{3}[ ]?\d{3}\b|"
-                        r"(?<![\d.\-])(\+34|0034)[ ]?[6789]\d{2}[ ]?\d{3}[ ]?\d{3}(?![\d\-])|"
-                        r"(?<![\d.\-])[6789]\d{2}([ .-])\d{3}\1\d{3}(?![\d\-])"),
+    "cip": re.compile(r"(?i)(CIPA|TSI)\W{0,6}[A-Z0-9]{10,16}"),
+    "nass": re.compile(r"(?<![\d.\-/])\d{2}[ .\-/]\d{8,10}[ .\-/]\d{2}(?![\d\-/])|(?<!\d)\d{12}(?!\d)"),
+    "phone": re.compile(r"(?<![\d.\-/])(?:(?:\+34|0034)[ ]?)?[6789]\d{2}[ .\-]?\d{3}[ .\-]?\d{3}(?![\d\-/])"),
     "postal": re.compile(r"(?i)(CP|C\.P\.|código postal)\W{0,3}(0[1-9]|[1-4]\d|5[0-2])\d{3}\b"),
     "email": re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}"),
 }
@@ -40,15 +38,54 @@ _STRIP = [
     re.compile(r"\b[0-9a-f]{32,}\b"),
     re.compile(r"obj_[0-9A-Z]{26}"),
     re.compile(r"[A-Za-z0-9+/]{42,}={0,2}"),      # base64 hashes
+    re.compile(r"\b\d{4}-\d{2}-\d{2}\b"),           # ISO dates (separators would otherwise look like groups)
 ]
-#: knowledge-release strings look like dates followed by numbers; none of the patterns match them.
+#: JSON keys whose values are codes, ids, hashes or coordinates, never personal data (SNOMED and
+#: NCBI codes are 9-digit numbers; reading them as phone numbers would make every pack fail).
+_JSON_SKIP = {"code", "system", "url", "fullUrl", "reference", "id", "hash", "size", "quote_sha256",
+              "source_text_sha256", "document_sha256", "char_start", "char_end", "pos", "ifNoneExist", "url"}
 
 
-def phi_scan(text: str) -> List[str]:
-    """Names of the PHI patterns found in ``text`` (empty means clean)."""
+def _leaves(node, skip=False):
+    if isinstance(node, dict):
+        for k, v in node.items():
+            yield from _leaves(v, k in _JSON_SKIP)
+    elif isinstance(node, list):
+        for v in node:
+            yield from _leaves(v, skip)
+    elif isinstance(node, str) and not skip:
+        yield node
+
+
+def _scan_text(text: str) -> List[str]:
     for rx in _STRIP:
         text = rx.sub(" ", text)
     return [name for name, rx in PHI_PATTERNS.items() if rx.search(text)]
+
+
+def phi_scan(text: str) -> List[str]:
+    """Names of the PHI patterns found in ``text`` (empty means clean).
+
+    JSON documents are scanned leaf by leaf, skipping code/id/hash fields; any other text is scanned
+    whole. Patterns accept the usual separators (spaces, dots, dashes, slashes) and either case.
+    """
+    stripped = text.lstrip()
+    if stripped[:1] in "{[":
+        try:
+            leaves = list(_leaves(json.loads(text)))
+        except ValueError:
+            leaves = [text]
+        found: List[str] = []
+        for leaf in leaves:
+            for n in _scan_text(leaf):
+                if n not in found:
+                    found.append(n)
+        return found
+    if stripped.startswith("##fileformat=VCF"):
+        # keep header lines and the ID/INFO text; the numeric POS/AD/DP columns are coordinates
+        text = "\n".join(l.split("\t")[0] + " " + " ".join(l.split("\t")[2:5]) if not l.startswith("#") else l
+                         for l in text.splitlines())
+    return _scan_text(text)
 
 
 def dumps(obj: Any) -> str:

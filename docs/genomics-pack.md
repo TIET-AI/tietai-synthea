@@ -3,8 +3,8 @@
 Everything in this pack is **synthetic test data**. It exists so the platform's genomics and oncology
 features (FHIR profile validation, VCF intake, HL7 ORU mapping, report extraction, the oncology case
 summary, OMOP export, clinical validation) have deterministic, reviewable fixtures. It contains no real
-patient, name, date or identifier; names and dates come from Synthea's own generators and the simulation
-clock. It is not clinical evidence.
+patient, name, date or identifier; names are generated from Synthea name lists and dates come from the simulation
+clock (moved forward by whole years so every diagnosis falls in the TNM 8 era; see Implementation notes). It is not clinical evidence.
 
 Design: `docs/plans/2026-10-17-genomics-oncology/ws5-safety/GO-61-synthetic-data-and-gate-suites.md` (parent
 repository). Safety class B.
@@ -39,7 +39,7 @@ colorectal case ever completes**, because the engine's `EncounterEnd` state neve
 four-family pack possible; neither is on by default, so existing populations do not change:
 
 * `generate.encounter_end_completes` (set by `--genomics-cohort`): `EncounterEnd` completes on the step after it
-  yielded. This is a genuine engine defect and should get its own fix and release note.
+  yielded. This is a genuine engine defect tracked in [#119](https://github.com/TIET-AI/tietai-synthea/issues/119); it needs its own fix and release note.
 * `generate.module_patches` = `resources/genomics/cohort_patches.yaml` (set by `--genomics-cohort`): replaces the
   *incidence gate* state of the four cancer modules with a fixed onset probability. Nothing after the gate
   changes. The pack manifest records the hash of the patch file.
@@ -63,6 +63,24 @@ oru/<case>.hl7                          HL7 v2 ORU^R01 in the GO-12 fixture form
 
 `.tbi` indexes are produced by `tabix` in CI (`.github/workflows/genomics-pack.yml`) and committed next to the
 reference `.vcf.gz`; the generator never writes them (`tbi_source: "ci"`).
+
+### Staging, dates and case links
+
+* **Staging** is assigned by the generator (`export/genomics_staging.py`), not taken from the modules, whose T/N/M and
+  stage numerals can contradict each other. Each case gets a hand-checked **TNM 8th edition** combination per site
+  (breast, lung, colon: anatomic stage group; prostate: pathological prognostic group from pT, PSA and Grade Group);
+  tumour size follows pT where T is size-defined, positive nodes follow pN. The module's stage numeral only chooses
+  among the combinations. `tests/test_genomics_staging.py` checks size/T/N/stage consistency of every case against
+  independently written rules. Tables are pending pathologist review.
+* **Dates.** TNM 8 applies from 2018-01-01 and the reports cite ClinVar 2026-09-01, so each case's dates are moved
+  forward by whole years until the diagnosis is in 2018 or later, and the genetic report is issued after the release.
+* **Case link.** The case's `Condition` is written with `PUT Condition/<id>` (client id) in **both** bundles of the case
+  and every other resource points at it as `Condition/<id>` (`Observation.focus` for TNM, markers, variants and msi;
+  `reasonReference` for treatments). GO-20 attributes results to a case only by such an explicit reference, which is
+  what makes second cases (five patients have two) attributable. Why PUT and a literal reference: the platform has no
+  `identifier` search parameter on Condition (conditional create fails) and its bundle processor does not register a
+  temporary id for PUT entries. Client ids are unique across organisations (a second tenant loading the same pack gets
+  409 "resource id already in use").
 
 ### Bundle shapes
 

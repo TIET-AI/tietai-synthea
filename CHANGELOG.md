@@ -31,7 +31,7 @@ All notable changes to PySynthea are recorded here. The format follows
 
 - `EncounterEnd` never lets a module move on: it ends the encounter and yields on every step, so every module path
   that crosses an EncounterEnd stalls for good (lung cancer never reaches a diagnosis; breast treatment never
-  starts). Fixing it changes the populations generated from a seed, so the fix ships behind
+  starts; [#119](https://github.com/TIET-AI/tietai-synthea/issues/119)). Fixing it changes the populations generated from a seed, so the fix ships behind
   `generate.encounter_end_completes` (default `false`) and needs its own release decision.
 
 ## [1.4.1] - 2026-09-25

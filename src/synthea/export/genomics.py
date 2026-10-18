@@ -14,6 +14,7 @@ import base64
 import hashlib
 import json
 import random
+import re
 import shutil
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -47,6 +48,35 @@ def _d(value: Any) -> str:
 
 def _text(code_value: Any) -> str:
     return str(getattr(code_value, "display", None) or (code_value.get("display") if isinstance(code_value, dict) else "") or "")
+
+
+#: The pack stages with TNM 8th edition (in force from 2018-01-01) and cites a ClinVar release of
+#: 2026-09: case dates are moved forward by whole years until the diagnosis is in the TNM 8 era,
+#: and the genetic report is issued after the cited release.
+ERA_START = date(2018, 1, 1)
+
+
+def _add_years(d: date, years: int) -> date:
+    try:
+        return d.replace(year=d.year + years)
+    except ValueError:      # 29 February
+        return d.replace(year=d.year + years, day=28)
+
+
+def era_shift_years(onset: date) -> int:
+    if onset >= ERA_START:
+        return 0
+    k = ERA_START.year - onset.year
+    return k if _add_years(onset, k) >= ERA_START else k + 1
+
+
+def _shift_descriptor(d: CaseDescriptor) -> None:
+    k = era_shift_years(date.fromisoformat(d.onset))
+    if not k:
+        return
+    d.onset = _add_years(date.fromisoformat(d.onset), k).isoformat()
+    for item in d.meds + d.procs:
+        item["date"] = _add_years(date.fromisoformat(item["date"]), k).isoformat()
 
 
 def _thin(items: List[Dict[str, str]], key: str, gap_days: int = 21, cap: int = 6) -> List[Dict[str, str]]:
@@ -143,7 +173,6 @@ class GenomicsExporter(PatientExporter):
                 code = str(c.code)
                 if code in stage_codes:
                     disp = _text(ob.value)
-                    import re
                     if code == "21908-9":
                         m = re.search(r"stage (0|IV|I{1,3})([ABC]?)\b", disp)
                     else:
@@ -282,10 +311,15 @@ def write_pack(staging: Path, pack_dir: Path, *, seed: int = SEED, knowledge_rel
     files = sorted(Path(staging).glob("*.json"))
     descs = sorted((CaseDescriptor.from_json(f.read_text("utf-8")) for f in files),
                    key=lambda d: (d.person_uuid, d.family))
-    if pack_dir.exists():
-        shutil.rmtree(pack_dir)
-    pack_dir.mkdir(parents=True)
+    # patients/<uuid>/case/ holds the C4 goldens written by Hydra's GO-20 procedure
+    # (TestBuildGoldenGO61Pack with GO61_UPDATE=1). This generator neither
+    # regenerates nor deletes them: they are carried over when the pack is
+    # rewritten in place.
+    _clear_previous_pack(pack_dir)
+    pack_dir.mkdir(parents=True, exist_ok=True)
     w = PackWriter(pack_dir)
+    for d in descs:
+        _shift_descriptor(d)
     assignment = _assign_variants(descs, curated, seed)
 
     bundles: Dict[str, Tuple[Dict[str, Any], Dict[str, Any], CaseContext]] = {}
@@ -299,6 +333,9 @@ def write_pack(staging: Path, pack_dir: Path, *, seed: int = SEED, knowledge_rel
         onset = date.fromisoformat(d.onset)
         collected = onset + timedelta(days=rng.randint(7, 21))
         issued = collected + timedelta(days=rng.randint(14, 30))
+        release_day = date.fromisoformat(knowledge_release.split("@")[1])
+        if issued <= release_day:                 # a report cannot cite a release that does not exist yet
+            issued = release_day + timedelta(days=rng.randint(1, 20))
         ctx = CaseContext(desc=d, case_id=case_id, codes=codes, variants=variants, vafs=vafs,
                           onset=onset, collected=collected, issued=issued, release=knowledge_release)
         base = f"patients/{d.person_uuid}"
@@ -377,6 +414,43 @@ def write_pack(staging: Path, pack_dir: Path, *, seed: int = SEED, knowledge_rel
     })
     shutil.rmtree(staging, ignore_errors=True)
     return counts
+
+
+def _clear_previous_pack(pack_dir: Path) -> None:
+    """Remove the files of an earlier pack, and nothing else.
+
+    A directory that is not a pack (no ``MANIFEST.json`` of ours) is never touched, so a
+    mistyped ``--output-dir`` cannot delete someone's data. Only the files the old manifest
+    lists, and their ``.tbi`` indexes, are removed; the Hydra goldens under ``case/`` and any
+    other file are left alone, and empty directories are pruned.
+    """
+    if not pack_dir.exists():
+        return
+    manifest = pack_dir / "MANIFEST.json"
+    try:
+        listed = json.loads(manifest.read_text("utf-8"))
+        ok = listed.get("schema") == "tietai.genomics-pack/v1"
+    except (OSError, ValueError):
+        ok = False
+    if not ok:
+        if any(pack_dir.iterdir()):
+            raise GenomicsPackError(
+                f"{pack_dir} exists and is not a genomics pack written by this generator "
+                "(no valid MANIFEST.json); refusing to delete it")
+        return
+    for rel in listed.get("files", {}):
+        f = pack_dir / rel
+        if f.is_file():
+            f.unlink()
+        tbi = f.with_name(f.name + ".tbi")
+        if tbi.is_file():
+            tbi.unlink()
+    manifest.unlink()
+    for d in sorted((p for p in pack_dir.rglob("*") if p.is_dir()), key=lambda p: len(p.parts), reverse=True):
+        try:
+            d.rmdir()
+        except OSError:
+            pass
 
 
 def _paginate(text: str) -> List[List[str]]:

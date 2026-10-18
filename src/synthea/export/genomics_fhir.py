@@ -13,6 +13,7 @@ from datetime import date, timedelta
 from typing import Any, Dict, List, Optional
 
 from synthea.export.fhir import _stable_uuid
+from synthea.export.genomics_staging import EDITION, Staging, choose_staging, numeral_of
 from synthea.export.genomics_model import (
     GENOME_BUILD, KNOWLEDGE_RELEASE, Classification, CaseDescriptor, CuratedVariant)
 
@@ -33,6 +34,24 @@ V2_0074 = "http://terminology.hl7.org/CodeSystem/v2-0074"
 SYNTH_ID = "urn:tietai:synthetic"
 MORPH_EXT = "http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-histology-morphology-behavior"
 DRS_HOST = "synthetic.tiet.ai"
+
+
+def condition_entry(ctx: "CaseContext", pat: str) -> Dict[str, Any]:
+    """The case's cancer Condition, with a stable client-assigned id (PUT).
+
+    Both bundles of a case carry the identical entry, so they can be committed in
+    any order and the Condition keeps one id: the report bundle needs it so its
+    variant and msi results can point at the primary (GO-20 attributes a result to
+    a case by explicit reference). A conditional create is not usable here: the
+    platform has no ``identifier`` search parameter on Condition.
+    """
+    cid = ctx.i("condition")
+    res = condition_resource(ctx, pat)
+    res = {"id": cid, **res}
+    e = entry("Condition", cid, res)
+    e["request"] = {"method": "PUT", "url": f"Condition/{cid}"}
+    return e
+
 
 #: LOINC / platform codes of the classification value set.
 _CLASS_CODING = {
@@ -56,6 +75,16 @@ def cc(system: str, code: str, display: Optional[str] = None, text: Optional[str
     if text:
         out["text"] = text
     return out
+
+
+def cond_ref(cid: str) -> Dict[str, str]:
+    """Literal reference to the case Condition.
+
+    The Condition is written with PUT and a client id, and the platform's bundle
+    processor does not register a temporary id for PUT entries, so later entries
+    must name it as ``Condition/<id>``. ``$validate`` resolves this form in-bundle.
+    """
+    return {"reference": f"Condition/{cid}"}
 
 
 def ref(u: str) -> Dict[str, str]:
@@ -97,6 +126,15 @@ class CaseContext:
     pdf_object: str = ""
     release: str = KNOWLEDGE_RELEASE
     lab_name: str = "Laboratorio de Genética Molecular (sintético)"
+    staging: Optional[Staging] = None
+
+    def __post_init__(self) -> None:
+        if self.staging is None:
+            hint = None
+            for o in self.desc.stage_obs:
+                hint = numeral_of(o["text"]) if o["loinc"] in ("21908-9", "stage") else hint
+            self.staging = choose_staging(
+                self.desc.family, f"{self.desc.person_uuid}:{self.case_id}", hint)
 
     @property
     def family(self) -> Dict[str, Any]:
@@ -142,7 +180,8 @@ def _component(code: str, value: Dict[str, Any], display: Optional[str] = None) 
     return {"code": cc(LOINC, code, display), key: value}
 
 
-def variant_observation(ctx: CaseContext, v: CuratedVariant, perf: str, spec: str, pat: str) -> Dict[str, Any]:
+def variant_observation(ctx: CaseContext, v: CuratedVariant, perf: str, spec: str, pat: str,
+                        cond: str) -> Dict[str, Any]:
     comps = [
         _component("48018-6", cc(HGNC, v.hgnc_id, v.gene_symbol), "Gene studied [ID]"),
         _component("48004-6", cc(HGVS, v.hgvs_c, v.hgvs_c), "DNA change (c.HGVS)"),
@@ -164,6 +203,7 @@ def variant_observation(ctx: CaseContext, v: CuratedVariant, perf: str, spec: st
         "category": _categories(),
         "code": cc(LOINC, "69548-6", "Genetic variant assessment"),
         "subject": ref(pat),
+        "focus": [cond_ref(cond)],
         "effectiveDateTime": iso(ctx.collected),
         "performer": [ref(perf)],
         "specimen": ref(spec),
@@ -220,12 +260,14 @@ def therapeutic_implication(ctx: CaseContext, v: CuratedVariant, t, perf: str,
     return res
 
 
-def msi_observation(ctx: CaseContext, v: CuratedVariant, perf: str, spec: str, pat: str) -> Dict[str, Any]:
+def msi_observation(ctx: CaseContext, v: CuratedVariant, perf: str, spec: str, pat: str,
+                    cond: str) -> Dict[str, Any]:
     return {
         "status": "final",
         "category": _categories(),
         "code": cc(LOINC, "81695-9", "Microsatellite instability [Interpretation] in Cancer specimen"),
         "subject": ref(pat),
+        "focus": [cond_ref(cond)],
         "effectiveDateTime": iso(ctx.collected),
         "performer": [ref(perf)],
         "specimen": ref(spec),
@@ -250,6 +292,8 @@ def build_report_bundle(ctx: CaseContext, pdf_title: str) -> Dict[str, Any]:
     entries: List[Dict[str, Any]] = []
     entries.append(entry("Organization", org, {"name": ctx.lab_name}))
     entries.append(patient_entry(ctx))
+    cond = ctx.i("condition")
+    entries.append(condition_entry(ctx, pat))
 
     fam = ctx.family
     spec_t = ctx.i("specimen", "tumour")
@@ -295,7 +339,7 @@ def build_report_bundle(ctx: CaseContext, pdf_title: str) -> Dict[str, Any]:
     for v in ctx.variants:
         if v.kind == "msi":
             mid = ctx.i("msi", v.label)
-            entries.append(entry("Observation", mid, msi_observation(ctx, v, org, spec_t, pat)))
+            entries.append(entry("Observation", mid, msi_observation(ctx, v, org, spec_t, pat, cond)))
             results.append(mid)
             continue
         if v.structural:
@@ -303,7 +347,7 @@ def build_report_bundle(ctx: CaseContext, pdf_title: str) -> Dict[str, Any]:
         spec = spec_b if (v.source_class == "germline" and spec_b) else spec_t
         vid = ctx.i("variant", v.label)
         var_ids[v.label] = vid
-        entries.append(entry("Observation", vid, variant_observation(ctx, v, org, spec, pat)))
+        entries.append(entry("Observation", vid, variant_observation(ctx, v, org, spec, pat, cond)))
         results.append(vid)
     for v in ctx.variants:
         if v.label not in var_ids:
@@ -353,27 +397,17 @@ def _tnm_obs(ctx: CaseContext, cond: str, pat: str, kind: str, loinc: str, text:
         "category": [cc(OBS_CAT, "laboratory")],
         "code": cc(LOINC, loinc),
         "subject": ref(pat),
-        "focus": [ref(cond)],
+        "focus": [cond_ref(cond)],
         "effectiveDateTime": iso(when),
         "method": cc("https://tiet.ai/fhir/staging-system", "TNM"),
-        "extension": [{"url": SD + "staging-edition", "valueString": ctx.codes["staging"]["edition"]}],
+        "extension": [{"url": SD + "staging-edition", "valueString": EDITION}],
         "valueCodeableConcept": {"text": text},
     }
 
 
 def tnm_values(ctx: CaseContext) -> Dict[str, Dict[str, str]]:
-    """Clinical and pathological T/N/M/group as asserted for the case."""
-    obs = {o["loinc"]: o["text"] for o in ctx.desc.stage_obs}
-    group = obs.get("21908-9")
-    t, n, m = obs.get("21905-5"), obs.get("21906-3"), obs.get("21907-1")
-    if not (t and n and m and group):
-        group = group or obs.get("stage") or "I"
-        base = ctx.codes["tnm_by_stage_numeral"][group.rstrip("ABC")]
-        t, n, m = "c" + base["t"], "c" + base["n"], "c" + base["m"]
-    pt = "p" + t[1:] if t.startswith("c") else t
-    pn = "p" + n[1:] if n.startswith("c") else n
-    return {"clinical": {"t": t, "n": n, "m": m, "stage": group},
-            "pathological": {"t": pt, "n": pn, "m": m, "stage": group}}
+    """Clinical and pathological T/N/M/group of the case (see genomics_staging)."""
+    return {"clinical": ctx.staging.clinical(), "pathological": ctx.staging.pathological()}
 
 
 def condition_resource(ctx: CaseContext, pat: str) -> Dict[str, Any]:
@@ -414,7 +448,7 @@ def build_oncology_bundle(ctx: CaseContext) -> Dict[str, Any]:
     pat = _patient_id(ctx)
     entries = [patient_entry(ctx)]
     cond = ctx.i("condition")
-    entries.append(entry("Condition", cond, condition_resource(ctx, pat)))
+    entries.append(condition_entry(ctx, pat))
     vals = tnm_values(ctx)
     clin_date = ctx.onset + timedelta(days=7)
     path_date = ctx.collected + timedelta(days=3)
@@ -424,13 +458,20 @@ def build_oncology_bundle(ctx: CaseContext) -> Dict[str, Any]:
         for kind, loinc, key in codes:
             oid = ctx.i("tnm", label, kind)
             entries.append(entry("Observation", oid, _tnm_obs(ctx, cond, pat, kind, loinc, vals[label][key], when)))
-    for mk in d.markers:
+    markers = list(d.markers)
+    if d.family == "prostate" and ctx.staging.psa is not None and not any(m["loinc"] == "2857-1" for m in markers):
+        markers.append({"loinc": "2857-1", "display": "PSA",
+                        "quantity": {"value": ctx.staging.psa, "unit": "ng/mL", "ucum": "ng/mL"}})
+    for mk in markers:
+        if mk["loinc"] == "2857-1" and ctx.staging.psa is not None:
+            # the PSA is part of the prostate stage group: use the value the staging assumes
+            mk = {**mk, "quantity": {**mk["quantity"], "value": ctx.staging.psa}}
         res = {
             "status": "final",
             "category": [cc(OBS_CAT, "laboratory")],
             "code": cc(LOINC, mk["loinc"], mk.get("display")),
             "subject": ref(pat),
-            "focus": [ref(cond)],
+            "focus": [cond_ref(cond)],
             "effectiveDateTime": iso(path_date),
         }
         res.update(marker_value(mk))
@@ -446,7 +487,7 @@ def build_oncology_bundle(ctx: CaseContext) -> Dict[str, Any]:
                 {"system": RXNORM, "code": med["rxnorm"], "display": med["display"]}]},
             "subject": ref(pat),
             "authoredOn": med["date"],
-            "reasonReference": [ref(cond)],
+            "reasonReference": [cond_ref(cond)],
         }))
     for n, pr in enumerate(d.procs):
         entries.append(entry("Procedure", ctx.i("proc", str(n), pr["snomed"]), {
@@ -454,7 +495,7 @@ def build_oncology_bundle(ctx: CaseContext) -> Dict[str, Any]:
             "code": cc(SNOMED, pr["snomed"], pr["display"]),
             "subject": ref(pat),
             "performedDateTime": pr["date"],
-            "reasonReference": [ref(cond)],
+            "reasonReference": [cond_ref(cond)],
         }))
     return {"resourceType": "Bundle", "type": "transaction", "entry": entries}
 

@@ -42,12 +42,22 @@ def test_reference_guard_refuses_changed_curated_table(tmp_path):
 
 def test_phi_scan_aborts_on_seeded_identifier_and_pack_is_clean(genomics_pack, tmp_path):
     assert phi_scan("Paciente con DNI 12345678Z y más") == ["dni"]
-    assert phi_scan("X1234567L") == ["nie"]
+    for v in ("12.345.678-z", "12 345 678 Z", "12345678z", "12-345-678-Z"):
+        assert phi_scan(v) == ["dni"], v
+    for v in ("X1234567L", "x-1234567-l", "Y 1.234.567 B"):
+        assert phi_scan(v) == ["nie"], v
     assert phi_scan("NHC 1234567") == ["nhc"]
-    assert phi_scan("teléfono 612 345 678") == ["phone"]
+    for v in ("teléfono 612 345 678", "612345678", "612-345-678", "+34 612 345 678", "612.345.678"):
+        assert phi_scan(v) == ["phone"], v
     assert phi_scan("correo juan@example.org") == ["email"]
-    assert phi_scan("28/12345678/90") == ["nass"]
-    assert phi_scan("urn:uuid:6e100001-0000-4000-8000-123456789012 SNOMED 703423002 sha 0123456789012345678901234567890123456789012345678901234567890123") == []
+    for v in ("28/12345678/90", "281234567890", "28-12345678-90"):
+        assert phi_scan(v) == ["nass"], v
+    # false-positive exclusions: codes, coordinates and hashes in JSON, ISO dates
+    assert phi_scan(json.dumps({"code": "703423002", "reference": "Condition/6e100001-0000-4000-8000-123456789012",
+                                "size": 612345678, "hash": "vwT3ijsgUQOAv9FYP2oP11s5HZtez9NepCX4Ag9Io4U="})) == []
+    assert phi_scan("Fecha de nacimiento: 1960-05-04, recogida 2026-03-15") == []
+    assert phi_scan("##fileformat=VCFv4.3\n#CHROM\tPOS\n17\t7675088\tVCV000012374\tC\tT\t99\tPASS\t.\tGT:AD\t0/1:600,400\n") == []
+    assert phi_scan("urn:uuid:6e100001-0000-4000-8000-123456789012 sha 0123456789012345678901234567890123456789012345678901234567890123") == []
     for f in genomics_pack.rglob("*"):
         if f.is_file() and f.suffix in (".json", ".txt", ".hl7", ".sha256"):
             assert phi_scan(f.read_text("utf-8")) == [], f
