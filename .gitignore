@@ -78,3 +78,12 @@ synthea-python/synthea.egg-info/
 
 # Ignore secrets
 secrets.env
+
+# Local pointer to the canonical assistant skills (no copied procedures).
+/.agents/platform
+
+# Version only the Claude discovery adapters, not local assistant settings.
+!.claude/
+.claude/*
+!.claude/skills/
+!.claude/skills/**
