@@ -433,3 +433,38 @@ def test_server_reposting_does_not_duplicate_patient(tmp_path):
     )
     response.raise_for_status()
     assert response.json()["total"] == 1
+
+
+def test_conflicting_shared_resource_fails_without_success_manifest(tmp_path):
+    a, b = patient(1), patient(2)
+    b.record.encounters[0].provider.name = "Conflicting hospital"
+    with pytest.raises(ValueError, match="Conflicting shared FHIR resource"):
+        run_people(tmp_path, [a, b])
+    assert not (tmp_path / "fhir/bulk/manifest.json").exists()
+    assert not list(tmp_path.glob(".synthea-run-*"))
+
+
+def test_finalizer_failure_removes_private_staging(tmp_path):
+    from synthea.export.exporter import GenomicsPackError
+
+    options = GeneratorOptions()
+    options.population_size = 0
+    generator = Generator(options, config(tmp_path))
+    with patch.object(
+        generator.exporter, "run_post_completion", side_effect=GenomicsPackError("failed")
+    ):
+        with pytest.raises(GenomicsPackError):
+            generator.run()
+    assert not list(tmp_path.glob(".synthea-run-*"))
+    assert not (tmp_path / "fhir/bulk/manifest.json").exists()
+
+
+def test_csv_retains_both_text_allergy_reactions(tmp_path):
+    p = patient()
+    p.record.allergies[0].reactions = ["Hives", "Wheezing"]
+    p.record.allergies[0].severity = "severe"
+    run_people(tmp_path, [p])
+    row = load_csv(tmp_path, "allergies")[0]
+    assert row["DESCRIPTION1"] == "Hives"
+    assert row["DESCRIPTION2"] == "Wheezing"
+    assert row["SEVERITY1"] == row["SEVERITY2"] == "SEVERE"

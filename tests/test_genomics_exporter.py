@@ -107,9 +107,13 @@ def test_exporter_registered_and_only_cancer_persons_exported(tmp_path):
     # off by default
     ex = Exporter(Config())
     assert not any(isinstance(e, GenomicsExporter) for e in ex.patient_exporters)
-    # the unimplemented-exporter refusal is unchanged
-    with pytest.raises(NotImplementedError):
-        Exporter(_config(tmp_path, exporter__csv__export=True))
+    # CSV can now accompany the genomics pack; cancer selection stays unchanged.
+    csv_root = tmp_path / "with-csv"
+    csv_pack = _run(csv_root, persons, exporter__csv__export=True)
+    assert {d.name for d in (csv_pack / "patients").iterdir()} == with_cancer
+    import csv
+    with (csv_root / "csv" / "patients.csv").open(newline="") as handle:
+        assert len(list(csv.DictReader(handle))) == len(persons)
 
 
 # REQ-GO-61-02 / AC-02 / T-GO-61-02 (descriptor order and process layout must not matter)
