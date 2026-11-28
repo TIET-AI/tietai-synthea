@@ -418,31 +418,24 @@ class Generator:
     def run(self):
         """Run the generator to create the specified population."""
         print(f"Generating {self.options.population_size} patients...")
-        if self.exporter:
-            self.config.set('exporter.report.reference_date',
-                            self.options.resolved_end_date.isoformat())
-            self.exporter.begin_run()
-        
         start_time = time_module.time()
-        
         try:
+            if self.exporter:
+                self.config.set('exporter.report.reference_date',
+                                self.options.resolved_end_date.isoformat())
+                self.exporter.begin_run()
             if self.options.threads > 1:
                 self._run_parallel()
             else:
                 self._run_sequential()
+            if self.exporter:
+                self.exporter.run_post_completion(self.stats)
         except BaseException:
             if self.exporter:
                 self.exporter.run_output.abort()
             raise
-        
-        elapsed = time_module.time() - start_time
-        
-        # Finalize outputs before reporting successful completion.
-        # Run post-completion exporters
-        if self.exporter:
-            self.exporter.run_post_completion(self.stats)
-        self._print_stats(elapsed)
-    
+        self._print_stats(time_module.time() - start_time)
+
     def _run_sequential(self):
         """Run generation sequentially."""
         with tqdm(total=self.options.population_size) as pbar:

@@ -453,13 +453,19 @@ class CSVExporter:
                     row.update(
                         TYPE=r.get("type", ""), CATEGORY=next(iter(r.get("category", [])), "")
                     )
-                    for n, reaction in enumerate(r.get("reaction", [])[:2], 1):
-                        manifestation = code(first(reaction.get("manifestation")))
+                    reactions = [
+                        (manifestation, reaction.get("severity", ""))
+                        for reaction in r.get("reaction", [])
+                        for manifestation in reaction.get("manifestation", [])
+                    ]
+                    for n, (concept, severity) in enumerate(reactions[:2], 1):
+                        manifestation = code(concept)
                         row.update(
                             {
                                 f"REACTION{n}": manifestation.get("code", ""),
-                                f"DESCRIPTION{n}": manifestation.get("display", ""),
-                                f"SEVERITY{n}": reaction.get("severity", "").upper(),
+                                f"DESCRIPTION{n}": manifestation.get("display")
+                                or concept.get("text", ""),
+                                f"SEVERITY{n}": severity.upper(),
                             }
                         )
                 if kind == "Device":
