@@ -468,3 +468,28 @@ def test_csv_retains_both_text_allergy_reactions(tmp_path):
     assert row["DESCRIPTION1"] == "Hives"
     assert row["DESCRIPTION2"] == "Wheezing"
     assert row["SEVERITY1"] == row["SEVERITY2"] == "SEVERE"
+
+
+def test_facilities_with_equal_names_keep_their_own_coordinates(tmp_path):
+    from synthea.export.fhir import _organization_uuid
+
+    p = patient()
+    second = p.record.encounter_start(VISIT + timedelta(days=1), "ambulatory")
+    second.provider = Provider(
+        "hospital-two",
+        "Test Hospital",
+        "hospital",
+        "Second address",
+        "Other city",
+        "State",
+        "12346",
+        (41, -4),
+        "",
+    )
+    p.record.encounter_end(second, VISIT + timedelta(days=1, hours=1))
+    run_people(tmp_path, [p])
+    actual = {
+        r["Id"]: (float(r["LAT"]), float(r["LON"])) for r in load_csv(tmp_path, "organizations")
+    }
+    expected = {_organization_uuid(e.provider): e.provider.coordinates for e in p.record.encounters}
+    assert actual == expected
