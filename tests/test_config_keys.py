@@ -184,7 +184,7 @@ class TestOnlyLiving:
             self.seen.append(person)
 
     def _exporter_with(self, recorder, **overrides):
-        exporter = Exporter(_config(**overrides))
+        exporter = Exporter(_config(exporter__report__export=False, **overrides))
         exporter.patient_exporters = [recorder]
         return exporter
 

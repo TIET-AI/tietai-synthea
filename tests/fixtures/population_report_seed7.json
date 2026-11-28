@@ -1,0 +1,47 @@
+{
+  "conditions": {
+    "SNOMED-CT|123": {
+      "display": "Test condition",
+      "patients": 1,
+      "prevalence": 1.0
+    }
+  },
+  "definitions": {
+    "age": "completed years at death or simulation end",
+    "person_years": "birth through death or simulation end",
+    "prevalence": "ever recorded during simulated lifetime",
+    "state_hits": "GMF state entries; waiting polls excluded; Python core modules excluded"
+  },
+  "demographics": [
+    {
+      "age_band": "40-44",
+      "count": 1,
+      "sex": "F"
+    }
+  ],
+  "encounters": {
+    "ambulatory": {
+      "count": 1,
+      "per_patient_year": 0.025
+    }
+  },
+  "medications": {
+    "count": 1,
+    "per_patient": 1.0
+  },
+  "module_state_hits": {},
+  "mortality_by_age_band": {},
+  "person_years": 40.0,
+  "population": {
+    "dead": 0,
+    "generated": 1,
+    "living": 1,
+    "rejected": 1
+  },
+  "schema_version": 1,
+  "targets": [],
+  "targets_passed": true,
+  "top_conditions": [
+    "SNOMED-CT|123"
+  ]
+}

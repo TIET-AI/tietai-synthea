@@ -68,6 +68,10 @@ from synthea.engine.module import Module
               help='Accept a changed curated variant table when regenerating the reference pack')
 @click.option('--list-locales', is_flag=True,
               help='List the installed locale packs')
+@click.option('--no-report', is_flag=True, help='Disable the population report')
+@click.option('--targets', type=click.Path(exists=True, dir_okay=False),
+              help='YAML population metric bounds; a missed target fails the run')
+@click.option('--fhir-url', type=str, help='Post one transaction per patient to a FHIR server')
 @click.option('--list-modules', is_flag=True,
               help='List all available modules')
 @click.option('--version', is_flag=True,
@@ -76,7 +80,8 @@ from synthea.engine.module import Module
 def main(population, seed, clinician_seed, gender, age, module, config, modules_dir,
          output_dir, reference_date, state, city, threads, log_level, only_dead,
          keep_patients, overflow, graphviz, locale, export_profile,
-         genomics, genomics_cohort, regenerate_reference, list_locales, list_modules, version, location):
+         genomics, genomics_cohort, regenerate_reference, list_locales, list_modules, version,
+         location, no_report, targets, fhir_url):
     """
     Synthea Patient Generator
     
@@ -166,6 +171,13 @@ def main(population, seed, clinician_seed, gender, age, module, config, modules_
     # Override with command-line settings
     if output_dir:
         config_obj.set('exporter.baseDirectory', output_dir)
+    if no_report:
+        config_obj.set('exporter.report.export', False)
+    if targets:
+        config_obj.set('exporter.report.targets', targets)
+    if fhir_url:
+        config_obj.set('exporter.fhir.server_url', fhir_url)
+        config_obj.set('exporter.fhir.server_fail_on_error', True)
 
     if export_profile:
         config_obj.set('exporter.fhir.profile', export_profile)
