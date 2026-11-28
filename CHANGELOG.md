@@ -17,6 +17,8 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ## [1.6.0] - 2026-11-28
 
+- Close the aggregate export database before removing staging files, including
+  on failure, so population exports finish successfully on Windows.
 - Bulk FHIR NDJSON with portable references, shared-resource deduplication and a
   run manifest (#41). Patient, Organization and Practitioner transaction entries
   now use identifier-based conditional creates by default. This changes bundle

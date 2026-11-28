@@ -459,6 +459,48 @@ def test_finalizer_failure_removes_private_staging(tmp_path):
     assert not (tmp_path / "fhir/bulk/manifest.json").exists()
 
 
+@pytest.mark.parametrize("fail", [False, True])
+def test_aggregate_database_is_closed_before_staging_cleanup(tmp_path, monkeypatch, fail):
+    import sqlite3
+    from synthea.export.run_output import RunOutput
+
+    output = RunOutput(config(tmp_path), tmp_path)
+    output.begin()
+    output.add(patient())
+    connections = []
+    connect = sqlite3.connect
+    abort = output.abort
+
+    def tracked_connect(*args, **kwargs):
+        connection = connect(*args, **kwargs)
+        connections.append(connection)
+        return connection
+
+    def checked_abort():
+        # POSIX permits unlinking an open database; Windows does not. Check the
+        # handle itself so this regression is caught on every CI platform.
+        assert connections
+        for connection in connections:
+            with pytest.raises(sqlite3.ProgrammingError, match="closed"):
+                connection.execute("SELECT 1")
+        abort()
+
+    monkeypatch.setattr(sqlite3, "connect", tracked_connect)
+    monkeypatch.setattr(output, "abort", checked_abort)
+    if fail:
+
+        def fail_report(*args):
+            raise ValueError("report failed")
+
+        monkeypatch.setattr(output.report, "write", fail_report)
+        with pytest.raises(ValueError, match="report failed"):
+            output.finish({})
+    else:
+        output.finish({})
+    assert output.stage is None
+    assert not list(tmp_path.glob(".synthea-run-*"))
+
+
 def test_csv_retains_both_text_allergy_reactions(tmp_path):
     p = patient()
     p.record.allergies[0].reactions = ["Hives", "Wheezing"]
