@@ -94,7 +94,7 @@ class TestExporterConfiguration:
         from synthea.export.exporter import Exporter
         from synthea.helpers.config import Config
 
-        for flag in ('exporter.csv.export', 'exporter.ccda.export'):
+        for flag in ('exporter.ccda.export',):
             config = Config()
             config.load()
             config.set('exporter.baseDirectory', str(tmp_path))

@@ -353,6 +353,8 @@ class TestReferencePackDeterminism:
         config.set('exporter.baseDirectory', str(tmp_path))
         config.set('exporter.fhir.export', True)
         config.set('exporter.use_uuid_filenames', True)
+        # Preserve the pre-refactor content golden; conditional creates have their own tests.
+        config.set('exporter.fhir.conditional_create', False)
 
         options = GeneratorOptions()
         options.population_size = 3

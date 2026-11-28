@@ -12,12 +12,15 @@ known limitations of the current engine.
 - **Complete Patient Lifecycle**: Simulates patients from birth to death
 - **99 top-level disease modules** (256 JSON files including submodules): diabetes, heart disease, COVID-19, cancer, and more
 - **Modular Disease Framework**: JSON-based state machines for conditions
-- **Export Formats**: FHIR R4 and JSON (CSV and C-CDA are not implemented; enabling them is refused with a clear error)
+- **Export Formats**: FHIR R4 bundles, bulk NDJSON, upstream-layout CSV and JSON (C-CDA remains unsupported)
 - **Real-World Data**: CDC growth charts, immunization schedules, cost and payer tables, stratified lookup tables (see [RESOURCES.md](RESOURCES.md) for exactly what ships)
 - **Demographics**: names, addresses, identifiers, growth from CDC charts, vital signs and background mortality
 - **Reproducible**: the same seed produces the same population, on one worker or many
 - **Configurable**: Extensive configuration options via properties file
 - **Fast**: Uses UV for blazing-fast dependency management
+
+Population exports, target checks and their verification limits are documented in
+[docs/population-exports.md](docs/population-exports.md).
 
 ## Installation
 
