@@ -311,9 +311,12 @@ class CSVExporter:
             )
             for e in getattr(record, name, [])
         }
-        from synthea.export.fhir import _claim_uuid, _payer_uuid
+        from synthea.export.fhir import _claim_uuid, _payer_uuid, _organization_uuid
 
         claims = {_claim_uuid(e): e for e in record.encounters}
+        provider_models = {
+            _organization_uuid(e.provider): e.provider for e in record.encounters if e.provider
+        }
         payer_models = {
             _payer_uuid(c.plan.payer): c.plan.payer
             for c in person.attributes.get("coverage_history", [])
@@ -556,14 +559,7 @@ class CSVExporter:
                     values["STATE_HEADQUARTERED"] = values["STATE"]
                     emit("payers", rid, values)
                 else:
-                    provider = next(
-                        (
-                            e.provider
-                            for e in record.encounters
-                            if e.provider and e.provider.name == r.get("name")
-                        ),
-                        None,
-                    )
+                    provider = provider_models.get(rid)
                     if provider:
                         values["LAT"], values["LON"] = provider.coordinates
                     emit("organizations", rid, values)
