@@ -15,6 +15,8 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-11-28
+
 - Bulk FHIR NDJSON with portable references, shared-resource deduplication and a
   run manifest (#41). Patient, Organization and Practitioner transaction entries
   now use identifier-based conditional creates by default. This changes bundle
