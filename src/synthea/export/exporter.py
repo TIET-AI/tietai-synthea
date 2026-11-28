@@ -20,6 +20,10 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+class FHIRPushError(RuntimeError):
+    """A strict FHIR push failed; never report CLI success."""
+
+
 class GenomicsPackError(RuntimeError):
     """A genomics-pack failure; it must stop the run, never be swallowed."""
 
@@ -85,14 +89,14 @@ class Exporter:
         self.post_exporters: List[PostCompletionExporter] = []
         
         self._init_exporters()
+        from synthea.export.run_output import RunOutput
+        self.run_output = RunOutput(config, self.base_dir, locale)
     
     #: Exporters named in the configuration that do not exist yet, and the
     #: issue tracking each. Enabling one used to either raise an ImportError
     #: from deep inside start-up (CSV) or silently do nothing (CCDA), both of
     #: which leave the operator believing they have output they do not have.
     UNIMPLEMENTED = {
-        'exporter.csv.export': (
-            'CSV', 'https://github.com/TIET-AI/tietai-synthea/issues/42'),
         'exporter.ccda.export': (
             'C-CDA', 'https://github.com/TIET-AI/tietai-synthea/issues/36'),
     }
@@ -140,6 +144,7 @@ class Exporter:
 
     def begin_run(self):
         """Called once by the parent process before generation starts."""
+        self.run_output.begin()
         for exporter in self.patient_exporters:
             begin = getattr(exporter, 'begin', None)
             if begin:
@@ -151,13 +156,15 @@ class Exporter:
         `exporter.only_living` is applied here rather than inside each
         exporter, so a new exporter cannot forget it.
         """
-        if self.only_living and not getattr(person, 'alive', True):
+        exported = not (self.only_living and not getattr(person, 'alive', True))
+        self.run_output.add(person, exported=exported)
+        if not exported:
             return
 
         for exporter in self.patient_exporters:
             try:
                 exporter.export(person, 0)
-            except GenomicsPackError:
+            except (GenomicsPackError, FHIRPushError):
                 raise
             except Exception as e:
                 print(f"Error exporting with {exporter.__class__.__name__}: {e}")
@@ -172,10 +179,11 @@ class Exporter:
         for exporter in self.post_exporters:
             try:
                 exporter.export(None, stats)
-            except GenomicsPackError:
+            except (GenomicsPackError, FHIRPushError):
                 raise
             except Exception as e:
                 print(f"Error in post-completion export: {e}")
+        self.run_output.finish(stats)
 
 
 class JSONExporter(PatientExporter):
@@ -308,35 +316,59 @@ class FHIRServerExporter(PatientExporter):
 
         from synthea.export.fhir import FHIRExporter
 
-        bundle = FHIRExporter(self.config, Path('.')).create_bundle(person)
+        from urllib.parse import urlparse
+        import time as clock
+        if urlparse(self.server_url).scheme not in ('http', 'https'):
+            raise ValueError('FHIR server URL must use http or https')
+        exporter = FHIRExporter(self.config,
+                                Path(self.config.get('exporter.baseDirectory', '.')),
+                                getattr(person, 'locale', None))
+        exporter.use_transaction_bundle = True
+        bundle = exporter.create_bundle(person)
+        bundle['type'] = 'transaction'
+        # A transaction is the batch boundary: splitting a patient's bundle
+        # would leave its URN references unresolved. Stable PUTs make retries
+        # safe for resources without conditional-create identifiers too.
+        for entry in bundle['entry']:
+            resource = entry['resource']
+            if not entry['request'].get('ifNoneExist'):
+                entry['request'] = {'method': 'PUT',
+                                    'url': resource['resourceType'] + '/' + resource['id']}
         payload = _json.dumps(bundle).encode('utf-8')
-
-        request = urllib.request.Request(
-            self.server_url,
-            data=payload,
-            headers={
-                'Content-Type': 'application/fhir+json',
-                'Accept': 'application/fhir+json',
-            },
-            method='POST',
-        )
-
-        try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                self.posted += 1
-                return f"{self.server_url} ({response.status})"
-        except urllib.error.HTTPError as error:
-            self.failed += 1
-            detail = ''
+        retries = max(0, int(self.config.get('exporter.fhir.server_retries', 2)))
+        delay = max(0, float(self.config.get('exporter.fhir.server_retry_delay', 0.1)))
+        last_error = None
+        for attempt in range(retries + 1):
+            request = urllib.request.Request(
+                self.server_url, data=payload,
+                headers={'Content-Type': 'application/fhir+json',
+                         'Accept': 'application/fhir+json'}, method='POST')
             try:
-                detail = error.read().decode('utf-8', 'replace')[:500]
-            except Exception:  # pragma: no cover - best effort only
-                pass
-            logger.error("FHIR server rejected a bundle (%s): %s",
-                         error.code, detail)
-        except Exception as error:
-            self.failed += 1
-            logger.error("Could not post a bundle to %s: %s",
-                         self.server_url, error)
-
+                with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                    if hasattr(response, 'read'):
+                        raw = response.read()
+                        if raw:
+                            result = _json.loads(raw)
+                            if result.get('resourceType') == 'OperationOutcome':
+                                raise FHIRPushError('FHIR server returned an OperationOutcome')
+                            for entry in result.get('entry', []):
+                                status = str(entry.get('response', {}).get('status', ''))
+                                if status and not status.startswith('2'):
+                                    raise FHIRPushError('FHIR transaction entry failed: ' + status)
+                    self.posted += 1
+                    return f"{self.server_url} ({response.status})"
+            except urllib.error.HTTPError as error:
+                last_error = error
+                if error.code != 429 and not 500 <= error.code < 600:
+                    break
+            except (OSError, FHIRPushError, ValueError) as error:
+                last_error = error
+                if not isinstance(error, OSError):
+                    break
+            if attempt < retries:
+                clock.sleep(min(10, delay * 2 ** attempt))
+        self.failed += 1
+        logger.error("Could not post a FHIR transaction: %s", last_error)
+        if self.config.get_bool('exporter.fhir.server_fail_on_error', False):
+            raise FHIRPushError('FHIR transaction failed after retries') from last_error
         return None

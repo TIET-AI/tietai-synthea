@@ -99,6 +99,13 @@ class Module:
                 return True
             
             state = self.states[current_state_name]
+            # Count entries, not repeated polling of a waiting Delay/Encounter.
+            active = person.__dict__.setdefault('_report_active_states', {})
+            if active.get(self.name) != current_state_name:
+                hits = person.__dict__.setdefault('_report_state_hits', {})
+                module_hits = hits.setdefault(self.name, {})
+                module_hits[current_state_name] = module_hits.get(current_state_name, 0) + 1
+                active[self.name] = current_state_name
             
             # Mark state as visited (for PriorState conditions)
             # Record when, not just whether: a PriorState condition with a
@@ -129,6 +136,7 @@ class Module:
             
             # Get next state from transition
             next_state = self._get_next_state(state, person, now)
+            active.pop(self.name, None)
 
             exited = person.attributes.pop(f'{self.name}_delay_exited', None)
             if exited is not None and exited < now:

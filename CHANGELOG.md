@@ -13,6 +13,33 @@ All notable changes to PySynthea are recorded here. The format follows
 
 ---
 
+## [Unreleased]
+
+## [1.6.0] - 2026-11-28
+
+- Close the aggregate export database before removing staging files, including
+  on failure, so population exports finish successfully on Windows.
+- Bulk FHIR NDJSON with portable references, shared-resource deduplication and a
+  run manifest (#41). Patient, Organization and Practitioner transaction entries
+  now use identifier-based conditional creates by default. This changes bundle
+  request metadata; use `exporter.fhir.conditional_create=false` to reproduce
+  the earlier request form. Clinical resource content and patient RNG are unchanged.
+- `--fhir-url` pushes one atomic patient transaction per batch, retries transient
+  failures and exits nonzero on failure. Other resources use stable PUTs on this
+  push path so retries do not create extra clinical records.
+- Seventeen upstream-layout CSV tables, file selection and indexed append mode
+  (#42). Shared providers/payers and run-wide utilization are deduplicated.
+- Default population JSON/Markdown report with lifetime prevalence, demographics,
+  encounter rates, medication counts, mortality and GMF state-entry coverage
+  (#44). `--no-report` disables it; `--targets` checks explicit metric bounds and
+  fails the CLI when a bound is missed or a metric is unknown.
+- Run exports stage per patient and finalize in the parent process, with the
+  same output for sequential and multiprocessing generation.
+
+See [population exports](docs/population-exports.md) for semantics and limits.
+FHIR-server bulk-import acceptance remains unverified; these changes do not
+close #41 or claim clinical calibration.
+
 ## [1.5.0] - 2026-10-18
 
 Patients now develop the chronic diseases their modules describe, and the
