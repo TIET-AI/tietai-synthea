@@ -556,6 +556,15 @@ class FHIRExporter(PatientExporter):
         }
         if self.use_transaction_bundle:
             entry["request"] = {"method": "POST", "url": resource_type}
+            if (resource_type in {'Patient', 'Organization', 'Practitioner'}
+                    and self.config.get_bool('exporter.fhir.conditional_create', True)):
+                from urllib.parse import urlencode
+                identifiers = resource.get('identifier') or [{
+                    'system': 'urn:tietai:synthea:resource-id', 'value': resource_id}]
+                entry['resource']['identifier'] = identifiers
+                identifier = identifiers[0]
+                entry['request']['ifNoneExist'] = urlencode({
+                    'identifier': identifier.get('system', '') + '|' + identifier['value']})
         return entry
 
     def _subject(self, person: 'Person') -> Dict[str, str]:
