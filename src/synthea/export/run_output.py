@@ -5,6 +5,7 @@ import os
 import shutil
 import sqlite3
 import tempfile
+from contextlib import closing
 from pathlib import Path
 
 from synthea.export.population import PopulationReport, patient_summary
@@ -114,7 +115,12 @@ class RunOutput:
         from synthea.engine.module import Module
 
         try:
-            with sqlite3.connect(str(self.stage / "aggregate.sqlite")) as connection:
+            # SQLite's transaction context does not close the file handle.
+            # Close it before abort() removes staging, including on failure.
+            with (
+                closing(sqlite3.connect(str(self.stage / "aggregate.sqlite"))) as connection,
+                connection,
+            ):
                 connection.execute(
                     "CREATE TABLE resources (kind TEXT, id TEXT, payload TEXT, PRIMARY KEY(kind,id))"
                 )
